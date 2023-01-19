@@ -56,7 +56,9 @@ using Biobanks.Submissions.Api.Middleware;
 using Biobanks.Submissions.Api.Services;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using cloudscribe.Web.SiteMap;
+using Microsoft.AspNetCore.Mvc;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,14 +69,25 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<OmopDbContext>(options =>
 options.UseNpgsql("Omop"));
 
-builder.Services.AddDbContext<BiobanksDbContext>(options =>
-    options.UseSqlServer(connectionString,
-    sqlServerOptions => sqlServerOptions.CommandTimeout(300000000)));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDbContext<ApplicationDbContext>(o =>
+{
+  // migration bundles don't like null connection strings (yet)
+  // https://github.com/dotnet/efcore/issues/26869
+  // so if no connection string is set we register without one for now.
+  // if running migrations, `--connection` should be set on the command line
+  // in real environments, connection string should be set via config
+  // all other cases will error when db access is attempted.
+  var connectionString = builder.Configuration.GetConnectionString("Default");
+  if (string.IsNullOrWhiteSpace(connectionString))
+    o.UseNpgsql();
+  else
+    o.UseNpgsql(connectionString,
+      o => o.EnableRetryOnFailure());
+});
 
 //identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-      .AddEntityFrameworkStores<BiobanksDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Configuration.AddJsonFile("Settings/LegacyMaterialTypes.json", optional: true);
 builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", optional: true);
@@ -84,6 +97,8 @@ var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();
 var workersConfig = builder.Configuration.GetSection("Workers").Get<WorkersOptions>() ?? new();
 var hangfireConfig = builder.Configuration.GetSection("Hangfire").Get<HangfireOptions>() ?? new();
 var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
+var sitemapConfig = builder.Configuration.GetSection("NavigationOptions");
+
 var siteConfig = builder.Configuration.GetSection("SiteProperties").Get<SitePropertiesOptions>() ?? new();
 
 builder.Services.AddOptions()
@@ -97,6 +112,21 @@ builder.Services.AddOptions()
     .Configure<MaterialTypesLegacyModel>(builder.Configuration.GetSection("MaterialTypesLegacyModel"))
     .Configure<StorageTemperatureLegacyModel>(builder.Configuration.GetSection("StorageTemperatureLegacyModel"))
     .Configure<ElasticsearchConfig>(builder.Configuration.GetSection("Elasticsearch"));
+
+//sitemap + breadcrumbs
+builder.Services.AddScoped<ISiteMapNodeService, NavigationTreeSiteMapNodeService>();
+builder.Services.AddCloudscribeNavigation(sitemapConfig);
+builder.Services.AddScoped<cloudscribe.Web.Navigation.INavigationTreeBuilder, cloudscribe.Web.Navigation.JsonNavigationTreeBuilder>();
+
+builder.Services.Configure<MvcOptions>(options =>
+{
+    options.CacheProfiles.Add("SiteMapCacheProfile",
+        new CacheProfile
+        {
+            Duration = 100
+        });
+                
+});
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -130,12 +160,14 @@ builder.Services.AddControllersWithViews(opts =>
         opts.SuppressOutputFormatterBuffering = true;
         opts.Filters.Add<RedirectAntiforgeryValidationFailedResult>();
     })
-                .AddJsonOptions(o =>
-                {
-                    o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
-                });
+      .AddViewLocalization()
+      .AddJsonOptions(o =>
+      {
+        o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
+      });
+
 
 builder.Services.AddAuthorization(o =>
 {
@@ -346,7 +378,8 @@ if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == W
 {
     var hangfireConnectionString = builder.Configuration.GetConnectionString("Hangfire");
 
-    builder.Services.AddHangfire(x => x.UseSqlServerStorage(
+    
+    builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(
         !string.IsNullOrWhiteSpace(hangfireConnectionString)
             ? connectionString
             : builder.Configuration.GetConnectionString("Default"),

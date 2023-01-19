@@ -23,12 +23,12 @@ namespace Biobanks.DataSeed.Services
         private const string _dataDir = "data";
 
         private readonly ILogger<SeedingService> _logger;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly CountriesWebService _countriesWebService;
 
         private readonly IEnumerable<Action> _seedActions;
 
-        public SeedingService(ILogger<SeedingService> logger, BiobanksDbContext db, CountriesWebService countriesWebService)
+        public SeedingService(ILogger<SeedingService> logger, ApplicationDbContext db, CountriesWebService countriesWebService)
         {
             _db = db;
             _logger = logger;

@@ -9,7 +9,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class CountryService : ReferenceDataService<Country>
     {
-        public CountryService(BiobanksDbContext db) : base(db) { }
+        public CountryService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<Country> Query()
             => base.Query()

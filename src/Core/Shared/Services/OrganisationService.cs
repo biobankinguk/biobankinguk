@@ -11,9 +11,9 @@ namespace Biobanks.Shared.Services
     //TODO merge or resolve with OrganisationDirectoryService
     public class OrganisationService : IOrganisationService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public OrganisationService(BiobanksDbContext db)
+        public OrganisationService(ApplicationDbContext db)
         {
             _db = db;
         }

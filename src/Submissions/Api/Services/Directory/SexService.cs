@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class SexService : ReferenceDataService<Sex>
     {
-        public SexService(BiobanksDbContext db) : base(db) { }
+        public SexService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.SampleSets.CountAsync(x => x.SexId == id);

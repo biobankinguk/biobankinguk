@@ -11,10 +11,10 @@ namespace Biobanks.Submissions.Api.Services
 {
     public class GenericEFRepository<TEntity> : IGenericEFRepository<TEntity> where TEntity : class
     {
-        private readonly BiobanksDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
-        public GenericEFRepository(BiobanksDbContext context)
+        public GenericEFRepository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<TEntity>();

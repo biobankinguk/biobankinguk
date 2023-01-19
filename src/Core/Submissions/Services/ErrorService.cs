@@ -13,10 +13,10 @@ namespace Core.Submissions.Services
     /// <inheritdoc />
     public class ErrorService : IErrorService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         /// <inheritdoc />
-        public ErrorService(BiobanksDbContext db)
+        public ErrorService(ApplicationDbContext db)
         {
             _db = db;
         }

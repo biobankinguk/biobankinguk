@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class MaterialTypeGroupService : ReferenceDataService<MaterialTypeGroup>
     {
-        public MaterialTypeGroupService(BiobanksDbContext db) : base(db) { }
+        public MaterialTypeGroupService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<MaterialTypeGroup> Query()
             => base.Query().Include(x => x.MaterialTypes);

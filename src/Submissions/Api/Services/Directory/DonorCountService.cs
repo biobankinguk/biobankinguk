@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class DonorCountService : ReferenceDataService<DonorCount>
     {
-        public DonorCountService(BiobanksDbContext db) : base(db) { }
+        public DonorCountService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.SampleSets.CountAsync(x => x.DonorCountId == id);

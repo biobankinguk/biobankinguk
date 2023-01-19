@@ -18,9 +18,9 @@ namespace Core.Submissions.Services
     public class SampleWriteService : ISampleWriteService
     {
         private readonly ISampleValidationService _sampleValidationService;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public SampleWriteService(ISampleValidationService sampleValidationService, BiobanksDbContext db)
+        public SampleWriteService(ISampleValidationService sampleValidationService, ApplicationDbContext db)
         {
             _sampleValidationService = sampleValidationService;
             _db = db;

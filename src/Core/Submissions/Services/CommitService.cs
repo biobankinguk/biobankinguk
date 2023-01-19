@@ -13,10 +13,10 @@ namespace Core.Submissions.Services
     /// <inheritdoc />
     public class CommitService : ICommitService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         /// <inheritdoc />
-        public CommitService(BiobanksDbContext db)
+        public CommitService(ApplicationDbContext db)
         {
             _db = db;
         }

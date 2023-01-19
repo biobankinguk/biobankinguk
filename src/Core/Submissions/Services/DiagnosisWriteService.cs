@@ -18,9 +18,9 @@ namespace Core.Submissions.Services
     public class DiagnosisWriteService : IDiagnosisWriteService
     {
         private readonly IDiagnosisValidationService _diagnosisValidationService;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public DiagnosisWriteService(IDiagnosisValidationService diagnosisValidationService, BiobanksDbContext db)
+        public DiagnosisWriteService(IDiagnosisValidationService diagnosisValidationService, ApplicationDbContext db)
         {
             _diagnosisValidationService = diagnosisValidationService;
             _db = db;

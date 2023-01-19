@@ -12,9 +12,9 @@ namespace Biobanks.Aggregator.Services
 {
     public class SampleService : ISampleService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public SampleService(BiobanksDbContext db)
+        public SampleService(ApplicationDbContext db)
         {
             _db = db;
         }

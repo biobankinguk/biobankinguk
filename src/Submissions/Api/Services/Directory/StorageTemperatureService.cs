@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class StorageTemperatureService : ReferenceDataService<StorageTemperature>
     {
-        public StorageTemperatureService(BiobanksDbContext db) : base(db) { }
+        public StorageTemperatureService(ApplicationDbContext db) : base(db) { }
 
         public override async Task<int> GetUsageCount(int id)
             => await _db.SampleSets

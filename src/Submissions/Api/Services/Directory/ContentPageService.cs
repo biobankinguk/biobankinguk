@@ -10,9 +10,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class ContentPageService : IContentPageService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public ContentPageService(BiobanksDbContext db)
+        public ContentPageService(ApplicationDbContext db)
         {
             _db = db;
         }

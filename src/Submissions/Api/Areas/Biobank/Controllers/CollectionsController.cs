@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cloudscribe.Web.Navigation;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Area("Biobank")]
@@ -521,7 +522,10 @@ public class CollectionsController : Controller
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
-    //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+
+    // Set the last breadcrumb
+    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
+    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
 
     //Build the model using all details of the existing sampleset, except id, which is stored in a separate property
     var model = new CopySampleSetModel
@@ -563,8 +567,10 @@ public class CollectionsController : Controller
   public async Task<ViewResult> EditSampleSet(int id)
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
-
-    //TODO: SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+    
+    // Set the last breadcrumb
+    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
+    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
 
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
@@ -629,8 +635,10 @@ public class CollectionsController : Controller
 
       return RedirectToAction("SampleSet", new { id = model.Id });
     }
-
-    //TODO: SiteMaps.Current.CurrentNode.ParentNode.ParentNode.RouteValues["id"] = model.CollectionId;
+    
+    // Set the last breadcrumb
+    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
+    breadCrumbHelper.AddTailCrumb("SampleSet", model.CollectionId.ToString(), "");
 
     return View((EditSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
@@ -654,8 +662,10 @@ public class CollectionsController : Controller
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     var assessments = await _macroscopicAssessmentService.List();
-
-    //TODO: SiteMaps.Current.CurrentNode.ParentNode.RouteValues["id"] = sampleSet.CollectionId;
+    
+    // Set the last breadcrumb
+    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
+    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
 
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 

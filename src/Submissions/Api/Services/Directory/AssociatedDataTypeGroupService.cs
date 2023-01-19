@@ -8,7 +8,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class AssociatedDataTypeGroupService : ReferenceDataService<AssociatedDataTypeGroup>
     {
-        public AssociatedDataTypeGroupService(BiobanksDbContext db) : base(db) { }
+        public AssociatedDataTypeGroupService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<AssociatedDataTypeGroup> Query()
             => base.Query().Include(x => x.AssociatedDataTypes);

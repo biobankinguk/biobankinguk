@@ -10,9 +10,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class RegistrationDomainService : IRegistrationDomainService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public RegistrationDomainService(BiobanksDbContext db)
+        public RegistrationDomainService(ApplicationDbContext db)
         {
             _db = db;
         }

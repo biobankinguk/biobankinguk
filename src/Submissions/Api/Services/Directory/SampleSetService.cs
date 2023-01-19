@@ -13,8 +13,8 @@ public class SampleSetService : ISampleSetService
 {
   private readonly IOrganisationDirectoryService _organisationService;
   private readonly IBiobankIndexService _indexService;
-  private readonly BiobanksDbContext _context;
-  public SampleSetService(IOrganisationDirectoryService organisationService, IBiobankIndexService indexService, BiobanksDbContext context)
+  private readonly ApplicationDbContext _context;
+  public SampleSetService(IOrganisationDirectoryService organisationService, IBiobankIndexService indexService, ApplicationDbContext context)
   {
     _organisationService = organisationService;
     _indexService = indexService;

@@ -45,8 +45,8 @@ namespace Biobanks.DataSeed
             Console.WriteLine("Press any key to continue with this connection string; otherwise close the application");
             Console.ReadKey();
 
-            services.AddDbContext<BiobanksDbContext>(opts =>
-                opts.UseSqlServer(connString)
+            services.AddDbContext<ApplicationDbContext>(opts =>
+                opts.UseNpgsql(connString)
             );
 
             services.AddHttpClient();

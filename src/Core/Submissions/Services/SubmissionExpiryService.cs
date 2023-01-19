@@ -15,10 +15,10 @@ namespace Core.Submissions.Services
 {
     public class SubmissionExpiryService : ISubmissionExpiryService
     {
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly int _expiryDays = 0;
 
-        public SubmissionExpiryService(BiobanksDbContext db, IOptions<ExpiryConfigModel> config)
+        public SubmissionExpiryService(ApplicationDbContext db, IOptions<ExpiryConfigModel> config)
         {
             _db = db;
             _expiryDays = config.Value.ExpiryDays;
