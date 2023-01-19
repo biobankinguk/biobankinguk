@@ -149,6 +149,9 @@ builder.Services.AddControllersWithViews(opts =>
         o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
       });
 
+builder.Services.AddSession(options => {
+  options.IdleTimeout = TimeSpan.FromMinutes(10);
+});
 
 builder.Services.AddAuthorization(o =>
 {
@@ -435,7 +438,7 @@ app
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 
 app.MapControllers().RequireAuthorization();
 
