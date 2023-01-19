@@ -1,4 +1,4 @@
-﻿using Biobanks.Data;
+using Biobanks.Data;
 using Biobanks.Entities.Shared;
 using Biobanks.IdentityModel.Helpers;
 using Biobanks.IdentityModel.Extensions;
@@ -18,11 +18,11 @@ namespace Biobanks.IdentityTool.Commands.Runners
     internal class AddApiClient
     {
         private readonly ILogger<AddApiClient> _logger;
-        private readonly BiobanksDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         public AddApiClient(
             ILogger<AddApiClient> logger,
-            BiobanksDbContext db)
+            ApplicationDbContext db)
         {
             _logger = logger;
             _db = db;
