@@ -10,6 +10,13 @@ namespace Biobanks.Services
     // General helpers for working with images
     public static class ImageService
     {
+        /// <summary>
+        /// Resizes an image stream to the specified dimensions
+        /// </summary>
+        /// <param name="inStream">The image stream to resize</param>
+        /// <param name="maxX">Width</param>
+        /// <param name="maxY">Height</param>
+        /// <returns>A resized MemoryStream encoded as .PNG</returns>
         public static async Task<MemoryStream> ResizeImageStream(Stream inStream, int maxX, int maxY)
         {
             if (inStream.Length < 1) throw new ArgumentException("The provided Input Stream contains no data");
