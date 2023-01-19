@@ -466,15 +466,15 @@ public class ProfileController : Controller
     public async Task<ActionResult> AddTempLogo()
     {
         if (!HttpContext.Request.Form.Files.Any())
-            return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+            return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
         var formFile = HttpContext.Request.Form.Files["TempLogo"];
 
         if (formFile == null)
-            return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+            return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
         if (formFile.Length > 1000000)
-            return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
+            return BadRequest(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
         
         try
         {
@@ -492,10 +492,10 @@ public class ProfileController : Controller
         }
         catch (BadImageFormatException e)
         {
-            return Ok(new KeyValuePair<bool, string>(false, e.Message));
+            return BadRequest(new KeyValuePair<bool, string>(false, e.Message));
         }
 
-        return Ok(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+        return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
     }
     
     [HttpGet]
