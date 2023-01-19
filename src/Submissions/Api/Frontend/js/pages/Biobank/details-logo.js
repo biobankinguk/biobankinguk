@@ -24,7 +24,7 @@
                     success: function (response) {
                         if (response.key === true) {
                             var d = new Date();
-                            $('#TempBiobankLogo').attr('src', response.value);
+                            $('#TempNetworkLogo').attr('src', response.value + "/" + d.getTime());
                             $('#BiobankLogoUploadError').hide();
                             $('#RemoveLogo').val(false);
                         } else {
