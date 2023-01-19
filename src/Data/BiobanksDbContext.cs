@@ -257,28 +257,5 @@ namespace Biobanks.Data
     }
 
     public BiobanksDbContext(DbContextOptions options) : base(options) { }
-
-    public class BiobanksDbContextFactory : IDesignTimeDbContextFactory<BiobanksDbContext>
-    {
-      /*  Required for DesignTime creation of the context. EF operations can be done from
-       *  either Package Manager or via Dotnet EF Tools.
-       *  
-       *  For either option, the connection string of the database must be passed via
-       *  CLI arguments.
-       *  
-       *  Package Manager - https://docs.microsoft.com/en-us/ef/core/cli/powershell
-       *  >> <Migrations Command> -Args "<Connection-String>"
-       *  
-       *  dotnet CLI - https://docs.microsoft.com/en-us/ef/core/cli/dotnet
-       *  >> dotnet ef <CLI Command> -- "<Connection-String>"
-       */
-
-      public BiobanksDbContext CreateDbContext(string[] args)
-          => new(
-              new DbContextOptionsBuilder()
-                  .UseNpgsql(args[0], opts => opts.EnableRetryOnFailure())
-                  .Options
-              );
-      }
-    }
+  }
 }
