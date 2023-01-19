@@ -19,12 +19,13 @@ using Biobanks.Submissions.Api.Models.Directory;
 using Biobanks.Submissions.Api.Models.Profile;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -33,37 +34,37 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Area("Biobank")]
 public class ProfileController : Controller
 {
-    private readonly AnnualStatisticGroupService _annualStatisticGroupService;
-    private readonly BiobankService _biobankService;
-    private readonly BiobankWriteService _biobankWriteService;
-    private readonly ConfigService _configService;
-    private readonly CountyService _countyService;
-    private readonly CountryService _countryService;
-    private readonly FunderService _funderService;
-    private readonly Mapper _mapper;
-    private readonly NetworkService _networkService;
-    private readonly OrganisationDirectoryService _organisationService;
-    private readonly PublicationService _publicationService;
-    private readonly RegistrationReasonService _registrationReasonService;
-    private readonly ServiceOfferingService _serviceOfferingService;
+    private IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+    private readonly IBiobankService _biobankService;
+    private readonly IBiobankWriteService _biobankWriteService;
+    private readonly IConfigService _configService;
+    private IReferenceDataService<County> _countyService;
+    private IReferenceDataService<Country> _countryService;
+    private readonly IReferenceDataService<Funder> _funderService;
+    private readonly IMapper _mapper;
+    private readonly INetworkService _networkService;
+    private readonly IOrganisationDirectoryService _organisationService;
+    private readonly IPublicationService _publicationService;
+    private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+    private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
     private readonly SitePropertiesOptions _siteConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
-        AnnualStatisticGroupService annualStatisticGroupService,
-        BiobankService biobankService,
-        BiobankWriteService biobankWriteService,
-        ConfigService configService,
-        CountyService countyService,
-        CountryService countryService,
-        FunderService funderService,
-        Mapper mapper,
-        NetworkService networkService,
-        OrganisationDirectoryService organisationService,
-        PublicationService publicationService,
-        RegistrationReasonService registrationReasonService,
-        ServiceOfferingService serviceOfferingService,
-        SitePropertiesOptions siteConfig,
+        IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+        IBiobankService biobankService,
+        IBiobankWriteService biobankWriteService,
+        IConfigService configService,
+        IReferenceDataService<County> countyService,
+        IReferenceDataService<Country> countryService,
+        IReferenceDataService<Funder> funderService,
+        IMapper mapper,
+        INetworkService networkService,
+        IOrganisationDirectoryService organisationService,
+        IPublicationService publicationService,
+        IReferenceDataService<RegistrationReason> registrationReasonService,
+        IReferenceDataService<ServiceOffering> serviceOfferingService,
+        IOptions<SitePropertiesOptions> siteConfig,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -79,7 +80,7 @@ public class ProfileController : Controller
         _publicationService = publicationService;
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
-        _siteConfig = siteConfig;
+        _siteConfig = siteConfig.Value;
         _userManager = userManager;
     }
     
@@ -205,7 +206,7 @@ public class ProfileController : Controller
         return biobank;
     }
 
-    public async Task<ActionResult> Edit(int biobankId, bool detailsIncomplete = false)
+    public async Task<ActionResult> Edit(int biobankId = default, bool detailsIncomplete = false)
     {
         var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
 
@@ -213,7 +214,9 @@ public class ProfileController : Controller
             this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                 FeedbackMessageType.Info);
 
-        return View(await GetBiobankDetailsModelAsync(biobankId)); 
+        return biobankId == 0
+          ? View(await NewBiobankDetailsModelAsync(biobankId)) //no biobank id means we're dealing with a request
+          : View(await GetBiobankDetailsModelAsync(biobankId)); //biobank id means we're dealing with an existing biobank
     }
 
     private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
@@ -434,9 +437,9 @@ public class ProfileController : Controller
             AddressLine4 = bb.AddressLine4,
             City = bb.City,
             CountyId = bb.County?.Id,
-            CountryId = bb.Country.Id,
+            CountryId = bb.Country?.Id,
             CountyName = bb.County?.Value,
-            CountryName = bb.Country.Value,
+            CountryName = bb.Country?.Value,
             Postcode = bb.PostCode,
             GoverningInstitution = bb.GoverningInstitution,
             GoverningDepartment = bb.GoverningDepartment,
@@ -460,7 +463,7 @@ public class ProfileController : Controller
     #region Temp Logo Management
     
     [HttpPost]
-    public ActionResult AddTempLogo()
+    public async Task<ActionResult> AddTempLogo()
     {
         if (!HttpContext.Request.Form.Files.Any())
             return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
@@ -473,20 +476,18 @@ public class ProfileController : Controller
         if (formFile.Length > 1000000)
             return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
         
-         try
+        try
         {
             if (formFile.ValidateAsLogo())
             {
                 var logoStream = formFile.ToProcessableStream();
-                // TODO: Replace Session
-                // Session[TempBiobankLogoSessionId] =
-                //     ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
-                //     .ToArray();
-                // Session[TempBiobankLogoContentTypeSessionId] = fileBaseWrapper.ContentType;
-
-                return
-                    Ok(new KeyValuePair<bool, string>(true,
-                        Url.Action("TempLogo", "Profile")));
+                
+                var resizedImage = await ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300);
+                // Set session variable so the TempLogo action can retrieve it
+                HttpContext.Session.Set("TempLogo", resizedImage.ToArray());
+                
+                return Ok(new KeyValuePair<bool, string>(true, Url.Action("TempLogo", "Profile")));
+                
             }
         }
         catch (BadImageFormatException e)
@@ -496,22 +497,20 @@ public class ProfileController : Controller
 
         return Ok(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
     }
+    
+    [HttpGet]
+    public ActionResult TempLogo()
+    {
+        var bytes = HttpContext.Session.Get("TempLogo");
+        return File(bytes, "image/png");
+    }
 
-    // TODO: Replace Session
-    // [HttpGet]
-    // public ActionResult TempLogo(string id)
-    // {
-    //     return File((byte[])Session[TempBiobankLogoSessionId], Session[TempBiobankLogoContentTypeSessionId].ToString());
-    // }
-
-    // TODO: Replace session (this method is not used, so could alternatively be removed)
-    // [HttpPost]
-    // [Authorize(Roles = "BiobankAdmin")]
-    // public void RemoveTempLogo()
-    // {
-    //     Session[TempBiobankLogoSessionId] = null;
-    //     Session[TempBiobankLogoContentTypeSessionId] = null;
-    // }
+    [HttpPost]
+    [Authorize(Roles = "BiobankAdmin")]
+    public void RemoveTempLogo()
+    {
+        HttpContext.Session.Remove("TempLogo");
+    }
     
     #endregion
 
