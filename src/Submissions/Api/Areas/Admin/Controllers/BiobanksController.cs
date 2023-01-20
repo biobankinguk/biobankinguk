@@ -1,5 +1,4 @@
 using Biobanks.Data.Entities;
-
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
@@ -143,11 +142,11 @@ public class BiobanksController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<JsonResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+  public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
   {
       if (!ModelState.IsValid)
       {
-          return Json(new
+          return Ok(new
           {
               success = false,
               errors = ModelState.Values
@@ -194,7 +193,7 @@ public class BiobanksController : Controller
           }
           else
           {
-              return Json(new
+              return BadRequest(new
               {
                   success = false,
                   errors = result.Errors.ToArray()
@@ -220,7 +219,7 @@ public class BiobanksController : Controller
       await _userManager.AddToRolesAsync(user, new[] { Role.BiobankAdmin }); //what happens if they're already in the role?
 
       //return success, and enough user details for adding to the viewmodel's list
-      return Json(new
+      return Ok(new
       {
           success = true,
           userId = user.Id,

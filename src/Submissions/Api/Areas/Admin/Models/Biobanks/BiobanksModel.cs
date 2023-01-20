@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
+namespace Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks;
 
 public class BiobanksModel
 {
