@@ -7,15 +7,13 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Biobank;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
@@ -23,13 +21,11 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 public class BiobanksController : Controller
 {
   private readonly BiobankService _biobankService;
-  private readonly BiobankReadService _biobankReadService;
   private readonly OrganisationDirectoryService _organisationService;
   private readonly IEmailService _emailService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly ITokenLoggingService _tokenLog;
   private readonly Mapper _mapper;
-  
 
   public BiobanksController(
     BiobankService biobankService,
@@ -195,7 +191,7 @@ public class BiobanksController : Controller
                           userId = user.Id,
                           token = confirmToken
                       },
-                      Request.Url.Scheme));
+                      Request.GetEncodedUrl()));
           }
           else
           {
@@ -215,7 +211,7 @@ public class BiobanksController : Controller
               new EmailAddress(model.Email),
               model.Name,
               model.Entity,
-              Url.Action("BiobankAdmin", "Biobanks", new { id = biobankId }, Request.Url.Scheme));
+              Url.Action("BiobankAdmin", "Biobanks", new { id = biobankId }, Request.GetEncodedUrl()));
       }
 
       //Add the user/biobank relationship
@@ -289,7 +285,7 @@ public class BiobanksController : Controller
           this.SetTemporaryFeedbackMessage("The selected biobank could not be suspended.", FeedbackMessageType.Danger);
       }
 
-      return RedirectToAction($"BiobankAdmin", new { id = id });
+      return RedirectToAction($"BiobankAdmin", new { id });
   }
 
   public async Task<ActionResult> UnsuspendBiobank(int id)
@@ -305,19 +301,19 @@ public class BiobanksController : Controller
           this.SetTemporaryFeedbackMessage("The selected biobank could not be unsuspended.", FeedbackMessageType.Danger);
       }
 
-      return RedirectToAction($"BiobankAdmin", new { id = id });
+      return RedirectToAction($"BiobankAdmin", new { id });
   }
 
   public async Task<ActionResult> GenerateResetLinkAjax(string biobankUserId, string biobankUsername)
   {
       // Get the reset token
       var resetToken = await _biobankReadService.GetUnusedTokenByUser(biobankUserId);
-      await _tokenLog.PasswordTokenIssued(resetToken.ToString(), biobankUserId);
+      await _tokenLog.PasswordTokenIssued(resetToken, biobankUserId);
 
       // Generate the reset URL
       var url = Url.Action("ResetPassword", "Account",
           new { userId = biobankUserId, token = resetToken },
-          Request.Url.Scheme);
+          Request.GetEncodedUrl());
 
       return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
       {
@@ -326,5 +322,4 @@ public class BiobanksController : Controller
       });
   }
 
-  
 }
