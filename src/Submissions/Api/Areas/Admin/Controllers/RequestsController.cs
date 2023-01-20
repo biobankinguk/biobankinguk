@@ -15,11 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
-[AllowAnonymous]
 public class RequestsController : Controller
 {
   private INetworkService _networkService;
