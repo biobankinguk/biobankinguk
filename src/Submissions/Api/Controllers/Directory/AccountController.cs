@@ -1,5 +1,7 @@
 using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -9,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
@@ -28,14 +31,17 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
+        private readonly ActionContext _actionContext;
 
-        public AccountController(
+
+       public AccountController(
             INetworkService networkService,
             IOrganisationDirectoryService organisationService,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
-            ITokenLoggingService tokenLog
+            ITokenLoggingService tokenLog,
+            IActionContextAccessor actionContextAccessor
             )
         {
             _networkService = networkService;
@@ -45,7 +51,9 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             _userManager = userManager;
             _emailService = emailService;
             _tokenLog = tokenLog;
-        }
+            _actionContext = actionContextAccessor.ActionContext
+              ?? throw new InvalidOperationException("Failed to get the ActionContext");
+    }
 
         #region Login/Logout
 
@@ -252,16 +260,23 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var vm = new UserTokenModel(user.Id, resetToken);
 
             await _tokenLog.PasswordTokenIssued(resetToken, user.Id);
+        
+          /*  var link = Url.Action("ResetPassword", "Account",
+              new { userId = user.Id, token = resetToken },
+              Request.GetEncodedUrl());*/
+
+            var resetLink = ("/account/password" +
+              $"?vm={vm.ObjectToBase64UrlJson()}").ToLocalUrlString(_actionContext.HttpContext.Request);
+
 
             await _emailService.SendPasswordReset(
                 new EmailAddress(model.Email),
                 user.UserName,
-                Url.Action("ResetPassword", "Account",
-                    new { userId = user.Id, token = resetToken },
-                    Request.GetEncodedUrl())
-                );
+                resetLink);
+
             return View("ForgotPasswordConfirmation");
 
         }
