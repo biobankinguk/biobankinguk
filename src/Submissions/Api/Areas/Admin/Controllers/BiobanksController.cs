@@ -3,7 +3,6 @@ using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -20,19 +19,19 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 [Area("Admin")]
 public class BiobanksController : Controller
 {
-  private readonly BiobankService _biobankService;
-  private readonly OrganisationDirectoryService _organisationService;
+  private readonly IBiobankService _biobankService;
   private readonly IEmailService _emailService;
-  private readonly UserManager<ApplicationUser> _userManager;
+  private readonly IOrganisationDirectoryService _organisationService;
   private readonly ITokenLoggingService _tokenLog;
+  private readonly UserManager<ApplicationUser> _userManager;
   private readonly Mapper _mapper;
 
   public BiobanksController(
-    BiobankService biobankService,
-    OrganisationDirectoryService organisationDirectoryService, 
+    IBiobankService biobankService,
     IEmailService emailService, 
-    UserManager<ApplicationUser> userManager, 
+    IOrganisationDirectoryService organisationDirectoryService, 
     ITokenLoggingService tokenLog, 
+    UserManager<ApplicationUser> userManager, 
     Mapper mapper
     )
   {
@@ -249,7 +248,7 @@ public class BiobanksController : Controller
       {
           // remove the biobank itself
           var biobank = await _organisationService.Get(model.BiobankId);
-          var usersInBiobank = await _biobankReadService.ListSoleBiobankAdminIdsAsync(model.BiobankId);
+          var usersInBiobank = await _biobankService.ListSoleBiobankAdminIdsAsync(model.BiobankId);
           await _organisationService.Delete(model.BiobankId);
 
           // remove admin role from users who had admin role only for this biobank
@@ -307,7 +306,7 @@ public class BiobanksController : Controller
   public async Task<ActionResult> GenerateResetLinkAjax(string biobankUserId, string biobankUsername)
   {
       // Get the reset token
-      var resetToken = await _biobankReadService.GetUnusedTokenByUser(biobankUserId);
+      var resetToken = await _biobankService.GetUnusedTokenByUser(biobankUserId);
       await _tokenLog.PasswordTokenIssued(resetToken, biobankUserId);
 
       // Generate the reset URL

@@ -9,6 +9,8 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
     {
         Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
         Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
+        Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
+        Task<string> GetUnusedTokenByUser(string biobankUserId);
 
   }
 }

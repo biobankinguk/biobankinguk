@@ -273,50 +273,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
             false,
              x => x.ServiceOfferingId == id)).Count();
 
-        public async Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int biobankId)
-        {
-            // Returns users who have admin role only for this biobank
-            // TODO remove the generic repo when upgrading to netcore, as it doesn't support groupby fully
-            var admins = await _organisationUserRepository.ListAsync(false);
-            var adminIds = admins.GroupBy(a => a.OrganisationUserId)
-                .Where(g => g.Count() == 1)
-                .Select(a => a.FirstOrDefault(ai => ai.OrganisationId == biobankId))
-                .Select(ou => ou?.OrganisationUserId);
-
-            return await _userManager.Users.Where(x => adminIds.Contains(x.Id)).ToListAsync();
-        }
+        
 
         public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
 
-        public async Task<string> GetUnusedTokenByUser(string biobankUserId)
-        {
-            // Check most recent token record
-            var tokenIssue = (await _tokenIssueRecordRepository.ListAsync(
-                                        false,
-                                        x => x.UserId.Contains(biobankUserId),
-                                        x => x.OrderBy(c => c.IssueDate))).FirstOrDefault();
-
-            // Check validation records
-            var tokenValidation = await _tokenValidationRecordRepository.ListAsync(
-                                            false,
-                                            x => x.UserId.Contains(biobankUserId));
-
-            List<string> token = tokenValidation.Select(t => t.Token).ToList();
-            DateTime now = DateTime.Now;
-
-            var user = await _userManager.FindByIdAsync(biobankUserId) ??
-                throw new InvalidOperationException(
-                $"Account could not be confirmed. User not found! User ID: {biobankUserId}");
-
-
-      if (tokenIssue.Equals(null) || token.Contains(tokenIssue.Token) || tokenIssue.IssueDate < now.AddHours(-20))
-            {
-                return await _userManager.GeneratePasswordResetTokenAsync(user);
-            }
-            else
-            {
-                return tokenIssue.Token;
-            }
-        }
+        
     }
 }
