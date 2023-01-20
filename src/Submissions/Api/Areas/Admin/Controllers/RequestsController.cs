@@ -1,6 +1,5 @@
 using AutoMapper;
 using Biobanks.Data.Entities;
-using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
