@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Networks;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class NetworkController : Controller
+public class NetworksController : Controller
 {
   private readonly INetworkService _networkService;
 
-  public NetworkController(INetworkService networkService)
+  public NetworksController(INetworkService networkService)
   {
     _networkService = networkService;
   }
