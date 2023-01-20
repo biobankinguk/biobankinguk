@@ -1,17 +1,10 @@
-using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Network;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
@@ -19,21 +12,43 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 public class NetworkController : Controller
 {
   private readonly INetworkService _networkService;
-  private readonly UserManager<ApplicationUser> _userManager;
-  private readonly ITokenLoggingService _tokenLog;
-  private readonly IEmailService _emailService;
 
-  public NetworkController(
-    INetworkService networkService,
-    UserManager<ApplicationUser> userManager,
-     ITokenLoggingService tokenLog,
-     IEmailService emailService)
+  public NetworkController(INetworkService networkService)
   {
     _networkService = networkService;
-    _userManager = userManager;
-    _tokenLog = tokenLog;
-    _emailService = emailService;
   }
+  
+  public async Task<ActionResult> Networks()
+  {
+    var allNetworks =
+      (await _networkService.List()).ToList();
 
+    var networks = allNetworks.Select(x => new NetworkModel
+    {
+      NetworkId = x.NetworkId,
+      Name = x.Name
+    }).ToList();
+
+    foreach (var network in networks)
+    {
+      //get the admins
+      network.Admins =
+        (await _networkService.ListAdmins(network.NetworkId)).Select(x => new RegisterEntityAdminModel
+        {
+          UserId = x.Id,
+          UserFullName = x.Name,
+          UserEmail = x.Email,
+          EmailConfirmed = x.EmailConfirmed
+        }).ToList();
+    }
+
+    var model = new NetworksModel
+    {
+      Networks = networks,
+      RequestUrl = HttpContext.Request.GetEncodedUrl()
+    };
+
+    return View(model);
+  }
 
 }
