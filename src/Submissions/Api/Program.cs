@@ -59,6 +59,7 @@ using Biobanks.Submissions.Api.Services.EmailServices;
 using cloudscribe.Web.SiteMap;
 using Microsoft.AspNetCore.Mvc;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +85,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(o =>
     o.UseNpgsql(connectionString,
       o => o.EnableRetryOnFailure());
 });
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 //identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

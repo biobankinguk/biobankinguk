@@ -255,14 +255,13 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             await _tokenLog.PasswordTokenIssued(resetToken, user.Id);
 
-
-      await _emailService.SendPasswordReset(
-          new EmailAddress(model.Email),
-          user.UserName,
-          Url.Action("ResetPassword", "Account",
-              new { userId = user.Id, token = resetToken },
-              Request.GetEncodedUrl())
-          );
+            await _emailService.SendPasswordReset(
+                new EmailAddress(model.Email),
+                user.UserName,
+                Url.Action("ResetPassword", "Account",
+                    new { userId = user.Id, token = resetToken },
+                    Request.GetEncodedUrl())
+                );
             return View("ForgotPasswordConfirmation");
 
         }
