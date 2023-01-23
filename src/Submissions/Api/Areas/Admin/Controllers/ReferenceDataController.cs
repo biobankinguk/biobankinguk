@@ -11,8 +11,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Admin.Models.ReferenceData;
 using Biobanks.Submissions.Api.Services.Directory;
-// using Biobanks.Submissions.Api.Models.ADAC;
-// using Biobanks.Submissions.Api.Models.Submissions;
+using Biobanks.Submissions.Api.Models.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Utilities;
 
@@ -29,6 +28,7 @@ public class ReferenceDataController : Controller
   private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
   private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
   private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
   private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
   private readonly IReferenceDataService<Country> _countryService;
@@ -49,23 +49,30 @@ public class ReferenceDataController : Controller
 
   public ReferenceDataController(
     IConfigService configService,
-    IReferenceDataService<AccessCondition> accessConditionService, IReferenceDataService<AgeRange> ageRangeService,
+    IReferenceDataService<AccessCondition> accessConditionService, 
+    IReferenceDataService<AgeRange> ageRangeService,
     IReferenceDataService<AnnualStatistic> annualStatisticsService,
     IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
     IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+    IReferenceDataService<AssociatedDataType> associatedDataTypeService,
     IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
     IReferenceDataService<CollectionPercentage> collectionPercentageService,
-    IReferenceDataService<CollectionType> collectionTypeService, IReferenceDataService<Country> countryService,
-    IReferenceDataService<County> countyService, IReferenceDataService<ConsentRestriction> consentRestrictionService,
-    IReferenceDataService<DonorCount> donorCountService, IReferenceDataService<MaterialType> materialTypeService,
+    IReferenceDataService<CollectionType> collectionTypeService, 
+    IReferenceDataService<Country> countryService,
+    IReferenceDataService<County> countyService, 
+    IReferenceDataService<ConsentRestriction> consentRestrictionService,
+    IReferenceDataService<DonorCount> donorCountService, 
+    IReferenceDataService<MaterialType> materialTypeService,
     IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
     IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
     IReferenceDataService<PreservationType> preservationTypeService,
     IReferenceDataService<RegistrationReason> registrationReasonService,
     IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
-    IReferenceDataService<ServiceOffering> serviceOfferingService, IReferenceDataService<Sex> sexService,
+    IReferenceDataService<ServiceOffering> serviceOfferingService, 
+    IReferenceDataService<Sex> sexService,
     IReferenceDataService<SopStatus> sopStatusService,
-    IReferenceDataService<StorageTemperature> storageTemperatureService, IOntologyTermService ontologyTermService)
+    IReferenceDataService<StorageTemperature> storageTemperatureService, 
+    IOntologyTermService ontologyTermService)
   {
     _configService = configService;
     _accessConditionService = accessConditionService;
@@ -73,6 +80,7 @@ public class ReferenceDataController : Controller
     _annualStatisticsService = annualStatisticsService;
     _annualStatisticGroupService = annualStatisticGroupService;
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
+    _associatedDataTypeService = associatedDataTypeService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
     _collectionPercentageService = collectionPercentageService;
     _collectionTypeService = collectionTypeService;
@@ -183,7 +191,7 @@ public class ReferenceDataController : Controller
   #region RefData: AssociatedDataProcurementTimeFrame
   public async Task<ActionResult> AssociatedDataProcurementTimeFrame()
   {
-      return View(new Models.ADAC.AssociatedDataProcurementTimeFrameModel
+      return View(new Models.ReferenceData.AssociatedDataProcurementTimeFrameModel
       {
           AssociatedDataProcurementTimeFrameModels = (await _associatedDataProcurementTimeframeService.List())
               .Select(x =>
@@ -405,7 +413,7 @@ public class ReferenceDataController : Controller
 
   public async Task<ActionResult> CollectionType()
   {
-      return View(new Models.ADAC.CollectionTypeModel
+      return View(new Models.ReferenceData.CollectionTypeModel
       {
           CollectionTypes = (await _collectionTypeService.List())
                .Select(x =>
@@ -478,7 +486,7 @@ public class ReferenceDataController : Controller
 
   #endregion
 
-  #region RefData: Assocaited Data Types
+  #region RefData: Associated Data Types
 
   public async Task<ActionResult> AssociatedDataTypes()
   {
@@ -554,7 +562,7 @@ public class ReferenceDataController : Controller
   #region RefData: Consent Restrictions
   public async Task<ActionResult> ConsentRestriction()
   {
-      return View(new Models.ADAC.ConsentRestrictionModel
+      return View(new Models.ReferenceData.ConsentRestrictionModel
       {
           ConsentRestrictions = (await _consentRestrictionService.List())
               .Select(x =>
