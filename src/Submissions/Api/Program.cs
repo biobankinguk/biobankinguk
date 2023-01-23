@@ -2,9 +2,13 @@ using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using Biobanks.Submissions.Api.Commands.Helpers;
 using Biobanks.Submissions.Api.Startup.Cli;
+using Biobanks.Submissions.Api.Startup.EfCoreMigrations;
 using Biobanks.Submissions.Api.Startup.Web;
 
-// Global App Startup stuff here 
+// Enable EF Core tooling to get a DbContext configuration
+EfCoreMigrations.BootstrapDbContext(args);
+
+// Global App Startup stuff here
 
 // Initialise the command line parser and run the appropriate entrypoint
 await new CommandLineBuilder(new CliEntrypoint())
