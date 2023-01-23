@@ -175,7 +175,7 @@ public class ReferenceDataController : Controller
   }
 
   // Converting from Iso Duration to 'plain text' - e.g P6M -> 6 Months
-  private string ConvertFromIsoDuration(string bound)
+  private static string ConvertFromIsoDuration(string bound)
   {
       var dict = new Dictionary<string, string>
       {
@@ -345,7 +345,7 @@ public class ReferenceDataController : Controller
           .Result
       );
 
-      return Json(new
+      return Ok(new
       {
           draw,
           data,
