@@ -1,14 +1,17 @@
+@using Biobanks.Submissions.Api.Config
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+
 @model Biobanks.Submissions.Api.Models.Shared.StorageTemperaturesModel
 
 @{
-	ViewBag.Title = App.Config[ConfigKey.StorageTemperatureName];
+	ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.StorageTemperatureName);
 }
 
 <partial name = "_ADACTabs" model = "@ViewBag.Title" />
 
 <h3>
 	<div id="titleName" class="pull-left">
-		@App.Config[ConfigKey.StorageTemperatureName]
+		@ViewBag.Title
 		<a href="#" class="btn btn-primary" id="storageTemperatureTitle">
 			Override Name
 		</a>
@@ -17,11 +20,11 @@
 	<a href="#"
 	   class="btn btn-success pull-right"
 	   data-target="#storage-temperatures-modal"
-	   data-bind="click: openModalForAdd">Add @App.Config[ConfigKey.StorageTemperatureName]</a>
+	   data-bind="click: openModalForAdd">Add @ViewBag.Title</a>
 </h3>
 <form id="change-storage-temperature-name-form" hidden>
-	<input type="text" id="StorageTemperatureRefValue" name="StorageTemperatureRefValue" value="@App.Config[ConfigKey.StorageTemperatureName]" hidden>
-	<input type="text" id="StorageTemperatureName" name="StorageTemperatureName" value="@App.Config[ConfigKey.StorageTemperatureName]">
+	<input type="text" id="StorageTemperatureRefValue" name="StorageTemperatureRefValue" value="@ViewBag.Title" hidden>
+	<input type="text" id="StorageTemperatureName" name="StorageTemperatureName" value="@ViewBag.Title">
 	<input type="submit" class="btn btn-primary" value="Submit">
 	<input type="button" class="btn btn-primary" id="storageTemperatureTitleCancel" value="Cancel">
 </form>
@@ -35,7 +38,7 @@
 			<thead>
 				<tr>
 					<th>Sort Order</th>
-					<th>@App.Config[ConfigKey.StorageTemperatureName]</th>
+					<th>@ViewBag.Title</th>
 					<th>Sample Set Count</th>
 					<th>@* Actions *@</th>
 				</tr>
@@ -55,7 +58,7 @@
 						<td class="text-right">
 							@if (type.IsInUse)
 							{
-								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw($"{App.Config[ConfigKey.StorageTemperatureName]} in use ")
+								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw($"{ViewBag.Title} in use ")
 							}
 							else
 							{
@@ -92,7 +95,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="storage-temperatures-modal-label"><span data-bind="text: modal.mode"></span> @App.Config[ConfigKey.StorageTemperatureName]</h4>
+				<h4 class="modal-title" id="storage-temperatures-modal-label"><span data-bind="text: modal.mode"></span> @ViewBag.Title</h4>
 			</div>
 
 			<!-- Error List -->

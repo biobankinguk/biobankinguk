@@ -1,14 +1,16 @@
+@using Biobanks.Submissions.Api.Config
+@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 @model Biobanks.Submissions.Api.Models.Shared.DonorCountsModel
 
 @{
-    ViewBag.Title = App.Config[ConfigKey.DonorCountName];
+  ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.DonorCountName);
 }
 
 <partial name = "_ADACTabs" model = "@ViewBag.Title" />
 
 <h3>
     <div id="titleName" class="pull-left">
-        @App.Config[ConfigKey.DonorCountName]
+        @ViewBag.Title
         <a href="#" class="btn btn-primary" id="donorCountTitle">
             Override Name
         </a>
@@ -17,11 +19,11 @@
     <a href="#"
        class="btn btn-success pull-right"
        data-target="#donor-counts-modal"
-       data-bind="click: openModalForAdd">Add @App.Config[ConfigKey.DonorCountName]</a>
+       data-bind="click: openModalForAdd">Add @ViewBag.Title</a>
 </h3>
 <form id="change-donor-count-name-form" hidden>
-    <input type="text" id="DonorCountRefValue" name="DonorCountRefValue" value="@App.Config[ConfigKey.DonorCountName]" hidden>
-    <input type="text" id="DonorCountName" name="DonorCountName" value="@App.Config[ConfigKey.DonorCountName]">
+    <input type="text" id="DonorCountRefValue" name="DonorCountRefValue" value="@ViewBag.Title" hidden>
+    <input type="text" id="DonorCountName" name="DonorCountName" value="@ViewBag.Title">
     <input type="submit" class="btn btn-primary" value="Submit">
     <input type="button" class="btn btn-primary" id="donorCountTitleCancel" value="Cancel">
 </form>
@@ -35,7 +37,7 @@
             <thead>
                 <tr>
                     <th>Sort Order</th>
-                    <th>@App.Config[ConfigKey.DonorCountName]</th>
+                    <th>@ViewBag.Title</th>
                     <th>Lower Bound</th>
                     <th>Upper Bound</th>
                     <th>Sample Set Count</th>
@@ -61,7 +63,7 @@
                         <td class="text-right">
                             @if (donor.SampleSetsCount > 0)
                             {
-                                <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw($"{App.Config[ConfigKey.DonorCountName]} in use ")
+                                <span class="fa fa-info-circle labelled-icon"></span>@Html.Raw($"{ViewBag.Title} in use ")
                             }
                             else
                             {
@@ -69,14 +71,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#donor-counts-modal"
-                                   data-donor-count="@Json.Encode(donor)"
+                                   data-donor-count="@Json.Serialize(donor)"
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Encode(donor)"
+                                   data-refdata-model="@Json.Serialize(donor)"
                                    data-resource-url="/api/DonorCount"
                                    data-success-redirect="@Url.Action("DonorCounts")"
                                    data-refdata-type="Donor Count"
@@ -98,7 +100,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="donor-counts-modal-label"><span data-bind="text: modal.mode"></span> @App.Config[ConfigKey.DonorCountName]</h4>
+                <h4 class="modal-title" id="donor-counts-modal-label"><span data-bind="text: modal.mode"></span> @ViewBag.Title</h4>
             </div>
 
             <!-- Error List -->
