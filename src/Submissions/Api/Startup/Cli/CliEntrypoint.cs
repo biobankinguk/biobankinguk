@@ -17,9 +17,9 @@ public class CliEntrypoint : RootCommand
       new Hash("hash")
     });
 
-    // AddCommand(new Command("api-clients", "Actions for managing BiobankingUK ApiClients")
-    // {
-    //   new AddApiClient("add")
-    // });
+    AddCommand(new Command("api-clients", "Actions for managing BiobankingUK ApiClients")
+    {
+      new AddApiClient("add")
+    });
   }
 }
