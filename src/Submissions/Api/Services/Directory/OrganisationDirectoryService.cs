@@ -2,7 +2,6 @@
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Shared;
-using Biobanks.IdentityModel.Helpers;
 using Biobanks.Search.Contracts;
 using Biobanks.Search.Dto.PartialDocuments;
 using Biobanks.Submissions.Api.Models.Directory;
@@ -13,11 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.IdentityModel.Extensions;
 using Biobanks.Search.Dto.Documents;
 using Biobanks.Submissions.Api.Services.Directory.Extensions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Utilities.IdentityModel;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {

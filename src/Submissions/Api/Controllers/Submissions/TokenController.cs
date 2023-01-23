@@ -1,5 +1,4 @@
-﻿using Biobanks.IdentityModel.Helpers;
-using Biobanks.Submissions.Api.Auth;
+﻿using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Biobanks.Submissions.Api.Utilities.IdentityModel;
 
 namespace Biobanks.Submissions.Api.Controllers.Submissions
 {
