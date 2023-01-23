@@ -28,15 +28,15 @@ namespace Biobanks.Submissions.Api.Utilities.IdentityModel
     /// </summary>
     /// <param name="length">The length</param>
     /// <param name="format">The output format</param>
-    public static string GenerateId(int length = 32, ByteStringFormat format = ByteStringFormat.Base64Url)
+    public static string GenerateId(int length = 32, OutputFormat format = OutputFormat.Base64Url)
     {
       var id = GenerateRandomBytes(length);
 
       return format switch
       {
-        ByteStringFormat.Base64Url => Base64UrlEncoder.Encode(id),
-        ByteStringFormat.Base64 => Convert.ToBase64String(id),
-        ByteStringFormat.Hex => BitConverter.ToString(id).Replace("-", ""),
+        OutputFormat.Base64Url => Base64UrlEncoder.Encode(id),
+        OutputFormat.Base64 => Convert.ToBase64String(id),
+        OutputFormat.Hex => BitConverter.ToString(id).Replace("-", ""),
         _ => throw new ArgumentException("Invalid OutputFormat", nameof(format))
       };
     }

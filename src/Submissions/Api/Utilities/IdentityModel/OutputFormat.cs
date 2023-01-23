@@ -3,7 +3,7 @@
   /// <summary>
   /// Encoded formats for representing a byte array as a string
   /// </summary>
-  public enum ByteStringFormat
+  public enum OutputFormat
   {
     /// <summary>
     /// URL-safe Base64
