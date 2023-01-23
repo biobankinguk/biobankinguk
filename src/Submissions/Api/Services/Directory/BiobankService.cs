@@ -25,13 +25,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             IGenericEFRepository<Organisation> organisationRepository,
             IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
             IGenericEFRepository<OrganisationUser> organisationUserRepository,
-            UserManager<ApplicationUser> userManager, IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository)
+            UserManager<ApplicationUser> userManager, IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository, IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository)
         {
             _organisationRepository = organisationRepository;
             _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
             _organisationUserRepository = organisationUserRepository;
             _userManager = userManager;
             _tokenIssueRecordRepository = tokenIssueRecordRepository;
+            _tokenValidationRecordRepository = tokenValidationRecordRepository;
         }
 
         public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
