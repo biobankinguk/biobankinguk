@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,13 +11,16 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Models.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[AllowAnonymous]
 public class ReferenceDataController : Controller
 {
 
+  private readonly IBiobankReadService _biobankReadService;
   private readonly IConfigService _configService;
   private readonly IReferenceDataService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataService<AgeRange> _ageRangeService;
@@ -49,6 +49,7 @@ public class ReferenceDataController : Controller
   private readonly IOntologyTermService _ontologyTermService;
 
   public ReferenceDataController(
+    IBiobankReadService biobankReadService,
     IConfigService configService,
     IReferenceDataService<AccessCondition> accessConditionService, 
     IReferenceDataService<AgeRange> ageRangeService,
@@ -77,6 +78,7 @@ public class ReferenceDataController : Controller
     IOntologyTermService ontologyTermService
     )
   {
+    _biobankReadService = biobankReadService;
     _configService = configService;
     _accessConditionService = accessConditionService;
     _ageRangeService = ageRangeService;
