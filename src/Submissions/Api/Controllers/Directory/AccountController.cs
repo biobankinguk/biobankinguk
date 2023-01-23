@@ -4,6 +4,7 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Models.Emails;
+using Biobanks.Submissions.Api.Models.User;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -17,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -74,11 +76,24 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             if (ModelState.IsValid)
             {
                 var result = await _signinManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+                var user = await _userManager.FindByNameAsync(model.Email);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("LoginRedirect", new { returnUrl });
+                  if (user is null)
+                    throw new InvalidOperationException(
+                    $"Successfully signed in user could not be retrieved! User Email: {model.Email}");
+                    
+                   var profile = await _userManager.BuildProfile(user);
+
+                     HttpContext.Response.Cookies.Append(
+                      AuthCookieConfiguration.ProfileCookieName,
+                      JsonSerializer.Serialize((BaseUserProfileModel)profile),
+                      AuthCookieConfiguration.ProfileCookieOptions);
+
+                return RedirectToAction("Index", "Home");
                 }
+
                 else if (result.IsLockedOut)
                 {
                     this.SetTemporaryFeedbackMessage("This account has been locked out. Please wait and try again later.", FeedbackMessageType.Danger);
@@ -103,6 +118,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                    
               
         }
+
 
         [AllowAnonymous] //This may seem counter-intuitive but it fixes issues with session timeouts
         public async Task<ActionResult> Logout(string returnUrl = null, bool isTimeout = false)
