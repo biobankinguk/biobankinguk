@@ -30,6 +30,7 @@ public class ReferenceDataController : Controller
   private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
   private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
   private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+  private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
   private readonly IReferenceDataService<Country> _countryService;
   private readonly IReferenceDataService<County> _countyService;
@@ -57,6 +58,7 @@ public class ReferenceDataController : Controller
     IReferenceDataService<AssociatedDataType> associatedDataTypeService,
     IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
     IReferenceDataService<CollectionPercentage> collectionPercentageService,
+    IReferenceDataService<CollectionStatus> collectionStatusService,
     IReferenceDataService<CollectionType> collectionTypeService, 
     IReferenceDataService<Country> countryService,
     IReferenceDataService<County> countyService, 
@@ -72,7 +74,8 @@ public class ReferenceDataController : Controller
     IReferenceDataService<Sex> sexService,
     IReferenceDataService<SopStatus> sopStatusService,
     IReferenceDataService<StorageTemperature> storageTemperatureService, 
-    IOntologyTermService ontologyTermService)
+    IOntologyTermService ontologyTermService
+    )
   {
     _configService = configService;
     _accessConditionService = accessConditionService;
@@ -83,6 +86,7 @@ public class ReferenceDataController : Controller
     _associatedDataTypeService = associatedDataTypeService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
     _collectionPercentageService = collectionPercentageService;
+    _collectionStatusService = collectionStatusService;
     _collectionTypeService = collectionTypeService;
     _countryService = countryService;
     _countyService = countyService;
@@ -584,7 +588,7 @@ public class ReferenceDataController : Controller
   #region RefData: Collection Status
   public async Task<ActionResult> CollectionStatus()
   {
-      return View(new Models.ADAC.CollectionStatusModel
+      return View(new Models.ReferenceData.CollectionStatusModel
       {
           CollectionStatuses = (await _collectionStatusService.List())
               .Select(x =>
@@ -670,7 +674,7 @@ public class ReferenceDataController : Controller
   #region RefData: Country
   public async Task<ActionResult> Country()
   {
-      return View(new Models.ADAC.CountryModel
+      return View(new Models.ReferenceData.CountryModel
       {
           Countries = (await _countryService.List())
                .Select(x =>
@@ -750,7 +754,7 @@ public class ReferenceDataController : Controller
   #region RefData: Registration Reason
   public async Task<ActionResult> RegistrationReason()
   {
-      return View(new Models.ADAC.RegistrationReasonModel
+      return View(new Models.ReferenceData.RegistrationReasonModel
       {
           RegistrationReasons = (await _registrationReasonService.List())
               .Select(x =>
@@ -795,7 +799,7 @@ public class ReferenceDataController : Controller
 
   public async Task<ActionResult> ServiceOffering()
   {
-      return View(new Models.ADAC.ServiceOfferingModel
+      return View(new Models.ReferenceData.ServiceOfferingModel
       {
           ServiceOfferings = (await _serviceOfferingService.List())
               .Select(x =>
