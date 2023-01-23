@@ -36,7 +36,7 @@ public class ReferenceDataController : Controller
   private readonly IReferenceDataService<County> _countyService;
   private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
   private readonly IReferenceDataService<DonorCount> _donorCountService;
-  private readonly IReferenceDataService<MaterialType> _materialTypeService;
+  private readonly IMaterialTypeService _materialTypeService;
   private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
   private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IReferenceDataService<PreservationType> _preservationTypeService;
@@ -64,7 +64,7 @@ public class ReferenceDataController : Controller
     IReferenceDataService<County> countyService, 
     IReferenceDataService<ConsentRestriction> consentRestrictionService,
     IReferenceDataService<DonorCount> donorCountService, 
-    IReferenceDataService<MaterialType> materialTypeService,
+    IMaterialTypeService materialTypeService,
     IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
     IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
     IReferenceDataService<PreservationType> preservationTypeService,
@@ -821,11 +821,7 @@ public class ReferenceDataController : Controller
   #region RefData: Extraction Procedure
   public async Task<ActionResult> ExtractionProcedure()
   {
-      var ExtractionProcedures = (await _ontologyTermService.List(tags: new List<string>
-          {
-              SnomedTags.ExtractionProcedure
-          }));
-      return View(new ExtractionProceduresModel
+    return View(new ExtractionProceduresModel
       {
           ExtractionProcedures = (await _ontologyTermService.List(tags: new List<string>
           {
@@ -837,7 +833,7 @@ public class ReferenceDataController : Controller
           {
               OntologyTermId = x.Id,
               Description = x.Value,
-              MaterialDetailsCount = await _biobankReadService.GetExtractionProcedureMaterialDetailsCount(x.Id),
+              MaterialDetailsCount = await _materialTypeService.GetExtractionProcedureMaterialDetailsCount(x.Id),
               OtherTerms = x.OtherTerms,
               MaterialTypeIds = x.MaterialTypes.Select(x => x.Id).ToList(),
               DisplayOnDirectory = x.DisplayOnDirectory
