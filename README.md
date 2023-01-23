@@ -22,9 +22,9 @@ Here's how to get that going.
 1. Install local repo tooling for .NET
    - `dotnet tool restore` anywhere inside the repo
 1. Run database migrations
-   - Change directory next to the `Data.csproj` (`/src/Data/Data.csproj`)
-   - `dotnet dotnet-ef database update -- <connection string>`
-   - For development, steal the connection string from one of the App's development configs.
+   - Change directory next to the `src` folder.
+   - You need to specify the DbContext, and target the `Data` project, using the `Submissions` project as the startup project.
+   - `dotnet ef database update -c Biobanks.Data.ApplicationDbContext -p Data/Data.csproj -s Submissions/Api/Api.csproj`
 1. Seed Reference Data
    - Copy seed data files from `/sample-seed-data` to `/src/DataSeed/data`
    - optionally modify the seed data
