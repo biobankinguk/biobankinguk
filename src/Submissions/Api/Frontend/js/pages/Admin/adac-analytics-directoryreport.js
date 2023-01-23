@@ -145,7 +145,8 @@ $(function () {
 	barPlot(profileRouteDiv, profileRouteData, 10);
 });
 
-function perQuarterPlot(container, data, ylabel='') {
+function perQuarterPlot(container, data, ylabel) {
+  ylabel = ylabel || '';
 	var config = { responsive: true };
 	var layout = {
 		margin: { l: 45, r: 10, b: 80, t: 15 },
@@ -161,7 +162,8 @@ function perQuarterPlot(container, data, ylabel='') {
 	Plotly.newPlot(container, data, layout, config);
 }
 
-function barPlot(container, data, cutoff = -1) {
+function barPlot(container, data, cutoff) {
+  cutoff = cutoff || -1;
 	if (cutoff > 0) {
 		data[0].x = data[0].x.slice(0, cutoff);
 		data[0].y = data[0].y.slice(0, cutoff); 
@@ -178,7 +180,8 @@ function barPlot(container, data, cutoff = -1) {
 	Plotly.newPlot(container, data, layout, config);
 }
 
-function piePlot(container, data, cutoff = -1) {
+function piePlot(container, data, cutoff) {
+  cutoff = cutoff || -1;
 	if (cutoff > 0) {
 		data[0].values = data[0].values.slice(0, cutoff);
 		data[0].labels = data[0].labels.slice(0, cutoff);

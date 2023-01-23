@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Biobanks.Services;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
@@ -296,60 +297,56 @@ public class ProfileController : Controller
   }
 
   #region Temp Logo Management
-
+  
   [HttpPost]
-  public JsonResult AddTempLogo()
+  public async Task<ActionResult> AddTempLogo()
   {
-    if (!HttpContext.Items.Keys.Any())
-      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+    if (!HttpContext.Request.Form.Files.Any())
+      return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-    IFormFile fileBase = (IFormFile)HttpContext.Items["TempLogo"];
+    var formFile = HttpContext.Request.Form.Files["TempLogo"];
 
-    if (fileBase == null)
-      return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+    if (formFile == null)
+      return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
 
-    if (fileBase.Length > 1000000)
-      return Json(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
-
-
+    if (formFile.Length > 1000000)
+      return BadRequest(new KeyValuePair<bool, string>(false, "The file you supplied is too large. Logo image files must be 1Mb or less."));
+    
     try
     {
-      if (fileBase.ValidateAsLogo())
+      if (formFile.ValidateAsLogo())
       {
-        var logoStream = fileBase.ToProcessableStream();
-      /*   TODO: Replace Session
-                Session[TempNetworkLogoSessionId] =
-                    ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300)
-                    .ToArray();
-                Session[TempNetworkLogoContentTypeSessionId] = fileBaseWrapper.ContentType;*/
+        var logoStream = formFile.ToProcessableStream();
+        var resizedImage = await ImageService.ResizeImageStream(logoStream, maxX: 300, maxY: 300);
+        // Set session variable so the TempLogo action can retrieve it
+        HttpContext.Session.Set("TempLogo", resizedImage.ToArray());
 
         return
-            Json(new KeyValuePair<bool, string>(true,
-                Url.Action("TempLogo", "Network")));
+            Ok(new KeyValuePair<bool, string>(true,
+                Url.Action("TempLogo", "Profile")));
       }
     }
     catch (BadImageFormatException e)
     {
-      return Json(new KeyValuePair<bool, string>(false, e.Message));
+      return BadRequest(new KeyValuePair<bool, string>(false, e.Message));
     }
 
-    return Json(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
+    return BadRequest(new KeyValuePair<bool, string>(false, "No files found. Please select a new file and try again."));
   }
-
-
-  //TODO: Replace Session
-/*  [HttpGet]
-  public ActionResult TempLogo(string id)
+  
+  [HttpGet]
+  public ActionResult TempLogo()
   {
-    return File((byte[])Session[TempNetworkLogoSessionId], Session[TempNetworkLogoContentTypeSessionId].ToString());
+    var bytes = HttpContext.Session.Get("TempLogo");
+    return File(bytes, "image/png");
   }
 
   [HttpPost]
+  [Authorize(Roles = "BiobankAdmin")]
   public void RemoveTempLogo()
   {
-    Session[TempNetworkLogoSessionId] = null;
-    Session[TempNetworkLogoContentTypeSessionId] = null;
-  }*/
+    HttpContext.Session.Remove("TempLogo");
+  }
 
   #endregion
 

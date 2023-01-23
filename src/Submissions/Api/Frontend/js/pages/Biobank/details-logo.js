@@ -1,5 +1,5 @@
 ﻿$(function () {
-    var noLogo = '/Content/images/NoLogo.png';
+    var noLogo = '/images/NoLogo.png';
 
     $('#Logo').hide();
 
@@ -16,19 +16,19 @@
                 data.append("TempLogo", files[0]);
 
                 $.ajax({
-                    url: "/Biobank/AddTempLogo",
+                    url: "/Biobank/Profile/AddTempLogo",
                     type: "POST",
                     processData: false,
                     contentType: false,
                     data: data,
                     success: function (response) {
-                        if (response.Key === true) {
+                        if (response.key === true) {
                             var d = new Date();
-                            $('#TempBiobankLogo').attr('src', response.Value + "/" + d.getTime());
+                            $('#TempNetworkLogo').attr('src', response.value + "/" + d.getTime());
                             $('#BiobankLogoUploadError').hide();
                             $('#RemoveLogo').val(false);
                         } else {
-                            $('#BiobankLogoUploadError').html(response.Value);
+                            $('#BiobankLogoUploadError').html(response.value);
                             $('#BiobankLogoUploadError').show();
                         }
                     }
@@ -41,7 +41,7 @@
 
     $('#RemoveBiobankLogoTrigger').click(function () {
         $.ajax({
-            url: "/Biobank/RemoveTempLogo",
+            url: "/Biobank/Profile/RemoveTempLogo",
             type: "POST",
             success: function () {
                 $('#Logo').val("");
