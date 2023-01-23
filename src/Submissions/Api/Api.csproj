@@ -70,14 +70,6 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Auth\Entities\" />
-    <Folder Include="Content\images\" />
-    <Folder Include="Frontend\js\areas" />
-    <Folder Include="Pages\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
   <Target Name="CopyStaticAssets" BeforeTargets="Build">
     <!--
     Copy static assets from source locations (e.g. node_modules) to wwwroot.
