@@ -10,7 +10,7 @@
 
 <h2>Edit network details</h2>
 
-@using (Html.BeginForm("Edit", "Network",
+@using (Html.BeginForm("Edit", "Profile",
     FormMethod.Post,
     new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
@@ -67,7 +67,7 @@
             <div class="padded-logo">
                 @if (string.IsNullOrEmpty(Model.LogoName))
                 {
-                    <img class="logo-img bordered-logo" id="TempNetworkLogo" src="@Url.Content("~/Content/images/NoLogo.png")" alt="Network Logo" />
+                    <img class="logo-img bordered-logo" id="TempNetworkLogo" src="@Url.Content("~/images/NoLogo.png")" alt="Network Logo" />
                 }
                 else
                 {

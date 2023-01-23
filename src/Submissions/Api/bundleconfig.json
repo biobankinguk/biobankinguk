@@ -668,7 +668,7 @@
     "outputFileName": "wwwroot/dist/js/Analytics/biobankreport.min.js",
     "inputFiles": [
       "Frontend/js/pages/Biobank/analytics-biobankreport.js",
-      "Frontend/node_modules/plotly.js/dist/plotly.min.js"
+      "Frontend/node_modules/plotly.js/dist/plotly.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
@@ -677,7 +677,7 @@
     "outputFileName": "wwwroot/dist/js/Analytics/directoryreport.min.js",
     "inputFiles": [
       "Frontend/js/pages/Admin/adac-analytics-directoryreport.js",
-      "Frontend/node_modules/plotly.js/dist/plotly.min.js"
+      "Frontend/node_modules/plotly.js/dist/plotly.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
