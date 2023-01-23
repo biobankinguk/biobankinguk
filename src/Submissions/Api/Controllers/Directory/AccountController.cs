@@ -260,17 +260,12 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var vm = new UserTokenModel(user.Id, resetToken);
 
             await _tokenLog.PasswordTokenIssued(resetToken, user.Id);
-        
-          /*  var link = Url.Action("ResetPassword", "Account",
-              new { userId = user.Id, token = resetToken },
-              Request.GetEncodedUrl());*/
 
-            var resetLink = ("/account/password" +
-              $"?vm={vm.ObjectToBase64UrlJson()}").ToLocalUrlString(_actionContext.HttpContext.Request);
-
+            var resetLink = Url.Action("ResetPassword", "Account",
+            new { userId = user.Id, token = resetToken },
+            Request.Scheme);
 
             await _emailService.SendPasswordReset(
                 new EmailAddress(model.Email),
