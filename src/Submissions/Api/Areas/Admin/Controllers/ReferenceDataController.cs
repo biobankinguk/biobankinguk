@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Admin.Models.ReferenceData;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Models.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
@@ -374,7 +375,7 @@ public class ReferenceDataController : Controller
               .Result
           )
           .ToList();
-      if (await _configService.GetFlagConfigValue("site.display.preservation.percent") == true)
+      if (await _configService.GetFlagConfigValue(ConfigKey.ShowPreservationPercentage) == true)
       {
           return View(new CollectionPercentagesModel()
           {
