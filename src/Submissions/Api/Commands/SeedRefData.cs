@@ -14,14 +14,14 @@ namespace Biobanks.Submissions.Api.Commands;
 internal class SeedRefData : Command
 {
   public SeedRefData(string name)
-    : base(name, "Seed Reference Data into empty tables from provided CSV files")
+    : base(name, "Seed Reference Data into empty tables from provided JSON files")
   {
     var optConnectionString = new Option<string>(new[] { "--connection-string", "-c" },
       "Database Connection String if not specified in Configuration");
     Add(optConnectionString);
 
     var optDataDirectory = new Option<string>(new[] { "--data-directory", "-d" },
-      "The directory from which to load source data CSV files");
+      "The directory from which to load source data JSON files");
     Add(optDataDirectory);
 
     this.SetHandler(
@@ -43,6 +43,7 @@ internal class SeedRefData : Command
               o => o.UseNpgsql(
                 connectionString,
                 pgo => pgo.EnableRetryOnFailure()))
+            .AddHttpClient()
             .AddTransient<Runners.SeedRefData>())
           .GetRequiredService<Runners.SeedRefData>()
           .Run(dataDirectory);
