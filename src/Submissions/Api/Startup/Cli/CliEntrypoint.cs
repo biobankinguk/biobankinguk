@@ -21,5 +21,10 @@ public class CliEntrypoint : RootCommand
     {
       new AddApiClient("add")
     });
+    
+    AddCommand(new Command("ref-data", "Actions for managing BiobankingUK Reference Data")
+    {
+      
+    });
   }
 }
