@@ -88,8 +88,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(o =>
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 //identity
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Configuration.AddJsonFile("Settings/LegacyMaterialTypes.json", optional: true);
 builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", optional: true);
@@ -102,6 +103,15 @@ var elasticConfig = builder.Configuration.GetSection("ElasticSearch").Get<Elasti
 var sitemapConfig = builder.Configuration.GetSection("NavigationOptions");
 
 var siteConfig = builder.Configuration.GetSection("SiteProperties").Get<SitePropertiesOptions>() ?? new();
+
+builder.Services.ConfigureApplicationCookie(opts =>
+{
+  opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
+  opts.LoginPath = "/Account/Login";
+  opts.AccessDeniedPath = "/Account/Forbidden";
+  opts.ReturnUrlParameter = "returnUrl";
+  opts.SlidingExpiration = true;
+});
 
 builder.Services.AddOptions()
     .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
@@ -135,14 +145,6 @@ builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddEmailSender(builder.Configuration);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(opts =>
-                {
-                  opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
-                  opts.LoginPath = "/Account/Login";
-                  opts.AccessDeniedPath = "/Account/AccessDenied";
-                  opts.ReturnUrlParameter = "returnUrl";
-                  opts.SlidingExpiration = true;
-                })
                 .AddJwtBearer(opts =>
                 {
                   opts.Audience = JwtBearerConstants.TokenAudience;
@@ -170,6 +172,7 @@ builder.Services.AddControllersWithViews(opts =>
         o.JsonSerializerOptions.Converters.Add(new JsonNumberAsStringConverter());
       });
 
+builder.Services.AddRazorPages();
 
 builder.Services.AddAuthorization(o =>
 {
@@ -178,6 +181,8 @@ builder.Services.AddAuthorization(o =>
         AuthPolicies.IsTokenAuthenticated);
     o.AddPolicy(nameof(AuthPolicies.IsBasicAuthenticated),
         AuthPolicies.IsBasicAuthenticated);
+    o.AddPolicy(nameof(AuthPolicies.CanAccessHangfireDashboard),
+        AuthPolicies.CanAccessHangfireDashboard);
     o.AddPolicy(nameof(AuthPolicies.CanAccessHangfireDashboard),
         AuthPolicies.CanAccessHangfireDashboard);
 });

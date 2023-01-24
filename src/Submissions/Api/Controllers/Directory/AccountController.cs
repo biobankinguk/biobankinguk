@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -83,13 +84,8 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                   if (user is null)
                     throw new InvalidOperationException(
                     $"Successfully signed in user could not be retrieved! User Email: {model.Email}");
-                    
-                   var profile = await _userManager.BuildProfile(user);
-
-                     HttpContext.Response.Cookies.Append(
-                      AuthCookieConfiguration.ProfileCookieName,
-                      JsonSerializer.Serialize((BaseUserProfileModel)profile),
-                      AuthCookieConfiguration.ProfileCookieOptions);
+  
+                //await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId()); 
 
                 return RedirectToAction("Index", "Home");
                 }
@@ -384,8 +380,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         {
             var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
 
-            this.SetTemporaryFeedbackMessage(
-                "Access to the requested page was denied. If you think this is an error " +
+            this.SetTemporaryFeedbackMessage("Access to the requested page was denied. If you think this is an error " +
                 $"contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> ",
                 FeedbackMessageType.Danger,
                 true);
@@ -394,7 +389,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         #endregion
-
 
         #region Account details
 

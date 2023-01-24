@@ -1,8 +1,10 @@
 @using Biobanks.Submissions.Api.Controllers
 @using Biobanks.Submissions.Api.Utilities;
+@using System.Text.Json
 @using static Biobanks.Submissions.Api.Utilities.TemporaryFeedbackMessageExtensions
 @{
-    var model = (FeedbackMessage)TempData[FeedbackMessageKey.FeedbackMessage];
+    var tempData = (string)TempData[FeedbackMessageKey.FeedbackMessage];
+    var model = tempData is null? null :  JsonSerializer.Deserialize<FeedbackMessage>(tempData);
 }
 
 @if (!string.IsNullOrEmpty(model?.Message))

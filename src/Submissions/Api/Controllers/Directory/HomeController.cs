@@ -4,8 +4,10 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
