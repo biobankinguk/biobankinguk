@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-
-    [AllowAnonymous]
+  
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]
@@ -59,7 +58,6 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         [SwaggerResponse(200, Type = typeof(AccessConditionModel))]
         [SwaggerResponse(400, "Invalid request body.")]
         public async Task<ActionResult> Post(AccessConditionModel model)
-        // public async Task<ActionResult> Post([FromForm] AccessConditionModel model)
         {
             //If this description is valid, it already exists
             if (await _accessConditionService.Exists(model.Description))
