@@ -25,6 +25,10 @@ internal class SeedRefData : Command
     Add(optDataDirectory);
 
     // TODO: UN countries option?
+    
+    // TODO: which tables option
+    
+    // TODO: replace existing data option?
 
     this.SetHandler(
       async (
