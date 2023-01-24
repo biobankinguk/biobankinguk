@@ -24,6 +24,8 @@ internal class SeedRefData : Command
       "The directory from which to load source data JSON files");
     Add(optDataDirectory);
 
+    // TODO: UN countries option?
+
     this.SetHandler(
       async (
         logger, config, console,
@@ -39,14 +41,11 @@ internal class SeedRefData : Command
             .AddSingleton(_ => logger)
             .AddSingleton(_ => config)
             .AddSingleton(_ => console)
-            .AddDbContext<ApplicationDbContext>(
-              o => o.UseNpgsql(
-                connectionString,
-                pgo => pgo.EnableRetryOnFailure()))
+            .AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString))
             .AddHttpClient()
             .AddTransient<Runners.SeedRefData>())
           .GetRequiredService<Runners.SeedRefData>()
-          .Run(dataDirectory);
+          .Run(dataDirectory ?? "./data");
       },
       Bind.FromServiceProvider<ILoggerFactory>(),
       Bind.FromServiceProvider<IConfiguration>(),
