@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[AllowAnonymous]
 public class ReferenceDataController : Controller
 {
 
