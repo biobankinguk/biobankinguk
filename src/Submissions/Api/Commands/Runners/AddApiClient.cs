@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
 using Biobanks.Entities.Shared;
+using Biobanks.Submissions.Api.Commands.Helpers;
 using Biobanks.Submissions.Api.Utilities.IdentityModel;
 using ConsoleTableExt;
 using Microsoft.EntityFrameworkCore;
@@ -65,22 +66,9 @@ namespace Biobanks.Submissions.Api.Commands.Runners
       // Confirm before adding SuperAdmin
       if (!biobankIds.Any())
       {
-        bool? proceed = null;
-        while (proceed is null)
-        {
-          _console.Out.WriteLine(
-            "No Biobank Ids were specified. This will create SuperAdmin credentials. Is this correct? (y/N)");
-          var keyInfo = System.Console.ReadKey();
-          proceed = keyInfo.Key switch
-          {
-            System.ConsoleKey.Y => true,
-            System.ConsoleKey.N => false,
-            System.ConsoleKey.Enter => false,
-            _ => null
-          };
-        }
-
-        if (!proceed.GetValueOrDefault()) return;
+        var proceed = new Prompt(_console)
+          .YesNo("No Biobank Ids were specified. This will create SuperAdmin credentials. Is this correct?");
+        if (!proceed) return;
       }
 
       #endregion
