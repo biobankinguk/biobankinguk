@@ -24,7 +24,7 @@ Here's how to get that going.
 1. Run database migrations
    - Change directory next to the `src` folder.
    - You need to specify the DbContext, and target the `Data` project, using the `Submissions` project as the startup project.
-   - `dotnet ef database update -c Biobanks.Data.ApplicationDbContext -p Data/Data.csproj -s Submissions/Api/Api.csproj`
+   - `dotnet ef database update -c ApplicationDbContext -p Data/Data.csproj -s Submissions/Api/Api.csproj`
 1. Seed Reference Data
    - Copy seed data files from `/sample-seed-data` to `/src/DataSeed/data`
    - optionally modify the seed data

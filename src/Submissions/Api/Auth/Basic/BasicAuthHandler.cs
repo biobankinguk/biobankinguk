@@ -1,6 +1,4 @@
 ﻿using Biobanks.Data;
-using Biobanks.IdentityModel.Extensions;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,6 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Utilities.IdentityModel;
 
 namespace Biobanks.Submissions.Api.Auth.Basic
 {

@@ -38,10 +38,5 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 
         Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(IEnumerable<int> sampleSetIds);
 
-        Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
-
-
-        Task<string> GetUnusedTokenByUser(string biobankUserId);
-
     }
 }
