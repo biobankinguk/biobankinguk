@@ -376,9 +376,9 @@ public class ProfileController : Controller
 
     //Get OrganisationNetwork with biobankId and networkId
 
-    var model = new Admin.Models.Network.NetworkBiobanksModel
+    var model = new NetworkBiobanksModel
     {
-      Biobanks = (ICollection<Admin.Models.Network.NetworkBiobankModel>)biobanks
+      Biobanks = biobanks
     };
 
     return View(model);

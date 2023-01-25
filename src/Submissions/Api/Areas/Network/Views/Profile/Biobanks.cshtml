@@ -1,13 +1,12 @@
-@using Biobanks.Submissions.Api.Areas.Admin.Models.Network
 @using Biobanks.Submissions.Api.Config
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@model NetworkBiobanksModel
+@model Biobanks.Submissions.Api.Areas.Network.Models.NetworkBiobanksModel
 
 @{
     ViewBag.Title = "Network biobanks";
 }
 
-<partial name = "_NetworkTabs" model = "Biobanks">
+<partial name = "_NetworkTabs" model = "Biobanks"/>
 
 <h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", null, new { @class = "btn btn-success pull-right" })</h3>
 

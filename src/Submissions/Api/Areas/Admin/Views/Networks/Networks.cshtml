@@ -1,10 +1,11 @@
-@model Biobanks.Submissions.Api.Areas.Admin.Models.NetworksModel;
+@using Microsoft.AspNetCore.Http.Extensions
+@model Biobanks.Submissions.Api.Areas.Admin.Models.Networks.NetworksModel;
 
 @{
     ViewBag.Title = "ADAC Admin";
 }
 
-<partial name ="_ADACTabs" model = "Networks" />
+<partial name = "_ADACTabs" model = "Networks"/>
 
 <h3>Networks @Html.ActionLink("Invite a new network", "AdacNetwork", "Register", null, new { @class = "btn btn-success pull-right" })</h3>
 
@@ -43,7 +44,7 @@
                                                          {
                                                              userEmail = admin.UserEmail,
                                                              onBehalf = true,
-                                                             returnUrl = Model.RequestUrl
+                                                             returnUrl = @Context.Request.GetEncodedUrl()
                                                          })"
                                                class="resend-confirm pull-right"
                                                data-admin-name="@admin.UserFullName"
@@ -70,11 +71,7 @@
     </div>
 </div>
 
-
-@*
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/adac/networks")
+  <script src="~/dist/js/Admin/networks.min.js" asp-append-version="true"></script>
 }
-*@

@@ -238,6 +238,7 @@ public static class WebEntrypoint
       .AddTransient<IAnnotationService, AnnotationService>()
       .AddTransient<IBiobankService, BiobankService>()
       .AddTransient<IBiobankIndexService, BiobankIndexService>()
+      .AddTransient<IBiobankReadService, BiobankReadService>()
       .AddTransient<IBiobankWriteService, BiobankWriteService>()
       .AddTransient<ICapabilityService, CapabilityService>()
       .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
@@ -367,14 +368,7 @@ public static class WebEntrypoint
       .AddTransient<
         Biobanks.Submissions.Api.Services.Directory.Contracts.IReferenceDataService<
           Biobanks.Entities.Shared.ReferenceData.StorageTemperature>, StorageTemperatureService>();
-
-//Directory Services
-    if (bool.Parse(builder.Configuration["DirectoryEnabled:Enabled"]) == true)
-    {
-      builder.Services
-        .AddTransient<IBiobankReadService, BiobankReadService>();
-    }
-
+    
 // Conditional services
     if (workersConfig.HangfireRecurringJobs.Any() || workersConfig.QueueService == WorkersQueueService.Hangfire)
     {

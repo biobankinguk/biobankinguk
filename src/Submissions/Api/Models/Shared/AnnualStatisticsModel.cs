@@ -1,8 +1,7 @@
-﻿using Biobanks.Submissions.Api.Models.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Models.ADAC
+namespace Biobanks.Submissions.Api.Models.Shared
 {
     public class AnnualStatisticsModel
     {
@@ -21,8 +20,8 @@ namespace Biobanks.Submissions.Api.Models.ADAC
         [Required]
         public string Name { get; set; }
 
-        //public int SortOrder { get; set; }
+        public int SortOrder { get; set; }
 
-        //public int UsageCount { get; set; }
+        public int UsageCount { get; set; }
     }
 }
