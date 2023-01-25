@@ -47,9 +47,9 @@ function AdacAccessConditionViewModel() {
 
         _this.modal.accessCondition(
             new AccessCondition(
-                accessCondition.Id,
-                accessCondition.Description,
-                accessCondition.SortOrder
+                accessCondition.id,
+                accessCondition.description,
+                accessCondition.sortorder
             )
         );
 
@@ -60,13 +60,16 @@ function AdacAccessConditionViewModel() {
         e.preventDefault();
         var form = $(e.target); // get form as a jquery object
 
+        // Get Form Data
+        var data = serializeFormData(form)
+        
         // Get Action Type
         var action = _this.modal.mode();
         if (action == 'Add') {
-            addRefData(_this, form.data("resource-url"), form.serialize(),
+            addRefData(_this, form.data("resource-url"), data,
                 form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
         } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
+            editRefData(_this, form.data("resource-url") + '/' + data.id, form.serialize(),
                 form.data("success-redirect"), form.data("refdata-type"));
         }
     };
@@ -82,9 +85,9 @@ $(function () {
 
         var $link = $(this);
         var linkData = $link.data("refdata-model")
-        var url = $link.data("resource-url") + "/" + linkData.Id;
+        var url = $link.data("resource-url") + "/" + linkData.id;
 
-        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
+        bootbox.confirm("Are you sure you want to delete " + linkData.description + "?",
             function (confirmation) {
                 if (confirmation) {
                     deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
