@@ -1,53 +1,56 @@
 ﻿$(function () {
-    var noLogo = '/Content/images/NoLogo.png';
+  var noLogo = "/images/NoLogo.png";
 
-    $('#Logo').hide();
+  $("#Logo").hide();
 
-    $('#NetworkLogoFileDialogueTrigger').click(function () {
-        $('#Logo').click();
-    });
+  $("#NetworkLogoFileDialogueTrigger").click(function () {
+    $("#Logo").click();
+  });
 
-    $('#Logo').change(function () {
-        if ($('#Logo').val() != "") {
-            var data = new FormData();
-            var files = $("#Logo").get(0).files;
+  $("#Logo").change(function () {
+    if ($("#Logo").val() != "") {
+      var data = new FormData();
+      var files = $("#Logo").get(0).files;
 
-            if (files.length > 0) {
-                data.append("TempLogo", files[0]);
+      if (files.length > 0) {
+        data.append("TempLogo", files[0]);
 
-                $.ajax({
-                    url: "/Network/AddTempLogo",
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    data: data,
-                    success: function (response) {
-                        if (response.Key === true) {
-                            var d = new Date();
-                            $('#TempNetworkLogo').attr('src', response.Value + "/" + d.getTime());
-                            $('#NetworkLogoUploadError').hide();
-                            $('#RemoveLogo').val(false);
-                        } else {
-                            $('#NetworkLogoUploadError').html(response.Value);
-                            $('#NetworkLogoUploadError').show();
-                        }
-                    }
-                });
-            } else {
-                alert('Select a file!');
-            }
-        }
-    });
-
-    $('#RemoveNetworkLogoTrigger').click(function () {
         $.ajax({
-            url: "/Network/RemoveTempLogo",
-            type: "POST",
-            success: function () {
-                $('#Logo').val("");
-                $('#RemoveLogo').val(true);
-                $('#TempNetworkLogo').attr('src', noLogo);
+          url: "/Network/Profile/AddTempLogo",
+          type: "POST",
+          processData: false,
+          contentType: false,
+          data: data,
+          success: function (response) {
+            if (response.key === true) {
+              var d = new Date();
+              $("#TempNetworkLogo").attr(
+                "src",
+                response.value + "/" + d.getTime()
+              );
+              $("#NetworkLogoUploadError").hide();
+              $("#RemoveLogo").val(false);
+            } else {
+              $("#NetworkLogoUploadError").html(response.value);
+              $("#NetworkLogoUploadError").show();
             }
+          },
         });
+      } else {
+        alert("Select a file!");
+      }
+    }
+  });
+
+  $("#RemoveNetworkLogoTrigger").click(function () {
+    $.ajax({
+      url: "/Network/Profile/RemoveTempLogo",
+      type: "POST",
+      success: function () {
+        $("#Logo").val("");
+        $("#RemoveLogo").val(true);
+        $("#TempNetworkLogo").attr("src", noLogo);
+      },
     });
-})
+  });
+});

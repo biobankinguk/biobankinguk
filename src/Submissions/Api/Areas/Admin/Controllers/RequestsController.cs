@@ -1,6 +1,5 @@
 using AutoMapper;
 using Biobanks.Data.Entities;
-using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
@@ -15,8 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+
 public class RequestsController : Controller
 {
   private INetworkService _networkService;
@@ -41,7 +42,8 @@ public class RequestsController : Controller
     _emailService = emailService;
     _mapper = mapper;
   }
-
+  
+  #region Requests
   public async Task<ActionResult> Index()
   {
     var bbRequests =
@@ -83,7 +85,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -92,7 +94,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //try and get the user for the request
@@ -169,7 +171,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} accepted!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> BiobankActivity()
@@ -208,7 +210,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -217,7 +219,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //update the request
@@ -235,7 +237,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.OrganisationName} declined!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> AcceptNetworkRequest(int requestId)
@@ -247,7 +249,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -256,7 +258,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //try and get the user for the request
@@ -329,7 +331,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} accepted!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> DeclineNetworkRequest(int requestId)
@@ -341,7 +343,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           "That request doesn't exist",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //what if the request is already accepted/declined?
@@ -350,7 +352,7 @@ public class RequestsController : Controller
       this.SetTemporaryFeedbackMessage(
           $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} has already been approved or declined.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Requests");
+      return RedirectToAction("Index");
     }
 
     //update the request
@@ -368,7 +370,7 @@ public class RequestsController : Controller
         $"{request.UserName} ({request.UserEmail}) request for {request.NetworkName} declined!",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Requests");
+    return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> ManualActivation(string userEmail)
@@ -396,4 +398,78 @@ public class RequestsController : Controller
 
     return NotFound();
   }
+  
+  #endregion
+  
+  #region Historical
+  
+  public async Task<ActionResult> Historical()
+        {
+            //get both network and biobank historical requests
+            //and convert them to the viewmodel format
+            var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
+                .Select(x =>
+
+                    Task.Run(async () =>
+                    {
+                        string action;
+                        DateTime date;
+                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+
+                        return new HistoricalRequestModel
+                        {
+                            UserName = x.UserName,
+                            UserEmail = x.UserEmail,
+                            EntityName = x.OrganisationName,
+                            Action = action,
+                            Date = date,
+                            UserEmailConfirmed = user?.EmailConfirmed ?? false,
+                            ResultingOrgExternalId = x.OrganisationExternalId
+                        };
+                    }).Result
+
+                ).ToList();
+
+            var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
+                .Select(x =>
+
+                    Task.Run(async () =>
+                    {
+                        string action;
+                        DateTime date;
+                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+
+                        return new HistoricalRequestModel
+                        {
+                            UserName = x.UserName,
+                            UserEmail = x.UserEmail,
+                            EntityName = x.NetworkName,
+                            Action = action,
+                            Date = date,
+                            UserEmailConfirmed = user?.EmailConfirmed ?? false
+                        };
+                    }).Result
+
+                ).ToList();
+
+            var model = new HistoricalModel
+            {
+                HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
+            };
+
+            return View(model);
+        }
+
+        private static void GetHistoricalRequestActionDate(DateTime? declineDate, DateTime? acceptedDate, out string action, out DateTime date)
+        {
+            //check it is actually historical
+            if (declineDate == null && acceptedDate == null) throw new ApplicationException();
+
+            date = (declineDate ?? acceptedDate).Value;
+            action = (declineDate != null) ? "Declined" : "Accepted";
+        }
+
+        #endregion
 }

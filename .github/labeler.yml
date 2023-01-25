@@ -17,8 +17,6 @@
   - src/Core/Jobs/StagingJob.cs
 "Area: Data":
   - src/Data/**/*
-"Area: DataSeed":
-  - src/DataSeed/**/*
 "Area: Directory":
   - src/Directory/**/*
 "Area: Directory Data":
@@ -28,8 +26,6 @@
   - src/Core/Jobs/PublicationsJob.cs
 "Area: Entities":
   - src/Entities/**/*
-"Area: IdentityModel":
-  - src/IdentityModel/**/*
 "Area: Aggregator":
   - src/Core/Aggregator/**/*
   - src/Core/Jobs/AggregatorJob.cs
