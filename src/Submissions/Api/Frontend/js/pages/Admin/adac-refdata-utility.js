@@ -58,7 +58,7 @@ function editRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     type: "PUT",
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    data: data,
+    data: JSON.stringify(data),
     success: function (data, textStatus, xhr) {
       adacRefdataVM.dialogErrors.removeAll();
       adacRefdataVM.hideModal();
