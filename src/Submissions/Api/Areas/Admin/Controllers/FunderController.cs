@@ -1,19 +1,19 @@
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class FunderController : Controller
+public class FundersController : Controller
 {
   private readonly IReferenceDataService<Funder> _funderService;
 
-  public FunderController(IReferenceDataService<Funder> funderService)
+  public FundersController(IReferenceDataService<Funder> funderService)
   {
     _funderService = funderService;
   }
