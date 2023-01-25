@@ -387,11 +387,92 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             return RedirectToAction("Index", "Home");
         }
 
-        #endregion
+    #endregion
 
-        #region Account details
+    //TODO: 94708 Fix Login Redirect, once session is replaced 
+  /*  public async Task<ActionResult> LoginRedirect(string returnUrl = null)
+    {
+      //This is an action, so that it's a separate request and the user identity cookie has roles and claims available :)
+      //do we need them to create a profile for an associated org or network etc?
 
-        public async Task<ActionResult> Index()
+      // Start by updating user's last login time
+      await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId());
+
+      //Biobank
+
+      //get all accepted biobanks
+      var biobankRequests = await _organisationService.ListAcceptedRegistrationRequests();
+      var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
+
+      // if there is an unregistered biobank to finish registering, go there
+      if (firstAcceptedBiobabankRequest != null)
+      {
+        Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewBiobank;
+        Session[SessionKeys.ActiveOrganisationId] = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId;
+        Session[SessionKeys.ActiveOrganisationName] = firstAcceptedBiobabankRequest.OrganisationName;
+
+        return RedirectToAction("SwitchToBiobank", new { id = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId, newBiobank = true });
+      }
+
+      //get all accepted networks
+      var networkRequests = await _networkService.ListAcceptedRegistrationRequests();
+      var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
+
+      // if there is an unregistered network to finish registering, go there
+      if (firstAcceptedNetworkRequest != null)
+      {
+        Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewNetwork;
+        Session[SessionKeys.ActiveOrganisationId] = firstAcceptedNetworkRequest.NetworkRegisterRequestId;
+        Session[SessionKeys.ActiveOrganisationName] = firstAcceptedNetworkRequest.NetworkName;
+
+        return RedirectToAction("SwitchToNetwork", new { id = firstAcceptedNetworkRequest.NetworkRegisterRequestId, newNetwork = true });
+      }
+
+      //ADAC
+      if (CurrentUser.IsInRole(Role.ADAC.ToString()))
+        return RedirectToAction("Index", "ADAC");
+
+      // if they have more than one claim, there's no obvious place to send them
+      if (CurrentUser.Biobanks.Count() + CurrentUser.Networks.Count() != 1)
+        return RedirectToAction("Index", "Home");
+
+      //to returnUrl if appropriate, or a default route otherwise
+      if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
+
+      // Biobank admin only
+      if (CurrentUser.IsInRole(Role.BiobankAdmin.ToString()))
+      {
+        var biobank = CurrentUser.Biobanks.FirstOrDefault();
+
+        if (!biobank.Equals(default(KeyValuePair<int, string>)))
+        {
+          Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
+          Session[SessionKeys.ActiveOrganisationId] = biobank.Key;
+          Session[SessionKeys.ActiveOrganisationName] = biobank.Value;
+          return RedirectToAction("Collections", "Biobank");
+        }
+      }
+
+      // Network admin only
+      if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
+      {
+        var network = CurrentUser.Networks.FirstOrDefault();
+
+        if (!network.Equals(default(KeyValuePair<int, string>)))
+        {
+          Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
+          Session[SessionKeys.ActiveOrganisationId] = network.Key;
+          Session[SessionKeys.ActiveOrganisationName] = network.Value;
+          return RedirectToAction("Biobanks", "Network");
+        }
+      }
+
+      //or if no role-specific default
+      return RedirectToAction("Index", "Home");
+    }*/
+    #region Account details
+
+    public async Task<ActionResult> Index()
         {
             return View(await GetAccountDetailsModelAsync());
         }
