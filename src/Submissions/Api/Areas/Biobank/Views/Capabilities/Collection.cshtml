@@ -9,19 +9,19 @@
 <h2>
     @ViewBag.Title
     @using (
-        Html.BeginForm("DeleteCollection", "Biobank", FormMethod.Post, new
+        Html.BeginForm("DeleteCollection", "Collections", FormMethod.Post, new
         {
             @class = "pull-right",
             id = "DeleteCollection"
         }))
     {
-        @Html.ActionLink("Copy", "CopyCollection", new { Model.Id }, new { @class = "btn btn-success" })
+        @Html.ActionLink("Copy", "CopyCollection", "Collections", new { Model.Id }, new { @class = "btn btn-success" })
         @Html.Raw("&nbsp;")
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("model", Model)
 
-        @Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
+        @Html.ActionLink("Edit", "EditCollection", "Collections", new { Model.Id }, new { @class = "btn btn-primary" });
 
         <button @(Model.FromApi)
                 type="submit"
@@ -119,7 +119,7 @@
 						<td>
 							<div class="alert alert-info">
 								There are no associated data in this collection yet.
-								@Html.ActionLink("Edit the collection now.", "EditCollection", new { Model.Id })
+								@Html.ActionLink("Edit the collection now.", "EditCollection", "Collections", new { Model.Id })
 							</div>
 						</td>
 					</tr>
@@ -135,7 +135,7 @@
 			Sample sets
 			@if (Model.FromApi == false)
 			{
-				@Html.ActionLink("Add sample set", "AddSampleSet", new { Model.Id }, new { @class = "btn btn-success pull-right" })
+				@Html.ActionLink("Add sample set", "AddSampleSet", "Collections", new { Model.Id }, new { @class = "btn btn-success pull-right" })
 			}
 		</h3>
 		<br />
@@ -156,7 +156,7 @@
 					@foreach (var sampleSet in Model.SampleSets)
 					{
 						<tr class="clickable-row"
-							data-href="@Url.Action("SampleSet", new {@sampleSet.Id})">
+							data-href="@Url.Action("SampleSet", "Collections", new {@sampleSet.Id})">
 							<td>@sampleSet.Sex</td>
 							<td>@sampleSet.Age</td>
 							<td>@sampleSet.MaterialTypes</td>
@@ -175,7 +175,7 @@
 				There are no sample sets in this collection yet.
 				@if (Model.FromApi == false)
 				{
-					@Html.ActionLink("Add a sample set now.", "AddSampleSet", new { Model.Id })
+					@Html.ActionLink("Add a sample set now.", "AddSampleSet", "Collections", new { Model.Id })
 				}
 			</div>
 		}

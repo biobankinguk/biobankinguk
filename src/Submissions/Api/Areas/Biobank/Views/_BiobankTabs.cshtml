@@ -7,8 +7,8 @@
 		<ul class="nav nav-tabs">
 			<li role="presentation"
 				class="@(Model == (string) await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details" ? "active" : "true")">
-				@Html.ActionLink((string) await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details", "Home")
-			</li>
+        @Html.ActionLink((string) await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details", "Index", "Profile")
+      </li>
 			<li role="presentation"
 				class="@(Model == "Admins" ? "active" : "true")">
         @Html.ActionLink("Admins", "Admins", "Settings")
@@ -60,8 +60,8 @@
 			@if (await _config.GetSiteConfigValue(ConfigKey.DisplaySubmissions)!= null)
 			{
 				<li role="presentation" class="@(Model == "Submissions" ? "active" : "true")">
-          @Html.ActionLink("Bulk Submissions", "Submissions", "Settings")
-        </li>
+					@Html.ActionLink("Bulk Submissions", "Submissions", "Settings")
+				</li>
 			}
 		</ul>
     </div>
