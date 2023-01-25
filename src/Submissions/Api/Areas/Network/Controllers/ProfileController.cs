@@ -495,7 +495,7 @@ public class ProfileController : Controller
               new EmailAddress(biobank.ContactEmail),
               model.BiobankName,
               network.Name,
-              Url.Action("NetworkAcceptance", "Biobank", null, Request.Path.ToString())
+              Url.Action("NetworkAcceptance", "Settings", null, Request.Path.ToString())
                   );
         }
 
