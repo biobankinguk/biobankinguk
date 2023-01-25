@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NetworkAdminsModel = Biobanks.Submissions.Api.Areas.Network.Models.NetworkAdminsModel;
+using NetworkAdminsModel = Biobanks.Submissions.Api.Areas.Network.Models.Settings.NetworkAdminsModel;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 

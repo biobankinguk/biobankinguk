@@ -1,6 +1,6 @@
 using System;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Models;
+namespace Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
 
 public class BiobankActivityModel
 {
