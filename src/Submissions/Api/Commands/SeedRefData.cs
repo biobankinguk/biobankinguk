@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using Biobanks.Data;
+using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Commands.Helpers;
+using Biobanks.Submissions.Api.Services.DataSeeding;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,9 +28,9 @@ internal class SeedRefData : Command
     Add(optDataDirectory);
 
     // TODO: UN countries option?
-    
+
     // TODO: which tables option
-    
+
     // TODO: replace existing data option?
 
     this.SetHandler(
@@ -41,13 +44,24 @@ internal class SeedRefData : Command
 
         // Configure DI and run the command handler
         await this
-          .ConfigureServices(s => s
-            .AddSingleton(_ => logger)
-            .AddSingleton(_ => config)
-            .AddSingleton(_ => console)
-            .AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString))
-            .AddHttpClient()
-            .AddTransient<Runners.SeedRefData>())
+          .ConfigureServices(s =>
+          {
+            s.AddSingleton(_ => logger)
+              .AddSingleton(_ => config)
+              .AddSingleton(_ => console);
+
+            s.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString))
+              .AddHttpClient();
+            
+            s.AddLogging()
+              .AddIdentity<ApplicationUser, IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            s.AddTransient<BasicDataSeeder>()
+              .AddTransient<CustomRefDataSeeder>()
+              .AddTransient<FixedRefDataSeeder>()
+              .AddTransient<Runners.SeedRefData>();
+          })
           .GetRequiredService<Runners.SeedRefData>()
           .Run(dataDirectory ?? "./data");
       },
