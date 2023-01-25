@@ -221,55 +221,17 @@ public static class ConfigureWebServices
       .AddElasticSearch(b.Configuration)
       .AddReferenceDataCrud()
       .AddWorkerJobs(b.Configuration)
+      .AddDirectoryGuiServices()
+      .AddAggregatorServices()
+      .AddDirectoryAnalytics()
+      .AddBiobankPublications()
+      .AddSubmissionsApiServices()
 
-      // Everything else? ;)
-      .AddTransient<IAbstractCrudService, AbstractCrudService>()
-      .AddTransient<IAggregationService, AggregationService>()
-      .AddTransient<IAnalyticsService, AnalyticsService>()
-      .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
-      .AddTransient<IAnnotationService, AnnotationService>()
-      .AddTransient<IBiobankService, BiobankService>()
-      .AddTransient<IBiobankIndexService, BiobankIndexService>()
-      .AddTransient<IBiobankReadService, BiobankReadService>()
-      .AddTransient<IBiobankWriteService, BiobankWriteService>()
-      .AddTransient<ICapabilityService, CapabilityService>()
-      .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
-      .AddTransient<ICollectionService, CollectionService>()
-      .AddTransient<IConfigService, ConfigService>()
-      .AddTransient<IContentPageService, ContentPageService>()
-      .AddTransient<IEpmcService, EpmcWebService>()
-      .AddTransient<IErrorService, ErrorService>()
-      .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
-      .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
-      .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
-      .AddTransient(typeof(IGenericEFRepository<>), typeof(GenericEFRepository<>))
-      .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>()
-      .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
-      .AddTransient<INetworkService, NetworkService>()
-      .AddTransient<IOntologyTermService, OntologyTermService>()
-      .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+      // Other Application Service Registrations
       .AddTransient<IOrganisationService, OrganisationService>()
-      .AddTransient<IOrganisationDirectoryService,
-        OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
-      .AddTransient<IPublicationJobService, PublicationJobService>()
-      .AddTransient<IPublicationService, PublicationService>()
-      .AddTransient<IRecaptchaService, RecaptchaService>()
-      .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
       .AddTransient(typeof(IReferenceDataService<>),
-        typeof(ReferenceDataService<>))
-      .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>()
-      .AddTransient<IReferenceDataReadService,
-        ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
-      .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
-      .AddTransient<ISampleService, SampleService>()
-      .AddTransient<ISampleSetService, SampleSetService>()
-      .AddTransient<ISampleWriteService, SampleWriteService>()
-      .AddTransient<ISampleValidationService, SampleValidationService>()
-      .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
-      .AddTransient<ISubmissionService, SubmissionService>()
-      .AddTransient<ITokenLoggingService, TokenLoggingService>()
-      .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
-      .AddTransient<ITreatmentValidationService, TreatmentValidationService>();
+        typeof(ReferenceDataService<>));
+
 
     return b;
   }
@@ -396,5 +358,69 @@ public static class ConfigureWebServices
     }
 
     return s;
+  }
+
+  private static IServiceCollection AddDirectoryGuiServices(this IServiceCollection s)
+  {
+    return s.AddTransient<IAbstractCrudService, AbstractCrudService>()
+      .AddTransient<IAnalyticsReportGenerator, AnalyticsReportGenerator>()
+      .AddTransient<IBiobankService, BiobankService>()
+      .AddTransient<IBiobankIndexService, BiobankIndexService>()
+      .AddTransient<IBiobankReadService, BiobankReadService>()
+      .AddTransient<IBiobankWriteService, BiobankWriteService>()
+      .AddTransient<ICapabilityService, CapabilityService>()
+      .AddTransient<ICollectionService, CollectionService>()
+      .AddTransient<IConfigService, ConfigService>()
+      .AddTransient<IContentPageService, ContentPageService>()
+      .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+      .AddTransient<INetworkService, NetworkService>()
+      .AddTransient<IOntologyTermService, OntologyTermService>()
+      .AddTransient<IOrganisationDirectoryService,
+        OrganisationDirectoryService>() //TODO: merge or resolve OrganisationDirectory and Organisation Services
+      .AddTransient<IRecaptchaService, RecaptchaService>()
+      .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
+      .AddTransient<ISampleSetService, SampleSetService>()
+      .AddTransient(typeof(IGenericEFRepository<>), typeof(GenericEFRepository<>))
+      .AddTransient<ITokenLoggingService, TokenLoggingService>();
+  }
+
+  private static IServiceCollection AddAggregatorServices(this IServiceCollection s)
+  {
+    return s.AddTransient<ISampleService, SampleService>()
+      .AddTransient<IAggregationService, AggregationService>()
+      .AddTransient<ICollectionAggregatorService, CollectionAggregatorService>()
+      .AddTransient<IReferenceDataAggregatorService, ReferenceDataAggregatorService>();
+  }
+
+  private static IServiceCollection AddDirectoryAnalytics(this IServiceCollection s)
+  {
+    return s.AddTransient<IAnalyticsService, AnalyticsService>()
+      .AddTransient<IDirectoryReportGenerator, DirectoryReportGenerator>()
+      .AddTransient<IOrganisationReportGenerator, OrganisationReportGenerator>()
+      .AddTransient<IReportDataTransformationService, ReportDataTransformationService>()
+      .AddTransient<IGoogleAnalyticsReportingService, GoogleAnalyticsReportingService>();
+  }
+
+  private static IServiceCollection AddBiobankPublications(this IServiceCollection s)
+  {
+    return s.AddTransient<IPublicationJobService, PublicationJobService>()
+      .AddTransient<IPublicationService, PublicationService>()
+      .AddTransient<IAnnotationService, AnnotationService>()
+      .AddTransient<IEpmcService, EpmcWebService>();
+  }
+
+  private static IServiceCollection AddSubmissionsApiServices(this IServiceCollection s)
+  {
+    return s.AddTransient<IErrorService, ErrorService>()
+      .AddTransient<IDiagnosisWriteService, DiagnosisWriteService>()
+      .AddTransient<IDiagnosisValidationService, DiagnosisValidationService>()
+      .AddTransient<IReferenceDataReadService,
+        ReferenceDataReadService>() // TODO: Merge ReferenceDataReadService and ReferenceDataService
+      .AddTransient<ISampleWriteService, SampleWriteService>()
+      .AddTransient<ISampleValidationService, SampleValidationService>()
+      .AddTransient<ISubmissionExpiryService, SubmissionExpiryService>()
+      .AddTransient<ISubmissionService, SubmissionService>()
+      .AddTransient<ITreatmentWriteService, TreatmentWriteService>()
+      .AddTransient<ITreatmentValidationService, TreatmentValidationService>();
   }
 }
