@@ -1,5 +1,5 @@
-﻿using Biobanks.Submissions.Api.Auth.Basic;
-
+using Biobanks.Submissions.Api.Auth.Basic;
+using Biobanks.Submissions.Api.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
