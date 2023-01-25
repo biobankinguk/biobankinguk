@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+
 [Area("Biobank")]
 public class CollectionsController : Controller
 {
