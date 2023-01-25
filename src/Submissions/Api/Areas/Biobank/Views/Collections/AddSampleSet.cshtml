@@ -82,6 +82,7 @@
         @Html.AntiForgeryToken()
 
         @Html.Partial("_SampleSetSharedFields")
+        <partial name = "_SampleSetSharedFields" model = Model />
 
         <div class="form-group">
             <div class="col-sm-12 text-center">
