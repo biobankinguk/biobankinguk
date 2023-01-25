@@ -137,7 +137,7 @@ public class CollectionsController : Controller
       type.Active = model.AssociatedDataModelsValid();
     }
 
-    return PartialView("_AssociatedData", model);
+    return PartialView("_LinkedAssociatedData", model);
 
   }
 
