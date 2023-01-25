@@ -4,7 +4,6 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
 using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Models.User;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
