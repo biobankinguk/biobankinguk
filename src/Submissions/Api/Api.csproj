@@ -71,9 +71,6 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\User\" />
-  </ItemGroup>
 
   <Target Name="CopyStaticAssets" BeforeTargets="Build">
     <!--
