@@ -17,9 +17,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class ServiceOfferingController : ControllerBase
     {
-        private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+        private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
 
-        public ServiceOfferingController(IReferenceDataService<ServiceOffering> serviceOfferingService)
+        public ServiceOfferingController(IReferenceDataCrudService<ServiceOffering> serviceOfferingService)
         {
             _serviceOfferingService = serviceOfferingService;
         }

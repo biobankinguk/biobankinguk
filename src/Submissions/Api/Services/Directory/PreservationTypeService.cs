@@ -6,7 +6,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class PreservationTypeService : ReferenceDataService<PreservationType>
+    public class PreservationTypeService : ReferenceDataCrudService<PreservationType>
     {
         public PreservationTypeService(ApplicationDbContext db) : base(db) { }
 

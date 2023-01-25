@@ -15,9 +15,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class SexController : ControllerBase
     {
-        private readonly IReferenceDataService<Sex> _sexService;
+        private readonly IReferenceDataCrudService<Sex> _sexService;
 
-        public SexController(IReferenceDataService<Sex> sexService)
+        public SexController(IReferenceDataCrudService<Sex> sexService)
         {
             _sexService = sexService;
         }

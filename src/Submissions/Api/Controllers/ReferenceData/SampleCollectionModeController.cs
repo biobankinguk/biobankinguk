@@ -16,9 +16,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class SampleCollectionModeController : ControllerBase
     {
-        private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
+        private readonly IReferenceDataCrudService<SampleCollectionMode> _sampleCollectionModeService;
 
-        public SampleCollectionModeController(IReferenceDataService<SampleCollectionMode> sampleCollectionModeService)
+        public SampleCollectionModeController(IReferenceDataCrudService<SampleCollectionMode> sampleCollectionModeService)
         {
             _sampleCollectionModeService = sampleCollectionModeService;
         }

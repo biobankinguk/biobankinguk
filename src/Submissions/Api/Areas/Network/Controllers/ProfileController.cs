@@ -32,7 +32,7 @@ public class ProfileController : Controller
 {
   private readonly INetworkService _networkService;
   private readonly ILogoStorageProvider _logoStorageProvider;
-  private readonly IReferenceDataService<SopStatus> _sopStatusService;
+  private readonly IReferenceDataCrudService<SopStatus> _sopStatusService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IEmailService _emailService;
   private readonly IConfigService _configService;
@@ -40,7 +40,7 @@ public class ProfileController : Controller
   private readonly IBiobankService _biobankService;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
-    IReferenceDataService<SopStatus> sopStatusService, 
+    IReferenceDataCrudService<SopStatus> sopStatusService, 
     UserManager<ApplicationUser> userManager,
     IEmailService emailService,
     IConfigService configService,

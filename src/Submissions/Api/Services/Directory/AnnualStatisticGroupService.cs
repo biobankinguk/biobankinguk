@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class AnnualStatisticGroupService : ReferenceDataService<AnnualStatisticGroup>
+    public class AnnualStatisticGroupService : ReferenceDataCrudService<AnnualStatisticGroup>
     {
         public AnnualStatisticGroupService(ApplicationDbContext db) : base(db) { }
 

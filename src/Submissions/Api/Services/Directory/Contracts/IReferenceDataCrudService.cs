@@ -5,7 +5,7 @@ using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    public interface IReferenceDataService<T> where T : BaseReferenceData
+    public interface IReferenceDataCrudService<T> where T : BaseReferenceData
     {
         /// <summary>
         /// Create a new entity <typeparamref name="T"/>. The Id of the OntologyTerm should be null, as it is

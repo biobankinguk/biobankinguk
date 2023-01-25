@@ -26,8 +26,8 @@ public class SettingsController : Controller
   private readonly EmailService _emailService;
   private readonly IOrganisationDirectoryService _organisationDirectoryService;
   private readonly INetworkService _networkService;
-  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
-  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+  private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
   private readonly ITokenLoggingService _tokenLoggingService;
 
   public SettingsController(
@@ -36,8 +36,8 @@ public class SettingsController : Controller
       EmailService emailService,
       IOrganisationDirectoryService organisationDirectoryService,
       INetworkService networkService,
-      IReferenceDataService<AccessCondition> accessConditionService,
-      IReferenceDataService<CollectionType> collectionTypeService,
+      IReferenceDataCrudService<AccessCondition> accessConditionService,
+      IReferenceDataCrudService<CollectionType> collectionTypeService,
       ITokenLoggingService tokenLoggingService)
   {
       _userManager = userManager;

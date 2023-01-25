@@ -6,7 +6,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class MaterialTypeGroupService : ReferenceDataService<MaterialTypeGroup>
+    public class MaterialTypeGroupService : ReferenceDataCrudService<MaterialTypeGroup>
     {
         public MaterialTypeGroupService(ApplicationDbContext db) : base(db) { }
 
