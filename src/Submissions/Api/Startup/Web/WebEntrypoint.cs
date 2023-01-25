@@ -46,6 +46,7 @@ using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
@@ -77,13 +78,26 @@ public static class WebEntrypoint
         pgo => pgo.EnableRetryOnFailure()));
 
 //identity
-    builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-      .AddEntityFrameworkStores<ApplicationDbContext>();
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
     builder.Services.AddRazorPages();
 
     builder.Configuration.AddJsonFile("Settings/LegacyMaterialTypes.json", optional: true);
     builder.Configuration.AddJsonFile("Settings/LegacyStorageTemperatures.json", optional: true);
+
+// cookie config 
+    var siteConfig = builder.Configuration.GetSection("SiteProperties").Get<SitePropertiesOptions>() ?? new();
+
+    builder.Services.ConfigureApplicationCookie(opts =>
+    {
+      opts.ExpireTimeSpan = TimeSpan.FromMilliseconds(siteConfig.ClientSessionTimeout);
+      opts.LoginPath = "/Account/Login";
+      opts.AccessDeniedPath = "/Account/Forbidden";
+      opts.ReturnUrlParameter = "returnUrl";
+      opts.SlidingExpiration = true;
+    });
 
 // local config
     var jwtConfig = builder.Configuration.GetSection("JWT").Get<JwtBearerConfig>();

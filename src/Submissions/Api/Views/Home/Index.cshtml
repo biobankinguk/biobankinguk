@@ -15,7 +15,7 @@
 		<div class="row">
 			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
 			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-				<partial name="_FeedbackMessage">
+				<partial name="~/Views/Shared/_FeedbackMessage.cshtml">
 			</section>
 		</div>
 		<div class="row">

@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Auth
+namespace Biobanks.Submissions.Api.Auth
 {
     /// <summary>
     /// Custom Types used for Claims
@@ -14,5 +14,6 @@
         /// Claim representing the API Client ID of the holder
         /// </summary>
         public const string ClientId = "ClientId";
-    }
+
+  }
 }
