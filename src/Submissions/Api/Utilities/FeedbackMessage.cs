@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 
 namespace Biobanks.Submissions.Api.Utilities
 {
+   
     public class FeedbackMessage
     {
         public string Message { get; set; }
@@ -17,16 +20,22 @@ namespace Biobanks.Submissions.Api.Utilities
         Danger
     }
 
+    
     public static class TemporaryFeedbackMessageExtensions
     {
-        public static void SetTemporaryFeedbackMessage(this Controller controller, string message, FeedbackMessageType type, bool containsHtml = false)
-            => controller.TempData[FeedbackMessageKey.FeedbackMessage] = new FeedbackMessage
-            {
-                Message = message,
-                Type = type,
-                ContainsHtml = containsHtml
-            };
-    }
+
+
+    public static void SetTemporaryFeedbackMessage(this Controller controller, string message, FeedbackMessageType type, bool containsHtml = false)
+    {
+      var feedback = new FeedbackMessage
+      {
+        Message = message,
+        Type = type,
+        ContainsHtml = containsHtml
+      };
+
+      controller.TempData[FeedbackMessageKey.FeedbackMessage] = JsonConvert.SerializeObject(feedback);
+    }}
 
   public static class FeedbackMessageKey
   {
