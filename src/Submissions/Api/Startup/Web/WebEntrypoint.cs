@@ -386,7 +386,8 @@ public static class WebEntrypoint
 
 
     var app = builder.Build();
-    
+
+    await app.Initialise();
 
     app.GnuTerryPratchett();
 
