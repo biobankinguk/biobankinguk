@@ -4,7 +4,6 @@ using System.CommandLine.Invocation;
 using Biobanks.Data;
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Commands.Helpers;
-using Biobanks.Submissions.Api.Services.DataSeeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,30 +13,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Biobanks.Submissions.Api.Commands;
 
-internal class SeedRefData : Command
+internal class ListRoles : Command
 {
-  public SeedRefData(string name)
-    : base(name, "Seed Reference Data into empty tables from provided JSON files")
+  public ListRoles(string name)
+    : base(name, "List the names of user roles in the system.")
   {
+    
     var optConnectionString = new Option<string>(new[] { "--connection-string", "-c" },
       "Database Connection String if not specified in Configuration");
     Add(optConnectionString);
 
-    var optDataDirectory = new Option<string>(new[] { "--data-directory", "-d" },
-      "The directory from which to load source data JSON files");
-    Add(optDataDirectory);
-
-    // TODO: UN countries option?
-
-    // TODO: which tables option
-
-    // TODO: replace existing data option?
-
+    
     this.SetHandler(
       async (
         logger, config, console,
-        overrideConnectionString,
-        dataDirectory) =>
+        overrideConnectionString) =>
       {
         // figure out the connection string from the option, or config
         var connectionString = overrideConnectionString ?? config.GetConnectionString("Default");
@@ -48,26 +38,21 @@ internal class SeedRefData : Command
           {
             s.AddSingleton(_ => logger)
               .AddSingleton(_ => config)
-              .AddSingleton(_ => console);
+              .AddSingleton(_ => console)
+              .AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString));
 
-            s.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString))
-              .AddHttpClient();
-            
             s.AddLogging()
               .AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            s.AddTransient<BasicDataSeeder>()
-              .AddTransient<CustomRefDataSeeder>()
-              .AddTransient<FixedRefDataSeeder>()
-              .AddTransient<Runners.SeedRefData>();
+            s.AddTransient<Runners.ListRoles>();
           })
-          .GetRequiredService<Runners.SeedRefData>()
-          .Run(dataDirectory ?? "./data");
+          .GetRequiredService<Runners.ListRoles>()
+          .Run();
       },
       Bind.FromServiceProvider<ILoggerFactory>(),
       Bind.FromServiceProvider<IConfiguration>(),
       Bind.FromServiceProvider<IConsole>(),
-      optConnectionString, optDataDirectory);
+      optConnectionString);
   }
 }

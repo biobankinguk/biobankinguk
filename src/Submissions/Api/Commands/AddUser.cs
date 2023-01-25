@@ -4,7 +4,6 @@ using System.CommandLine.Invocation;
 using Biobanks.Data;
 using Biobanks.Data.Entities;
 using Biobanks.Submissions.Api.Commands.Helpers;
-using Biobanks.Submissions.Api.Services.DataSeeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,30 +13,38 @@ using Microsoft.Extensions.Logging;
 
 namespace Biobanks.Submissions.Api.Commands;
 
-internal class SeedRefData : Command
+internal class AddUser : Command
 {
-  public SeedRefData(string name)
-    : base(name, "Seed Reference Data into empty tables from provided JSON files")
+  public AddUser(string name)
+    : base(name, "Add a new User")
   {
+    var argEmail = new Argument<string>("email", "The new user's email address");
+    Add(argEmail);
+
+    var argFullName = new Argument<string>("full-name", "The new user's Full Name");
+    Add(argFullName);
+
     var optConnectionString = new Option<string>(new[] { "--connection-string", "-c" },
       "Database Connection String if not specified in Configuration");
     Add(optConnectionString);
 
-    var optDataDirectory = new Option<string>(new[] { "--data-directory", "-d" },
-      "The directory from which to load source data JSON files");
-    Add(optDataDirectory);
+    var optPassword = new Option<string>(new[] { "--password", "-p" },
+      "The password to set for the new user. If omitted, the password reset journey can be used to set a password.");
+    Add(optPassword);
 
-    // TODO: UN countries option?
-
-    // TODO: which tables option
-
-    // TODO: replace existing data option?
+    var optRoles = new Option<List<string>>(new[] { "--roles", "-r" },
+      "Role names to add the new user to. `users list-roles` can be used to list valid role names.")
+    {
+      AllowMultipleArgumentsPerToken = true
+    };
+    Add(optRoles);
 
     this.SetHandler(
       async (
         logger, config, console,
+        email, fullName,
         overrideConnectionString,
-        dataDirectory) =>
+        password, roles) =>
       {
         // figure out the connection string from the option, or config
         var connectionString = overrideConnectionString ?? config.GetConnectionString("Default");
@@ -48,26 +55,22 @@ internal class SeedRefData : Command
           {
             s.AddSingleton(_ => logger)
               .AddSingleton(_ => config)
-              .AddSingleton(_ => console);
+              .AddSingleton(_ => console)
+              .AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString));
 
-            s.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString))
-              .AddHttpClient();
-            
             s.AddLogging()
               .AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            s.AddTransient<BasicDataSeeder>()
-              .AddTransient<CustomRefDataSeeder>()
-              .AddTransient<FixedRefDataSeeder>()
-              .AddTransient<Runners.SeedRefData>();
+            s.AddTransient<Runners.AddUser>();
           })
-          .GetRequiredService<Runners.SeedRefData>()
-          .Run(dataDirectory ?? "./data");
+          .GetRequiredService<Runners.AddUser>()
+          .Run(email, fullName, password, roles);
       },
       Bind.FromServiceProvider<ILoggerFactory>(),
       Bind.FromServiceProvider<IConfiguration>(),
       Bind.FromServiceProvider<IConsole>(),
-      optConnectionString, optDataDirectory);
+      argEmail, argFullName,
+      optConnectionString, optPassword, optRoles);
   }
 }
