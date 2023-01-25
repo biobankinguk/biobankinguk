@@ -73,20 +73,8 @@ public static class WebEntrypoint
       options.UseNpgsql("Omop"));
 
     builder.Services.AddDbContext<ApplicationDbContext>(o =>
-    {
-      // migration bundles don't like null connection strings (yet)
-      // https://github.com/dotnet/efcore/issues/26869
-      // so if no connection string is set we register without one for now.
-      // if running migrations, `--connection` should be set on the command line
-      // in real environments, connection string should be set via config
-      // all other cases will error when db access is attempted.
-      var connectionString = builder.Configuration.GetConnectionString("Default");
-      if (string.IsNullOrWhiteSpace(connectionString))
-        o.UseNpgsql();
-      else
-        o.UseNpgsql(connectionString,
-          o => o.EnableRetryOnFailure());
-    });
+      o.UseNpgsql(connectionString,
+        pgo => pgo.EnableRetryOnFailure()));
 
 //identity
     builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -399,14 +387,7 @@ public static class WebEntrypoint
 
     var app = builder.Build();
 
-// Set cache isolated from running of the app
-    using (var scope = app.Services.CreateScope())
-    {
-      var configCache = scope.ServiceProvider
-        .GetRequiredService<IConfigService>();
-
-      await configCache.PopulateSiteConfigCache();
-    }
+    await app.Initialise();
 
     app.GnuTerryPratchett();
 
@@ -485,7 +466,7 @@ public static class WebEntrypoint
     app.MapControllerRoute(
       name: "default",
       pattern: "{controller=Home}/{action=Index}/{id?}");
-    
+
     await app.RunAsync();
   }
 }
