@@ -71,6 +71,11 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Directory\_BiobankTabs.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Directory\_DirectoryAdminTabs.cshtml" />
+  </ItemGroup>
+
   <Target Name="CopyStaticAssets" BeforeTargets="Build">
     <!--
     Copy static assets from source locations (e.g. node_modules) to wwwroot.
