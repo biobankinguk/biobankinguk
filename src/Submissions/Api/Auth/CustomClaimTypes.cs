@@ -15,7 +15,5 @@ namespace Biobanks.Submissions.Api.Auth
         /// </summary>
         public const string ClientId = "ClientId";
 
-        public const string UICulture = "UICulture";
-
   }
 }
