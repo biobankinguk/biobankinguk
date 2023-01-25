@@ -11,22 +11,24 @@ public class Prompt
   {
     _console = console;
   }
-  
+
   public bool YesNo(string promptText, bool defaultValue = false)
   {
     var optionsText = defaultValue
       ? "(Y/n)"
       : "(y/N)";
-    
+
     bool? result = null;
     while (result is null)
     {
+      _console.Out.WriteLine();
+      
       _console.Out.WriteLine(
         $"{promptText} {optionsText}");
-      
+
       _console.Out.Write("> ");
       var keyInfo = System.Console.ReadKey();
-      
+
       result = keyInfo.Key switch
       {
         System.ConsoleKey.Y => true,
@@ -34,7 +36,7 @@ public class Prompt
         System.ConsoleKey.Enter => defaultValue,
         _ => null
       };
-      
+
       _console.Out.WriteLine();
     }
 

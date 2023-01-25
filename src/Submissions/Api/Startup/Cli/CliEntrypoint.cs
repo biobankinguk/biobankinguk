@@ -26,5 +26,12 @@ public class CliEntrypoint : RootCommand
     {
       new SeedRefData("seed")
     });
+
+    AddCommand(new Command("users", "Actions for managing BiobankingUK Users")
+    {
+      new AddUser("add"),
+      new ManageUserRoles("roles"),
+      new ListRoles("list-roles")
+    });
   }
 }

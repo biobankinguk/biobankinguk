@@ -71,6 +71,7 @@
     </Content>
   </ItemGroup>
 
+
   <Target Name="CopyStaticAssets" BeforeTargets="Build">
     <!--
     Copy static assets from source locations (e.g. node_modules) to wwwroot.
