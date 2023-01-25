@@ -89,7 +89,5 @@
 
     <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
-
-  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JsonSchema="livechat" /></VisualStudio></ProjectExtensions>
  
 </Project>
