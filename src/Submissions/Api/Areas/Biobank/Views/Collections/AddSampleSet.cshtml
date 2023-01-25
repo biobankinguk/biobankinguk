@@ -80,8 +80,7 @@
     using (Html.BeginForm("AddSampleSet", "Collections", FormMethod.Post, new { @class = "form-horizontal" }))
     {
         @Html.AntiForgeryToken()
-
-        @Html.Partial("_SampleSetSharedFields")
+        
         <partial name = "_SampleSetSharedFields" model = Model />
 
         <div class="form-group">
