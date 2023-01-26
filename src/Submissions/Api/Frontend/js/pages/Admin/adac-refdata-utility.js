@@ -50,7 +50,7 @@ function addRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     error: function (error) {
       if (error) {
         adacRefdataVM.dialogErrors.removeAll();
-        adacRefdataVM.dialogErrors.push(error);
+        adacRefdataVM.dialogErrors.push(error.responseText);
       }
     },
   });
@@ -77,7 +77,7 @@ function editRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     error: function (error) {
       if (error) {
         adacRefdataVM.dialogErrors.removeAll();
-        adacRefdataVM.dialogErrors.push(error);
+        adacRefdataVM.dialogErrors.push(error.responseText);
       }
     },
   });
@@ -97,9 +97,7 @@ function deleteRefData(url, redirectTo, refdata) {
       );
     },
     error: function (error) {
-      if (error) {
-        window.feedbackMessage(error, "warning", false);
-      }
+      window.feedbackMessage(error.responseText, "warning", true);
     },
   });
 }

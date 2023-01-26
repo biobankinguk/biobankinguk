@@ -92,7 +92,7 @@
         @* Feedback Message *@
         @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
         {
-            <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+            <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home", new {area = ""})">
                 <partial name="_SuspendedWarning">
                     <partial name="_FeedbackMessage">
             </section>
