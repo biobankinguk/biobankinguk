@@ -20,14 +20,17 @@ public class DataSeeder
   public async Task SeedConfigs()
   {
 
-
     if (!await _dbContext.Configs
       .AsNoTracking()
       .AnyAsync())
     {
-      var seedConfig = new List<Config>
-      {  };
+      var seedConfig = Configs.Configs.DefaultConfigs;
+
+      foreach (var d in seedConfig)
+      {
+        _dbContext.Add(d);
+      }
+      await _dbContext.SaveChangesAsync();
     }
   }
-
 }

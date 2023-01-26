@@ -26,6 +26,11 @@ public static class WebInitialisation
     var roles = scope.ServiceProvider
       .GetRequiredService<RoleManager<IdentityRole>>();
 
+    // Data seeder
+    var seeder = new DataSeeder(db);
+
+    await seeder.SeedConfigs();
+
     // The Web app always tries to ensure fixed ref data is correct
     await new FixedRefDataSeeder(db, roles).Seed();
 

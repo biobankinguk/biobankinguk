@@ -11,7 +11,7 @@ public static class Configs
   public static readonly List<Config> DefaultConfigs = new List<Config>
   {
     
-                    #region Display
+            #region Display
             // Show Analytics View
             new Config
             {
