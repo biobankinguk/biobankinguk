@@ -11,6 +11,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;

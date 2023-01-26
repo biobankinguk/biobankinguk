@@ -1,4 +1,4 @@
-@using Biobanks.Submissions.Api.Areas.Network.Models
+@using Biobanks.Submissions.Api.Areas.Network.Models.Profile
 @model AddBiobankToNetworkModel
 <h2>Add a Biobank to your Network</h2>
 
@@ -6,7 +6,7 @@
     <div class="col-sm-12 col-sm-offset-3">
         @using (@Html.BeginForm(
             "AddBiobank",
-            "Network",
+            "Profile",
             FormMethod.Post,
             new { @class = "form-horizontal col-sm-10" } ))
         {

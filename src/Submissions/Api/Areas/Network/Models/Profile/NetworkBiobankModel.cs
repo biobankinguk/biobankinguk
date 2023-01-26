@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Network.Models;
+namespace Biobanks.Submissions.Api.Areas.Network.Models.Profile;
 
 public class NetworkBiobankModel
 {

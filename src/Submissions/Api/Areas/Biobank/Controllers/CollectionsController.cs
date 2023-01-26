@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+
 [Area("Biobank")]
 public class CollectionsController : Controller
 {
@@ -91,7 +92,7 @@ public class CollectionsController : Controller
   [HttpGet]
   public async Task<ViewResult> AddCollection()
   {
-    return View((await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
+    return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
   }
 
   [HttpGet]
@@ -412,7 +413,7 @@ public class CollectionsController : Controller
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
     {
       this.SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
-      return RedirectToAction("Collections");
+      return RedirectToAction("Index", "Collections");
     }
     else
     {
