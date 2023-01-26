@@ -62,7 +62,6 @@ function AdacAccessConditionViewModel() {
 
     // Get Form Data
     var data = serializeFormData(form);
-    console.log(data);
 
     // Get Action Type
     var action = _this.modal.mode();
@@ -77,7 +76,7 @@ function AdacAccessConditionViewModel() {
     } else if (action == "Update") {
       editRefData(
         _this,
-        form.data("resource-url") + "/" + data.Id,
+        form.data("resource-url") + "/" + $(e.target.Id).val(),
         data,
         form.data("success-redirect"),
         form.data("refdata-type")
