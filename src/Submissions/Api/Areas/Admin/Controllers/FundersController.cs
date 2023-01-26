@@ -11,9 +11,9 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 [Area("Admin")]
 public class FundersController : Controller
 {
-  private readonly IReferenceDataService<Funder> _funderService;
+  private readonly IReferenceDataCrudService<Funder> _funderService;
 
-  public FundersController(IReferenceDataService<Funder> funderService)
+  public FundersController(IReferenceDataCrudService<Funder> funderService)
   {
     _funderService = funderService;
   }
