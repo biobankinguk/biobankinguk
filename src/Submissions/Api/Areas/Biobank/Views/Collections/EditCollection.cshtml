@@ -12,9 +12,9 @@
 <h2>@ViewBag.Title</h2>
 
 
-<partial name = "_DataProtectionAlert">
+<partial name = "_DataProtectionAlert"/>
 
-@using (Html.BeginForm("EditCollection", "Biobank", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+@using (Html.BeginForm("EditCollection", "Collections", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
     @Html.AntiForgeryToken()
 

@@ -1,10 +1,10 @@
-@model IEnumerable<Biobanks.Submissions.Api.Areas.Admin.Models.FunderModel>
+@model IEnumerable<Biobanks.Submissions.Api.Areas.Admin.Models.Funders.FunderModel>
 
 @{
     ViewBag.Title = "Funders";
 }
 
-<partial name = "_ADACTabs" model = "Funders">
+<partial name = "_ADACTabs" model = "Funders"/>
 
 <h3>
     Manage Funders
@@ -44,7 +44,7 @@
                                 </a>
                             </td>
                             <td>
-                                @Html.ActionLink("Delete", "DeleteFunder", "ADAC", new {id = funder.FunderId}, new {@class = "btn btn-danger"})
+                                @Html.ActionLink("Delete", "DeleteFunder", "Funders", new {id = funder.FunderId}, new {@class = "btn btn-danger"})
                             </td>
                         </tr>
                     }

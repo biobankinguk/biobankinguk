@@ -5,7 +5,7 @@
 	ViewBag.Title = "Content Page Admin";
 }
 
-<partial name= "~/Views/Directory/_DirectoryAdminTabs.cshtml" model= "@("Content Pages")">
+<partial name= "~/Views/Directory/_DirectoryAdminTabs.cshtml" model= "@("Content Pages")" />
 <h3>
 	@ViewBag.Title
 	@Html.ActionLink("Create", "CreateEdit", "PagesAdmin", new { Id = "0" }, new { @class = "btn btn-success pull-right" })

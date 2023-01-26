@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.RegistrationDomainRules;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Services.Directory;

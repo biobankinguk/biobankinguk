@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ public class SettingsController : Controller
   private readonly IBiobankService _biobankService;
   private readonly EmailService _emailService;
   private readonly IOrganisationDirectoryService _organisationDirectoryService;
+  private readonly INetworkService _networkService;
   private readonly IReferenceDataService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataService<CollectionType> _collectionTypeService;
   private readonly ITokenLoggingService _tokenLoggingService;
@@ -33,6 +35,7 @@ public class SettingsController : Controller
       IBiobankService biobankService,
       EmailService emailService,
       IOrganisationDirectoryService organisationDirectoryService,
+      INetworkService networkService,
       IReferenceDataService<AccessCondition> accessConditionService,
       IReferenceDataService<CollectionType> collectionTypeService,
       ITokenLoggingService tokenLoggingService)
@@ -41,6 +44,7 @@ public class SettingsController : Controller
       _biobankService = biobankService;
       _emailService = emailService;
       _organisationDirectoryService = organisationDirectoryService;
+      _networkService = networkService;
       _accessConditionService = accessConditionService;
       _collectionTypeService = collectionTypeService;
       _tokenLoggingService = tokenLoggingService;
@@ -289,5 +293,49 @@ public class SettingsController : Controller
                 ClientSecret = credentials.Value
             });
         }
+        
+        #region Network Acceptance
+
+        [Authorize(CustomClaimType.Biobank)]
+        public async Task<ActionResult> NetworkAcceptance(int biobankId)
+        {
+          var organisationNetworks = await _networkService.ListOrganisationNetworks(biobankId);
+          var networkList = new List<NetworkAcceptanceModel>();
+          foreach (var orgNetwork in organisationNetworks)
+          {
+            var network = await _networkService.Get(orgNetwork.NetworkId);
+            var organisation = new NetworkAcceptanceModel
+            {
+              BiobankId = biobankId,
+              NetworkId = network.NetworkId,
+              NetworkName = network.Name,
+              NetworkDescription = network.Description,
+              NetworkEmail = network.Email,
+              ApprovedDate = orgNetwork.ApprovedDate
+            };
+            networkList.Add(organisation);
+
+          }
+
+          var model = new AcceptanceModel
+          {
+            NetworkRequests = networkList
+          };
+
+          return View(model);
+        }
+
+        public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
+        {
+          var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);
+
+          organisationNetwork.ApprovedDate = DateTime.Now;
+          await _networkService.UpdateOrganisationNetwork(organisationNetwork);
+
+          this.SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
+
+          return RedirectToAction("NetworkAcceptance");
+        }
+        #endregion
   
 }

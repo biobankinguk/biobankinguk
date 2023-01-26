@@ -15,7 +15,7 @@
 </style>
 @* Homepage overrides the default positioning, so we can have this inside the splash area *@
 <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-    <partial name="_FeedbackMessage">
+  <partial name="_FeedbackMessage"/>
 </section>
 <div class="splash splash-img container-fluid">
     <div class="row big_splash">
@@ -28,7 +28,7 @@
 </div>
 <div class="container-fluid search-section">
     <div id="focus" class="container text-center">
-        <partial name="~/Views/Home/_AltUnifiedSearchBox.cshtml" model="Model" )>
+      <partial name="~/Views/Home/_AltUnifiedSearchBox.cshtml" model="Model" )/>
     </div>
 </div>
 <div id="register" class="row container-fluid registration-section">

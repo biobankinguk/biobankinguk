@@ -23,6 +23,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Biobanks.Services;
+using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
@@ -495,7 +496,7 @@ public class ProfileController : Controller
               new EmailAddress(biobank.ContactEmail),
               model.BiobankName,
               network.Name,
-              Url.Action("NetworkAcceptance", "Biobank", null, Request.Path.ToString())
+              Url.Action("NetworkAcceptance", "Settings", null, Request.Path.ToString())
                   );
         }
 

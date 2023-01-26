@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+
 [Area("Biobank")]
 public class CapabilitiesController : Controller
 {
@@ -85,7 +86,7 @@ public class CapabilitiesController : Controller
 
       this.SetTemporaryFeedbackMessage("Capability added!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Capabilities");
+      return RedirectToAction("Index");
     }
 
     return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
@@ -183,7 +184,7 @@ public class CapabilitiesController : Controller
 
     this.SetTemporaryFeedbackMessage("Capability deleted!", FeedbackMessageType.Success);
 
-    return RedirectToAction("Capabilities");
+    return RedirectToAction("Index");
   }
 
   [HttpGet]
