@@ -69,20 +69,20 @@
 									   class="action-icon"
 									   href="#"
 									   data-target="#annual-stats-modal"
-									   data-annual-stats="@Json.Serialize(item)"
+									   data-annual-stats='@Json.Serialize(item)'
 									   data-bind="click: openModalForEdit">
 										<span class="fa fa-edit labelled-icon"></span>Edit
 									</a>
 
-                                    <a title="Delete"
-                                       class="action-icon delete-confirm"
-                                       data-refdata-model="@Json.Serialize(item)"
-                                       data-resource-url="/api/AnnualStatistic"
-                                       data-success-redirect="@Url.Action("AnnualStatistics")"
-                                       data-refdata-type="Annual Statistics"
-                                       href="#">
-                                        <span class="fa fa-trash labelled-icon"></span>Delete
-                                    </a>
+                  <a title="Delete"
+                     class="action-icon delete-confirm"
+                     data-refdata-model='@Json.Serialize(item)'
+                     data-resource-url="/api/AnnualStatistic"
+                     data-success-redirect="@Url.Action("AnnualStatistics")"
+                     data-refdata-type="Annual Statistics"
+                     href="#">
+                      <span class="fa fa-trash labelled-icon"></span>Delete
+                  </a>
 								}
 							</td>
 						</tr>

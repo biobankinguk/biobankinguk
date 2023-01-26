@@ -65,14 +65,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#extraction-procedure-modal"
-                                   data-extraction-procedure="@Json.Serialize(ontologyTerm)"
+                                   data-extraction-procedure='@Json.Serialize(ontologyTerm)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(ontologyTerm)"
+                                   data-refdata-model='@Json.Serialize(ontologyTerm)'
                                    data-resource-url="/api/ExtractionProcedure"
                                    data-success-redirect="@Url.Action("ExtractionProcedure")"
                                    data-refdata-type="Extraction Procedure"

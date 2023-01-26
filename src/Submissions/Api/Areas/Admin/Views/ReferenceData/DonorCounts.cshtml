@@ -71,14 +71,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#donor-counts-modal"
-                                   data-donor-count="@Json.Serialize(donor)"
+                                   data-donor-count='@Json.Serialize(donor)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(donor)"
+                                   data-refdata-model='@Json.Serialize(donor)'
                                    data-resource-url="/api/DonorCount"
                                    data-success-redirect="@Url.Action("DonorCounts")"
                                    data-refdata-type="Donor Count"
