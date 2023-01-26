@@ -40,7 +40,12 @@ function addRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     success: function (data, textStatus, xhr) {
       adacRefdataVM.dialogErrors.removeAll();
       adacRefdataVM.hideModal();
-      setAddFeedback(data.name, redirectTo, refdata);
+      // Returned data should have one of: description, name, or value.
+      setAddFeedback(
+        data.description || data.name || data.value,
+        redirectTo,
+        refdata
+      );
     },
     error: function (error) {
       if (error) {
@@ -62,7 +67,12 @@ function editRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     success: function (data, textStatus, xhr) {
       adacRefdataVM.dialogErrors.removeAll();
       adacRefdataVM.hideModal();
-      setEditFeedback(data.name, redirectTo, refdata);
+      // Returned data should have one of: description, name, or value.
+      setEditFeedback(
+        data.description || data.name || data.value,
+        redirectTo,
+        refdata
+      );
     },
     error: function (error) {
       if (error) {
@@ -79,7 +89,12 @@ function deleteRefData(url, redirectTo, refdata) {
     url: url,
     type: "DELETE",
     success: function (data, textStatus, xhr) {
-      setDeleteFeedback(data.name, redirectTo, refdata);
+      // Returned data should have one of: description, name, or value.
+      setDeleteFeedback(
+        data.description || data.name || data.value,
+        redirectTo,
+        refdata
+      );
     },
     error: function (error) {
       if (error) {
@@ -90,9 +105,10 @@ function deleteRefData(url, redirectTo, refdata) {
 }
 
 /**
- * Serializes a form into a JSON object
- * @returns json object
- * @param form
+ * Serializes a jQuery form into an object
+ * This is more useful than serializeArray
+ * @param form: jQuery form
+ * @returns object
  */
 function serializeFormData(form) {
   var json = {};
