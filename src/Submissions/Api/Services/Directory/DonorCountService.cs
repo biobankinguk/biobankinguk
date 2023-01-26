@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class DonorCountService : ReferenceDataService<DonorCount>
+    public class DonorCountService : ReferenceDataCrudService<DonorCount>
     {
         public DonorCountService(ApplicationDbContext db) : base(db) { }
 

@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public abstract class ReferenceDataService<T> : IReferenceDataService<T> where T : BaseReferenceData
+    public abstract class ReferenceDataCrudService<T> : IReferenceDataCrudService<T> where T : BaseReferenceData
     {
         protected readonly ApplicationDbContext _db;
 
-        public ReferenceDataService(ApplicationDbContext db)
+        public ReferenceDataCrudService(ApplicationDbContext db)
         {
             _db = db;
         }

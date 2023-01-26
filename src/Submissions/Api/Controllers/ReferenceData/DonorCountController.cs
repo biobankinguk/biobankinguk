@@ -17,11 +17,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class DonorCountController : ControllerBase
     {
-        private readonly IReferenceDataService<DonorCount> _donorCountService;
+        private readonly IReferenceDataCrudService<DonorCount> _donorCountService;
         private readonly IConfigService _configService;
 
         public DonorCountController(
-            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataCrudService<DonorCount> donorCountService,
             IConfigService configService)
         {
             _donorCountService = donorCountService;

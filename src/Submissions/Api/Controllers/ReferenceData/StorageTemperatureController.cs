@@ -18,13 +18,13 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class StorageTemperatureController : ControllerBase
     {
-        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
-        private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+        private readonly IReferenceDataCrudService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataCrudService<StorageTemperature> _storageTemperatureService;
         private readonly IConfigService _configService;
 
         public StorageTemperatureController(
-            IReferenceDataService<PreservationType> preservationTypeService,
-            IReferenceDataService<StorageTemperature> storageTemperatureService,
+            IReferenceDataCrudService<PreservationType> preservationTypeService,
+            IReferenceDataCrudService<StorageTemperature> storageTemperatureService,
             IConfigService configService)
         {
             _preservationTypeService = preservationTypeService;

@@ -15,9 +15,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class MaterialTypeGroupController : ControllerBase
     {
-        private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
+        private readonly IReferenceDataCrudService<MaterialTypeGroup> _materialTypeGroupService;
 
-        public MaterialTypeGroupController(IReferenceDataService<MaterialTypeGroup> materialTypeGroupService)
+        public MaterialTypeGroupController(IReferenceDataCrudService<MaterialTypeGroup> materialTypeGroupService)
         {
             _materialTypeGroupService = materialTypeGroupService;
         }

@@ -15,9 +15,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class PreservationTypeController : ControllerBase
     {
-        private readonly IReferenceDataService<PreservationType> _preservationTypeService;
+        private readonly IReferenceDataCrudService<PreservationType> _preservationTypeService;
 
-        public PreservationTypeController(IReferenceDataService<PreservationType> preservationTypeService)
+        public PreservationTypeController(IReferenceDataCrudService<PreservationType> preservationTypeService)
         {
             _preservationTypeService = preservationTypeService;
         }

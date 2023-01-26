@@ -5,7 +5,7 @@ using Biobanks.Entities.Data.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class RegistrationReasonService : ReferenceDataService<RegistrationReason>
+    public class RegistrationReasonService : ReferenceDataCrudService<RegistrationReason>
     {
         public RegistrationReasonService(ApplicationDbContext db) : base(db) { }
 

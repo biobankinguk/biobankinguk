@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class AgeRangeService : ReferenceDataService<AgeRange>
+    public class AgeRangeService : ReferenceDataCrudService<AgeRange>
     {
         public AgeRangeService(ApplicationDbContext db) : base(db) { }
 

@@ -17,9 +17,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class ConsentRestrictionController : ControllerBase
     {
-        private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+        private readonly IReferenceDataCrudService<ConsentRestriction> _consentRestrictionService;
 
-        public ConsentRestrictionController(IReferenceDataService<ConsentRestriction> consentRestrictionService)
+        public ConsentRestrictionController(IReferenceDataCrudService<ConsentRestriction> consentRestrictionService)
         {
             _consentRestrictionService = consentRestrictionService;
         }

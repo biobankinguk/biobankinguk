@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class ConsentRestrictionService : ReferenceDataService<ConsentRestriction>
+    public class ConsentRestrictionService : ReferenceDataCrudService<ConsentRestriction>
     {
         public ConsentRestrictionService(ApplicationDbContext db) : base(db) { }
 

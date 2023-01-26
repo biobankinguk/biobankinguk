@@ -17,12 +17,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class CountyController : ControllerBase
     {
-        private readonly IReferenceDataService<County> _countyService;
-        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataCrudService<County> _countyService;
+        private readonly IReferenceDataCrudService<Country> _countryService;
 
         public CountyController(
-            IReferenceDataService<County> countyService,
-            IReferenceDataService<Country> countryService)
+            IReferenceDataCrudService<County> countyService,
+            IReferenceDataCrudService<Country> countryService)
         {
             _countyService = countyService;
             _countryService = countryService;
