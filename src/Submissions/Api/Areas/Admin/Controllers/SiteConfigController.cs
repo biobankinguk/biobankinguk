@@ -6,6 +6,7 @@ using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.SiteConfig;
 using Biobanks.Submissions.Api.Models.Search;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;

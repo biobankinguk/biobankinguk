@@ -6,7 +6,7 @@ using Biobanks.Entities.Data;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts
 {
-    public interface IMaterialTypeService : IReferenceDataService<MaterialType>
+    public interface IMaterialTypeService : IReferenceDataCrudService<MaterialType>
     {
         Task<int> GetExtractionProcedureMaterialDetailsCount(string id);
 

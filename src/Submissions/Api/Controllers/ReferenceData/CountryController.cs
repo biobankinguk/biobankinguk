@@ -15,9 +15,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class CountryController : ControllerBase
     {
-        private readonly IReferenceDataService<Country> _countryService;
+        private readonly IReferenceDataCrudService<Country> _countryService;
 
-        public CountryController(IReferenceDataService<Country> countryService)
+        public CountryController(IReferenceDataCrudService<Country> countryService)
         {
             _countryService = countryService;
         }

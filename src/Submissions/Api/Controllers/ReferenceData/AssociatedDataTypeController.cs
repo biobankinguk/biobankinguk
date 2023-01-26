@@ -20,12 +20,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AssociatedDataTypeController : ControllerBase
     {
-        private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
-        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataCrudService<AssociatedDataType> _associatedDataTypeService;
+        private readonly IReferenceDataCrudService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
         private readonly IOntologyTermService _ontologyTermService;
         public AssociatedDataTypeController(
-            IReferenceDataService<AssociatedDataType> associatedDataTypeService,
-            IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+            IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
+            IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
             IOntologyTermService ontologyTermService)
         {
             _associatedDataTypeService = associatedDataTypeService;

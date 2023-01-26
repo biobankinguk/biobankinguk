@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class CollectionPercentageService : ReferenceDataService<CollectionPercentage>
+    public class CollectionPercentageService : ReferenceDataCrudService<CollectionPercentage>
     {
         public CollectionPercentageService(ApplicationDbContext db) : base(db) { }
 

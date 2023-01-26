@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class CollectionStatusService : ReferenceDataService<CollectionStatus>
+    public class CollectionStatusService : ReferenceDataCrudService<CollectionStatus>
     {
         public CollectionStatusService(ApplicationDbContext db) : base(db) { }
 

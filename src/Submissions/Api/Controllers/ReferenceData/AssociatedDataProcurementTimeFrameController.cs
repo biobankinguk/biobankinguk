@@ -17,9 +17,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AssociatedDataProcurementTimeFrameController : ControllerBase
     {
-        private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameService;
+        private readonly IReferenceDataCrudService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeFrameService;
         public AssociatedDataProcurementTimeFrameController(
-        IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameService)
+        IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeFrameService)
         {
             _associatedDataProcurementTimeFrameService = associatedDataProcurementTimeFrameService;
         }

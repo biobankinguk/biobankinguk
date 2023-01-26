@@ -6,7 +6,7 @@ using Biobanks.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class SexService : ReferenceDataService<Sex>
+    public class SexService : ReferenceDataCrudService<Sex>
     {
         public SexService(ApplicationDbContext db) : base(db) { }
 

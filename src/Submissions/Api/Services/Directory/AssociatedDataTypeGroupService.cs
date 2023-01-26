@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class AssociatedDataTypeGroupService : ReferenceDataService<AssociatedDataTypeGroup>
+    public class AssociatedDataTypeGroupService : ReferenceDataCrudService<AssociatedDataTypeGroup>
     {
         public AssociatedDataTypeGroupService(ApplicationDbContext db) : base(db) { }
 

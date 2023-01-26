@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class CountyService : ReferenceDataService<County>
+    public class CountyService : ReferenceDataCrudService<County>
     {
         public CountyService(ApplicationDbContext db) : base(db) { }
 

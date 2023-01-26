@@ -17,31 +17,32 @@ using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+
 [Area("Biobank")]
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
   private readonly ISampleSetService _sampleSetService;
-  private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+  private readonly IReferenceDataCrudService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
   private readonly IOntologyTermService _ontologyTermService;
-  private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
-  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
-  private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
+  private readonly IReferenceDataCrudService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataCrudService<AssociatedDataType> _associatedDataTypeService;
+  private readonly IReferenceDataCrudService<ConsentRestriction> _consentRestrictionService;
   private readonly IMapper _mapper;
-  private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+  private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IAbstractCrudService _abstractCrudService;
   private readonly IMaterialTypeService _materialTypeService;
 
   public CollectionsController(
   ICollectionService collectionService,
   ISampleSetService sampleSetService,
-  IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+  IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
   IOntologyTermService ontologyTermService,
-  IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
-  IReferenceDataService<AssociatedDataType> associatedDataTypeService,
-  IReferenceDataService<ConsentRestriction> consentRestrictionService,
+  IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+  IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
+  IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
   IMapper mapper,
-  IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
+  IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
   IAbstractCrudService abstractCrudService,
   IMaterialTypeService materialTypeService
 
@@ -91,7 +92,7 @@ public class CollectionsController : Controller
   [HttpGet]
   public async Task<ViewResult> AddCollection()
   {
-    return View((await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
+    return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
   }
 
   [HttpGet]
@@ -412,7 +413,7 @@ public class CollectionsController : Controller
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
     {
       this.SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
-      return RedirectToAction("Collections");
+      return RedirectToAction("Index", "Collections");
     }
     else
     {

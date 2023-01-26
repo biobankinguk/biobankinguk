@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class CollectionTypeService : ReferenceDataService<CollectionType>
+    public class CollectionTypeService : ReferenceDataCrudService<CollectionType>
     {
         public CollectionTypeService(ApplicationDbContext db) : base(db) { }
 

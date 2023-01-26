@@ -23,59 +23,59 @@ public class ReferenceDataController : Controller
 
   private readonly IBiobankReadService _biobankReadService;
   private readonly IConfigService _configService;
-  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
-  private readonly IReferenceDataService<AgeRange> _ageRangeService;
-  private readonly IReferenceDataService<AnnualStatistic> _annualStatisticsService;
-  private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
-  private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
-  private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
-  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
-  private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
-  private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
-  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
-  private readonly IReferenceDataService<Country> _countryService;
-  private readonly IReferenceDataService<County> _countyService;
-  private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
-  private readonly IReferenceDataService<DonorCount> _donorCountService;
+  private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataCrudService<AgeRange> _ageRangeService;
+  private readonly IReferenceDataCrudService<AnnualStatistic> _annualStatisticsService;
+  private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
+  private readonly IReferenceDataCrudService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+  private readonly IReferenceDataCrudService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataCrudService<AssociatedDataType> _associatedDataTypeService;
+  private readonly IReferenceDataCrudService<CollectionPercentage> _collectionPercentageService;
+  private readonly IReferenceDataCrudService<CollectionStatus> _collectionStatusService;
+  private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
+  private readonly IReferenceDataCrudService<Country> _countryService;
+  private readonly IReferenceDataCrudService<County> _countyService;
+  private readonly IReferenceDataCrudService<ConsentRestriction> _consentRestrictionService;
+  private readonly IReferenceDataCrudService<DonorCount> _donorCountService;
   private readonly IMaterialTypeService _materialTypeService;
-  private readonly IReferenceDataService<MaterialTypeGroup> _materialTypeGroupService;
-  private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
-  private readonly IReferenceDataService<PreservationType> _preservationTypeService;
-  private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
-  private readonly IReferenceDataService<SampleCollectionMode> _sampleCollectionModeService;
-  private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
-  private readonly IReferenceDataService<Sex> _sexService;
-  private readonly IReferenceDataService<SopStatus> _sopStatusService;
-  private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
+  private readonly IReferenceDataCrudService<MaterialTypeGroup> _materialTypeGroupService;
+  private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
+  private readonly IReferenceDataCrudService<PreservationType> _preservationTypeService;
+  private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
+  private readonly IReferenceDataCrudService<SampleCollectionMode> _sampleCollectionModeService;
+  private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
+  private readonly IReferenceDataCrudService<Sex> _sexService;
+  private readonly IReferenceDataCrudService<SopStatus> _sopStatusService;
+  private readonly IReferenceDataCrudService<StorageTemperature> _storageTemperatureService;
   private readonly IOntologyTermService _ontologyTermService;
 
   public ReferenceDataController(
     IBiobankReadService biobankReadService,
     IConfigService configService,
-    IReferenceDataService<AccessCondition> accessConditionService, 
-    IReferenceDataService<AgeRange> ageRangeService,
-    IReferenceDataService<AnnualStatistic> annualStatisticsService,
-    IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
-    IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-    IReferenceDataService<AssociatedDataType> associatedDataTypeService,
-    IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
-    IReferenceDataService<CollectionPercentage> collectionPercentageService,
-    IReferenceDataService<CollectionStatus> collectionStatusService,
-    IReferenceDataService<CollectionType> collectionTypeService, 
-    IReferenceDataService<Country> countryService,
-    IReferenceDataService<County> countyService, 
-    IReferenceDataService<ConsentRestriction> consentRestrictionService,
-    IReferenceDataService<DonorCount> donorCountService, 
+    IReferenceDataCrudService<AccessCondition> accessConditionService, 
+    IReferenceDataCrudService<AgeRange> ageRangeService,
+    IReferenceDataCrudService<AnnualStatistic> annualStatisticsService,
+    IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
+    IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+    IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
+    IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+    IReferenceDataCrudService<CollectionPercentage> collectionPercentageService,
+    IReferenceDataCrudService<CollectionStatus> collectionStatusService,
+    IReferenceDataCrudService<CollectionType> collectionTypeService, 
+    IReferenceDataCrudService<Country> countryService,
+    IReferenceDataCrudService<County> countyService, 
+    IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
+    IReferenceDataCrudService<DonorCount> donorCountService, 
     IMaterialTypeService materialTypeService,
-    IReferenceDataService<MaterialTypeGroup> materialTypeGroupService,
-    IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService,
-    IReferenceDataService<PreservationType> preservationTypeService,
-    IReferenceDataService<RegistrationReason> registrationReasonService,
-    IReferenceDataService<SampleCollectionMode> sampleCollectionModeService,
-    IReferenceDataService<ServiceOffering> serviceOfferingService, 
-    IReferenceDataService<Sex> sexService,
-    IReferenceDataService<SopStatus> sopStatusService,
-    IReferenceDataService<StorageTemperature> storageTemperatureService, 
+    IReferenceDataCrudService<MaterialTypeGroup> materialTypeGroupService,
+    IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
+    IReferenceDataCrudService<PreservationType> preservationTypeService,
+    IReferenceDataCrudService<RegistrationReason> registrationReasonService,
+    IReferenceDataCrudService<SampleCollectionMode> sampleCollectionModeService,
+    IReferenceDataCrudService<ServiceOffering> serviceOfferingService, 
+    IReferenceDataCrudService<Sex> sexService,
+    IReferenceDataCrudService<SopStatus> sopStatusService,
+    IReferenceDataCrudService<StorageTemperature> storageTemperatureService, 
     IOntologyTermService ontologyTermService
     )
   {

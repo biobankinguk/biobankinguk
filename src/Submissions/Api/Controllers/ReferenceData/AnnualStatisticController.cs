@@ -17,12 +17,12 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AnnualStatisticController : ControllerBase
     {
-        private readonly IReferenceDataService<AnnualStatistic> _annualStatisticService;
-        private readonly IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataCrudService<AnnualStatistic> _annualStatisticService;
+        private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
 
         public AnnualStatisticController(
-            IReferenceDataService<AnnualStatistic> annualStatisticService,
-            IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService)
+            IReferenceDataCrudService<AnnualStatistic> annualStatisticService,
+            IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService)
         {
             _annualStatisticService = annualStatisticService;
             _annualStatisticGroupService = annualStatisticGroupService;

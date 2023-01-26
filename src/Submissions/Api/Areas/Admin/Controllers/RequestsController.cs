@@ -18,6 +18,7 @@ using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class RequestsController : Controller
 {
   private INetworkService _networkService;

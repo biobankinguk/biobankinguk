@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class SampleCollectionModeService : ReferenceDataService<SampleCollectionMode>
+    public class SampleCollectionModeService : ReferenceDataCrudService<SampleCollectionMode>
     {
         public SampleCollectionModeService(ApplicationDbContext db) : base(db) { }
 

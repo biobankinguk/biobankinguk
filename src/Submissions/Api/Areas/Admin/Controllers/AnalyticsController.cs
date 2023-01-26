@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class AnalyticsController : Controller
 {
     private readonly ConfigService _configService;

@@ -17,9 +17,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class SopStatusController : ControllerBase
     {
-        private readonly IReferenceDataService<SopStatus> _sopStatusService;
+        private readonly IReferenceDataCrudService<SopStatus> _sopStatusService;
 
-        public SopStatusController(IReferenceDataService<SopStatus> sopStatusService)
+        public SopStatusController(IReferenceDataCrudService<SopStatus> sopStatusService)
         {
             _sopStatusService = sopStatusService;
         }

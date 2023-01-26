@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-  public class MaterialTypeService : ReferenceDataService<MaterialType>, IMaterialTypeService
+  public class MaterialTypeService : ReferenceDataCrudService<MaterialType>, IMaterialTypeService
   {
     public MaterialTypeService(ApplicationDbContext db) : base(db) { }
 

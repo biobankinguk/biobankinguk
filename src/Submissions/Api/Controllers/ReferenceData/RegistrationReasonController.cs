@@ -16,9 +16,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class RegistrationReasonController : ControllerBase
     {
-        private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
+        private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
 
-        public RegistrationReasonController(IReferenceDataService<RegistrationReason> registrationReasonService)
+        public RegistrationReasonController(IReferenceDataCrudService<RegistrationReason> registrationReasonService)
         {
             _registrationReasonService = registrationReasonService;
         }

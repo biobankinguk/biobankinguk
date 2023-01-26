@@ -20,9 +20,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AssociatedDataTypeGroupController : ControllerBase
     {
-        private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+        private readonly IReferenceDataCrudService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
 
-        public AssociatedDataTypeGroupController(IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService)
+        public AssociatedDataTypeGroupController(IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService)
         {
             _associatedDataTypeGroupService = associatedDataTypeGroupService;
         }
