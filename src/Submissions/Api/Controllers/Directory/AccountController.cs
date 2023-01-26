@@ -1,7 +1,5 @@
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Account;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -12,19 +10,15 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
-    public class AccountController : Controller
+  public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -33,16 +27,17 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
+        private readonly SitePropertiesOptions _siteConfig;
         private readonly ActionContext _actionContext;
 
-
-       public AccountController(
+    public AccountController(
             INetworkService networkService,
             IOrganisationDirectoryService organisationService,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
             ITokenLoggingService tokenLog,
+            IOptions<SitePropertiesOptions> siteConfigOptions,
             IActionContextAccessor actionContextAccessor
             )
         {
@@ -55,7 +50,8 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             _tokenLog = tokenLog;
             _actionContext = actionContextAccessor.ActionContext
               ?? throw new InvalidOperationException("Failed to get the ActionContext");
-    }
+            _siteConfig = siteConfigOptions.Value;
+        }
 
         #region Login/Logout
 
@@ -95,7 +91,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 }
                 else if(result.IsNotAllowed)
                 {
-                    var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                    var supportEmail = _siteConfig.SupportAddress;
                     this.SetTemporaryFeedbackMessage(
                         "This account has not been confirmed. " +
                         $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = model.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
@@ -166,7 +162,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                 {
                     var outError = error;
                     //Modify any errors if we want?
-                    var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                    var supportEmail = _siteConfig.SupportAddress;
                     if (error.Description == "Invalid token.")
                         outError.Description =
                             $"Your account confirmation token is invalid or has expired. " +
@@ -354,7 +350,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             }
             else if (signInStatus.IsNotAllowed)
             {
-                var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+                var supportEmail = _siteConfig.SupportAddress;
                 this.SetTemporaryFeedbackMessage(
                     "This account has not been confirmed. " +
                     $"You can <a href=\"{Url.Action("ResendConfirmLink", new { userEmail = user.Email, returnUrl = Url.Action("Login") })}\">resend your confirmation link</a>, " +
@@ -377,7 +373,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         [AllowAnonymous]
         public ActionResult Forbidden()
         {
-            var supportEmail = ConfigurationManager.AppSettings["AdacSupportEmail"];
+            var supportEmail = _siteConfig.SupportAddress;
 
             this.SetTemporaryFeedbackMessage("Access to the requested page was denied. If you think this is an error " +
                 $"contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a> ",
