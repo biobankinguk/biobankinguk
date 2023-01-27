@@ -1,8 +1,8 @@
 ﻿var adacMaterialTypeVM;
 
 function MaterialTypeGroup(id, description) {
-    this.id = ko.observable(id);
-    this.description = ko.observable(description);
+  this.id = ko.observable(id);
+  this.description = ko.observable(description);
 }
 
 function MaterialTypeGroupModal(id, description) {
@@ -10,9 +10,7 @@ function MaterialTypeGroupModal(id, description) {
   this.modalModeEdit = "Update";
 
   this.mode = ko.observable(this.modalModeAdd);
-    this.materialType = ko.observable(
-        new MaterialTypeGroup(id, description)
-  );
+  this.materialType = ko.observable(new MaterialTypeGroup(id, description));
 }
 
 function AdacMaterialTypeViewModel() {
@@ -33,7 +31,7 @@ function AdacMaterialTypeViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
-      _this.modal.materialType(new MaterialTypeGroup(0, ""));
+    _this.modal.materialType(new MaterialTypeGroup(0, ""));
     _this.showModal();
   };
 
@@ -42,65 +40,80 @@ function AdacMaterialTypeViewModel() {
 
     var materialType = $(event.currentTarget).data("material-type");
     _this.modal.materialType(
-      new MaterialTypeGroup(
-          materialType.Id,
-          materialType.Description,
-      )
+      new MaterialTypeGroup(materialType.id, materialType.description)
     );
 
     _this.showModal();
   };
 
-    this.modalSubmit = function (e) {
-        e.preventDefault();
-        var form = $(e.target); // get form as a jquery object
+  this.modalSubmit = function (e) {
+    e.preventDefault();
+    var form = $(e.target); // get form as a jquery object
 
-        // Get Action Type
-        var action = _this.modal.mode();
-        if (action == 'Add') {
-            addRefData(_this, form.data("resource-url"), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
-        } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type"));
-        }
-    };
+    // Get Form Data
+    var data = serializeFormData(form);
+
+    // Get Action Type
+    var action = _this.modal.mode();
+    if (action == "Add") {
+      addRefData(
+        _this,
+        form.data("resource-url"),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      ); // cf. adac-refdata-utility.js
+    } else if (action == "Update") {
+      editRefData(
+        _this,
+        form.data("resource-url") + "/" + $(e.target.Id).val(),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      );
+    }
+  };
 }
 
 // DataTables
 $(function () {
-    var table = $("#material-types")["DataTable"]({
-        paging: false,
-        info: false,
-        autoWidth: false,
-        language: {
-            search: "Filter: ",
-        },
-    });
+  var table = $("#material-types")["DataTable"]({
+    paging: false,
+    info: false,
+    autoWidth: false,
+    language: {
+      search: "Filter: ",
+    },
+  });
 });
 
 // Events
 $(function () {
-    $("#modal-material-type-form").submit(function (e) {
-        adacMaterialTypeVM.modalSubmit(e);
-    });
+  $("#modal-material-type-form").submit(function (e) {
+    adacMaterialTypeVM.modalSubmit(e);
+  });
 
-    $(".delete-confirm").click(function (e) {
-        e.preventDefault();
+  $(".delete-confirm").click(function (e) {
+    e.preventDefault();
 
-        var $link = $(this);
-        var linkData = $link.data("refdata-model")
-        var url = $link.data("resource-url") + "/" + linkData.Id;
+    var $link = $(this);
+    var linkData = $link.data("refdata-model");
+    var url = $link.data("resource-url") + "/" + linkData.id;
 
-        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
-            function (confirmation) {
-                if (confirmation) {
-                    deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
-                }
-            }
-        );
-    });
+    bootbox.confirm(
+      "Are you sure you want to delete " + linkData.description + "?",
+      function (confirmation) {
+        if (confirmation) {
+          deleteRefData(
+            url,
+            $link.data("success-redirect"),
+            $link.data("refdata-type")
+          );
+        }
+      }
+    );
+  });
 
-    adacMaterialTypeVM = new AdacMaterialTypeViewModel();
-    ko.applyBindings(adacMaterialTypeVM);
+  adacMaterialTypeVM = new AdacMaterialTypeViewModel();
+  ko.applyBindings(adacMaterialTypeVM);
 });
