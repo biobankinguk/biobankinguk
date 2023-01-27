@@ -91,7 +91,7 @@
 <!-- Modal -->
 <div class="modal fade" id="extraction-procedure-modal" tabindex="-1" role="dialog" 
      aria-labelledby="extraction-procedure-modal-label" 
-     data-material-types="@Json.Serialize(Model.MaterialTypes.Select(x => new {id = x.Id, value = x.Value}))">
+     data-material-types='@Json.Serialize(Model.MaterialTypes.Select(x => new {id = x.Id, value = x.Value}))'>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
