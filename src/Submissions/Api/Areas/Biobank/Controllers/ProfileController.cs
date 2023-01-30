@@ -13,6 +13,7 @@ using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
@@ -33,6 +34,8 @@ using Newtonsoft.Json.Linq;
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+
 public class ProfileController : Controller
 {
     private IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;

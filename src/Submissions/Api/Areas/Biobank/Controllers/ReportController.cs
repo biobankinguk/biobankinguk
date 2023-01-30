@@ -4,16 +4,20 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+
 public class ReportController : Controller
 {
     private readonly IAnalyticsReportGenerator _analyticsReportGenerator;

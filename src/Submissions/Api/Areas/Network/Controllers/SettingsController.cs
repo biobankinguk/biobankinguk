@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -17,6 +18,8 @@ using NetworkAdminsModel = Biobanks.Submissions.Api.Areas.Network.Models.Setting
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
 [Area("Network")]
+[Authorize(nameof(AuthPolicies.IsNetworkAdmin))]
+
 public class SettingsController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;

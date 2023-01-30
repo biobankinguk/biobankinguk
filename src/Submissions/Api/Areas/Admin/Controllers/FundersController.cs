@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
+using Microsoft.AspNetCore.Authorization;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
+
 public class FundersController : Controller
 {
   private readonly IReferenceDataCrudService<Funder> _funderService;

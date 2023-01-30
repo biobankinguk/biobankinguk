@@ -156,6 +156,15 @@ public static class ConfigureWebServices
         AuthPolicies.IsBasicAuthenticated);
       o.AddPolicy(nameof(AuthPolicies.CanAccessHangfireDashboard),
         AuthPolicies.CanAccessHangfireDashboard);
+      o.AddPolicy(nameof(AuthPolicies.IsSuperUser),
+        AuthPolicies.IsSuperUser);
+      o.AddPolicy(nameof(AuthPolicies.IsDirectoryAdmin),
+        AuthPolicies.IsDirectoryAdmin);
+      o.AddPolicy(nameof(AuthPolicies.IsBiobankAdmin),
+        AuthPolicies.IsBiobankAdmin);
+      o.AddPolicy(nameof(AuthPolicies.IsNetworkAdmin),
+        AuthPolicies.IsNetworkAdmin);
+
     });
 
     // App Insights
