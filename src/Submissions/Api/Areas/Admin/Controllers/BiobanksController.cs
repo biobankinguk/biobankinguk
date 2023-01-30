@@ -12,10 +12,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[AllowAnonymous]
+
 public class BiobanksController : Controller
 {
   private readonly IBiobankService _biobankService;
@@ -23,7 +26,7 @@ public class BiobanksController : Controller
   private readonly IOrganisationDirectoryService _organisationService;
   private readonly ITokenLoggingService _tokenLog;
   private readonly UserManager<ApplicationUser> _userManager;
-  private readonly Mapper _mapper;
+  private readonly IMapper _mapper;
 
   public BiobanksController(
     IBiobankService biobankService,
@@ -31,7 +34,7 @@ public class BiobanksController : Controller
     IOrganisationDirectoryService organisationDirectoryService, 
     ITokenLoggingService tokenLog, 
     UserManager<ApplicationUser> userManager, 
-    Mapper mapper
+    IMapper mapper
     )
   {
     _biobankService = biobankService;
@@ -42,7 +45,7 @@ public class BiobanksController : Controller
     _mapper = mapper;
   }
   
-  public async Task<ActionResult> BiobankAdmin(int id = 0)
+  public async Task<ActionResult> BiobanksAdmin(int id = 0)
   {
       var biobank = await _organisationService.Get(id);
 
@@ -93,7 +96,7 @@ public class BiobanksController : Controller
       return RedirectToAction("BiobankAdmin", new { id = biobankId });
   }
 
-  public async Task<ActionResult> Biobanks()
+  public async Task<ActionResult> Index()
   {
       var allBiobanks =
           (await _organisationService.List()).ToList();

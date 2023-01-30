@@ -4,20 +4,21 @@ using Biobanks.Submissions.Api.Areas.Admin.Models.RegistrationDomainRules;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 public class RegistrationDomainRulesController : Controller
 {
-  private readonly RegistrationDomainService _registrationDomainService;
+  private readonly IRegistrationDomainService _registrationDomainService;
   
-  public RegistrationDomainRulesController(RegistrationDomainService registrationDomainService)
+  public RegistrationDomainRulesController(IRegistrationDomainService registrationDomainService)
   {
     _registrationDomainService = registrationDomainService;
   }
   
-  public async Task<ActionResult> BlockAllowList()
+  public async Task<ActionResult> Index()
   {
     var rules = (await _registrationDomainService.ListRules())
       .Select(x => new RegistrationDomainRuleModel

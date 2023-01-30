@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[AllowAnonymous]
+
 public class FundersController : Controller
 {
   private readonly IReferenceDataCrudService<Funder> _funderService;
@@ -18,7 +21,7 @@ public class FundersController : Controller
     _funderService = funderService;
   }
 
-  public async Task<ActionResult> Funders()
+  public async Task<ActionResult> Index()
   {
     return View(
         (await _funderService.List())

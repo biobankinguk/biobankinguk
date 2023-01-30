@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Networks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[AllowAnonymous]
+
 public class NetworksController : Controller
 {
   private readonly INetworkService _networkService;
@@ -18,7 +21,7 @@ public class NetworksController : Controller
     _networkService = networkService;
   }
   
-  public async Task<ActionResult> Networks()
+  public async Task<ActionResult> Index()
   {
     var allNetworks =
       (await _networkService.List()).ToList();

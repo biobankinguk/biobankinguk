@@ -9,18 +9,19 @@ using Biobanks.Submissions.Api.Areas.Admin.Models.Analytics;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 public class AnalyticsController : Controller
 {
-    private readonly ConfigService _configService;
+    private readonly IConfigService _configService;
     private readonly IMapper _mapper;
     private readonly IDirectoryReportGenerator _directoryReportGenerator;
 
     public AnalyticsController(
-        ConfigService configService,
+        IConfigService configService,
         IMapper mapper,
         IDirectoryReportGenerator directoryReportGenerator
         )
@@ -30,7 +31,7 @@ public class AnalyticsController : Controller
         _directoryReportGenerator = directoryReportGenerator;
     }
     
-    public async Task<ActionResult> Analytics(int year = 0, int endQuarter = 0, int reportPeriod = 0)
+    public async Task<ActionResult> Index(int year = 0, int endQuarter = 0, int reportPeriod = 0)
     {
         //If turned off in site config
         if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
