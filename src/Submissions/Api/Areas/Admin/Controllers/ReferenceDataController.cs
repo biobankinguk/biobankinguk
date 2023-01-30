@@ -18,7 +18,6 @@ using Biobanks.Submissions.Api.Auth;
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[AllowAnonymous]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
 public class ReferenceDataController : Controller
 {
