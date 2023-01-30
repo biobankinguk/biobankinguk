@@ -111,7 +111,8 @@
                                     <label class="col-sm-3 control-label" data-bind="visible: $index() < 1">Associated Data</label>
                                     <div class="col-sm-8" data-bind="css: { 'col-sm-offset-3': $index() > 0 }">
                                         <input type="text" class="form-control" disabled
-                                               data-bind="value: $parent.modal.diseaseStatus().associatedData()[$index()].Name">
+                                               @* data-bind="value: $parent.modal.diseaseStatus().associatedData()[$index()].name"> *@
+                                               data-bind="value: name">
                                     </div>
                                     <div class="col-sm-1">
                                         <button type="button" class="fa fa-minus-circle btn btn-default form-control-static pull-right"

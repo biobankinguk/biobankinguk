@@ -1,5 +1,5 @@
 var refdataType = "Disease status";
-var redirectUrl = "/ADAC/DiseaseStatuses";
+var redirectUrl = "/Admin/ReferenceData/DiseaseStatuses";
 var apiUrl = "/api/DiseaseStatus";
 
 var adacDiseaseStatusVM;
@@ -63,7 +63,7 @@ function AdacDiseaseStatusViewModel() {
     _this.modal.diseaseStatus(new DiseaseStatus("", "", [], false, []));
     _this.setPartialEdit(false);
     _this.showModal();
-    };
+  };
 
   this.openModalForEdit = function (_, event) {
     _this.modal.mode(_this.modal.modalModeEdit);
@@ -72,28 +72,28 @@ function AdacDiseaseStatusViewModel() {
     var rowIndex = $(event.currentTarget).data("row");
     var diseaseStatus = dataTable.row(rowIndex).data();
 
-    var otherTerms = diseaseStatus.OtherTerms
-      ? diseaseStatus.OtherTerms.split(",").map(function (item) {
-        return item.trim();
-      })
-      : diseaseStatus.OtherTerms;
+    var otherTerms = diseaseStatus.otherTerms
+      ? diseaseStatus.otherTerms.split(",").map(function (item) {
+          return item.trim();
+        })
+      : diseaseStatus.otherTerms;
 
-    var associatedData = diseaseStatus.AssociatedDataTypes
-      ? diseaseStatus.AssociatedDataTypes
+    var associatedData = diseaseStatus.associatedDataTypes
+      ? diseaseStatus.associatedDataTypes
       : [];
 
     _this.modal.diseaseStatus(
       new DiseaseStatus(
-        diseaseStatus.OntologyTermId,
-        diseaseStatus.Description,
+        diseaseStatus.ontologyTermId,
+        diseaseStatus.description,
         otherTerms,
-        diseaseStatus.DisplayOnDirectory,
+        diseaseStatus.displayOnDirectory,
         associatedData
       )
     );
 
     $("#OntologyTermId").prop("readonly", true);
-    _this.setPartialEdit(diseaseStatus.CollectionCapabilityCount > 0);
+    _this.setPartialEdit(diseaseStatus.collectionCapabilityCount > 0);
     _this.showModal();
   };
 
@@ -112,14 +112,19 @@ function AdacDiseaseStatusViewModel() {
         .join(",")
     );
 
+    // Get Form Data
+    var data = serializeFormData(form);
+    data.DisplayOnDirectory = data.DisplayOnDirectory === "true" ? true : false;
+    console.log(data);
+
     // Get Action Type
     var action = _this.modal.mode();
     if (action == "Add") {
-      addRefData(_this, apiUrl, form.serialize(), redirectUrl, refdataType);
+      addRefData(_this, apiUrl, data, redirectUrl, refdataType);
     } else if (action == "Update") {
       // Parse Edit Url
       var url = apiUrl + "/" + $(e.target.Id).val();
-      editRefData(_this, url, form.serialize(), redirectUrl, refdataType);
+      editRefData(_this, url, data, redirectUrl, refdataType);
     }
   };
 
@@ -152,6 +157,7 @@ function AdacDiseaseStatusViewModel() {
     _this.modal.diseaseStatus().associatedData.splice(idx, 1);
   };
 
+  // Get the list of Associated Data and insert into modal select input.
   $.ajax({
     type: "GET",
     url: "/api/AssociatedDataType",
@@ -159,10 +165,10 @@ function AdacDiseaseStatusViewModel() {
       //setLoading(true); // Show loader icon
     },
     success: function (response) {
-      response.AssociatedDataTypes.forEach(function (type) {
+      response.forEach(function (type) {
         var val = JSON.stringify(type);
         $("#ass-data-select").append(
-          "<option value='" + (val, "'>") + (type.Name, "</option>")
+          "<option value='" + val + "'>" + type.name + "</option>"
         );
       });
     },
@@ -190,53 +196,52 @@ $(function () {
       search: "Filter: ",
     },
     columns: [
-      { data: "Description" },
-      { data: "OntologyTermId" },
-      { data: "OtherTerms" },
-      { data: "CollectionCapabilityCount" },
+      { data: "description" },
+      { data: "ontologyTermId" },
+      { data: "otherTerms" },
+      { data: "collectionCapabilityCount" },
       {
-        data: "DisplayOnDirectory",
+        data: "displayOnDirectory",
         render: function (data, type, row) {
           var bool = data.toString();
           return bool.charAt(0).toUpperCase() + bool.slice(1);
         },
       },
       {
-        data: "AssociatedDataTypes",
-          render: function (data, type, row, meta) {
-
-              var returnString = "N/A";
+        data: "associatedDataTypes",
+        render: function (data, type, row, meta) {
+          var returnString = "N/A";
           if (data) {
-              if (data.length === 1) {
-                  returnString = "<li>" + data[0].Name + "</li>";
-              } else if (data.length < 4 && data.length > 1) {
-                  // return their values as a list
-                  var displayData = data
-                      .map(function (item) {
-                        return "<li>" + item.Name + "</li>";
-                      })
-                      .join("");
-                  returnString = "" + displayData + "";
-              } else if (data.length > 3) {
-                  var displayData = data.slice(2)
-                      .map(function (item) {
-                        return "<li>" + item.Name + "</li>";
-                      })
-                      .join("");
+            if (data.length === 1) {
+              returnString = "<li>" + data[0].name + "</li>";
+            } else if (data.length < 4 && data.length > 1) {
+              // return their values as a list
+              var displayData = data
+                .map(function (item) {
+                  return "<li>" + item.name + "</li>";
+                })
+                .join("");
+              returnString = "" + displayData + "";
+            } else if (data.length > 3) {
+              var displayData = data
+                .slice(2)
+                .map(function (item) {
+                  return "<li>" + item.name + "</li>";
+                })
+                .join("");
 
-                  var ViewMore = $("<a/>", {
-                      "data-row": meta.row,
-                      class: "action-icon click-view-more-assdata",
-                      href: "#",
-                      html: 
-                          $("<span/>", {
-                              text: "...View All",
-                          })
-                  });
-                  returnString = "" + displayData + "";
-              }
+              var ViewMore = $("<a/>", {
+                "data-row": meta.row,
+                class: "action-icon click-view-more-assdata",
+                href: "#",
+                html: $("<span/>", {
+                  text: "...View All",
+                }),
+              });
+              returnString = "" + displayData + "";
+            }
           }
-              return $("<div/>").append(returnString).append(ViewMore).html();
+          return $("<div/>").append(returnString).append(ViewMore).html();
         },
       },
       {
@@ -306,10 +311,10 @@ $(function () {
 
     var rowIndex = $(this).data("row");
     var data = dataTable.row(rowIndex).data();
-    var url = apiUrl + "/" + data.OntologyTermId;
+    var url = apiUrl + "/" + data.ontologyTermId;
 
     bootbox.confirm(
-      "Are you sure you want to delete " + data.Description + "?",
+      "Are you sure you want to delete " + data.description + "?",
       function (confirmation) {
         if (confirmation) {
           deleteRefData(url, redirectUrl, refdataType);
@@ -318,20 +323,20 @@ $(function () {
     );
   });
 
-   //View More Associated Data
-    $(document.body).on("click", ".click-view-more-assdata", function (e) {
-        e.preventDefault();
+  //View More Associated Data
+  $(document.body).on("click", ".click-view-more-assdata", function (e) {
+    e.preventDefault();
 
-        var rowIndex = $(this).data("row");
-        var data = dataTable.row(rowIndex).data();
-        var displayData = data.AssociatedDataTypes.map(function (item) {
-          return "<li>" + item.Name + "</li>";
-        }).join("");
+    var rowIndex = $(this).data("row");
+    var data = dataTable.row(rowIndex).data();
+    var displayData = data.associatedDataTypes
+      .map(function (item) {
+        return "<li>" + item.name + "</li>";
+      })
+      .join("");
 
-        bootbox.alert(
-             displayData
-        );
-    });
+    bootbox.alert(displayData);
+  });
 
   // Knockout View Model Binding
   adacDiseaseStatusVM = new AdacDiseaseStatusViewModel();
@@ -373,11 +378,11 @@ $(function () {
             ? null
             : $.isArray(val)
             ? $.map(val, function (innerVal) {
-              return {
-                name: elem.name,
-                value: innerVal
-              };
-            })
+                return {
+                  name: elem.name,
+                  value: innerVal,
+                };
+              })
             : {
                 name: elem.name,
                 value:
