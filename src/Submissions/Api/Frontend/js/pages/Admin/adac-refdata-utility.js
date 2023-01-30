@@ -48,10 +48,9 @@ function addRefData(adacRefdataVM, url, data, redirectTo, refdata) {
       );
     },
     error: function (error) {
-      if (error) {
-        adacRefdataVM.dialogErrors.removeAll();
-        adacRefdataVM.dialogErrors.push(error.responseText);
-      }
+      adacRefdataVM.dialogErrors.removeAll();
+      var message = JSON.parse(error.responseText);
+      adacRefdataVM.dialogErrors.push(Object.values(message)[0]);
     },
   });
 }
@@ -77,7 +76,8 @@ function editRefData(adacRefdataVM, url, data, redirectTo, refdata) {
     error: function (error) {
       if (error) {
         adacRefdataVM.dialogErrors.removeAll();
-        adacRefdataVM.dialogErrors.push(error.responseText);
+        var message = JSON.parse(error.responseText);
+        adacRefdataVM.dialogErrors.push(Object.values(message)[0]);
       }
     },
   });
@@ -97,7 +97,8 @@ function deleteRefData(url, redirectTo, refdata) {
       );
     },
     error: function (error) {
-      window.feedbackMessage(error.responseText, "warning", true);
+      var message = JSON.parse(error.responseText);
+      window.feedbackMessage(Object.values(message)[0], "warning", true);
     },
   });
 }
