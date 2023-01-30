@@ -15,10 +15,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;

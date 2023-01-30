@@ -12,10 +12,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
 public class BiobanksController : Controller
 {
   private readonly IBiobankService _biobankService;

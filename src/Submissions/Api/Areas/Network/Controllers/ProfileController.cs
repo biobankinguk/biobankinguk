@@ -24,10 +24,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
 [Area("Network")]
+[Authorize(nameof(AuthPolicies.IsNetworkAdmin))]
+
 public class ProfileController : Controller
 {
   private readonly INetworkService _networkService;
