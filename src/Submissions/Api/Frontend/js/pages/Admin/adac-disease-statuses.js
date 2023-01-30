@@ -115,7 +115,6 @@ function AdacDiseaseStatusViewModel() {
     // Get Form Data
     var data = serializeFormData(form);
     data.DisplayOnDirectory = data.DisplayOnDirectory === "true" ? true : false;
-    console.log(data);
 
     // Get Action Type
     var action = _this.modal.mode();
@@ -145,7 +144,7 @@ function AdacDiseaseStatusViewModel() {
         .diseaseStatus()
         .associatedData()
         .find(function (item) {
-          return item.Id === JSON.parse($("#ass-data-select").val()).Id;
+          return item.Id === JSON.parse($("#ass-data-select").val()).id;
         }) == null
     ) {
       _this.modal
