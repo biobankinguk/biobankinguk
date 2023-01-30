@@ -176,12 +176,13 @@ $(function () {
     $.ajax({
       url: $row.data("resource-url") + "/" + $row.data("id") + "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $row.data("id"),
         value: $row.data("value"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

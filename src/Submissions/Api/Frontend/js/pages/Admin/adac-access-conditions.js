@@ -146,12 +146,13 @@ $(function () {
         $(triggerRow.node).data("access-condition-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("access-condition-id"),
         description: $(triggerRow.node).data("access-condition-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

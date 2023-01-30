@@ -158,12 +158,13 @@ $(function () {
           $(triggerRow.node).data("collection-status-id") +
           "/move",
         type: "POST",
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
-        data: {
+        data: JSON.stringify({
           id: $(triggerRow.node).data("collection-status-id"),
           description: $(triggerRow.node).data("collection-status-desc"),
           sortOrder: triggerRow.newPosition + 1, //1-indexable
-        },
+        }),
       });
     });
   });

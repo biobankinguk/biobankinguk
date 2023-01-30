@@ -158,15 +158,16 @@ $(function () {
         $(triggerRow.node).data("preservation-type-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("preservation-type-id"),
         value: $(triggerRow.node).data("preservation-type-value"),
         sortOrder: triggerRow.newPosition + 1,
         storageTemperatureId: $(triggerRow.node).data(
           "preservation-type-storagetemperatureid"
         ),
-      },
+      }),
     });
   });
 });

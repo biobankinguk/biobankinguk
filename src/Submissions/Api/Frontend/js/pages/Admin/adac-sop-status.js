@@ -139,12 +139,13 @@ $(function () {
         $(triggerRow.node).data("sop-status-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("sop-status-id"),
         description: $(triggerRow.node).data("sop-status-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

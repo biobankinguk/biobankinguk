@@ -180,12 +180,13 @@ $(function () {
         $(triggerRow.node).data("macro-assessment-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("macro-assessment-id"),
         description: $(triggerRow.node).data("macro-assessment-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

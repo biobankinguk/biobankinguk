@@ -183,14 +183,15 @@ $(function () {
         $(triggerRow.node).data("donor-count-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("donor-count-id"),
         description: $(triggerRow.node).data("donor-count-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
         lowerBound: $(triggerRow.node).data("donor-count-lower-bound"),
         upperBound: $(triggerRow.node).data("donor-count-upper-bound"),
-      },
+      }),
     });
   });
 });

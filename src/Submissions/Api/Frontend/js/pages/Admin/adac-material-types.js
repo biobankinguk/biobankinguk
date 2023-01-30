@@ -133,12 +133,13 @@ $(function () {
         $(triggerRow.node).data("material-type-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("material-type-id"),
         description: $(triggerRow.node).data("material-type-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

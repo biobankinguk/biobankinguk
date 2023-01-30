@@ -213,6 +213,22 @@ $(function () {
       return row.node == edit.triggerRow.node();
     })[0];
 
+    // Encode to API format.
+    var lowerDuration = $(triggerRow.node)
+      .data("age-range-lowerbound")
+      .split(" ")[1][0];
+    var upperDuration = $(triggerRow.node)
+      .data("age-range-upperbound")
+      .split(" ")[1][0];
+    var lowerBound = $(triggerRow.node)
+      .data("age-range-lowerbound")
+      .replace(/[a-z]/gi, "")
+      .replace(/\s/g, "");
+    var upperBound = $(triggerRow.node)
+      .data("age-range-upperbound")
+      .replace(/[a-z]/gi, "")
+      .replace(/\s/g, "");
+
     //AJAX Update
     $.ajax({
       url:
@@ -221,14 +237,17 @@ $(function () {
         $(triggerRow.node).data("age-range-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("age-range-id"),
         description: $(triggerRow.node).data("age-range-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable,
-        lowerBound: $(triggerRow.node).data("age-range-lowerbound"),
-        upperBound: $(triggerRow.node).data("age-range-upperbound"),
-      },
+        lowerBound: lowerBound,
+        upperBound: upperBound,
+        lowerDuration: lowerDuration,
+        upperDuration: upperDuration,
+      }),
     });
   });
 });

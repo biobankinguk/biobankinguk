@@ -158,12 +158,13 @@ $(function () {
           $(triggerRow.node).data("restriction-id") +
           "/move",
         type: "POST",
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
-        data: {
+        data: JSON.stringify({
           id: $(triggerRow.node).data("restriction-id"),
           description: $(triggerRow.node).data("restriction-desc"),
           sortOrder: triggerRow.newPosition + 1, //1-indexable
-        },
+        }),
       });
     });
   });

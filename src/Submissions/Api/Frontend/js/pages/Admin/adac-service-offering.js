@@ -158,12 +158,13 @@ $(function () {
           $(triggerRow.node).data("offering-id") +
           "/move",
         type: "POST",
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
-        data: {
+        data: JSON.stringify({
           id: $(triggerRow.node).data("offering-id"),
           name: $(triggerRow.node).data("offering-name"),
           sortOrder: triggerRow.newPosition + 1, //1-indexable
-        },
+        }),
       });
     });
   });

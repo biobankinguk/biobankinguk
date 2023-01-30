@@ -164,8 +164,9 @@ $(function () {
         $(triggerRow.node).data("collection-percentage-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("collection-percentage-id"),
         description: $(triggerRow.node).data("collection-percentage-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
@@ -175,7 +176,7 @@ $(function () {
         upperBound: $(triggerRow.node).data(
           "collection-percentage-upper-bound"
         ),
-      },
+      }),
     });
   });
 });

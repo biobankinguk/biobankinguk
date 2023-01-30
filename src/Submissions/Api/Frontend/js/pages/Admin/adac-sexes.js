@@ -190,12 +190,13 @@ $(function () {
         $(triggerRow.node).data("sexes-id") +
         "/move",
       type: "POST",
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      data: {
+      data: JSON.stringify({
         id: $(triggerRow.node).data("sexes-id"),
         description: $(triggerRow.node).data("sexes-desc"),
         sortOrder: triggerRow.newPosition + 1, //1-indexable
-      },
+      }),
     });
   });
 });

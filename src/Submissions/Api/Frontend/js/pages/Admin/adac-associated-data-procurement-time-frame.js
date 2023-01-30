@@ -182,13 +182,14 @@ $(function () {
           $(triggerRow.node).data("procurement-id") +
           "/move",
         type: "POST",
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
-        data: {
+        data: JSON.stringify({
           id: $(triggerRow.node).data("procurement-id"),
           description: $(triggerRow.node).data("procurement-desc"),
           displayName: $(triggerRow.node).data("procurement-name"),
           sortOrder: triggerRow.newPosition + 1, //1-indexable
-        },
+        }),
       });
     });
   });
