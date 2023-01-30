@@ -6,7 +6,7 @@
 
 <partial name= "_ADACTabs" model= "Biobanks"/>
 
-<h3>Biobanks @Html.ActionLink("Invite a new biobank", "AdacBiobank", "Register", null, new { @class = "btn btn-success pull-right" })</h3>
+<h3>Biobanks @Html.ActionLink("Invite a new biobank", "AdacBiobank", "Register", new { area = "" }, new { @class = "btn btn-success pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">
@@ -49,7 +49,7 @@
         {
             <div class="alert alert-info">
                 There are currently no Biobanks in the directory.
-                @Html.ActionLink("Invite a new Biobank now", "AdacBiobank", "Register")
+                @Html.ActionLink("Invite a new Biobank now", "AdacBiobank", "Register", new { area = "" })
             </div>
         }
     </div>
