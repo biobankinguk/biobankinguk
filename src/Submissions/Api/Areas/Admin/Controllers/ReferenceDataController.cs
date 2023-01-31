@@ -19,7 +19,6 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
-
 public class ReferenceDataController : Controller
 {
 

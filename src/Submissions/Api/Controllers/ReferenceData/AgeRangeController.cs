@@ -149,7 +149,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
             await _ageRangeService.Delete(id);
 
-            return Ok(id);
+            return Ok(model);
         }
         [HttpPut("{id}")]
         [SwaggerResponse(200, Type = typeof(AgeRangeModel))]

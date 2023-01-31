@@ -21,14 +21,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         public override async Task<bool> IsInUse(int id)
             => await _db.OrganisationAnnualStatistics.AnyAsync(x => x.AnnualStatisticId == id);
-
+        
         public override async Task<AnnualStatistic> Update(AnnualStatistic entity)
         {
             var existing = await base.Update(entity);
             existing.AnnualStatisticGroupId = entity.AnnualStatisticGroupId;
-            existing.AnnualStatisticGroup = entity.AnnualStatisticGroup;
             await _db.SaveChangesAsync();
-
+        
             return existing;
         }
     }

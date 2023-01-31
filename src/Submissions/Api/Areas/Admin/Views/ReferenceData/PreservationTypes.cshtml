@@ -56,14 +56,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#preservation-types-modal"
-                                   data-preservation-type="@Json.Serialize(item)"
+                                   data-preservation-type='@Json.Serialize(item)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(item)"
+                                   data-refdata-model='@Json.Serialize(item)'
                                    data-resource-url="/api/PreservationType"
                                    data-success-redirect="@Url.Action("PreservationTypes")"
                                    data-refdata-type="Preservation Type"
@@ -90,7 +90,7 @@
     });
 }
 
-<div class="modal fade" id="preservation-types-modal" tabindex="-1" role="dialog" aria-labelledby="preservation-types-label" data-storage-temperatures="@Json.Serialize(storageTemperatures)">
+<div class="modal fade" id="preservation-types-modal" tabindex="-1" role="dialog" aria-labelledby="preservation-types-label" data-storage-temperatures='@Json.Serialize(storageTemperatures)'>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
