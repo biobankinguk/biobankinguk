@@ -17,8 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[AllowAnonymous]
-
 public class BiobanksController : Controller
 {
   private readonly IBiobankService _biobankService;
