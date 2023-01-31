@@ -61,16 +61,17 @@ function AdacAssociatedDataTypeViewModel() {
 
     var associatedDataType = $(event.currentTarget).data("associated-types");
 
-    var ontologyTerms = associatedDataType.OntologyTerms
-      ? associatedDataType.OntologyTerms
+    var ontologyTerms = associatedDataType.ontologyTerms
+      ? associatedDataType.ontologyTerms
       : [];
+    console.log(ontologyTerms);
 
     _this.modal.associatedDataType(
       new AssociatedDataType(
-        associatedDataType.Id,
-        associatedDataType.Name,
-        associatedDataType.Message,
-        associatedDataType.AssociatedDataTypeGroupId,
+        associatedDataType.id,
+        associatedDataType.name,
+        associatedDataType.message,
+        associatedDataType.associatedDataTypeGroupId,
         this.groups,
         ontologyTerms
       )
@@ -83,13 +84,16 @@ function AdacAssociatedDataTypeViewModel() {
     e.preventDefault();
     var form = $(e.target); // get form as a jquery object
 
+    // Get Form Data
+    var data = serializeFormData(form);
+
     // Get Action Type
     var action = _this.modal.mode();
     if (action == "Add") {
       addRefData(
         _this,
         form.data("resource-url"),
-        form.serialize(),
+        data,
         form.data("success-redirect"),
         form.data("refdata-type")
       ); // cf. adac-refdata-utility.js
@@ -97,7 +101,7 @@ function AdacAssociatedDataTypeViewModel() {
       editRefData(
         _this,
         form.data("resource-url") + "/" + $(e.target.Id).val(),
-        form.serialize(),
+        data,
         form.data("success-redirect"),
         form.data("refdata-type")
       );
@@ -110,8 +114,8 @@ function AdacAssociatedDataTypeViewModel() {
         .ontologyTerms()
         .find(function (item) {
           return (
-            item.OntologyTermId ==
-            JSON.parse($(".diagnosis-search").attr("data-id")).OntologyTermId
+            item.ontologyTermId ==
+            JSON.parse($(".diagnosis-search").attr("data-id")).ontologyTermId
           );
         }) == undefined
     ) {
@@ -152,8 +156,8 @@ function AdacAssociatedDataTypeViewModel() {
         autoselect: true,
       },
       {
-        name: "Description",
-        displayKey: "Description",
+        name: "description",
+        displayKey: "description",
         source: diseases.ttAdapter(),
         limit: 100,
       }
@@ -189,10 +193,10 @@ $(function () {
 
     var $link = $(this);
     var linkData = $link.data("refdata-model");
-    var url = $link.data("resource-url") + "/" + linkData.Id;
+    var url = $link.data("resource-url") + "/" + linkData.id;
 
     bootbox.confirm(
-      "Are you sure you want to delete " + linkData.Name + "?",
+      "Are you sure you want to delete " + linkData.name + "?",
       function (confirmation) {
         if (confirmation) {
           deleteRefData(

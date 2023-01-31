@@ -51,14 +51,14 @@
 							   class="action-icon"
 							   href="#"
 							   data-target="#sex-modal"
-							   data-sex="@Json.Serialize(sex)"
+							   data-sex='@Json.Serialize(sex)'
 							   data-bind="click: openModalForEdit">
 								<span class="fa fa-edit labelled-icon"></span>Edit
 							</a>
 
                             <a title="Delete"
                                class="action-icon delete-confirm"
-                               data-refdata-model="@Json.Serialize(sex)"
+                               data-refdata-model='@Json.Serialize(sex)'
                                data-resource-url="/api/Sex"
                                data-success-redirect="@Url.Action("Sexes")"
                                data-refdata-type="Sex"
