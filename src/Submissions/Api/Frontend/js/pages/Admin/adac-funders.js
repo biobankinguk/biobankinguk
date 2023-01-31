@@ -56,20 +56,16 @@ function AdacFunderViewModel() {
       success: function (data) {
         //clear form errors (as these are in the page's ko model)
         _this.dialogErrors.removeAll();
-
-        if (data.success) {
-          _this.hideModal();
-          //now we can redirect (force a page reload, following the successful AJAX submit
-          //(why not just do a regular POST submit? for nice AJAX modal form valdation)
-          window.location.href =
-            form.data(successRedirect) + "?Name=" + data.name;
-        } else {
-          if (Array.isArray(data.errors)) {
-            data.errors.forEach(function (error, index) {
-              _this.dialogErrors.push(error);
-            });
-          }
-        }
+        _this.hideModal();
+        //now we can redirect (force a page reload, following the successful AJAX submit
+        //(why not just do a regular POST submit? for nice AJAX modal form valdation)
+        window.location.href =
+          form.data(successRedirect) + "?Name=" + data.name;
+      },
+      error: function (error) {
+        _this.dialogErrors.removeAll();
+        var message = JSON.parse(error.responseText);
+        _this.dialogErrors.push(message.Name);
       },
     });
   };
