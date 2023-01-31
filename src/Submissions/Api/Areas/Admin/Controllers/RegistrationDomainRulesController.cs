@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Authorization;
 using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
