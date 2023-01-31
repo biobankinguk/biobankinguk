@@ -48,5 +48,29 @@ namespace Biobanks.Submissions.Api.Auth
                 .Combine(IsBasicAuthenticated)
                 .RequireClaim(ClaimTypes.Role, CustomRoles.SuperUser)
                 .Build();
-    }
+
+        public static AuthorizationPolicy IsSuperUser
+        => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .RequireClaim(ClaimTypes.Role, CustomRoles.SuperUser)
+            .Build();
+
+        public static AuthorizationPolicy IsDirectoryAdmin
+        => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .RequireClaim(ClaimTypes.Role, Role.DirectoryAdmin)
+            .Build();
+
+        public static AuthorizationPolicy IsBiobankAdmin
+        => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .RequireClaim(ClaimTypes.Role, Role.BiobankAdmin)
+            .Build();
+
+        public static AuthorizationPolicy IsNetworkAdmin
+        => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .RequireClaim(ClaimTypes.Role, Role.NetworkAdmin)
+            .Build();
+  }
 }

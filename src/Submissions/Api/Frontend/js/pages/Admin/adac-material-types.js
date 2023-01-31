@@ -1,9 +1,9 @@
 ﻿var adacMaterialTypeVM;
 
 function MaterialType(id, description, sortOrder) {
-    this.id = ko.observable(id);
-    this.description = ko.observable(description);
-    this.sortOrder = ko.observable(sortOrder)
+  this.id = ko.observable(id);
+  this.description = ko.observable(description);
+  this.sortOrder = ko.observable(sortOrder);
 }
 
 function MaterialTypeModal(id, description, sortOrder) {
@@ -11,8 +11,8 @@ function MaterialTypeModal(id, description, sortOrder) {
   this.modalModeEdit = "Update";
 
   this.mode = ko.observable(this.modalModeAdd);
-    this.materialType = ko.observable(
-        new MaterialType(id, description, sortOrder)
+  this.materialType = ko.observable(
+    new MaterialType(id, description, sortOrder)
   );
 }
 
@@ -34,7 +34,7 @@ function AdacMaterialTypeViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
-      _this.modal.materialType(new MaterialType(0, "", 0));
+    _this.modal.materialType(new MaterialType(0, "", 0));
     _this.showModal();
   };
 
@@ -44,169 +44,187 @@ function AdacMaterialTypeViewModel() {
     var materialType = $(event.currentTarget).data("material-type");
     _this.modal.materialType(
       new MaterialType(
-          materialType.Id,
-          materialType.Description,
-          materialType.SortOrder
-
+        materialType.id,
+        materialType.description,
+        materialType.sortOrder
       )
     );
 
     _this.showModal();
   };
 
-    this.modalSubmit = function (e) {
-        e.preventDefault();
-        var form = $(e.target); // get form as a jquery object
+  this.modalSubmit = function (e) {
+    e.preventDefault();
+    var form = $(e.target); // get form as a jquery object
 
-        // Get Action Type
-        var action = _this.modal.mode();
-        if (action == 'Add') {
-            addRefData(_this, form.data("resource-url"), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
-        } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.Id).val(), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type"));
-        }
-    };
+    // Get Form Data
+    var data = serializeFormData(form);
+
+    // Get Action Type
+    var action = _this.modal.mode();
+    if (action == "Add") {
+      addRefData(
+        _this,
+        form.data("resource-url"),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      ); // cf. adac-refdata-utility.js
+    } else if (action == "Update") {
+      editRefData(
+        _this,
+        form.data("resource-url") + "/" + $(e.target.Id).val(),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      );
+    }
+  };
 }
 
 function getUrlParameter(param) {
+  var pageUrl = window.location.search.substring(1);
+  var urlVars = pageUrl.split("&");
 
-    var pageUrl = window.location.search.substring(1);
-    var urlVars = pageUrl.split('&');
+  for (var i = 0; i < urlVars.length; i++) {
+    var urlParam = urlVars[i].split("=");
+    var paramName = urlParam[0];
+    var paramValue = urlParam[1];
 
-    for (var i = 0; i < urlVars.length; i++) {
-        var urlParam = urlVars[i].split('=');
-        var paramName = urlParam[0];
-        var paramValue = urlParam[1];
-
-        if (paramName === param && paramValue) {
-            return decodeURIComponent(paramValue);
-        }
+    if (paramName === param && paramValue) {
+      return decodeURIComponent(paramValue);
     }
+  }
 
-    return "";
-};
+  return "";
+}
 
 // DataTables
 $(function () {
+  var searchTerm = getUrlParameter("filter");
 
-    var searchTerm = getUrlParameter("filter");
+  var table = $("#material-types")["DataTable"]({
+    paging: false,
+    info: false,
+    autoWidth: false,
+    rowReorder: true,
+    columnDefs: [
+      { orderable: true, visible: false, className: "reorder", targets: 0 }, // Column must be orderable for rowReorder
+      { orderable: false, targets: "_all" },
+    ],
+    language: {
+      search: "Filter: ",
+    },
+    oSearch: { sSearch: searchTerm }, // Inital Search Term
+  });
 
-    var table = $("#material-types")["DataTable"]({
-        paging: false,
-        info: false,
-        autoWidth: false,
-        rowReorder: true,
-        columnDefs: [
-            { orderable: true, "visible": false, className: 'reorder', targets: 0 }, // Column must be orderable for rowReorder
-            { orderable: false, targets: '_all' }
-        ],
-        language: {
-            search: "Filter: ",
-        },
-        oSearch: { sSearch: searchTerm } // Inital Search Term
+  // Re-Order Event
+  table.on("row-reorder", function (e, diff, edit) {
+    // Find the row that was moved
+    var triggerRow = diff.filter(function (row) {
+      return row.node == edit.triggerRow.node();
+    })[0];
+
+    //AJAX Update
+    $.ajax({
+      url:
+        $(triggerRow.node).data("resource-url") +
+        "/" +
+        $(triggerRow.node).data("material-type-id") +
+        "/move",
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify({
+        id: $(triggerRow.node).data("material-type-id"),
+        description: $(triggerRow.node).data("material-type-desc"),
+        sortOrder: triggerRow.newPosition + 1, //1-indexable
+      }),
     });
-
-    // Re-Order Event
-    table.on('row-reorder', function (e, diff, edit) {
-
-        // Find the row that was moved
-        var triggerRow = diff.filter(function (row) {
-          return row.node == edit.triggerRow.node();
-        })[0];
-
-        //AJAX Update
-        $.ajax({
-            url: $(triggerRow.node).data('resource-url') +
-                "/" + $(triggerRow.node).data('material-type-id') + "/move",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                id: $(triggerRow.node).data('material-type-id'),
-                description: $(triggerRow.node).data('material-type-desc'),
-                sortOrder: (triggerRow.newPosition + 1) //1-indexable
-            }
-        });
-    });
+  });
 });
 
 $(function () {
-    //jquery plugin to serialise checkboxes as bools
-    (function ($) {
-        $.fn.serialize = function () {
-            return $.param(this.serializeArray());
-        };
+  //jquery plugin to serialise checkboxes as bools
+  (function ($) {
+    $.fn.serialize = function () {
+      return $.param(this.serializeArray());
+    };
 
-        $.fn.serializeArray = function () {
-            var o = $.extend(
-                {
-                    checkboxesAsBools: true,
-                },
-                {}
-            );
+    $.fn.serializeArray = function () {
+      var o = $.extend(
+        {
+          checkboxesAsBools: true,
+        },
+        {}
+      );
 
-            var rselectTextarea = /select|textarea/i;
-            var rinput = /text|hidden|password|search/i;
+      var rselectTextarea = /select|textarea/i;
+      var rinput = /text|hidden|password|search/i;
 
-            return this.map(function () {
-                return this.elements ? $.makeArray(this.elements) : this;
-            })
-                .filter(function () {
-                    return (
-                        this.name &&
-                        !this.disabled &&
-                        (this.checked ||
-                            (o.checkboxesAsBools && this.type === "checkbox") ||
-                            rselectTextarea.test(this.nodeName) ||
-                            rinput.test(this.type))
-                    );
-                })
-                .map(function (i, elem) {
-                    var val = $(this).val();
-                    return val == null
-                        ? null
-                        : $.isArray(val)
-                            ? $.map(val, function (innerVal) {
-                              return {
-                                name: elem.name,
-                                value: innerVal
-                              };
-                            })
-                            : {
-                                name: elem.name,
-                                value:
-                                    o.checkboxesAsBools && this.type === "checkbox" //moar ternaries!
-                                        ? this.checked
-                                            ? "true"
-                                            : "false"
-                                        : val,
-                            };
-                })
-                .get();
-        };
-    })(jQuery);
+      return this.map(function () {
+        return this.elements ? $.makeArray(this.elements) : this;
+      })
+        .filter(function () {
+          return (
+            this.name &&
+            !this.disabled &&
+            (this.checked ||
+              (o.checkboxesAsBools && this.type === "checkbox") ||
+              rselectTextarea.test(this.nodeName) ||
+              rinput.test(this.type))
+          );
+        })
+        .map(function (i, elem) {
+          var val = $(this).val();
+          return val == null
+            ? null
+            : $.isArray(val)
+            ? $.map(val, function (innerVal) {
+                return {
+                  name: elem.name,
+                  value: innerVal,
+                };
+              })
+            : {
+                name: elem.name,
+                value:
+                  o.checkboxesAsBools && this.type === "checkbox" //moar ternaries!
+                    ? this.checked
+                      ? "true"
+                      : "false"
+                    : val,
+              };
+        })
+        .get();
+    };
+  })(jQuery);
 
-    $("#modal-material-type-form").submit(function (e) {
-        adacMaterialTypeVM.modalSubmit(e);
-    });
+  $("#modal-material-type-form").submit(function (e) {
+    adacMaterialTypeVM.modalSubmit(e);
+  });
 
-    $(".delete-confirm").click(function (e) {
-        e.preventDefault();
+  $(".delete-confirm").click(function (e) {
+    e.preventDefault();
 
-        var $link = $(this);
-        var linkData = $link.data("refdata-model")
-        var url = $link.data("resource-url") + "/" + linkData.Id;
+    var $link = $(this);
+    var linkData = $link.data("refdata-model");
+    var url = $link.data("resource-url") + "/" + linkData.id;
 
-        bootbox.confirm("Are you sure you want to delete " + linkData.Description + "?",
-            function (confirmation) {
-                if (confirmation) {
-                    deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
-                }
-            }
-        );
-    });
+    bootbox.confirm(
+      "Are you sure you want to delete " + linkData.description + "?",
+      function (confirmation) {
+        if (confirmation) {
+          deleteRefData(
+            url,
+            $link.data("success-redirect"),
+            $link.data("refdata-type")
+          );
+        }
+      }
+    );
+  });
 
-    adacMaterialTypeVM = new AdacMaterialTypeViewModel();
-    ko.applyBindings(adacMaterialTypeVM);
+  adacMaterialTypeVM = new AdacMaterialTypeViewModel();
+  ko.applyBindings(adacMaterialTypeVM);
 });

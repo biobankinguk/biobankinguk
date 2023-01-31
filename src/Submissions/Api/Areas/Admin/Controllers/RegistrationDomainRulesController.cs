@@ -4,11 +4,14 @@ using Biobanks.Submissions.Api.Areas.Admin.Models.RegistrationDomainRules;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
+
 public class RegistrationDomainRulesController : Controller
 {
   private readonly IRegistrationDomainService _registrationDomainService;

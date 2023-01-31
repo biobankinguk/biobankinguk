@@ -52,14 +52,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#collection-status-modal"
-                                   data-collection-status="@Json.Serialize(collectionStatus)"
+                                   data-collection-status='@Json.Serialize(collectionStatus)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(collectionStatus)"
+                                   data-refdata-model='@Json.Serialize(collectionStatus)'
                                    data-resource-url="/api/CollectionStatus"
                                    data-success-redirect="@Url.Action("CollectionStatus")"
                                    data-refdata-type="Collection Status"

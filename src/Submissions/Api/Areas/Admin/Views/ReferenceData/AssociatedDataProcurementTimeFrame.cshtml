@@ -51,14 +51,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#procurement-time-modal"
-                                   data-procurement-time="@Json.Serialize(procurement)"
+                                   data-procurement-time='@Json.Serialize(procurement)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(procurement)"
+                                   data-refdata-model='@Json.Serialize(procurement)'
                                    data-resource-url="/api/AssociatedDataProcurementTimeFrame"
                                    data-success-redirect="@Url.Action("AssociatedDataProcurementTimeFrame")"
                                    data-refdata-type="Associated Data Procurement Time Frame"

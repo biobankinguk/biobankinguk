@@ -55,20 +55,20 @@
 								   class="action-icon"
 								   href="#"
 								   data-target="#county-modal"
-								   data-county="@Json.Serialize(county)"
+								   data-county='@Json.Serialize(county)'
 								   data-bind="click: openModalForEdit">
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-                                <a title="Delete"
-                                   class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(county)"
-                                   data-resource-url="/api/County"
-                                   data-success-redirect="@Url.Action("County")"
-                                   data-refdata-type="County"
-                                   href="#">
-                                    <span class="fa fa-trash labelled-icon"></span>Delete
-                                </a>
+                <a title="Delete"
+                   class="action-icon delete-confirm"
+                   data-refdata-model='@Json.Serialize(county)'
+                   data-resource-url="/api/County"
+                   data-success-redirect="@Url.Action("County")"
+                   data-refdata-type="County"
+                   href="#">
+                    <span class="fa fa-trash labelled-icon"></span>Delete
+                </a>
 							}
 						</td>
 					</tr>
@@ -83,12 +83,12 @@
 @{
 	var countries = Model.Counties.Select(x => new 
 	{ 
-		name = x.Key, 
-		value = x.Value.First().CountryId 
+		name = x.Key,
+	  value = x.Value.FirstOrDefault()?.CountryId,
 	});
 }
 
-<div class="modal fade" id="county-modal" tabindex="-1" role="dialog" aria-labelledby="county-label" data-countries="@Json.Serialize(countries)">
+<div class="modal fade" id="county-modal" tabindex="-1" role="dialog" aria-labelledby="county-label" data-countries='@Json.Serialize(countries)'>
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

@@ -56,20 +56,20 @@
 								   class="action-icon"
 								   href="#"
 								   data-target="#collection-percentages-modal"
-								   data-collection-percentage="@Json.Serialize(type)"
+								   data-collection-percentage='@Json.Serialize(type)'
 								   data-bind="click: openModalForEdit">
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
-                                <a title="Delete"
-                                   class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(type)"
-                                   data-resource-url="/api/CollectionPercentage"
-                                   data-success-redirect="@Url.Action("CollectionPercentages")"
-                                   data-refdata-type="Collection Percentage"
-                                   href="#">
-                                    <span class="fa fa-trash labelled-icon"></span>Delete
-                                </a>
+                <a title="Delete"
+                   class="action-icon delete-confirm"
+                   data-refdata-model='@Json.Serialize(type)'
+                   data-resource-url="/api/CollectionPercentage"
+                   data-success-redirect="@Url.Action("CollectionPercentages")"
+                   data-refdata-type="Collection Percentage"
+                   href="#">
+                    <span class="fa fa-trash labelled-icon"></span>Delete
+                </a>
 							}
 						</td>
 					</tr>

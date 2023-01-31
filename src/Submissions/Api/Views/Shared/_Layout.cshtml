@@ -92,7 +92,7 @@
         @* Feedback Message *@
         @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
         {
-            <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+            <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home", new {area = ""})">
                 <partial name="_SuspendedWarning">
                     <partial name="_FeedbackMessage">
             </section>
@@ -193,7 +193,7 @@
             event.preventDefault();
 
             $('html, body').animate({
-                scrollTop: $($.attr(this, 'href')).offset().top - 200
+                scrollTop: $($.attr(this, 'href')).offset.top - 200
             }, 500);
         });
     </script>

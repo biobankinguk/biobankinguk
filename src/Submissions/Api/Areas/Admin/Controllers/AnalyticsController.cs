@@ -6,14 +6,16 @@ using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Analytics;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Biobanks.Submissions.Api.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
+
 public class AnalyticsController : Controller
 {
     private readonly IConfigService _configService;

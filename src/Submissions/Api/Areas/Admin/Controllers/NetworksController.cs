@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Networks;
+using Biobanks.Submissions.Api.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
 
 public class NetworksController : Controller
 {
