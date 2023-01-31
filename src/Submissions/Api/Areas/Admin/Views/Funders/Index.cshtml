@@ -4,7 +4,7 @@
     ViewBag.Title = "Funders";
 }
 
-<partial name = "_ADACTabs" model = "Funders"/>
+@await Html.PartialAsync("_ADACTabs", "Funders")
 
 <h3>
     Manage Funders
