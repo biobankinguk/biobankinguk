@@ -37,7 +37,7 @@ function AdacFunderViewModel() {
     _this.modal.mode(_this.modal.modalModeEdit);
 
     var funder = $(event.currentTarget).data("funder");
-    _this.modal.funder(new Funder(funder.FunderId, funder.Name));
+    _this.modal.funder(new Funder(funder.funderId, funder.name));
     _this.showModal();
   };
 
@@ -65,9 +65,9 @@ function AdacFunderViewModel() {
             form.data(successRedirect) + "?Name=" + data.name;
         } else {
           if (Array.isArray(data.errors)) {
-            data.errors.forEach(function (error, index) { 
+            data.errors.forEach(function (error, index) {
               _this.dialogErrors.push(error);
-            })
+            });
           }
         }
       },
