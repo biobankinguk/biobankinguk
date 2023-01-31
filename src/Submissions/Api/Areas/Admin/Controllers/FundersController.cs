@@ -22,7 +22,7 @@ public class FundersController : Controller
     _funderService = funderService;
   }
 
-  public async Task<ActionResult> Funders()
+  public async Task<ActionResult> Index()
   {
     return View(
         (await _funderService.List())
@@ -55,7 +55,7 @@ public class FundersController : Controller
       this.SetTemporaryFeedbackMessage("The selected funder could not be deleted.", FeedbackMessageType.Danger);
     }
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
   [HttpPost]
@@ -93,7 +93,7 @@ public class FundersController : Controller
     this.SetTemporaryFeedbackMessage($"The funder \"{name}\" has been edited successfully.",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
   [HttpPost]
@@ -130,7 +130,7 @@ public class FundersController : Controller
     this.SetTemporaryFeedbackMessage($"The funder \"{name}\" has been added successfully.",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
 }
