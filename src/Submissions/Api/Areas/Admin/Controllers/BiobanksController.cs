@@ -96,7 +96,7 @@ public class BiobanksController : Controller
       return RedirectToAction("BiobankAdmin", new { id = biobankId });
   }
 
-  public async Task<ActionResult> Index()
+  public async Task<ActionResult> Biobanks()
   {
       var allBiobanks =
           (await _organisationService.List()).ToList();
@@ -240,7 +240,7 @@ public class BiobanksController : Controller
       if (biobank != null) return View(_mapper.Map<BiobankModel>(biobank));
 
       this.SetTemporaryFeedbackMessage("The selected biobank could not be found.", FeedbackMessageType.Danger);
-      return RedirectToAction("Biobanks");
+      return RedirectToAction("Index");
   }
 
   [HttpPost]
@@ -270,7 +270,7 @@ public class BiobanksController : Controller
           this.SetTemporaryFeedbackMessage("The selected biobank could not be deleted.", FeedbackMessageType.Danger);
       }
 
-      return RedirectToAction("Biobanks");
+      return RedirectToAction("Index");
   }
 
   public async Task<ActionResult> SuspendBiobank(int id)
