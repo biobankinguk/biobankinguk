@@ -49,7 +49,7 @@
         <NavNode key="NetworkAcceptance" text="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
   
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
-        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Analytics"/>
+        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Index"/>
           
         <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
           <Children>
@@ -85,12 +85,12 @@
     </NavNode>
 
     <NavNode key="AdminRequests" text="Requests" controller="Requests" area="Admin" action="Index"/>
-    <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
+    <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="Index"/>
     <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
-     <NavNode key="" text="Biobanks" controller="Biobanks" area="Admin" action="Biobanks"/> 
+     <NavNode key="" text="Biobanks" controller="Biobanks" area="Admin" action="Index"/> 
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="ReferenceData" area="Admin" action="Networks"/>
-    <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Funders"/>
+    <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Index"/>
     
     <!--    Reference Data-->
     <NavNode key="" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
