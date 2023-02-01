@@ -217,6 +217,7 @@ public static class ConfigureWebServices
       var xmlFilename = $"swagger.xml"; //File name should match the documation being called in Api.csproj
       opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     });
+    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
     // General Services
     b.Services

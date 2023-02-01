@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Authorization;
 using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
@@ -14,9 +15,9 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 public class RegistrationDomainRulesController : Controller
 {
-  private readonly RegistrationDomainService _registrationDomainService;
+  private readonly IRegistrationDomainService _registrationDomainService;
   
-  public RegistrationDomainRulesController(RegistrationDomainService registrationDomainService)
+  public RegistrationDomainRulesController(IRegistrationDomainService registrationDomainService)
   {
     _registrationDomainService = registrationDomainService;
   }
