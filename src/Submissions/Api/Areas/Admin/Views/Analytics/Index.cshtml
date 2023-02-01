@@ -10,7 +10,7 @@
     var sampleResourceName = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName);
 }
 
-<partial name = "_ADACTabs" model ="Analytics" />
+@await Html.PartialAsync("_ADACTabs", "Analytics")
 
 @* Report Header *@
 <h1>TDCC Analytics Report</h1>
