@@ -93,33 +93,33 @@
     <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Funders"/>
     
     <!--    Reference Data-->
-    <NavNode key="RefData" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
-    <NavNode key="RefData" text="Age Ranges" area="Admin" controller="ReferenceData" action="AgeRanges"/>
-    <NavNode key="RefData" text="Annual Statistics" area="Admin" controller="ReferenceData" action="AnnualStatistics"/>
-    <NavNode key="RefData" text="Annual Statistic Groups" area="Admin" controller="ReferenceData" action="AnnualStatisticGroups"/>
-    <NavNode key="RefData" text="Associated Data Types" area="Admin" controller="ReferenceData" action="AssociatedDataTypes"/>
-    <NavNode key="RefData" text="Registration Reasons" area="Admin" controller="ReferenceData" action="RegistrationReason"/>
-    <NavNode key="RefData" text="Counties" area="Admin" controller="ReferenceData" action="County"/>
-    <NavNode key="RefData" text="Countries" area="Admin" controller="ReferenceData" action="Country"/>
-    <NavNode key="RefData" text="Collection Percentages" area="Admin" controller="ReferenceData" action="CollectionPercentages"/>
-    <NavNode key="RefData" text="Donor Counts" area="Admin" controller="ReferenceData" action="DonorCounts"/>
-    <NavNode key="RefData" text="Disease statuses" area="Admin" controller="ReferenceData" action="DiseaseStatuses"/>
-    <NavNode key="RefData" text="Extraction Procedures" area="Admin" controller="ReferenceData" action="ExtractionProcedure"/>
-    <NavNode key="RefData" text="Macroscopic Assessments" area="Admin" controller="ReferenceData" action="MacroscopicAssessments"/>
-    <NavNode key="RefData" text="Material Types" area="Admin" controller="ReferenceData" action="MaterialTypes"/>
-    <NavNode key="RefData" text="Material Type Groups" area="Admin" controller="ReferenceData" action="MaterialTypeGroups"/>
-    <NavNode key="RefData" text="Preservation Types" area="Admin" controller="ReferenceData" action="PreservationTypes"/>
-    <NavNode key="RefData" text="Storage Temperatures" area="Admin" controller="ReferenceData" action="StorageTemperatures"/>
-    <NavNode key="RefData" text="Sample Collection Modes" area="Admin" controller="ReferenceData" action="SampleCollectionModes"/>
-    <NavNode key="RefData" text="Sexes" area="Admin" controller="ReferenceData" action="Sexes"/>
-    <NavNode key="RefData" text="Service Offerings" area="Admin" controller="ReferenceData" action="ServiceOffering"/>
-    <NavNode key="RefData" text="Sop Status" area="Admin" controller="ReferenceData" action="SopStatus"/>
-    <NavNode key="RefData" text="Consent Restrictions" area="Admin" controller="ReferenceData" action="ConsentRestriction"/>
-    <NavNode key="RefData" text="Collection Statuses" area="Admin" controller="ReferenceData" action="CollectionStatus"/>
-    <NavNode key="RefData" text="Collection Types" area="Admin" controller="ReferenceData" action="CollectionType"/>
-    <NavNode key="RefData" text="Associated Data Procurement Time Frame" area="Admin" controller="ReferenceData" action="AssociatedDataProcurementTimeFrame"/>
-    <NavNode key="RefData" text="Edit homepage" area="Admin" controller="ReferenceData" action="EditContent" preservedRouteParameters="id"/>
-    <NavNode key="RefData" text="Message of the day" area="Admin" controller="ReferenceData" action="EditMotd"/>
+    <NavNode key="RefDataAccessConditions" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
+    <NavNode key="RefDataAgeRanges" text="Age Ranges" area="Admin" controller="ReferenceData" action="AgeRanges"/>
+    <NavNode key="RefDataAnnualStatistics" text="Annual Statistics" area="Admin" controller="ReferenceData" action="AnnualStatistics"/>
+    <NavNode key="RefDataAnnualStatisticGroups" text="Annual Statistic Groups" area="Admin" controller="ReferenceData" action="AnnualStatisticGroups"/>
+    <NavNode key="RefDataAssociatedDataTypes" text="Associated Data Types" area="Admin" controller="ReferenceData" action="AssociatedDataTypes"/>
+    <NavNode key="RefDataRegistrationReason" text="Registration Reasons" area="Admin" controller="ReferenceData" action="RegistrationReason"/>
+    <NavNode key="RefDataCounties" text="Counties" area="Admin" controller="ReferenceData" action="County"/>
+    <NavNode key="RefDataCountries" text="Countries" area="Admin" controller="ReferenceData" action="Country"/>
+    <NavNode key="RefDataCollectionPercentages" text="Collection Percentages" area="Admin" controller="ReferenceData" action="CollectionPercentages"/>
+    <NavNode key="RefDataDonorCounts" text="Donor Counts" area="Admin" controller="ReferenceData" action="DonorCounts"/>
+    <NavNode key="RefDataDiseaseStatuses" text="Disease statuses" area="Admin" controller="ReferenceData" action="DiseaseStatuses"/>
+    <NavNode key="RefDataExtractionProcedures" text="Extraction Procedures" area="Admin" controller="ReferenceData" action="ExtractionProcedure"/>
+    <NavNode key="RefDataMacroscopicAssessments" text="Macroscopic Assessments" area="Admin" controller="ReferenceData" action="MacroscopicAssessments"/>
+    <NavNode key="RefDataMaterialTypes" text="Material Types" area="Admin" controller="ReferenceData" action="MaterialTypes"/>
+    <NavNode key="RefDataMaterialTypeGroups" text="Material Type Groups" area="Admin" controller="ReferenceData" action="MaterialTypeGroups"/>
+    <NavNode key="RefDataPreservationTypes" text="Preservation Types" area="Admin" controller="ReferenceData" action="PreservationTypes"/>
+    <NavNode key="RefDataStorageTemperatures" text="Storage Temperatures" area="Admin" controller="ReferenceData" action="StorageTemperatures"/>
+    <NavNode key="RefDataSampleCollectionModes" text="Sample Collection Modes" area="Admin" controller="ReferenceData" action="SampleCollectionModes"/>
+    <NavNode key="RefDataSexes" text="Sexes" area="Admin" controller="ReferenceData" action="Sexes"/>
+    <NavNode key="RefDataServiceOfferings" text="Service Offerings" area="Admin" controller="ReferenceData" action="ServiceOffering"/>
+    <NavNode key="RefDataSopStatus" text="Sop Status" area="Admin" controller="ReferenceData" action="SopStatus"/>
+    <NavNode key="RefDataConsentRestrictions" text="Consent Restrictions" area="Admin" controller="ReferenceData" action="ConsentRestriction"/>
+    <NavNode key="RefDataCollectionStatuses" text="Collection Statuses" area="Admin" controller="ReferenceData" action="CollectionStatus"/>
+    <NavNode key="RefDataCollectionTypes" text="Collection Types" area="Admin" controller="ReferenceData" action="CollectionType"/>
+    <NavNode key="RefDataAssociatedDataProcurementTimeFrame" text="Associated Data Procurement Time Frame" area="Admin" controller="ReferenceData" action="AssociatedDataProcurementTimeFrame"/>
+    <NavNode key="RefDataEditContent" text="Edit homepage" area="Admin" controller="ReferenceData" action="EditContent" preservedRouteParameters="id"/>
+    <NavNode key="RefDataMotd" text="Message of the day" area="Admin" controller="ReferenceData" action="EditMotd"/>
 
     <!-- Site Configuration -->
     <NavNode key="HomepageConfig" text="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
