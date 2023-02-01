@@ -66,13 +66,16 @@ function AdacRegistrationDomainRuleViewModel() {
     e.preventDefault();
     var form = $(e.target); // get form as a jquery object
 
+    // Get Form Data
+    var data = serializeFormData(form);
+
     // Get Action Type
     var action = _this.modal.mode();
     if (action == "Add") {
       addRefData(
         _this,
         form.data("resource-url"),
-        form.serialize(),
+        data,
         form.data("success-redirect"),
         form.data("refdata-type")
       ); // cf. adac-refdata-utility.js
@@ -80,7 +83,7 @@ function AdacRegistrationDomainRuleViewModel() {
       editRefData(
         _this,
         form.data("resource-url") + "/" + $(e.target.Id).val(),
-        form.serialize(),
+        data,
         form.data("success-redirect"),
         form.data("refdata-type")
       );
