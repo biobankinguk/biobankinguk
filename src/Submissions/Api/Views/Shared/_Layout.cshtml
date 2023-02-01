@@ -171,7 +171,7 @@
     @RenderSection("FooterScripts", false)
 
     <!--Start of Tawk.to Script-->
-    @if (await _config.GetSiteConfigValue(ConfigKey.DisplayLiveChat) == "true")
+    @if (await _config.GetSiteConfigValue(ConfigKey.DisplayLiveChat, "false", true ) == "true")
     {
         <script type="text/javascript">
             var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
