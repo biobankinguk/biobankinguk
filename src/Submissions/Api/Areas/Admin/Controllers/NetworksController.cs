@@ -12,7 +12,6 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
-
 public class NetworksController : Controller
 {
   private readonly INetworkService _networkService;

@@ -7,7 +7,7 @@
 
 @await Html.PartialAsync("_ADACTabs", "Networks")
 
-<h3>Networks @Html.ActionLink("Invite a new network", "AdacNetwork", "Register", null, new { @class = "btn btn-success pull-right" })</h3>
+<h3>Networks @Html.ActionLink("Invite a new network", "AdacNetwork", "Register", new { Area = "" }, new { @class = "btn btn-success pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">
@@ -65,7 +65,7 @@
         {
             <div class="alert alert-info">
                 There are currently no Networks in the directory.
-                @Html.ActionLink("Invite a new Network now", "AdacNetwork", "Register")
+                @Html.ActionLink("Invite a new Network now", "AdacNetwork", "Register", new { Area = "" })
             </div>
         }
     </div>
