@@ -82,7 +82,7 @@ function AdacRegistrationDomainRuleViewModel() {
     } else if (action == "Update") {
       editRefData(
         _this,
-        form.data("resource-url") + "/" + $(e.target.Id).val(),
+        form.data("resource-url") + "/" + $(e.target.id).val(),
         data,
         form.data("success-redirect"),
         form.data("refdata-type")
@@ -101,10 +101,10 @@ $(function () {
 
     var $link = $(this);
     var linkData = $link.data("domain-rule");
-    var url = $link.data("resource-url") + "/" + linkData.Id;
+    var url = $link.data("resource-url") + "/" + linkData.id;
 
     bootbox.confirm(
-      "Are you sure you want to delete " + linkData.Value + "?",
+      "Are you sure you want to delete " + linkData.value + "?",
       function (confirmation) {
         if (confirmation) {
           deleteRefData(
