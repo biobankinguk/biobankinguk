@@ -22,7 +22,7 @@ public class NetworksController : Controller
     _networkService = networkService;
   }
   
-  public async Task<ActionResult> Networks()
+  public async Task<ActionResult> Index()
   {
     var allNetworks =
       (await _networkService.List()).ToList();
