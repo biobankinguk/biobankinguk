@@ -38,7 +38,14 @@ public class FundersController : Controller
 
   [HttpGet]
   public async Task<ActionResult> DeleteFunder(int id)
-      => View(await _funderService.Get(id));
+  {
+    var x = await _funderService.Get(id);
+    return View(new FunderModel
+    {
+      FunderId = x.Id,
+      Name = x.Value
+    });
+  }
 
   [HttpPost]
   public async Task<ActionResult> DeleteFunder(FunderModel model)
@@ -69,7 +76,7 @@ public class FundersController : Controller
 
     if (!ModelState.IsValid)
     {
-      return Ok(ModelState);
+      return BadRequest(ModelState);
     }
 
     await _funderService.Update(new Funder
@@ -107,7 +114,7 @@ public class FundersController : Controller
 
     if (!ModelState.IsValid)
     {
-      return Ok(ModelState);
+      return BadRequest(ModelState);
     }
 
     await _funderService.Add(new Funder
