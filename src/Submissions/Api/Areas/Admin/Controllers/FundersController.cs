@@ -22,7 +22,7 @@ public class FundersController : Controller
     _funderService = funderService;
   }
 
-  public async Task<ActionResult> Funders()
+  public async Task<ActionResult> Index()
   {
     return View(
         (await _funderService.List())
@@ -38,7 +38,14 @@ public class FundersController : Controller
 
   [HttpGet]
   public async Task<ActionResult> DeleteFunder(int id)
-      => View(await _funderService.Get(id));
+  {
+    var x = await _funderService.Get(id);
+    return View(new FunderModel
+    {
+      FunderId = x.Id,
+      Name = x.Value
+    });
+  }
 
   [HttpPost]
   public async Task<ActionResult> DeleteFunder(FunderModel model)
@@ -55,7 +62,7 @@ public class FundersController : Controller
       this.SetTemporaryFeedbackMessage("The selected funder could not be deleted.", FeedbackMessageType.Danger);
     }
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
   [HttpPost]
@@ -69,7 +76,7 @@ public class FundersController : Controller
 
     if (!ModelState.IsValid)
     {
-      return Ok(ModelState);
+      return BadRequest(ModelState);
     }
 
     await _funderService.Update(new Funder
@@ -93,7 +100,7 @@ public class FundersController : Controller
     this.SetTemporaryFeedbackMessage($"The funder \"{name}\" has been edited successfully.",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
   [HttpPost]
@@ -107,7 +114,7 @@ public class FundersController : Controller
 
     if (!ModelState.IsValid)
     {
-      return Ok(ModelState);
+      return BadRequest(ModelState);
     }
 
     await _funderService.Add(new Funder
@@ -130,7 +137,7 @@ public class FundersController : Controller
     this.SetTemporaryFeedbackMessage($"The funder \"{name}\" has been added successfully.",
         FeedbackMessageType.Success);
 
-    return RedirectToAction("Funders");
+    return RedirectToAction("Index");
   }
 
 }

@@ -533,7 +533,7 @@
   // Delete Funder
   {
     "outputFileName": "wwwroot/dist/js/Admin/deletefunder.min.js",
-    "inputFiles": ["Frontend/js/pages/Admin/adac-funders.js"],
+    "inputFiles": ["Frontend/js/pages/Admin/adac-deletefunder.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
@@ -625,6 +625,14 @@
   {
     "outputFileName": "wwwroot/dist/js/Flags/flags-config.min.js",
     "inputFiles": ["Frontend/js/pages/Flags/flags-config.js"],
+    "minify": { "enabled": true },
+    "sourceMap": true
+  },
+
+  // Funders
+  {
+    "outputFileName": "wwwroot/dist/js/Admin/funders.min.js",
+    "inputFiles": ["Frontend/js/pages/Admin/adac-funders.js"],
     "minify": { "enabled": true },
     "sourceMap": true
   },
