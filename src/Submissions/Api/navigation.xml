@@ -90,7 +90,7 @@
     <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Biobanks"/> 
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="Networks" area="Admin" action="Index"/>
-    <NavNode key="NetworkFunders" text="Funders" controller="Funder" area="Admin" action="Funders"/>
+    <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index"/>
     
     <!--    Reference Data-->
     <NavNode key="RefDataAccessConditions" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
