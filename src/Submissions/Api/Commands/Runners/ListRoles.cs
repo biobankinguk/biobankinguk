@@ -7,7 +7,6 @@ using Biobanks.Data.Entities;
 using ConsoleTableExt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Nest;
 
 namespace Biobanks.Submissions.Api.Commands.Runners;
 
