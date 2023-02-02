@@ -11,7 +11,9 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
@@ -32,38 +34,40 @@ using Newtonsoft.Json.Linq;
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+
 public class ProfileController : Controller
 {
-    private IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+    private IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
     private readonly IBiobankService _biobankService;
     private readonly IBiobankWriteService _biobankWriteService;
     private readonly IConfigService _configService;
-    private IReferenceDataService<County> _countyService;
-    private IReferenceDataService<Country> _countryService;
-    private readonly IReferenceDataService<Funder> _funderService;
+    private IReferenceDataCrudService<County> _countyService;
+    private IReferenceDataCrudService<Country> _countryService;
+    private readonly IReferenceDataCrudService<Funder> _funderService;
     private readonly IMapper _mapper;
     private readonly INetworkService _networkService;
     private readonly IOrganisationDirectoryService _organisationService;
     private readonly IPublicationService _publicationService;
-    private readonly IReferenceDataService<RegistrationReason> _registrationReasonService;
-    private readonly IReferenceDataService<ServiceOffering> _serviceOfferingService;
+    private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
+    private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
     private readonly SitePropertiesOptions _siteConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
-        IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+        IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
         IBiobankService biobankService,
         IBiobankWriteService biobankWriteService,
         IConfigService configService,
-        IReferenceDataService<County> countyService,
-        IReferenceDataService<Country> countryService,
-        IReferenceDataService<Funder> funderService,
+        IReferenceDataCrudService<County> countyService,
+        IReferenceDataCrudService<Country> countryService,
+        IReferenceDataCrudService<Funder> funderService,
         IMapper mapper,
         INetworkService networkService,
         IOrganisationDirectoryService organisationService,
         IPublicationService publicationService,
-        IReferenceDataService<RegistrationReason> registrationReasonService,
-        IReferenceDataService<ServiceOffering> serviceOfferingService,
+        IReferenceDataCrudService<RegistrationReason> registrationReasonService,
+        IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
         IOptions<SitePropertiesOptions> siteConfig,
         UserManager<ApplicationUser> userManager)
     {

@@ -23,15 +23,19 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Biobanks.Services;
+using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
 [Area("Network")]
+[Authorize(nameof(AuthPolicies.IsNetworkAdmin))]
+
 public class ProfileController : Controller
 {
   private readonly INetworkService _networkService;
   private readonly ILogoStorageProvider _logoStorageProvider;
-  private readonly IReferenceDataService<SopStatus> _sopStatusService;
+  private readonly IReferenceDataCrudService<SopStatus> _sopStatusService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IEmailService _emailService;
   private readonly IConfigService _configService;
@@ -39,7 +43,7 @@ public class ProfileController : Controller
   private readonly IBiobankService _biobankService;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
-    IReferenceDataService<SopStatus> sopStatusService, 
+    IReferenceDataCrudService<SopStatus> sopStatusService, 
     UserManager<ApplicationUser> userManager,
     IEmailService emailService,
     IConfigService configService,
@@ -495,7 +499,7 @@ public class ProfileController : Controller
               new EmailAddress(biobank.ContactEmail),
               model.BiobankName,
               network.Name,
-              Url.Action("NetworkAcceptance", "Biobank", null, Request.Path.ToString())
+              Url.Action("NetworkAcceptance", "Settings", null, Request.Path.ToString())
                   );
         }
 

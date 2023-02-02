@@ -12,40 +12,40 @@ namespace Biobanks.Submissions.Api.Services.Directory;
 
 public class AbstractCrudService : IAbstractCrudService
 {
-  private readonly IReferenceDataService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
-  private readonly IReferenceDataService<AssociatedDataType> _associatedDataTypeService;
+  private readonly IReferenceDataCrudService<AssociatedDataProcurementTimeframe> _associatedDataProcurementTimeframeService;
+  private readonly IReferenceDataCrudService<AssociatedDataType> _associatedDataTypeService;
   private readonly IOntologyTermService _ontologyTermService;
-  private readonly IReferenceDataService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
-  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
-  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
-  private readonly IReferenceDataService<CollectionStatus> _collectionStatusService;
-  private readonly IReferenceDataService<ConsentRestriction> _consentRestrictionService;
-  private readonly IReferenceDataService<Sex> _sexService;
-  private readonly IReferenceDataService<AgeRange> _ageRangeService;
-  private readonly IReferenceDataService<DonorCount> _donorCountService;
+  private readonly IReferenceDataCrudService<AssociatedDataTypeGroup> _associatedDataTypeGroupService;
+  private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
+  private readonly IReferenceDataCrudService<CollectionStatus> _collectionStatusService;
+  private readonly IReferenceDataCrudService<ConsentRestriction> _consentRestrictionService;
+  private readonly IReferenceDataCrudService<Sex> _sexService;
+  private readonly IReferenceDataCrudService<AgeRange> _ageRangeService;
+  private readonly IReferenceDataCrudService<DonorCount> _donorCountService;
   private readonly IMaterialTypeService _materialTypeService;
-  private readonly IReferenceDataService<PreservationType> _preservationTypeService;
-  private readonly IReferenceDataService<StorageTemperature> _storageTemperatureService;
-  private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
-  private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+  private readonly IReferenceDataCrudService<PreservationType> _preservationTypeService;
+  private readonly IReferenceDataCrudService<StorageTemperature> _storageTemperatureService;
+  private readonly IReferenceDataCrudService<CollectionPercentage> _collectionPercentageService;
+  private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
 
   public AbstractCrudService(
-    IReferenceDataService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-    IReferenceDataService<AssociatedDataType> assocaitedDataTypeService,
+    IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+    IReferenceDataCrudService<AssociatedDataType> assocaitedDataTypeService,
     IOntologyTermService ontologyTermService,
-    IReferenceDataService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
-    IReferenceDataService<AccessCondition> accessConditionService,
-    IReferenceDataService<CollectionType> collectionTypeService,
-    IReferenceDataService<CollectionStatus> collectionStatusService,
-    IReferenceDataService<ConsentRestriction> consentRestrictionService,
-    IReferenceDataService<Sex> sexService,
-    IReferenceDataService<AgeRange> ageRangeService,
-    IReferenceDataService<DonorCount> donorCountService,
+    IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+    IReferenceDataCrudService<AccessCondition> accessConditionService,
+    IReferenceDataCrudService<CollectionType> collectionTypeService,
+    IReferenceDataCrudService<CollectionStatus> collectionStatusService,
+    IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
+    IReferenceDataCrudService<Sex> sexService,
+    IReferenceDataCrudService<AgeRange> ageRangeService,
+    IReferenceDataCrudService<DonorCount> donorCountService,
     IMaterialTypeService materialTypeService,
-    IReferenceDataService<PreservationType> preservationTypeService,
-    IReferenceDataService<StorageTemperature> storageTemperatureService,
-    IReferenceDataService<CollectionPercentage> collectionPercentageService,
-    IReferenceDataService<MacroscopicAssessment> macroscopicAssessmentService
+    IReferenceDataCrudService<PreservationType> preservationTypeService,
+    IReferenceDataCrudService<StorageTemperature> storageTemperatureService,
+    IReferenceDataCrudService<CollectionPercentage> collectionPercentageService,
+    IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService
 
     )
   {

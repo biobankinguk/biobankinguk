@@ -53,14 +53,14 @@
 								   class="action-icon"
 								   href="#"
 								   data-target="#material-type-modal"
-								   data-material-type="@Json.Serialize(materialType)"
+								   data-material-type='@Json.Serialize(materialType)'
 								   data-bind="click: openModalForEdit">
 									<span class="fa fa-edit labelled-icon"></span>Edit
 								</a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(materialType)"
+                                   data-refdata-model='@Json.Serialize(materialType)'
                                    data-resource-url="/api/MaterialType"
                                    data-success-redirect="@Url.Action("MaterialTypes")"
                                    data-refdata-type="Material Type"

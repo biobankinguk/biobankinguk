@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class StorageTemperatureService : ReferenceDataService<StorageTemperature>
+    public class StorageTemperatureService : ReferenceDataCrudService<StorageTemperature>
     {
         public StorageTemperatureService(ApplicationDbContext db) : base(db) { }
 

@@ -25,7 +25,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
   {
     private const int BulkIndexChunkSize = 100;
 
-    private readonly IReferenceDataService<DonorCount> _donorCountService;
+    private readonly IReferenceDataCrudService<DonorCount> _donorCountService;
 
     private readonly IIndexProvider _indexProvider;
     private readonly ISearchProvider _searchProvider;
@@ -36,7 +36,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
     private readonly ApplicationDbContext _context;
 
     public BiobankIndexService(
-            IReferenceDataService<DonorCount> donorCountService,
+            IReferenceDataCrudService<DonorCount> donorCountService,
             IIndexProvider indexProvider,
             ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,

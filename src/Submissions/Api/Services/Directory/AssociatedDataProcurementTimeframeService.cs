@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class AssociatedDataProcurementTimeframeService : ReferenceDataService<AssociatedDataProcurementTimeframe>
+    public class AssociatedDataProcurementTimeframeService : ReferenceDataCrudService<AssociatedDataProcurementTimeframe>
     {
         public AssociatedDataProcurementTimeframeService(ApplicationDbContext db) : base(db) { }
 

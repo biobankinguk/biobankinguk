@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class AccessConditionService : ReferenceDataService<AccessCondition>
+    public class AccessConditionService : ReferenceDataCrudService<AccessCondition>
     {
         public AccessConditionService(ApplicationDbContext db) : base(db) { }
 

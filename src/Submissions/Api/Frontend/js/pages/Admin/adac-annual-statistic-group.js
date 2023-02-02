@@ -1,6 +1,6 @@
 function AnnualStatisticGroup(id, name) {
   this.id = id;
-    this.name = ko.observable(name);
+  this.name = ko.observable(name);
 }
 
 function AnnualStatisticGroupModal(id, name) {
@@ -8,9 +8,7 @@ function AnnualStatisticGroupModal(id, name) {
   this.modalModeEdit = "Update";
 
   this.mode = ko.observable(this.modalModeAdd);
-    this.annualStatisticGroup = ko.observable(
-        new AnnualStatisticGroup(id, name)
-  );
+  this.annualStatisticGroup = ko.observable(new AnnualStatisticGroup(id, name));
 }
 
 function AdacAnnualStatisticGroupViewModel() {
@@ -38,32 +36,48 @@ function AdacAnnualStatisticGroupViewModel() {
   this.openModalForEdit = function (_, event) {
     _this.modal.mode(_this.modal.modalModeEdit);
 
-    var annualStatisticGroup = $(event.currentTarget).data("annual-statistic-group");
+    var annualStatisticGroup = $(event.currentTarget).data(
+      "annual-statistic-group"
+    );
     _this.modal.annualStatisticGroup(
       new AnnualStatisticGroup(
-          annualStatisticGroup.AnnualStatisticGroupId,
-          annualStatisticGroup.Name
-
+        annualStatisticGroup.annualStatisticGroupId,
+        annualStatisticGroup.name
       )
     );
 
     _this.showModal();
   };
 
-    this.modalSubmit = function (e) {
-        e.preventDefault();
-        var form = $(e.target); // get form as a jquery object
+  this.modalSubmit = function (e) {
+    e.preventDefault();
+    var form = $(e.target); // get form as a jquery object
 
-        // Get Action Type
-        var action = _this.modal.mode();
-        if (action == 'Add') {
-            addRefData(_this, form.data("resource-url"), form.serialize(),
-                form.data("success-redirect"), form.data("refdata-type")); // cf. adac-refdata-utility.js
-        } else if (action == 'Update') {
-            editRefData(_this, form.data("resource-url") + '/' + $(e.target.AnnualStatisticGroupId).val(),
-                form.serialize(), form.data("success-redirect"), form.data("refdata-type"));
-        }
-    };
+    // Get Form Data
+    var data = serializeFormData(form);
+
+    // Get Action Type
+    var action = _this.modal.mode();
+    if (action == "Add") {
+      addRefData(
+        _this,
+        form.data("resource-url"),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      ); // cf. adac-refdata-utility.js
+    } else if (action == "Update") {
+      editRefData(
+        _this,
+        form.data("resource-url") +
+          "/" +
+          $(e.target.AnnualStatisticGroupId).val(),
+        data,
+        form.data("success-redirect"),
+        form.data("refdata-type")
+      );
+    }
+  };
 }
 
 var adacAnnualStatisticGroupVM;
@@ -104,7 +118,9 @@ $(function () {
           return val == null
             ? null
             : $.isArray(val)
-            ? $.map(val, function(innerVal) {return ({ name: elem.name, value: innerVal })})
+            ? $.map(val, function (innerVal) {
+                return { name: elem.name, value: innerVal };
+              })
             : {
                 name: elem.name,
                 value:
@@ -137,18 +153,24 @@ $(function () {
   });
 
   $(".delete-confirm").click(function (e) {
-      e.preventDefault();
-      var $link = $(this);
-      var linkData = $link.data("annual-statistic-group")
-      var url = $link.data("resource-url") + "/" + linkData.AnnualStatisticGroupId;
+    e.preventDefault();
+    var $link = $(this);
+    var linkData = $link.data("annual-statistic-group");
+    var url =
+      $link.data("resource-url") + "/" + linkData.annualStatisticGroupId;
 
-      bootbox.confirm("Are you sure you want to delete " + linkData.Name + "?",
-          function (confirmation) {
-              if (confirmation) {
-                  deleteRefData(url, $link.data("success-redirect"), $link.data("refdata-type"));
-              }
-          }
-      );
+    bootbox.confirm(
+      "Are you sure you want to delete " + linkData.name + "?",
+      function (confirmation) {
+        if (confirmation) {
+          deleteRefData(
+            url,
+            $link.data("success-redirect"),
+            $link.data("refdata-type")
+          );
+        }
+      }
+    );
   });
 
   adacAnnualStatisticGroupVM = new AdacAnnualStatisticGroupViewModel();

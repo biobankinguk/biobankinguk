@@ -15,8 +15,8 @@
 		<div class="row">
 			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
 			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
-				<partial name="~/Views/Shared/_FeedbackMessage.cshtml">
-			</section>
+        <partial name="~/Views/Shared/_FeedbackMessage.cshtml" />
+      </section>
 		</div>
 		<div class="row">
 			<div class="big_splash">
@@ -31,7 +31,7 @@
 			<section class="info-white-full">
 				<div id="focus" class="container text-center">
 					<div class="jumbotron">
-						<partial name="~/Views/Home/_UnifiedSearchBox.cshtml" model="Model">
+            <partial name="~/Views/Home/_UnifiedSearchBox.cshtml" model="Model" />
 					</div>
 				</div>
 			</section>

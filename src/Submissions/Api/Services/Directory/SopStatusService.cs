@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class SopStatusService : ReferenceDataService<SopStatus>
+    public class SopStatusService : ReferenceDataCrudService<SopStatus>
     {
         public SopStatusService(ApplicationDbContext db) : base(db) { }
 

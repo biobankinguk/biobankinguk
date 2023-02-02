@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -18,14 +20,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 public class SettingsController : Controller
 {
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IBiobankService _biobankService;
   private readonly EmailService _emailService;
   private readonly IOrganisationDirectoryService _organisationDirectoryService;
-  private readonly IReferenceDataService<AccessCondition> _accessConditionService;
-  private readonly IReferenceDataService<CollectionType> _collectionTypeService;
+  private readonly INetworkService _networkService;
+  private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
+  private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
   private readonly ITokenLoggingService _tokenLoggingService;
 
   public SettingsController(
@@ -33,14 +37,16 @@ public class SettingsController : Controller
       IBiobankService biobankService,
       EmailService emailService,
       IOrganisationDirectoryService organisationDirectoryService,
-      IReferenceDataService<AccessCondition> accessConditionService,
-      IReferenceDataService<CollectionType> collectionTypeService,
+      INetworkService networkService,
+      IReferenceDataCrudService<AccessCondition> accessConditionService,
+      IReferenceDataCrudService<CollectionType> collectionTypeService,
       ITokenLoggingService tokenLoggingService)
   {
       _userManager = userManager;
       _biobankService = biobankService;
       _emailService = emailService;
       _organisationDirectoryService = organisationDirectoryService;
+      _networkService = networkService;
       _accessConditionService = accessConditionService;
       _collectionTypeService = collectionTypeService;
       _tokenLoggingService = tokenLoggingService;
@@ -289,5 +295,49 @@ public class SettingsController : Controller
                 ClientSecret = credentials.Value
             });
         }
+        
+        #region Network Acceptance
+
+        [Authorize(CustomClaimType.Biobank)]
+        public async Task<ActionResult> NetworkAcceptance(int biobankId)
+        {
+          var organisationNetworks = await _networkService.ListOrganisationNetworks(biobankId);
+          var networkList = new List<NetworkAcceptanceModel>();
+          foreach (var orgNetwork in organisationNetworks)
+          {
+            var network = await _networkService.Get(orgNetwork.NetworkId);
+            var organisation = new NetworkAcceptanceModel
+            {
+              BiobankId = biobankId,
+              NetworkId = network.NetworkId,
+              NetworkName = network.Name,
+              NetworkDescription = network.Description,
+              NetworkEmail = network.Email,
+              ApprovedDate = orgNetwork.ApprovedDate
+            };
+            networkList.Add(organisation);
+
+          }
+
+          var model = new AcceptanceModel
+          {
+            NetworkRequests = networkList
+          };
+
+          return View(model);
+        }
+
+        public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
+        {
+          var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);
+
+          organisationNetwork.ApprovedDate = DateTime.Now;
+          await _networkService.UpdateOrganisationNetwork(organisationNetwork);
+
+          this.SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
+
+          return RedirectToAction("NetworkAcceptance");
+        }
+        #endregion
   
 }

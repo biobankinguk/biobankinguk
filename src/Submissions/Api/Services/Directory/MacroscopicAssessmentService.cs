@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class MacroscopicAssessmentService : ReferenceDataService<MacroscopicAssessment>
+    public class MacroscopicAssessmentService : ReferenceDataCrudService<MacroscopicAssessment>
     {
         public MacroscopicAssessmentService(ApplicationDbContext db) : base(db) { }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
-    public class CountryService : ReferenceDataService<Country>
+    public class CountryService : ReferenceDataCrudService<Country>
     {
         public CountryService(ApplicationDbContext db) : base(db) { }
 

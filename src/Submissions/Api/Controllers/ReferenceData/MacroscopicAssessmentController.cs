@@ -17,11 +17,11 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class MacroscopicAssessmentController : ControllerBase
     {
-        private readonly IReferenceDataService<MacroscopicAssessment> _macroscopicAssessmentService;
+        private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
         private readonly IConfigService _configService;
 
         public MacroscopicAssessmentController(
-            IReferenceDataService<MacroscopicAssessment> macroscopicAssessment,
+            IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessment,
             IConfigService configService)
         {
             _macroscopicAssessmentService = macroscopicAssessment;

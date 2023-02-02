@@ -65,14 +65,14 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#extraction-procedure-modal"
-                                   data-extraction-procedure="@Json.Serialize(ontologyTerm)"
+                                   data-extraction-procedure='@Json.Serialize(ontologyTerm)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
 
                                 <a title="Delete"
                                    class="action-icon delete-confirm"
-                                   data-refdata-model="@Json.Serialize(ontologyTerm)"
+                                   data-refdata-model='@Json.Serialize(ontologyTerm)'
                                    data-resource-url="/api/ExtractionProcedure"
                                    data-success-redirect="@Url.Action("ExtractionProcedure")"
                                    data-refdata-type="Extraction Procedure"
@@ -91,7 +91,7 @@
 <!-- Modal -->
 <div class="modal fade" id="extraction-procedure-modal" tabindex="-1" role="dialog" 
      aria-labelledby="extraction-procedure-modal-label" 
-     data-material-types="@Json.Serialize(Model.MaterialTypes.Select(x => new {id = x.Id, value = x.Value}))">
+     data-material-types='@Json.Serialize(Model.MaterialTypes.Select(x => new {id = x.Id, value = x.Value}))'>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

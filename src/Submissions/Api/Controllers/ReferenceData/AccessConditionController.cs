@@ -16,9 +16,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AccessConditionController : ControllerBase
     {
-        private readonly IReferenceDataService<AccessCondition> _accessConditionService;
+        private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
 
-        public AccessConditionController(IReferenceDataService<AccessCondition> accessConditionService)
+        public AccessConditionController(IReferenceDataCrudService<AccessCondition> accessConditionService)
         {
             _accessConditionService = accessConditionService;
         }

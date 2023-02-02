@@ -6,14 +6,19 @@ using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory;
 using Microsoft.AspNetCore.Mvc;
 using Biobanks.Submissions.Api.Areas.Admin.Models;
+using Biobanks.Submissions.Api.Areas.Admin.Models.SiteConfig;
 using Biobanks.Submissions.Api.Models.Search;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
+
 public class SiteConfigController : Controller
 {
     

@@ -23,14 +23,14 @@ public class CapabilityService : ICapabilityService
 
     private readonly ApplicationDbContext _db;
     private readonly IIndexProvider _indexProvider;
-    private readonly IReferenceDataService<DonorCount> _donorCountService;
+    private readonly IReferenceDataCrudService<DonorCount> _donorCountService;
     private readonly IOrganisationDirectoryService _organisationService;
     private readonly IBiobankIndexService _indexService;
 
   public CapabilityService(
         ApplicationDbContext db,
         IIndexProvider indexProvider,
-        IReferenceDataService<DonorCount> donorCountService,
+        IReferenceDataCrudService<DonorCount> donorCountService,
         IOrganisationDirectoryService organisationService,
         IBiobankIndexService indexService
         )

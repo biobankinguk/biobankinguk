@@ -22,7 +22,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory;
 [AllowAnonymous]
 public class SearchController : Controller
 {
-        private readonly IReferenceDataService<Country> _countryController;
+        private readonly IReferenceDataCrudService<Country> _countryController;
 
         private readonly IOntologyTermService _ontologyTermService;
     
@@ -35,7 +35,7 @@ public class SearchController : Controller
         
         private readonly IConfigService _configService;
 
-        public SearchController(IReferenceDataService<Country> countryController,
+        public SearchController(IReferenceDataCrudService<Country> countryController,
             IOntologyTermService ontologyTermService,
             IOrganisationDirectoryService organisationDirectoryService,
             ISearchProvider searchProvider,

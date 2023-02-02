@@ -17,9 +17,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class CollectionPercentageController : ControllerBase
     {
-        private readonly IReferenceDataService<CollectionPercentage> _collectionPercentageService;
+        private readonly IReferenceDataCrudService<CollectionPercentage> _collectionPercentageService;
 
-        public CollectionPercentageController(IReferenceDataService<CollectionPercentage> collectionPercentageService)
+        public CollectionPercentageController(IReferenceDataCrudService<CollectionPercentage> collectionPercentageService)
         {
             _collectionPercentageService = collectionPercentageService;
         }

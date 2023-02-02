@@ -26,7 +26,6 @@ using Microsoft.ApplicationInsights;
 using Biobanks.Directory.Services.Constants;
 using Biobanks.Directory.Services.Contracts;
 using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Directory.Services.Contracts;
 using Biobanks.Services.Dto;
 
 namespace Biobanks.Web.Controllers

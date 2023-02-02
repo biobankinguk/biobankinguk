@@ -16,9 +16,9 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class AgeRangeController : ControllerBase
     {
-        private readonly IReferenceDataService<AgeRange> _ageRangeService;
+        private readonly IReferenceDataCrudService<AgeRange> _ageRangeService;
 
-        public AgeRangeController(IReferenceDataService<AgeRange> ageRangeService)
+        public AgeRangeController(IReferenceDataCrudService<AgeRange> ageRangeService)
         {
             _ageRangeService = ageRangeService;
         }
@@ -149,7 +149,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 
             await _ageRangeService.Delete(id);
 
-            return Ok(id);
+            return Ok(model);
         }
         [HttpPut("{id}")]
         [SwaggerResponse(200, Type = typeof(AgeRangeModel))]
