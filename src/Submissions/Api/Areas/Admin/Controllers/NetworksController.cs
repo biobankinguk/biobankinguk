@@ -12,7 +12,6 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
-
 public class NetworksController : Controller
 {
   private readonly INetworkService _networkService;
@@ -22,7 +21,7 @@ public class NetworksController : Controller
     _networkService = networkService;
   }
   
-  public async Task<ActionResult> Networks()
+  public async Task<ActionResult> Index()
   {
     var allNetworks =
       (await _networkService.List()).ToList();

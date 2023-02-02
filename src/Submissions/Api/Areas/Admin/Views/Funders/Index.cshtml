@@ -4,7 +4,7 @@
     ViewBag.Title = "Funders";
 }
 
-<partial name = "_ADACTabs" model = "Funders"/>
+@await Html.PartialAsync("_ADACTabs", "Funders")
 
 <h3>
     Manage Funders
@@ -38,7 +38,7 @@
                                    class="action-icon"
                                    href="#"
                                    data-target="#funder-modal"
-                                   data-funder="@funder"
+                                   data-funder='@Json.Serialize(funder)'
                                    data-bind="click: openModalForEdit">
                                     <span class="fa fa-edit labelled-icon"></span>Edit
                                 </a>
@@ -118,10 +118,7 @@
     </div>
 </div>
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/adac/funders")
+  <script src="~/dist/js/Admin/funders.min.js" asp-append-version="true"></script>
 }
-*@

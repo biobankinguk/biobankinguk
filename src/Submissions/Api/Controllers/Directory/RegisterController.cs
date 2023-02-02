@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Models.Register;
 using Biobanks.Submissions.Api.Services.Directory;
@@ -214,7 +215,7 @@ public class RegisterController : Controller
   }
 
   //Register a biobank - ADAC Invite
-  [Authorize(Roles = "ADAC")]
+  [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
   public ActionResult AdacNetwork()
   {
       return View("Network", new RegisterEntityModel
@@ -296,7 +297,7 @@ public class RegisterController : Controller
       if (model.AdacInvited)
       {
           return RedirectToAction("AcceptNetworkRequest", "Requests",
-              new { requestId = request.NetworkRegisterRequestId });
+              new { Area= "Admin", requestId = request.NetworkRegisterRequestId });
       }
       else
       {
