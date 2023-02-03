@@ -22,11 +22,10 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
-
 public class RequestsController : Controller
 {
-  private INetworkService _networkService;
-  private IOrganisationDirectoryService _organisationService;
+  private readonly INetworkService _networkService;
+  private readonly IOrganisationDirectoryService _organisationService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly ITokenLoggingService _tokenLog;
   private readonly IEmailService _emailService;
