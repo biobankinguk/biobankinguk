@@ -139,10 +139,11 @@ public class RequestsController : Controller
           Url.Action("Confirm", "Account",
               new
               {
+                Area = "",
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.GetEncodedUrl())
+              Request.Scheme)
           );
     }
     else
@@ -152,9 +153,10 @@ public class RequestsController : Controller
           new EmailAddress(request.UserEmail),
           request.UserName,
           request.OrganisationName,
-          Url.Action("SwitchToBiobank", "Account",
+          Url.Action("Edit", "Profile",
               new
               {
+                Area = "Biobank",
                 id = request.OrganisationRegisterRequestId,
                 newBiobank = true
               },
