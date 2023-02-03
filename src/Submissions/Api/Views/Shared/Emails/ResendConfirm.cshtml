@@ -1,0 +1,28 @@
+@inject IOptions<SitePropertiesOptions> _config
+@inject IHostEnvironment HostEnvironment
+
+@{
+  var directoryName = @_config.Value.ServiceName;
+
+	// Format Email Header {"<Name>" <Address>}
+	var emailFrom = String.Format(@"""{0}"" {1}",
+	  directoryName,
+	  @_config.Value.ContactAddress
+		);
+
+	// Format Email Subject
+	var emailSubject = HostEnvironment.IsDevelopment()
+		? $"{directoryName} Account Confirmation"
+		: $"{directoryName} Account Confirmation (Environment: {HostEnvironment.EnvironmentName})";
+}
+
+Dear @Html.Raw(ViewBag.Name)
+
+We received a request to resend your account confirmation link.
+
+Please use this link below to complete registration and set your password:
+
+@Html.Raw(ViewBag.ConfirmLink)
+
+Regards,
+@_config.Value.EmailSignature
