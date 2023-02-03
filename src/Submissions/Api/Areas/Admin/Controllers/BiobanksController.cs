@@ -139,7 +139,9 @@ public class BiobanksController : Controller
       {
           Entity = bb.Name,
           EntityName = "biobank",
-          ControllerName = "ADAC"
+          ControllerName = "Biobanks",
+          SuccessControllerName = "Settings",
+          SuccessAreaName = "Biobank"
       });
   }
 
