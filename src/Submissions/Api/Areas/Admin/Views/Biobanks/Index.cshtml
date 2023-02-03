@@ -4,7 +4,7 @@
     ViewBag.Title = "ADAC Admin";
 }
 
-<partial name= "_ADACTabs" model= "Biobanks"/>
+@await Html.PartialAsync("_ADACTabs", "Biobanks")
 
 <h3>Biobanks @Html.ActionLink("Invite a new biobank", "AdacBiobank", "Register", null, new { @class = "btn btn-success pull-right" })</h3>
 
