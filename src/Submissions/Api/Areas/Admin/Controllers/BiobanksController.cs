@@ -26,7 +26,7 @@ public class BiobanksController : Controller
   private readonly IOrganisationDirectoryService _organisationService;
   private readonly ITokenLoggingService _tokenLog;
   private readonly UserManager<ApplicationUser> _userManager;
-  private readonly IMapper _mapper;
+  private readonly Mapper _mapper;
 
   public BiobanksController(
     IBiobankService biobankService,
@@ -34,7 +34,7 @@ public class BiobanksController : Controller
     IOrganisationDirectoryService organisationDirectoryService, 
     ITokenLoggingService tokenLog, 
     UserManager<ApplicationUser> userManager, 
-    IMapper mapper
+    Mapper mapper
     )
   {
     _biobankService = biobankService;
@@ -45,7 +45,7 @@ public class BiobanksController : Controller
     _mapper = mapper;
   }
   
-  public async Task<ActionResult> BiobanksAdmin(int id = 0)
+  public async Task<ActionResult> BiobankAdmin(int id = 0)
   {
       var biobank = await _organisationService.Get(id);
 
@@ -240,7 +240,7 @@ public class BiobanksController : Controller
       if (biobank != null) return View(_mapper.Map<BiobankModel>(biobank));
 
       this.SetTemporaryFeedbackMessage("The selected biobank could not be found.", FeedbackMessageType.Danger);
-      return RedirectToAction("Index");
+      return RedirectToAction("Biobanks");
   }
 
   [HttpPost]
@@ -270,7 +270,7 @@ public class BiobanksController : Controller
           this.SetTemporaryFeedbackMessage("The selected biobank could not be deleted.", FeedbackMessageType.Danger);
       }
 
-      return RedirectToAction("Index");
+      return RedirectToAction("Biobanks");
   }
 
   public async Task<ActionResult> SuspendBiobank(int id)

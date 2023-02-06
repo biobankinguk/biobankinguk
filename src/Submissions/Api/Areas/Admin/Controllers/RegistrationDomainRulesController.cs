@@ -22,7 +22,7 @@ public class RegistrationDomainRulesController : Controller
     _registrationDomainService = registrationDomainService;
   }
   
-  public async Task<ActionResult> Index()
+  public async Task<ActionResult> BlockAllowList()
   {
     var rules = (await _registrationDomainService.ListRules())
       .Select(x => new RegistrationDomainRuleModel

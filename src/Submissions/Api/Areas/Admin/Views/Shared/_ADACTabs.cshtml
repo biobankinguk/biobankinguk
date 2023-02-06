@@ -25,7 +25,7 @@
 
             <li role="presentation"
                 class="@(Model == "Biobanks" ? "active" : "true")">
-              @Html.ActionLink("Biobanks", "Index", "Biobanks")
+              @Html.ActionLink("Biobanks", "Biobanks", "Biobanks")
             </li>
 
             <li role="presentation" class="dropdown">
@@ -42,7 +42,7 @@
                     {
                         <li role="presentation"
                             class="@(Model == "Analytics" ? "active" : "true")">
-                          @Html.ActionLink("Analytics", "Analytics", "Analytics")
+                          @Html.ActionLink("Analytics", "Index", "Analytics")
                         </li>
                     }
 
