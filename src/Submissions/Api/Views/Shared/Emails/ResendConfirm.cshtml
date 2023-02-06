@@ -4,14 +4,8 @@
 @{
   var directoryName = @_config.Value.ServiceName;
 
-	// Format Email Header {"<Name>" <Address>}
-	var emailFrom = String.Format(@"""{0}"" {1}",
-	  directoryName,
-	  @_config.Value.ContactAddress
-		);
-
-	// Format Email Subject
-	var emailSubject = HostEnvironment.IsDevelopment()
+  // Format Email Subject
+	ViewBag.Subject = HostEnvironment.IsDevelopment()
 		? $"{directoryName} Account Confirmation"
 		: $"{directoryName} Account Confirmation (Environment: {HostEnvironment.EnvironmentName})";
 }
