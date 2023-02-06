@@ -26,4 +26,7 @@
     }
 </div>
 
-@await Html.PartialAsync("~/Views/Home/Index.cshtml", Model)
+@* Wraps around rendered page content to stop contents spilling over *@
+<div class="container">
+  @await Html.PartialAsync("~/Views/Home/Index.cshtml", Model)
+</div>

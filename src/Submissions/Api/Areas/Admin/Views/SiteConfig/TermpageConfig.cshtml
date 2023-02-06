@@ -35,8 +35,8 @@
     </div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/markdowndeep") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+}
+
