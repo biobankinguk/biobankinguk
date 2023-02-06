@@ -6,6 +6,7 @@
     bool organisationRequests = false;
     if (User.Identity.IsAuthenticated)
     {
+        // Check for active requests
         var biobankRequests = User.FindAll(CustomClaimType.BiobankRequest);
         var networkRequests = User.FindAll(CustomClaimType.NetworkRequest);
         organisationRequests = biobankRequests.Any() || networkRequests.Any();
