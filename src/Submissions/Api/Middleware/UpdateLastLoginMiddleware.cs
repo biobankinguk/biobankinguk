@@ -28,12 +28,11 @@ namespace Biobanks.Submissions.Api.Middleware
         {
             if (context.User != null && context.User.Identity.IsAuthenticated)
             {
-
-                using var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
-                var user = dbContext.Users.Where(u => u.UserName == context.User.Identity.Name).FirstOrDefault();
+                var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
+                var user = dbContext.Users.FirstOrDefault(u => u.UserName == context.User.Identity.Name);
                 user.LastLogin = DateTime.Now;
                 dbContext.Update(user);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 var claims = new List<Claim>
                 {
@@ -48,10 +47,10 @@ namespace Biobanks.Submissions.Api.Middleware
                     //TODO look at using organisationdirectoryservice.getbyuserid
                     //and ListAcceptedRegistrationRequests
                     var organisations = await dbContext.OrganisationUsers.AsNoTracking()
-                    .Include(x => x.Organisation)
-                    .Where(x => x.OrganisationUserId == user.Id)
-                    .Select(x => x.Organisation)
-                    .ToListAsync();
+                        .Include(x => x.Organisation)
+                        .Where(x => x.OrganisationUserId == user.Id)
+                        .Select(x => x.Organisation)
+                        .ToListAsync();
 
                     var organisationsRequests = await dbContext.OrganisationRegisterRequests
                         .AsNoTracking()
@@ -78,10 +77,10 @@ namespace Biobanks.Submissions.Api.Middleware
                 if (context.User.IsInRole(Role.NetworkAdmin))
                 {
                     var networks = await dbContext.NetworkUsers.AsNoTracking()
-                    .Include(x => x.Network)
-                    .Where(x => x.NetworkUserId == user.Id)
-                    .Select(x => x.Network)
-                    .ToListAsync();
+                        .Include(x => x.Network)
+                        .Where(x => x.NetworkUserId == user.Id)
+                        .Select(x => x.Network)
+                        .ToListAsync();
 
                     var networkRequests =  await dbContext.NetworkRegisterRequests
                         .AsNoTracking()
@@ -99,18 +98,18 @@ namespace Biobanks.Submissions.Api.Middleware
                 }
 
                 var appIdentity = new ClaimsIdentity(claims);
-                context.User.AddIdentity(appIdentity);       
+                context.User.AddIdentity(appIdentity);
 
-                }
+            }
 
-//call the next delegate/middleware in the pipeline
-await _next(context);
-}
-}
-
-public static class DirectoryLoginMiddlewareExtension
-{
-public static IApplicationBuilder UseDirectoryLogin(this IApplicationBuilder builder)
-=> builder.UseMiddleware<DirectoryLoginMiddleware>();
-}
+            //call the next delegate/middleware in the pipeline
+            await _next(context);
+        }
+    }
+    
+    public static class DirectoryLoginMiddlewareExtension
+    {
+      public static IApplicationBuilder UseDirectoryLogin(this IApplicationBuilder builder)
+          => builder.UseMiddleware<DirectoryLoginMiddleware>();
+    }
 }
