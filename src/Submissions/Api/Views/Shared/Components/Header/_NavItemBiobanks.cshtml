@@ -11,8 +11,8 @@
 
     <li>
       <a href="@Url.Action("Edit", "Profile", new { Area = "Biobank", id = data.Key, newBiobank = true})">
-				<span class="fa fa-book labelled-icon"></span>@(data.Value)
-			</a>
+        <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
+      </a>
 		</li>
   }
  
