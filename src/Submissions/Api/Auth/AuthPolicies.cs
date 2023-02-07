@@ -1,9 +1,19 @@
+using System.Collections.Generic;
+using System.Linq;
 using Biobanks.Submissions.Api.Auth.Basic;
 using Biobanks.Submissions.Api.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 using System.Security.Claims;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Biobanks.Shared.Services;
+using Microsoft.Extensions.DependencyInjection;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Biobanks.Submissions.Api.Auth
 {
@@ -71,6 +81,49 @@ namespace Biobanks.Submissions.Api.Auth
         => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
             .RequireClaim(ClaimTypes.Role, Role.NetworkAdmin)
+            .Build();        
+        
+        public static AuthorizationPolicy HasBiobankClaim
+        => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(IsBiobankAdmin)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              if (!int.TryParse(
+                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                    out var biobankId))
+                return false;
+              
+              // list their biobank claims
+              var biobanks = context.User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+              // verify biobank claim
+              if (!biobanks.ContainsKey(biobankId))
+              {
+                return false;
+              }
+              
+              // get the biobank
+              var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
+              if (organisationService == null) return false;
+              
+              var biobank =
+                Task.Run(async () =>
+                    await organisationService.Get(biobankId))
+                  .Result;
+
+              //only fail if suspended
+              if (biobank != null && biobank.IsSuspended)
+              {
+                return false;
+              }
+              
+              return true;
+            })
             .Build();
   }
 }
