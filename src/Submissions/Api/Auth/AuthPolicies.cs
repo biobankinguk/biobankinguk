@@ -83,6 +83,10 @@ namespace Biobanks.Submissions.Api.Auth
             .RequireClaim(ClaimTypes.Role, Role.NetworkAdmin)
             .Build();        
         
+        /// <summary>
+        /// Requires that a request is authenticated, and is a biobankAdmin
+        /// And that they have that claim to the specific biobank which is not suspended.
+        /// </summary>
         public static AuthorizationPolicy HasBiobankClaim
         => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
@@ -125,5 +129,36 @@ namespace Biobanks.Submissions.Api.Auth
               return true;
             })
             .Build();
+        
+        /// <summary>
+        /// Requires that a request is authenticated, ans is a networkAdmin
+        /// And that they have that claim to the specific network
+        /// </summary>
+        public static AuthorizationPolicy HasNetworkClaim
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(IsNetworkAdmin)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                    out var networkId))
+                return false;
+              
+              // list their network claims
+              var networks = context.User.FindAll(CustomClaimType.Network).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+              // verify biobank claim
+              if (!networks.ContainsKey(networkId))
+              {
+                return false;
+              }
+              
+              return true;
+            })
+            .Build();        
   }
 }
