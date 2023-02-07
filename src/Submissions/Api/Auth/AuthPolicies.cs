@@ -81,25 +81,25 @@ namespace Biobanks.Submissions.Api.Auth
         => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
             .RequireClaim(ClaimTypes.Role, Role.NetworkAdmin)
-            .Build();        
-        
+            .Build();
+
         /// <summary>
         /// Requires that a request is authenticated, and is a biobankAdmin
         /// And that they have that claim to the specific biobank which is not suspended.
         /// </summary>
         public static AuthorizationPolicy HasBiobankClaim
-        => new AuthorizationPolicyBuilder()
+          => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
             .Combine(IsBiobankAdmin)
             .RequireAssertion(context =>
             {
               var httpContext = (DefaultHttpContext?)context.Resource;
-              
+
               if (!int.TryParse(
-                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
                     out var biobankId))
                 return false;
-              
+
               // list their biobank claims
               var biobanks = context.User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
                 .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
@@ -110,11 +110,11 @@ namespace Biobanks.Submissions.Api.Auth
               {
                 return false;
               }
-              
+
               // get the biobank
               var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
-              if (organisationService == null) return false;
-              
+              if (organisationService is null) return false;
+
               var biobank =
                 Task.Run(async () =>
                     await organisationService.Get(biobankId))
@@ -125,13 +125,13 @@ namespace Biobanks.Submissions.Api.Auth
               {
                 return false;
               }
-              
+
               return true;
             })
             .Build();
-        
+
         /// <summary>
-        /// Requires that a request is authenticated, ans is a networkAdmin
+        /// Requires that a request is authenticated, and is a networkAdmin
         /// And that they have that claim to the specific network
         /// </summary>
         public static AuthorizationPolicy HasNetworkClaim
@@ -141,11 +141,11 @@ namespace Biobanks.Submissions.Api.Auth
             .RequireAssertion(context =>
             {
               var httpContext = (DefaultHttpContext?)context.Resource;
-              
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
                     out var networkId))
                 return false;
-              
+
               // list their network claims
               var networks = context.User.FindAll(CustomClaimType.Network).ToDictionary(x => JsonSerializer
                 .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
@@ -156,9 +156,43 @@ namespace Biobanks.Submissions.Api.Auth
               {
                 return false;
               }
-              
+
               return true;
             })
-            .Build();        
+            .Build();
+        
+        /// <summary>
+        /// Requires that a request is authenticated, and HasBiobankClaim
+        /// And that the biobank can administer the sample set
+        /// </summary>
+        public static AuthorizationPolicy CanAdministerSampleSet
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(HasBiobankClaim)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              // get the biobank
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+                    out var biobankId))
+                return false;              
+              
+              // verify sample set
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                    out var sampleSetId))
+                return false;
+              
+              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
+              if (biobankReadService is null) return false;
+              
+              if (!biobankReadService.CanThisBiobankAdministerThisSampleSet(biobankId, sampleSetId))
+              {
+                return false;
+              }
+              return true;
+            })
+            .Build();
+        
   }
 }
