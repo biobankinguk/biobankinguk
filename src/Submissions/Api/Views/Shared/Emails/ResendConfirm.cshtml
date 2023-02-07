@@ -1,13 +1,10 @@
 @inject IOptions<SitePropertiesOptions> _config
-@inject IHostEnvironment HostEnvironment
 
 @{
   var directoryName = @_config.Value.ServiceName;
 
   // Format Email Subject
-	ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName} Account Confirmation"
-		: $"{directoryName} Account Confirmation (Environment: {HostEnvironment.EnvironmentName})";
+  ViewBag.Subject = $"{directoryName} Account Confirmation";
 }
 
 Dear @Html.Raw(ViewBag.Name)
