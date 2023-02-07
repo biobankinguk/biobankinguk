@@ -194,5 +194,38 @@ namespace Biobanks.Submissions.Api.Auth
             })
             .Build();
         
+        /// <summary>
+        /// Requires that a request is authenticated, and HasBiobankClaim
+        /// And that the biobank can administer the capability
+        /// </summary>
+        public static AuthorizationPolicy CanAdministerCapability
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(HasBiobankClaim)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              // get the biobank
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+                    out var biobankId))
+                return false;              
+              
+              // verify sample set
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                    out var capabilityId))
+                return false;
+              
+              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
+              if (biobankReadService is null) return false;
+              
+              if (!biobankReadService.CanThisBiobankAdministerThisCapability(biobankId, capabilityId))
+              {
+                return false;
+              }
+              return true;
+            })
+            .Build();
+
   }
 }
