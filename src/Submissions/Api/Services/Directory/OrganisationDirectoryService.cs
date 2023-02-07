@@ -55,10 +55,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private IQueryable<Organisation> QueryForIndexing()
             => Query()
                 .Include(x => x.Collections)
-                .Include(x => x.Collections.Select(c => c.SampleSets))
+                .ThenInclude(c => c.SampleSets)
                 .Include(x => x.DiagnosisCapabilities)
                 .Include(x => x.OrganisationServiceOfferings)
-                .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering));
+                .ThenInclude(o => o.ServiceOffering);
 
         private IQueryable<OrganisationRegisterRequest> QueryRegistrationRequests()
             => _db.OrganisationRegisterRequests
@@ -122,6 +122,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<Organisation> Get(int id)
             => await Query()
                 .AsNoTracking()
+                .Include(x => x.OrganisationRegistrationReasons)
+                .Include(x => x.OrganisationServiceOfferings)
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         public async Task<Organisation> GetForBulkSubmissions(int id)
@@ -427,7 +429,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name)
             => await QueryRegistrationRequests()
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.OrganisationName == name);
 
         /// <inheritdoc/>
