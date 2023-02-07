@@ -7,13 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 
 using System.Security.Claims;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Biobanks.Shared.Services;
 using Microsoft.Extensions.DependencyInjection;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Biobanks.Submissions.Api.Auth
 {
@@ -96,7 +93,7 @@ namespace Biobanks.Submissions.Api.Auth
               var httpContext = (DefaultHttpContext?)context.Resource;
 
               if (!int.TryParse(
-                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
                     out var biobankId))
                 return false;
 
@@ -142,7 +139,7 @@ namespace Biobanks.Submissions.Api.Auth
             {
               var httpContext = (DefaultHttpContext?)context.Resource;
 
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
                     out var networkId))
                 return false;
 
@@ -174,7 +171,7 @@ namespace Biobanks.Submissions.Api.Auth
               var httpContext = (DefaultHttpContext?)context.Resource;
               
               // get the biobank
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
                     out var biobankId))
                 return false;              
               
@@ -207,7 +204,7 @@ namespace Biobanks.Submissions.Api.Auth
               var httpContext = (DefaultHttpContext?)context.Resource;
               
               // get the biobank
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty,
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
                     out var biobankId))
                 return false;              
               
@@ -240,7 +237,7 @@ namespace Biobanks.Submissions.Api.Auth
               var httpContext = (DefaultHttpContext?)context.Resource;
               
               // get the biobank
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty, 
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty, 
                     out var biobankId))
                 return false;              
               
