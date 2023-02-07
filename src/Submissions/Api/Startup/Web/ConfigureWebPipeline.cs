@@ -66,7 +66,7 @@ public static class ConfigureWebPipeline
       .UseSession();
     
     // Authenticated users have their last login value updated to now
-    // And add biobank claims to user
+    // Add organisation claims to user
     app.UseDirectoryLogin();
 
     // Map Endpoints

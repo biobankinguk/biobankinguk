@@ -54,22 +54,22 @@
 
             <!-- Navigation -->
             <div class="navbar-collapse-container">
-                <div id="myNavbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <partial name="_NavMenu.cshtml" for="NavigationItems"/>
-                        @if (organisationRequests)
-                        {
-                            <span class="fa fa-exclamation-circle labelled-icon red"></span>
-                        }
-                    </ul>
-    
-                    <ul class="nav navbar-nav">
-                        <partial name="_NavMenu.cshtml"
-                            for="NavigationItems"
-                            view-data="@(new ViewDataDictionary(ViewData) { { "Toolbar", true } })"
-                        />
-                    </ul>
-                </div>
+              <div id="myNavbar" class="navbar-collapse collapse">
+
+                  <ul class="nav navbar-nav">
+                      @if (organisationRequests)
+                      {
+                        <span class="fa fa-exclamation-circle labelled-icon red" style="margin-right: -160px"></span>
+                      }
+                      <partial name="_NavMenu.cshtml" for="NavigationItems"/>
+                  </ul>
+  
+                  <ul class="nav navbar-nav">
+                      <partial name="_NavMenu.cshtml"
+                          for="NavigationItems"
+                          view-data="@(new ViewDataDictionary(ViewData) { { "Toolbar", true } })"/>
+                  </ul>
+              </div>
             </div>
         </div>
     </div>
