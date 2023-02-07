@@ -184,12 +184,12 @@ namespace Biobanks.Submissions.Api.Auth
                 return false;
               
               var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
-              if (biobankReadService is null) return false;
+              if (biobankReadService is null) 
+                return false;
               
               if (!biobankReadService.CanThisBiobankAdministerThisSampleSet(biobankId, sampleSetId))
-              {
                 return false;
-              }
+              
               return true;
             })
             .Build();
@@ -211,18 +211,51 @@ namespace Biobanks.Submissions.Api.Auth
                     out var biobankId))
                 return false;              
               
-              // verify sample set
+              // verify capability
               if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
                     out var capabilityId))
                 return false;
               
               var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
-              if (biobankReadService is null) return false;
+              if (biobankReadService is null)
+                return false;
               
               if (!biobankReadService.CanThisBiobankAdministerThisCapability(biobankId, capabilityId))
-              {
                 return false;
-              }
+              
+              return true;
+            })
+            .Build();
+        
+        /// <summary>
+        /// Requires that a request is authenticated, and HasBiobankClaim
+        /// And that the biobank can administer the collection
+        /// </summary>
+        public static AuthorizationPolicy CanAdministerCollection
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(HasBiobankClaim)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              // get the biobank
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankid") ?? string.Empty, 
+                    out var biobankId))
+                return false;              
+              
+              // verify collection
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty, 
+                    out var collectionId))
+                return false;
+              
+              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
+              if (biobankReadService is null)
+                return false;
+              
+              if (!biobankReadService.CanThisBiobankAdministerThisCollection(biobankId, collectionId))
+                return false;
+              
               return true;
             })
             .Build();
