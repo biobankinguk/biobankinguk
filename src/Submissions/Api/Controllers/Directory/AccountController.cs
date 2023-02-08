@@ -29,7 +29,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
             ITokenLoggingService tokenLog,
-            IOptions<SitePropertiesOptions> siteConfigOptions, 
+            IOptions<SitePropertiesOptions> siteConfigOptions
         )
         {
             _signinManager = signInManager;
