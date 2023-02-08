@@ -83,7 +83,7 @@ public static class ConfigureWebPipeline
     // MVC Controllers
     app.MapControllerRoute(
       name: "AreasDefault",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{biobankId?}/{id?}");
 
     app.MapControllerRoute(
       name: "default",
