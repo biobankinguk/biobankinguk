@@ -92,12 +92,11 @@ namespace Biobanks.Submissions.Api.Auth
             .RequireAssertion(context =>
             {
               var httpContext = (DefaultHttpContext?)context.Resource;
-
-              if (!int.TryParse(
-                    (string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
+              
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
                     out var biobankId))
                 return false;
-
+              
               // list their biobank claims
               var biobanks = context.User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
                 .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
