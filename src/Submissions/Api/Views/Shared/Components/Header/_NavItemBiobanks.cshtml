@@ -10,7 +10,7 @@
     var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
 
     <li>
-      <a href="@Url.Action("Edit", "Profile", new { Area = "Biobank", id = data.Key, newBiobank = true})">
+      <a href="@Url.Action("Edit", "Profile", new { Area = "Biobank", biobankId = data.Key, newBiobank = true})">
         <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
       </a>
 		</li>
@@ -21,7 +21,7 @@
   {
       var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
       <li>
-          <a href="@Url.Action("Index", "Collections", new { Area = "Biobank", id = data.Key, newBiobank = false})">
+          <a href="@Url.Action("Index", "Collections", new { Area = "Biobank", biobankId = data.Key, newBiobank = false})">
               <span class="fa fa-book labelled-icon"></span>@(data.Value)
           </a>
       </li>
