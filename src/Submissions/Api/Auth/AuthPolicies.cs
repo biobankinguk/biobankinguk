@@ -81,8 +81,8 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
 
         /// <summary>
-        /// Requires a request is <see cref="IsAuthenticated"/>, and <see cref="IsBiobankAdmin"/>.
-        /// And has a claim to the specific biobank, which is not suspended.
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsBiobankAdmin"/>,
+        /// and has a claim to the specific biobank, which is not suspended.
         /// </summary>
         /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy HasBiobankClaim
@@ -111,10 +111,7 @@ namespace Biobanks.Submissions.Api.Auth
               if (organisationService is null)
                 return false;
 
-              var biobank =
-                Task.Run(async () =>
-                    await organisationService.Get(biobankId))
-                  .Result;
+              var biobank = Task.Run(async () => await organisationService.Get(biobankId)).Result;
 
               //only fail if suspended
               if (biobank is { IsSuspended: true })
@@ -125,8 +122,8 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
 
         /// <summary>
-        /// Requires a request is <see cref="IsAuthenticated"/>, and <see cref="IsNetworkAdmin"/>.
-        /// And has a claim to the specific network.
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsNetworkAdmin"/>,
+        /// and has a claim to the specific network.
         /// </summary>
         /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy HasNetworkClaim
@@ -189,7 +186,7 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
         
         /// <summary>
-        /// Requires a request is <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
         /// and the biobank can administer the capability.
         /// </summary>
         /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
@@ -223,7 +220,7 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
         
         /// <summary>
-        /// Requires a request is <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
         /// and the biobank can administer the collection.
         /// </summary>
         /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
