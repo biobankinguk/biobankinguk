@@ -8,7 +8,7 @@
     ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Config";
 }
 
-<partial name="_ADACTabs" model="@ViewBag.Title" />
+@await Html.PartialAsync("_ADACTabs", await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Config")
 
 <h3>
     @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) Configuration
@@ -61,10 +61,7 @@
     </div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/knockout") *@
-@*     @Scripts.Render("~/bundles/datatables") *@
-@*     @Scripts.Render("~/bundles/adac/sample-resource-config") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/sample-resource-config.min.js" asp-append-version="true"></script>
+}
