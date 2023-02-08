@@ -65,10 +65,12 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                   if (user is null)
                     throw new InvalidOperationException(
                     $"Successfully signed in user could not be retrieved! User Email: {model.Email}");
-  
-                // await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId()); 
 
-                return RedirectToAction("Index", "Home");
+                  // Update users last login
+                  user.LastLogin = DateTime.UtcNow;
+                  await _userManager.UpdateAsync(user);
+
+                  return RedirectToAction("Index", "Home");
                 }
 
                 else if (result.IsLockedOut)
@@ -123,7 +125,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         #endregion
-
 
         #region Account Confirmation
 
