@@ -368,11 +368,11 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             return RedirectToAction("Index", "Home");
         }
 
-    #endregion
+        #endregion
     
-    #region Account details
+        #region Account details
 
-    public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index()
         {
             return View(await GetAccountDetailsModelAsync());
         }
@@ -415,6 +415,18 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             };
         }
 
+        #endregion
+        
+        #region Session Management
+        
+        public JsonResult KeepSessionAliveAjax()
+        {
+            return Json(new
+            {
+                success = true
+            });
+        }
+        
         #endregion
 
     }
