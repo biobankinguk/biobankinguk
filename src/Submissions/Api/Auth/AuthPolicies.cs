@@ -81,9 +81,10 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
 
         /// <summary>
-        /// Requires that a request is authenticated, and is a biobankAdmin
-        /// And that they have that claim to the specific biobank which is not suspended.
+        /// Requires a request is <see cref="IsAuthenticated"/>, and <see cref="IsBiobankAdmin"/>.
+        /// And has a claim to the specific biobank, which is not suspended.
         /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy HasBiobankClaim
           => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
@@ -104,13 +105,12 @@ namespace Biobanks.Submissions.Api.Auth
 
               // verify biobank claim
               if (!biobanks.ContainsKey(biobankId))
-              {
                 return false;
-              }
 
               // get the biobank
               var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
-              if (organisationService is null) return false;
+              if (organisationService is null)
+                return false;
 
               var biobank =
                 Task.Run(async () =>
@@ -118,19 +118,18 @@ namespace Biobanks.Submissions.Api.Auth
                   .Result;
 
               //only fail if suspended
-              if (biobank != null && biobank.IsSuspended)
-              {
+              if (biobank is { IsSuspended: true })
                 return false;
-              }
 
               return true;
             })
             .Build();
 
         /// <summary>
-        /// Requires that a request is authenticated, and is a networkAdmin
-        /// And that they have that claim to the specific network
+        /// Requires a request is <see cref="IsAuthenticated"/>, and <see cref="IsNetworkAdmin"/>.
+        /// And has a claim to the specific network.
         /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy HasNetworkClaim
           => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
@@ -150,18 +149,17 @@ namespace Biobanks.Submissions.Api.Auth
 
               // verify biobank claim
               if (!networks.ContainsKey(networkId))
-              {
                 return false;
-              }
 
               return true;
             })
             .Build();
         
         /// <summary>
-        /// Requires that a request is authenticated, and HasBiobankClaim
-        /// And that the biobank can administer the sample set
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
+        /// and the biobank can administer the sample set.
         /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy CanAdministerSampleSet
           => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
@@ -192,9 +190,10 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
         
         /// <summary>
-        /// Requires that a request is authenticated, and HasBiobankClaim
-        /// And that the biobank can administer the capability
+        /// Requires a request is <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
+        /// and the biobank can administer the capability.
         /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy CanAdministerCapability
           => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
@@ -225,9 +224,10 @@ namespace Biobanks.Submissions.Api.Auth
             .Build();
         
         /// <summary>
-        /// Requires that a request is authenticated, and HasBiobankClaim
-        /// And that the biobank can administer the collection
+        /// Requires a request is <see cref="IsAuthenticated"/>, <see cref="HasBiobankClaim"/>,
+        /// and the biobank can administer the collection.
         /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy CanAdministerCollection
           => new AuthorizationPolicyBuilder()
             .Combine(IsAuthenticated)
