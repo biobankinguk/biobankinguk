@@ -6,10 +6,8 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -22,34 +20,22 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly INetworkService _networkService;
-        private readonly IOrganisationDirectoryService _organisationService;
-
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
         private readonly SitePropertiesOptions _siteConfig;
-        private readonly ActionContext _actionContext;
 
-    public AccountController(
-            INetworkService networkService,
-            IOrganisationDirectoryService organisationService,
+        public AccountController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
             ITokenLoggingService tokenLog,
-            IOptions<SitePropertiesOptions> siteConfigOptions,
-            IActionContextAccessor actionContextAccessor
-            )
+            IOptions<SitePropertiesOptions> siteConfigOptions, 
+        )
         {
-            _networkService = networkService;
-            _organisationService = organisationService;
-
             _signinManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
             _tokenLog = tokenLog;
-            _actionContext = actionContextAccessor.ActionContext
-              ?? throw new InvalidOperationException("Failed to get the ActionContext");
             _siteConfig = siteConfigOptions.Value;
         }
 
