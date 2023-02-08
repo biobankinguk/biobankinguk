@@ -410,6 +410,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x.DeclinedDate == null &&
                     x.OrganisationCreatedDate == null)
                 .ToListAsync();
+        
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequestsByUserId(string userId)
+        {
+          var userEmail = _userManager.Users.First(u => u.Id == userId).Email;
+
+          return await QueryRegistrationRequests()
+            .AsNoTracking()
+            .Where(x => x.UserEmail == userEmail)
+            .Where(x => 
+              x.AcceptedDate != null && 
+              x.DeclinedDate == null && 
+              x.OrganisationCreatedDate == null)
+            .ToListAsync();
+        }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
