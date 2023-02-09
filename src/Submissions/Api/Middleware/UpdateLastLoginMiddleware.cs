@@ -22,11 +22,14 @@ namespace Biobanks.Submissions.Api.Middleware
         {
             if (context.User != null && context.User.Identity.IsAuthenticated)
             {
-                var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
-                var user = dbContext.Users.FirstOrDefault(u => u.UserName == context.User.Identity.Name);
+
+                using var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
+                var user = dbContext.Users.Where(u => u.UserName == context.User.Identity.Name).FirstOrDefault();
                 user.LastLogin = DateTime.Now;
                 dbContext.Update(user);
-                await dbContext.SaveChangesAsync();
+                dbContext.SaveChanges();
+                
+            }
 
             //call the next delegate/middleware in the pipeline
             await _next(context);
