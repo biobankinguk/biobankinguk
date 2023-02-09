@@ -666,7 +666,7 @@ public class ProfileController : Controller
     #region Publications
     
     [HttpGet]
-    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Publications(int biobankId)
     {
         //If turned off in site config
@@ -678,7 +678,7 @@ public class ProfileController : Controller
 
 
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> GetPublicationsAjax(int biobankId)
     {
         //If turned off in site config
@@ -739,8 +739,8 @@ public class ProfileController : Controller
     }
 
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> RetrievePublicationsAjax(string publicationId, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> RetrievePublicationsAjax(int biobankId, string publicationId)
     {
         
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
@@ -762,8 +762,8 @@ public class ProfileController : Controller
     }
 
     [HttpPost]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> AddPublicationAjax(string publicationId, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> AddPublicationAjax(int biobankId, string publicationId)
     {
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
             return Ok(new EmptyResult());
@@ -791,8 +791,8 @@ public class ProfileController : Controller
     }
 
     [HttpPost]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> ClaimPublicationAjax(string publicationId, bool accept, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> ClaimPublicationAjax(int biobankId, string publicationId, bool accept)
     {
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
             return Ok(new EmptyResult());
