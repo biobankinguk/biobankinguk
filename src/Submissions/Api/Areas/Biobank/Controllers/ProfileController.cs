@@ -10,7 +10,6 @@ using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Auth;
@@ -354,7 +353,7 @@ public class ProfileController : Controller
         this.SetTemporaryFeedbackMessage(sampleResource + " details updated!", FeedbackMessageType.Success);
 
         //Back to the profile to view your saved changes
-        return RedirectToAction("Index" );
+        return RedirectToAction("Index", new {biobankId=biobank.OrganisationId } );
     }
 
     private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
@@ -532,7 +531,7 @@ public class ProfileController : Controller
 
     #region Funders
 
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Funders(int biobankId)
     {
         if (biobankId == 0)
@@ -557,14 +556,14 @@ public class ProfileController : Controller
         //timeStamp can be used to avoid caching issues, notably on IE
         => Json(await GetFundersAsync(biobankId));
     
-    public ActionResult AddFunderSuccess(string name)
+    public ActionResult AddFunderSuccess(int biobankId, string name)
     {
         //This action solely exists so we can set a feedback message
     
         this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your list of funders!",
             FeedbackMessageType.Success);
     
-        return RedirectToAction("Funders");
+        return RedirectToAction("Funders", new { biobankId = biobankId });
     }
     
     public async Task<ActionResult> AddFunderAjax(int biobankId)
@@ -579,10 +578,10 @@ public class ProfileController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> AddFunderAjax(AddFunderModel model, int biobankId)
+    public async Task<ActionResult> AddFunderAjax(int biobankId, AddFunderModel model)
     {
         if (!ModelState.IsValid)
-            return Json(new
+            return BadRequest(new
             {
                 success = false,
                 errors = ModelState.Values
@@ -610,7 +609,7 @@ public class ProfileController : Controller
             {
                 ModelState.AddModelError("", "We couldn't find any funders with the name you entered.");
     
-                return Json(new
+                return BadRequest(new
                 {
                     success = false,
                     errors = ModelState.Values
@@ -633,8 +632,8 @@ public class ProfileController : Controller
         });
     }
     
-    [Authorize( CustomClaimType.Biobank)]
-    public async Task<ActionResult> DeleteFunder(int funderId, string funderName, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> DeleteFunder(int biobankId, int funderId, string funderName)
     {
         if (biobankId == 0)
             return RedirectToAction("Index", "Home");
@@ -644,10 +643,10 @@ public class ProfileController : Controller
     
         this.SetTemporaryFeedbackMessage($"{funderName} has been removed from your list of funders!", FeedbackMessageType.Success);
     
-        return RedirectToAction("Funders");
+        return RedirectToAction("Funders", new { biobankId = biobankId });
     }
     
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public async Task<ActionResult> SearchFunders(string wildcard)
     {
         var funders = await _funderService.List(wildcard);
