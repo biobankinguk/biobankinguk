@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -221,7 +222,14 @@ public class ProfileController : Controller
 
         // no biobank means we're dealing with a request
         if (org is null)
-          return View(await NewBiobankDetailsModelAsync(biobankId)); 
+        {
+          var model = await NewBiobankDetailsModelAsync(biobankId);
+          
+          // Reset the biobankId in the model state so the form does not populate it.
+          // Ensures a new biobank is created.
+          ModelState.SetModelValue("biobankId", new ValueProviderResult());
+          return View(model);
+        }
 
         // biobank id means we're dealing with an existing biobank
         return View(await GetBiobankDetailsModelAsync(biobankId)); 
@@ -346,7 +354,7 @@ public class ProfileController : Controller
         this.SetTemporaryFeedbackMessage(sampleResource + " details updated!", FeedbackMessageType.Success);
 
         //Back to the profile to view your saved changes
-        return RedirectToAction("Index");
+        return RedirectToAction("Index" );
     }
 
     private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
@@ -377,10 +385,10 @@ public class ProfileController : Controller
         .ToList();
     }
 
-    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int biobankId)
+    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int id)
     {
         //the biobank doesn't exist yet, but a request should, so we can get the name
-        var request = await _organisationService.GetRegistrationRequest(biobankId);
+        var request = await _organisationService.GetRegistrationRequest(id);
 
         //validate that the request is accepted
         if (request.AcceptedDate == null) return null;
