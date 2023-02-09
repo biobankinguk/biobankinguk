@@ -37,7 +37,10 @@ public static class ConfigureWebPipeline
     app.UseHttpsRedirection();
     app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
     app.UseStaticFiles();
-    
+
+    // Authenticated users have their last login value updated to now
+    app.UseDirectoryLogin(); // TODO: not sure if this is the best approach to this?
+
     app
       // Simple PUBLIC middleware
       .UseVersion()
@@ -63,10 +66,6 @@ public static class ConfigureWebPipeline
       .UseAuthentication()
       .UseAuthorization()
       .UseSession();
-    
-    // Authenticated users have their last login value updated to now
-    // Add organisation claims to user
-    app.UseDirectoryLogin();
 
     // Map Endpoints
     app.UseAndMapHangfireDashboard();
