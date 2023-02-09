@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Biobanks.Aggregator;
 using Biobanks.Aggregator.Services;
 using Biobanks.Aggregator.Services.Contracts;
