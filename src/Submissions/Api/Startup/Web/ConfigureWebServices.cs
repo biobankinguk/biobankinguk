@@ -85,6 +85,7 @@ public static class ConfigureWebServices
 
     // Identity
     b.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+      .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
       .AddEntityFrameworkStores<ApplicationDbContext>()
       .AddDefaultTokenProviders();
     b.Services.ConfigureApplicationCookie(opts =>
