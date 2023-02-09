@@ -6,7 +6,7 @@
     ViewBag.Title = "Register Pages Config";
 }
 
-<partial name="_ADACTabs" model="Register Pages Config"/>
+@await Html.PartialAsync("_ADACTabs", "Register Pages Config")
 
 <style>
     .networkTitle {
@@ -97,9 +97,8 @@
     </div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/markdowndeep") *@
-@*     @Scripts.Render("~/bundles/adac/register-pages-config") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+  <script src="~/dist/js/Admin/register-pages-config.min.js" asp-append-version="true"></script>
+}

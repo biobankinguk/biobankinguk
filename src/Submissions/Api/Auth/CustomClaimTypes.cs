@@ -14,6 +14,9 @@ namespace Biobanks.Submissions.Api.Auth
         /// Claim representing the API Client ID of the holder
         /// </summary>
         public const string ClientId = "ClientId";
+        
+        public const string FullName = "FullName";
+        public const string Email = "Email";
 
-  }
+    }
 }
