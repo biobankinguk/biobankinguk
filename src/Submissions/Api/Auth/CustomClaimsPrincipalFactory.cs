@@ -10,6 +10,7 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using NuGet.Packaging;
 
 namespace Biobanks.Submissions.Api.Auth;
 
@@ -49,19 +50,22 @@ public class CustomClaimsPrincipalFactory : UserClaimsPrincipalFactory<Applicati
     if (principal.IsInRole(Role.BiobankAdmin))
     {
       var organisations = await _organisationDirectoryService.ListByUserId(user.Id);
-  
       var organisationsRequests = await _organisationDirectoryService.ListAcceptedRegistrationRequestsByUserId(user.Id);
       
-      claims.AddRange(
-        organisations
-          .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
-          .Select(x => new Claim(CustomClaimType.Biobank, JsonSerializer.Serialize(x))));
-  
-      claims.AddRange(
-        organisationsRequests
-          .Where(x => x.UserEmail == user.Email)
-          .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
-          .Select(x => new Claim(CustomClaimType.BiobankRequest, JsonSerializer.Serialize(x))));
+      // Add claims but prevent duplicates if the user already has them. 
+      var biobankClaims = organisations
+        .Select(x => new KeyValuePair<int, string>(x.OrganisationId, x.Name))
+        .Select(x => new Claim(CustomClaimType.Biobank, JsonSerializer.Serialize(x)))
+        .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));
+      
+      var biobankRequestClaims = organisationsRequests
+        .Where(x => x.UserEmail == user.Email)
+        .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
+        .Select(x => new Claim(CustomClaimType.BiobankRequest, JsonSerializer.Serialize(x)))
+        .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));
+      
+      claims.AddRange(biobankClaims);
+      claims.AddRange(biobankRequestClaims);
     }
     
     // If they're a Network Admin then populate the claim for the ID of their Network.
@@ -69,16 +73,21 @@ public class CustomClaimsPrincipalFactory : UserClaimsPrincipalFactory<Applicati
     if (principal.IsInRole(Role.NetworkAdmin))
     {
       var networks = await _networkService.ListByUserId(user.Id);
-
       var networkRequests = await _networkService.ListAcceptedRegistrationRequestsByUserId(user.Id);
       
-      claims.AddRange(networks
+      // Add claims but prevent duplicates if the user already has them.
+      var networkClaims = networks
         .Select(x => new KeyValuePair<int, string>(x.NetworkId, x.Name))
-        .Select(x => new Claim(CustomClaimType.Network, JsonSerializer.Serialize(x))));
-
-      claims.AddRange(networkRequests
+        .Select(x => new Claim(CustomClaimType.Network, JsonSerializer.Serialize(x)))
+        .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));      
+      
+      var networkRequestClaims = networkRequests
         .Select(x => new KeyValuePair<int, string>(x.NetworkRegisterRequestId, x.NetworkName))
-        .Select(x => new Claim(CustomClaimType.NetworkRequest, JsonSerializer.Serialize(x))));
+        .Select(x => new Claim(CustomClaimType.NetworkRequest, JsonSerializer.Serialize(x)))
+        .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));
+      
+      claims.AddRange(networkClaims);
+      claims.AddRange(networkRequestClaims);
     }
 
     identity.AddClaims(claims);
