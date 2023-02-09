@@ -377,10 +377,10 @@ public class ProfileController : Controller
         .ToList();
     }
 
-    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int id)
+    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int biobankId)
     {
         //the biobank doesn't exist yet, but a request should, so we can get the name
-        var request = await _organisationService.GetRegistrationRequest(id);
+        var request = await _organisationService.GetRegistrationRequest(biobankId);
 
         //validate that the request is accepted
         if (request.AcceptedDate == null) return null;
