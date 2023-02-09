@@ -11,7 +11,7 @@ function BiobankFundersViewModel() {
 
   this.openAddFunderDialog = function () {
     $.ajax({
-      url: "/Biobank/AddFunderAjax/",
+      url: "/Biobank/Profile/AddFunderAjax/" + this.biobankId,
       data: { biobankId: this.biobankId },
       contentType: "application/html",
       success: function (content) {
@@ -40,6 +40,8 @@ function BiobankFundersViewModel() {
   this.submitAddDialog = function (e) {
     e.preventDefault();
     var form = $(_this.elements.form);
+    var successURl =
+      form.data("success-redirect") + "/" + this.biobankId + "?Name=";
 
     $.ajax({
       type: "POST",
@@ -48,20 +50,14 @@ function BiobankFundersViewModel() {
       success: function (data) {
         //clear form errors (as these are in the page's ko model)
         _this.dialogErrors.removeAll();
-
-        if (data.success) {
-          $(_this.elements.modal).modal("hide");
-          //now we can redirect (force a page reload, following the successful AJAX submit
-          //(why not just do a regular POST submit? for nice AJAX modal form valdation)
-          window.location.href =
-            form.data("success-redirect") + "?Name=" + data.name;
-        } else {
-          if (Array.isArray(data.errors)) {
-            data.errors.forEach(function (error, index) { 
-              _this.dialogErrors.push(error)
-            })
-          }
-        }
+        $(_this.elements.modal).modal("hide");
+        //now we can redirect (force a page reload, following the successful AJAX submit
+        //(why not just do a regular POST submit? for nice AJAX modal form valdation)
+        window.location.href = successURl + data.name;
+      },
+      error: function (error) {
+        var message = JSON.parse(error.responseText);
+        _this.dialogErrors.push(Object.values(message)[0]);
       },
     });
   };
@@ -70,7 +66,7 @@ function BiobankFundersViewModel() {
     //clear knockout bindings,
     //but leave jQuery/bootstrap bindings intact!
     var original = ko.utils.domNodeDisposal["cleanExternalData"];
-    ko.utils.domNodeDisposal["cleanExternalData"] = function () { };
+    ko.utils.domNodeDisposal["cleanExternalData"] = function () {};
     ko.cleanNode($(nodeSelector)[0]); //designed to work with ID selectors, so only does the first match
     ko.utils.domNodeDisposal["cleanExternalData"] = original;
   };
@@ -105,8 +101,8 @@ $(function () {
     var $link = $(this);
     bootbox.confirm(
       "Are you sure you wish to remove " +
-      $link.data("funder-name") +
-      " from your list of funders?",
+        $link.data("funder-name") +
+        " from your list of funders?",
       function (confirmation) {
         confirmation && window.location.assign($link.attr("href"));
       }

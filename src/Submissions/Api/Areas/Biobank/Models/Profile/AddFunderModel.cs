@@ -10,4 +10,6 @@ public class AddFunderModel
     public string FunderName { get; set; }
 
     public string BiobankName { get; set; }
+    
+    public string BiobankId { get; set; }
 }
