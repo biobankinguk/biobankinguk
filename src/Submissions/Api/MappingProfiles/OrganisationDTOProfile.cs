@@ -5,11 +5,12 @@ using Biobanks.Submissions.Api.Models.Directory;
 
 namespace Biobanks.Submissions.Api.MappingProfiles;
 
-public class OrganisationProfile : Profile
+public class OrganisationDTOProfile : Profile
 {
-  public OrganisationProfile()
+  public OrganisationDTOProfile()
   {
-    CreateMap<BiobankDetailsModel, Organisation>()
+    // needed for creation of biobank or else it doesn't map correctly
+    CreateMap<BiobankDetailsModel, OrganisationDTO>()
       .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.OrganisationName))
       .ForMember(dest => dest.PostCode, opts => opts.MapFrom(src => src.Postcode))
       .ForMember(dest => dest.OrganisationId,
@@ -18,7 +19,7 @@ public class OrganisationProfile : Profile
       .ForMember(dest => dest.OrganisationTypeId,
         opts => opts.MapFrom(src => src.OrganisationTypeId.GetValueOrDefault()))
       .ForMember(dest => dest.Logo, opts => opts.Ignore()); //Never map Logo from BiobankDetailsModel - we will alaways handle this manually
-
-    CreateMap<OrganisationDTO, Organisation>();
+    
+    CreateMap<Organisation, OrganisationDTO>();
   }
 }
