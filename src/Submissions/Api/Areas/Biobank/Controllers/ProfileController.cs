@@ -666,7 +666,7 @@ public class ProfileController : Controller
     #region Publications
     
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public async Task<ActionResult> Publications(int biobankId)
     {
         //If turned off in site config

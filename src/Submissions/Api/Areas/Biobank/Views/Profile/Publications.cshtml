@@ -3,7 +3,7 @@
     ViewBag.Title = "Publications";
 }
 
-<partial name = "_BiobankTabs" model = "Publications" />
+@await Html.PartialAsync("_BiobankTabs", ("Publications", Model))
 
 <h3>
     @ViewBag.Title

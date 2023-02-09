@@ -5,7 +5,7 @@
     ViewBag.Title = "Funders";
 }
 
-@await Html.PartialAsync("_BiobankTabs", "Funders")
+@await Html.PartialAsync("_BiobankTabs", ("Funders", Model.BiobankId))
 
 <h3>Funders <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalAddBiobankFunder" data-bind="click: openAddFunderDialog">Add new funder</a></h3>
 
