@@ -1,4 +1,4 @@
-@model Biobanks.Submissions.Api.Areas.Biobank.Models.Collections.AddCapabilityModel
+@model Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities.AddCapabilityModel
 
 @{
   ViewBag.Title = "Add capability";
@@ -12,7 +12,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("AddCapability", "Capabilities", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+@using (Html.BeginForm("AddCapability", "Capabilities", FormMethod.Post, new { biobankId = ViewContext.RouteData.Values["biobankId"], @class = "form-horizontal col-sm-10" }))
 {
   @Html.AntiForgeryToken()
   

@@ -1,6 +1,7 @@
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;

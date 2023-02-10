@@ -30,6 +30,7 @@ public class CapabilitiesController : Controller
   }
   
   [HttpGet]
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
 
@@ -54,13 +55,15 @@ public class CapabilitiesController : Controller
   }
 
   [HttpGet]
-  public async Task<ViewResult> AddCapability()
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  public async Task<ViewResult> AddCapability(int biobankId)
   {
     return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel())));
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> AddCapability(int biobankId, AddCapabilityModel model)
   {
 

@@ -14,7 +14,7 @@
 
 <h3>
   @ViewBag.Title
-  @Html.ActionLink("Add capability", "AddCapability", null, new {@class = "btn btn-success pull-right"})
+  @Html.ActionLink("Add capability", "AddCapability", null, new { biobankId = ViewContext.RouteData.Values["biobankId"], @class = "btn btn-success pull-right"})
 </h3>
 
 <div class="row">
@@ -45,7 +45,7 @@
     {
       <div class="alert alert-info">
         There are no capabilities here yet.
-        @Html.ActionLink("Add a capability now", "AddCapability")
+        @Html.ActionLink("Add a capability now", "AddCapability", new { biobankId = ViewContext.RouteData.Values["biobankId"] })
       </div>
     }
   </div>
