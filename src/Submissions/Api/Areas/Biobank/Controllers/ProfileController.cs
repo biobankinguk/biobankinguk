@@ -38,12 +38,12 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 public class ProfileController : Controller
 {
-    private IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
+    private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
     private readonly IBiobankService _biobankService;
     private readonly IBiobankWriteService _biobankWriteService;
     private readonly IConfigService _configService;
-    private IReferenceDataCrudService<County> _countyService;
-    private IReferenceDataCrudService<Country> _countryService;
+    private readonly IReferenceDataCrudService<County> _countyService;
+    private readonly IReferenceDataCrudService<Country> _countryService;
     private readonly IReferenceDataCrudService<Funder> _funderService;
     private readonly IMapper _mapper;
     private readonly INetworkService _networkService;
@@ -52,7 +52,6 @@ public class ProfileController : Controller
     private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
     private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
     private readonly SitePropertiesOptions _siteConfig;
-    private readonly SitePropertiesOptions _siteOptions;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
@@ -70,7 +69,6 @@ public class ProfileController : Controller
         IReferenceDataCrudService<RegistrationReason> registrationReasonService,
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
         IOptions<SitePropertiesOptions> siteConfig,
-        IOptions<SitePropertiesOptions> siteOptions,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -87,7 +85,6 @@ public class ProfileController : Controller
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
         _siteConfig = siteConfig.Value;
-        _siteOptions = siteOptions.Value;
         _userManager = userManager;
     }
     
@@ -357,7 +354,7 @@ public class ProfileController : Controller
         this.SetTemporaryFeedbackMessage(sampleResource + " details updated!", FeedbackMessageType.Success);
 
         //Back to the profile to view your saved changes
-        return RedirectToAction("Index", new {biobankId=biobank.OrganisationId } );
+        return RedirectToAction("Index", new { biobankId = biobank.OrganisationId } );
     }
 
     private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
@@ -388,10 +385,10 @@ public class ProfileController : Controller
         .ToList();
     }
 
-    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int id)
+    private async Task<BiobankDetailsModel> NewBiobankDetailsModelAsync(int biobankId)
     {
         //the biobank doesn't exist yet, but a request should, so we can get the name
-        var request = await _organisationService.GetRegistrationRequest(id);
+        var request = await _organisationService.GetRegistrationRequest(biobankId);
 
         //validate that the request is accepted
         if (request.AcceptedDate == null) return null;

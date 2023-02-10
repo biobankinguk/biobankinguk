@@ -10,7 +10,6 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using NuGet.Packaging;
 
 namespace Biobanks.Submissions.Api.Auth;
 
