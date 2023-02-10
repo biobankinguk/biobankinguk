@@ -21,6 +21,7 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
@@ -66,7 +67,7 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  [Authorize(CustomClaimType.Biobank)]
   public async Task<ActionResult> Index(int biobankId)
   {
     if (biobankId == 0)
