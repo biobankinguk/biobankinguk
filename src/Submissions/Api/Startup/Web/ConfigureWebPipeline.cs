@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Middleware;
 using ClacksMiddleware.Extensions;
 using Hangfire;
 using Hangfire.Dashboard;
@@ -38,9 +37,6 @@ public static class ConfigureWebPipeline
     app.UseHttpsRedirection();
     app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
     app.UseStaticFiles();
-
-    // Authenticated users have their last login value updated to now
-    app.UseDirectoryLogin(); // TODO: not sure if this is the best approach to this?
 
     app
       // Simple PUBLIC middleware

@@ -7,7 +7,7 @@
     ViewBag.Title = "ADAC Admin";
 }
 
-<partial name = "_ADACTabs" model = "BiobankActivity" />
+@await Html.PartialAsync("_ADACTabs", "Historical")
 
 <h3>Request History</h3>
 
@@ -71,7 +71,7 @@
 							</td>
 							<td>
 								<a class="resend-confirm"
-								   href="@Url.Action("ResendConfirmLink", "Account", new { userEmail = request.UserEmail, onBehalf = true, returnUrl = @Context.Request.GetEncodedUrl() })"
+								   href="@Url.Action("ResendConfirmLink", "Account", new { Area = "", userEmail = request.UserEmail, onBehalf = true, returnUrl = @Context.Request.GetEncodedUrl() })"
 								   data-admin-name="@request.UserName"
 								   data-admin-email="@request.UserEmail">
 									<span class="fa fa-repeat labelled-icon"></span>Resend
