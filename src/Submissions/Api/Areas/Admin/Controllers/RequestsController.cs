@@ -1,13 +1,11 @@
 using AutoMapper;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,11 +20,10 @@ namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
-
 public class RequestsController : Controller
 {
-  private INetworkService _networkService;
-  private IOrganisationDirectoryService _organisationService;
+  private readonly INetworkService _networkService;
+  private readonly IOrganisationDirectoryService _organisationService;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly ITokenLoggingService _tokenLog;
   private readonly IEmailService _emailService;
@@ -140,10 +137,11 @@ public class RequestsController : Controller
           Url.Action("Confirm", "Account",
               new
               {
+                Area = "",
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.GetEncodedUrl())
+              Request.Scheme)
           );
     }
     else
@@ -153,13 +151,14 @@ public class RequestsController : Controller
           new EmailAddress(request.UserEmail),
           request.UserName,
           request.OrganisationName,
-          Url.Action("SwitchToBiobank", "Account",
+          Url.Action("Edit", "Profile",
               new
               {
+                Area = "Biobank",
                 id = request.OrganisationRegisterRequestId,
                 newBiobank = true
               },
-              Request.GetEncodedUrl())
+              Request.Scheme)
       );
     }
 
@@ -302,10 +301,11 @@ public class RequestsController : Controller
           Url.Action("Confirm", "Account",
               new
               {
+                Area = "",
                 userId = user.Id,
                 token = confirmToken
               },
-              Request.GetEncodedUrl()));
+              Request.Scheme));
     }
     else
     {
@@ -314,13 +314,14 @@ public class RequestsController : Controller
           new EmailAddress(request.UserEmail),
           request.UserName,
           request.NetworkName,
-          Url.Action("SwitchToNetwork", "Account",
+          Url.Action("Edit", "Profile",
                   new
                   {
+                    Area = "Network",
                     id = request.NetworkRegisterRequestId,
                     newNetwork = true
                   },
-                  Request.GetEncodedUrl())
+                  Request.Scheme)
           );
     }
 
@@ -389,10 +390,11 @@ public class RequestsController : Controller
       var tokenLink = Url.Action("Confirm", "Account",
           new
           {
+            Area = "",
             userId = user.Id,
             token = confirmToken
           },
-          Request.GetEncodedUrl());
+          Request.Scheme);
 
       // Log Token Issuing
       await _tokenLog.TokenIssued(confirmToken, user.Id, "Manual Account Confirmation");
@@ -409,72 +411,72 @@ public class RequestsController : Controller
   #region Historical
   
   public async Task<ActionResult> Historical()
-        {
-            //get both network and biobank historical requests
-            //and convert them to the viewmodel format
-            var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
-                .Select(x =>
+  {
+      //get both network and biobank historical requests
+      //and convert them to the viewmodel format
+      var bbRequests = (await _organisationService.ListHistoricalRegistrationRequests())
+          .Select(x =>
 
-                    Task.Run(async () =>
-                    {
-                        string action;
-                        DateTime date;
-                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
-                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+              Task.Run(async () =>
+              {
+                  string action;
+                  DateTime date;
+                  GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                  var user = await _userManager.FindByEmailAsync(x.UserEmail);
 
-                        return new HistoricalRequestModel
-                        {
-                            UserName = x.UserName,
-                            UserEmail = x.UserEmail,
-                            EntityName = x.OrganisationName,
-                            Action = action,
-                            Date = date,
-                            UserEmailConfirmed = user?.EmailConfirmed ?? false,
-                            ResultingOrgExternalId = x.OrganisationExternalId
-                        };
-                    }).Result
+                  return new HistoricalRequestModel
+                  {
+                      UserName = x.UserName,
+                      UserEmail = x.UserEmail,
+                      EntityName = x.OrganisationName,
+                      Action = action,
+                      Date = date,
+                      UserEmailConfirmed = user?.EmailConfirmed ?? false,
+                      ResultingOrgExternalId = x.OrganisationExternalId
+                  };
+              }).Result
 
-                ).ToList();
+          ).ToList();
 
-            var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
-                .Select(x =>
+      var nwRequests = (await _networkService.ListHistoricalRegistrationRequests())
+          .Select(x =>
 
-                    Task.Run(async () =>
-                    {
-                        string action;
-                        DateTime date;
-                        GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
-                        var user = await _userManager.FindByEmailAsync(x.UserEmail);
+              Task.Run(async () =>
+              {
+                  string action;
+                  DateTime date;
+                  GetHistoricalRequestActionDate(x.DeclinedDate, x.AcceptedDate, out action, out date);
+                  var user = await _userManager.FindByEmailAsync(x.UserEmail);
 
-                        return new HistoricalRequestModel
-                        {
-                            UserName = x.UserName,
-                            UserEmail = x.UserEmail,
-                            EntityName = x.NetworkName,
-                            Action = action,
-                            Date = date,
-                            UserEmailConfirmed = user?.EmailConfirmed ?? false
-                        };
-                    }).Result
+                  return new HistoricalRequestModel
+                  {
+                      UserName = x.UserName,
+                      UserEmail = x.UserEmail,
+                      EntityName = x.NetworkName,
+                      Action = action,
+                      Date = date,
+                      UserEmailConfirmed = user?.EmailConfirmed ?? false
+                  };
+              }).Result
 
-                ).ToList();
+          ).ToList();
 
-            var model = new HistoricalModel
-            {
-                HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
-            };
+      var model = new HistoricalModel
+      {
+          HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
+      };
 
-            return View(model);
-        }
+      return View(model);
+  }
 
-        private static void GetHistoricalRequestActionDate(DateTime? declineDate, DateTime? acceptedDate, out string action, out DateTime date)
-        {
-            //check it is actually historical
-            if (declineDate == null && acceptedDate == null) throw new ApplicationException();
+  private static void GetHistoricalRequestActionDate(DateTime? declineDate, DateTime? acceptedDate, out string action, out DateTime date)
+  {
+      //check it is actually historical
+      if (declineDate == null && acceptedDate == null) throw new ApplicationException();
 
-            date = (declineDate ?? acceptedDate).Value;
-            action = (declineDate != null) ? "Declined" : "Accepted";
-        }
+      date = (declineDate ?? acceptedDate).Value;
+      action = (declineDate != null) ? "Declined" : "Accepted";
+  }
 
-        #endregion
+  #endregion
 }
