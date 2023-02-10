@@ -153,6 +153,9 @@ public class CapabilityService : ICapabilityService
                 .Where(x => x.DiagnosisCapabilityId == id)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataType)
+                .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                 .Include(x => x.SampleCollectionMode)
                 .FirstOrDefaultAsync()
             );

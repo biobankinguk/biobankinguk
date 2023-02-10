@@ -33,7 +33,7 @@
         @foreach (var capability in Model.BiobankCapabilityModels)
         {
           <tr class="capability-link clickable-row"
-              data-href="@Url.Action("Capability", new {@capability.Id})">
+              data-href="@Url.Action("Capability", new { biobankId = ViewContext.RouteData.Values["biobankId"], @capability.Id})">
             <td>@capability.OntologyTerm</td>
             <td>@capability.Protocol</td>
           </tr>
