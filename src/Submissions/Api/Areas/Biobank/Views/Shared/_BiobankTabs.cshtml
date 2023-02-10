@@ -1,38 +1,38 @@
 @using Biobanks.Submissions.Api.Config
-@model (string, int)
+@model string
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 
 <div class="row">
     <div class="col-md-12">
 		<ul class="nav nav-tabs">
 			<li role="presentation"
-				class="@(Model.Item1 == await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details" ? "active" : "true")">
+				class="@(Model == await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details" ? "active" : "true")">
         @Html.ActionLink(await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details", "Index", "Profile")
       </li>
 			<li role="presentation"
-				class="@(Model.Item1 == "Admins" ? "active" : "true")">
+				class="@(Model == "Admins" ? "active" : "true")">
         @Html.ActionLink("Admins", "Admins", "Settings")
       </li>
 
 			<li role="presentation"
-				class="@(Model.Item1 == "Funders" ? "active" : "true")">
-        @Html.ActionLink("Funders", "Funders", "Profile", new { biobankId = Model.Item2 })
+				class="@(Model == "Funders" ? "active" : "true")">
+        @Html.ActionLink("Funders", "Funders", "Profile")
       </li>
 
 			<li role="presentation"
-				class="@(Model.Item1 == "Collections" ? "active" : "true")">
+				class="@(Model == "Collections" ? "active" : "true")">
         @Html.ActionLink("Collections", "Index", "Collections")
       </li>
 
 			<li role="presentation"
-				class="@(Model.Item1 == "Capabilities" ? "active" : "true")">
+				class="@(Model == "Capabilities" ? "active" : "true")">
         @Html.ActionLink("Capabilities", "Index", "Capabilities")
       </li>
 
 			@if (await _config.GetSiteConfigValue(ConfigKey.TrustBiobanks)!= null)
 			{
 				<li role="presentation"
-					class="@(Model.Item1 == "Network Acceptance" ? "active" : "true")">
+					class="@(Model == "Network Acceptance" ? "active" : "true")">
           @Html.ActionLink("Network Acceptance", "NetworkAcceptance", "Settings")
         </li>
 
@@ -41,25 +41,25 @@
 			@if (await _config.GetSiteConfigValue(ConfigKey.DisplayPublications)!= null)
 			{
 				<li role="presentation"
-					class="@(Model.Item1 == "Publications" ? "active" : "true")">
-          @Html.ActionLink("Publications", "Publications", "Profile", new { biobankId = Model.Item2 })
+					class="@(Model == "Publications" ? "active" : "true")">
+          @Html.ActionLink("Publications", "Publications", "Profile")
         </li>
 			}
 
 			<li role="presentation"
-				class="@(Model.Item1 == "Annual Stats" ? "active" : "true")">
+				class="@(Model == "Annual Stats" ? "active" : "true")">
 				@Html.ActionLink("Annual Stats", "AnnualStats", "Profile")
 			</li>
 			@if  (await _config.GetSiteConfigValue(ConfigKey.DisplayAnalytics)!= null)
 			{
 				<li role="presentation"
-					class="@(Model.Item1 == "Analytics" ? "active" : "true")">
+					class="@(Model == "Analytics" ? "active" : "true")">
           @Html.ActionLink("Analytics", "Analytics", "Report")
         </li>
 			}
 			@if (await _config.GetSiteConfigValue(ConfigKey.DisplaySubmissions)!= null)
 			{
-				<li role="presentation" class="@(Model.Item1 == "Submissions" ? "active" : "true")">
+				<li role="presentation" class="@(Model == "Submissions" ? "active" : "true")">
 					@Html.ActionLink("Bulk Submissions", "Submissions", "Settings")
 				</li>
 			}
