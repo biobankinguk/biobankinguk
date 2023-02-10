@@ -37,7 +37,7 @@ public static class ConfigureWebPipeline
     app.UseHttpsRedirection();
     app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
     app.UseStaticFiles();
-    
+
     app
       // Simple PUBLIC middleware
       .UseVersion()
