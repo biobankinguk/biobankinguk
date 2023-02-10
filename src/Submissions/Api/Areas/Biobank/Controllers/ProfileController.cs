@@ -753,7 +753,7 @@ public class ProfileController : Controller
         {
             // Find Publication locally
             var publications = await _publicationService.ListByOrganisation(biobankId);
-            var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+            var publication = publications.FirstOrDefault(x => x.PublicationId == publicationId);
 
             // search online
             if (publication == null)
@@ -818,15 +818,18 @@ public class ProfileController : Controller
     #region Annual Stats
 
     [HttpGet]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> AnnualStats(int biobankId)
         => View(new BiobankAnnualStatsModel
         {
             AnnualStatisticGroups = await _annualStatisticGroupService.List(),
-            BiobankAnnualStatistics = (await _organisationService.Get(biobankId)).OrganisationAnnualStatistics
+            BiobankAnnualStatistics = (await _organisationService.Get(biobankId)).OrganisationAnnualStatistics,
+            BiobankId = biobankId
         });
 
     [HttpPost]
-    public async Task<JsonResult> UpdateAnnualStatAjax(AnnualStatModel model, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<JsonResult> UpdateAnnualStatAjax(int biobankId, AnnualStatModel model)
     {
         if (model.Year > DateTime.Now.Year)
             ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
