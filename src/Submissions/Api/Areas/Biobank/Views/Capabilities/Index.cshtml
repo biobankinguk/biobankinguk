@@ -10,7 +10,7 @@
   <script src="~/dist/js/Biobank/capabilities.min.js" asp-append-version="true"></script>
 }
 
-<partial name ="_BiobankTabs" model =  "Capabilities"/>
+@await Html.PartialAsync("_BiobankTabs", "Capabilities")
 
 <h3>
   @ViewBag.Title

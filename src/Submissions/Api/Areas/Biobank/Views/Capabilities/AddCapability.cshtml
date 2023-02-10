@@ -15,8 +15,8 @@
 @using (Html.BeginForm("AddCapability", "Capabilities", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
   @Html.AntiForgeryToken()
-
-  <partial name ="_CapabilitySharedFields" Model/>
+  
+  @await Html.PartialAsync("_CapabilitySharedFields", Model)
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10 text-center">

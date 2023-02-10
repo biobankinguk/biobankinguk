@@ -17,8 +17,8 @@ $(function () {
       filter: function (x) {
         return $.map(x, function (item) {
           return {
-            desc: item.Description,
-            id: item.OntologyTermId,
+            desc: item.description,
+            id: item.ontologyTermId,
           };
         });
       },
