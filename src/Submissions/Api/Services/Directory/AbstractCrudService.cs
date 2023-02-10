@@ -31,7 +31,7 @@ public class AbstractCrudService : IAbstractCrudService
 
   public AbstractCrudService(
     IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-    IReferenceDataCrudService<AssociatedDataType> assocaitedDataTypeService,
+    IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
     IOntologyTermService ontologyTermService,
     IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
     IReferenceDataCrudService<AccessCondition> accessConditionService,
@@ -50,7 +50,7 @@ public class AbstractCrudService : IAbstractCrudService
     )
   {
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
-    _associatedDataTypeService = assocaitedDataTypeService;
+    _associatedDataTypeService = associatedDataTypeService;
     _ontologyTermService = ontologyTermService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
     _accessConditionService = accessConditionService;
