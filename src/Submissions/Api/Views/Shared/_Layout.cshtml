@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Http.Extensions;
-@using cloudscribe.Web.Navigation
 @inject IOptions<SitePropertiesOptions> _sitePropertiesOptions;
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 
@@ -93,8 +92,8 @@
         @if (!(ViewBag.SuppressDefaultFeedbackMessage ?? false))
         {
             <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home", new {area = ""})">
-                <partial name="_SuspendedWarning">
-                    <partial name="_FeedbackMessage">
+                <partial name="_SuspendedWarning"/>
+                <partial name="_FeedbackMessage"/>
             </section>
         }
 
