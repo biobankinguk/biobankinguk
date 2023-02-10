@@ -15,7 +15,7 @@ function link(name, classes, onclick, href) {
 // Ajax Calls
 function claimPublication(publicationId, accept) {
   $.post(
-    "ClaimPublicationAjax",
+    "/Biobank/Profile/ClaimPublicationAjax/" + biobankId,
     {
       publicationId: publicationId,
       accept: accept,
@@ -40,11 +40,11 @@ function rejectPublication(publicationId) {
 var table;
 
 function colorRow(row, data) {
-  $(row).toggleClass("success", data.Accepted == true);
-  $(row).toggleClass("danger", data.Accepted == false);
+  $(row).toggleClass("success", data.accepted == true);
+  $(row).toggleClass("danger", data.accepted == false);
   $(row)
     .find(".status")
-    .toggleClass("flex-around", data.Accepted == null);
+    .toggleClass("flex-around", data.accepted == null);
 }
 
 function formatTitle(data, type, row) {
@@ -55,21 +55,21 @@ function formatTitle(data, type, row) {
 }
 
 function formatStatus(data, type, row) {
-  if (row.Accepted == true) {
+  if (row.accepted == true) {
     return link("Accepted", "btn btn-success btn-full");
-  } else if (row.Accepted == false) {
+  } else if (row.accepted == false) {
     return link("Rejected", "btn btn-danger btn-full");
   } else {
     return (
       link(
         "Accept",
         "btn btn-success",
-        "acceptPublication(" + row.PublicationId + ")"
+        "acceptPublication(" + row.publicationId + ")"
       ) +
       link(
         "Reject",
         "btn btn-danger",
-        "rejectPublication(" + row.PublicationId + ")"
+        "rejectPublication(" + row.publicationId + ")"
       )
     );
   }
@@ -125,24 +125,24 @@ $(function () {
       dataSrc: "",
     },
     columns: [
-      { title: "Title", width: "", data: "Title", render: formatTitle },
+      { title: "Title", width: "", data: "title", render: formatTitle },
       {
         title: "Authors",
         width: "160px",
-        data: "Authors",
+        data: "authors",
         render: formatAuthor,
       },
-      { title: "Year", width: "35px", data: "Year" },
-      { title: "Journal", width: "140px", data: "Journal" },
+      { title: "Year", width: "35px", data: "year" },
+      { title: "Journal", width: "140px", data: "journal" },
       {
         title: "Status",
         width: "120px",
-        data: "Accepted",
+        data: "accepted",
         render: formatStatus,
         className: "status",
       },
     ],
-    rowId: "PublicationId",
+    rowId: "publicationId",
     rowCallback: colorRow,
   });
 
@@ -165,7 +165,7 @@ $(function () {
         action: function (e, dt, node, conf) {
           toggleButton(node);
           filter(function (row) {
-            return row.data().Accepted == true;
+            return row.data().accepted == true;
           });
         },
       },
@@ -174,7 +174,7 @@ $(function () {
         action: function (e, dt, node, conf) {
           toggleButton(node);
           filter(function (row) {
-            return row.data().Accepted == false;
+            return row.data().accepted == false;
           });
         },
       },
@@ -183,7 +183,7 @@ $(function () {
         action: function (e, dt, node, conf) {
           toggleButton(node);
           filter(function (row) {
-            return row.data().Accepted == null;
+            return row.data().accepted == null;
           });
         },
       },
@@ -290,6 +290,8 @@ function PublicationsViewModel() {
   this.modalSubmit = function (e) {
     e.preventDefault();
 
+    var publicationId = _this.modal.publicationId();
+
     // Get Action Type
     var action = _this.modal.mode();
     if (action == _this.modal.modalModeSearch) {
@@ -304,17 +306,17 @@ function PublicationsViewModel() {
             _this.searchResult(
               "<b>If this is the correct publication, then press the approve button to add this publication to your Biobanks approved publications list</b> <br/>" +
                 "<br/>" +
-                data.Authors +
+                data.authors +
                 ' "' +
-                data.Title +
+                data.title +
                 '", ' +
-                data.Year +
+                data.year +
                 ". " +
                 link(
                   "View on PubMed",
                   "",
                   null,
-                  "https://pubmed.ncbi.nlm.nih.gov/" + data.PublicationId
+                  "https://pubmed.ncbi.nlm.nih.gov/" + publicationId
                 )
             );
             $("#publicationId").attr("readonly", true);
@@ -328,9 +330,8 @@ function PublicationsViewModel() {
         }
       );
     } else if (action == _this.modal.modalModeApprove) {
-      var publicationId = _this.modal.publicationId();
       $.post(
-        "AddPublicationAjax",
+        "/Biobank/Profile/AddPublicationAjax/" + biobankId,
         { publicationId: publicationId },
         function (data) {
           //if successfull
@@ -338,7 +339,7 @@ function PublicationsViewModel() {
             window.location.href =
               $(e.target).data("success-redirect") +
               "?publicationId=" +
-              data.PublicationId;
+              data.publicationId;
           } else
             _this.dialogErrors.push(
               "Something went wrong! Please try again later."

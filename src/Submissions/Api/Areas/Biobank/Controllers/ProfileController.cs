@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BiobankPublicationModel = Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankPublicationModel;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
@@ -51,6 +52,7 @@ public class ProfileController : Controller
     private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
     private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
     private readonly SitePropertiesOptions _siteConfig;
+    private readonly SitePropertiesOptions _siteOptions;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
@@ -68,6 +70,7 @@ public class ProfileController : Controller
         IReferenceDataCrudService<RegistrationReason> registrationReasonService,
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
         IOptions<SitePropertiesOptions> siteConfig,
+        IOptions<SitePropertiesOptions> siteOptions,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -84,6 +87,7 @@ public class ProfileController : Controller
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
         _siteConfig = siteConfig.Value;
+        _siteOptions = siteOptions.Value;
         _userManager = userManager;
     }
     
@@ -702,7 +706,7 @@ public class ProfileController : Controller
     {
         // Find Given Publication
         var publications = await _publicationService.ListByOrganisation(biobankId);
-        var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+        var publication = publications.FirstOrDefault(x => x.PublicationId == publicationId);
 
         //retrieve from EPMC if not found
         if (publication == null)
@@ -710,7 +714,7 @@ public class ProfileController : Controller
             try
             {
                 using var client = new HttpClient();
-                var buildUrl = new UriBuilder(await _configService.GetSiteConfigValue(_siteConfig.EpmcApiUrl))
+                var buildUrl = new UriBuilder(_siteConfig.EpmcApiUrl)
                
                 {
                     Query = $"query=ext_id:{publicationId} AND SRC:MED" +
@@ -803,10 +807,10 @@ public class ProfileController : Controller
         return Ok(_mapper.Map<BiobankPublicationModel>(publication));
     }
 
-    public ActionResult AddPublicationSuccessFeedback(string publicationId)
+    public ActionResult AddPublicationSuccessFeedback(int biobankId, string publicationId)
     {
         this.SetTemporaryFeedbackMessage($"The publication with PubMed ID \"{publicationId}\" has been added successfully.", FeedbackMessageType.Success);
-        return Redirect("Publications");
+        return RedirectToAction("Publications", new { biobankId = biobankId });
     }
     
     #endregion
