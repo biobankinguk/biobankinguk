@@ -36,6 +36,6 @@ namespace Biobanks.Submissions.Api.Config
     /// </summary>
     public int ClientSessionTimeout { get; set; } = 1200000; //20 mins in milliseconds
     
-    public string EpmcApiUrl = string.Empty;
+    public string EpmcApiUrl { get; set; } = string.Empty;
   }
 }
