@@ -165,7 +165,16 @@ public static class ConfigureWebServices
         AuthPolicies.IsBiobankAdmin);
       o.AddPolicy(nameof(AuthPolicies.IsNetworkAdmin),
         AuthPolicies.IsNetworkAdmin);
-
+      o.AddPolicy(nameof(AuthPolicies.HasBiobankClaim),
+        AuthPolicies.HasBiobankClaim);
+      o.AddPolicy(nameof(AuthPolicies.HasNetworkClaim),
+        AuthPolicies.HasNetworkClaim);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerSampleSet),
+        AuthPolicies.CanAdministerSampleSet);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerCapability),
+        AuthPolicies.CanAdministerCapability);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerCollection),
+        AuthPolicies.CanAdministerCollection);
     });
 
     // App Insights

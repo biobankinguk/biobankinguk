@@ -35,7 +35,6 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
 public class ProfileController : Controller
 {
     private IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
@@ -89,8 +88,8 @@ public class ProfileController : Controller
     }
     
     #region Details
-
-    [Authorize(CustomClaimType.Biobank)]
+    
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Index(int biobankId)
     {
         var model = await GetBiobankDetailsModelAsync(biobankId);
@@ -218,9 +217,14 @@ public class ProfileController : Controller
             this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                 FeedbackMessageType.Info);
 
-        return biobankId == 0
-          ? View(await NewBiobankDetailsModelAsync(biobankId)) //no biobank id means we're dealing with a request
-          : View(await GetBiobankDetailsModelAsync(biobankId)); //biobank id means we're dealing with an existing biobank
+        var org = await _organisationService.Get(biobankId);
+
+        // no biobank means we're dealing with a request
+        if (org is null)
+          return View(await NewBiobankDetailsModelAsync(biobankId)); 
+
+        // biobank id means we're dealing with an existing biobank
+        return View(await GetBiobankDetailsModelAsync(biobankId)); 
     }
 
     private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
