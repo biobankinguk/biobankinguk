@@ -1,16 +1,13 @@
 @using Biobanks.Submissions.Api.Models.Emails
 @inject IOptions<SitePropertiesOptions> _config
-@inject IHostEnvironment HostEnvironment
 @model NewUserRegisterEntityAdminInviteModel
 
 @{
 	var directoryName = @_config.Value.ServiceName;
-    var emailSignature = @_config.Value.EmailSignature;
+  var emailSignature = @_config.Value.EmailSignature;
 
 	// Format Email Subject
-	 ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName} {ViewBag.Entity} Administration"
-		: $"{directoryName} {ViewBag.Entity} Administration (Environment: {HostEnvironment.EnvironmentName})";
+  ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Administration";
 }
 
 Dear @Html.Raw(Model!.name)

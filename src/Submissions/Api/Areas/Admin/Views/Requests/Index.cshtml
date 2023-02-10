@@ -4,7 +4,7 @@
     ViewBag.Title = "ADAC Admin";
 }
 
-<partial name = "_ADACTabs" model = "Requests"/>
+@await Html.PartialAsync("_ADACTabs", "Requests")
 
 <h3>Biobanks</h3>
 

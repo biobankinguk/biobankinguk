@@ -1,0 +1,19 @@
+@inject IOptions<SitePropertiesOptions> _config
+
+@{
+  var directoryName = @_config.Value.ServiceName;
+
+  // Format Email Subject
+  ViewBag.Subject = $"{directoryName} Account Confirmation";
+}
+
+Dear @Html.Raw(ViewBag.Name)
+
+We received a request to resend your account confirmation link.
+
+Please use this link below to complete registration and set your password:
+
+@Html.Raw(ViewBag.ConfirmLink)
+
+Regards,
+@_config.Value.EmailSignature
