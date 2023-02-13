@@ -215,12 +215,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Where(x => x.DiagnosisCapabilityId == capabilityId)
                 .Include(x => x.Organisation)
                 .Include(x => x.Organisation.OrganisationNetworks)
-                .ThenInclude(on => @on.Network)
-                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                  .ThenInclude(on => on.Network)
+                .Include(x => x.Organisation.OrganisationServiceOfferings)
+                  .ThenInclude(x => x.ServiceOffering)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                  .ThenInclude(x => x.AssociatedDataType)
+                .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                 .Include(x => x.SampleCollectionMode)
                 .FirstOrDefaultAsync();
             
