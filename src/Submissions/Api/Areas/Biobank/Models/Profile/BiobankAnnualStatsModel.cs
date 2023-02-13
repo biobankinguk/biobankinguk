@@ -8,4 +8,5 @@ public class BiobankAnnualStatsModel
 {
     public IEnumerable<AnnualStatisticGroup> AnnualStatisticGroups { get; set; }
     public ICollection<OrganisationAnnualStatistic> BiobankAnnualStatistics { get; set; }
+    public int BiobankId;
 }

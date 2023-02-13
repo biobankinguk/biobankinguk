@@ -2,7 +2,7 @@
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+@inject IOptions<AnnualStatisticsOptions> _annualStatisticsOptions
 @model Biobanks.Submissions.Api.Models.Profile.BiobankModel
 
 @{
@@ -11,7 +11,7 @@
 }
 
 @{
-    var siteProperties = _sitePropertiesOptions.Value;
+    var annualStatisticsOptions = _annualStatisticsOptions.Value;
 }
 
 @{
@@ -217,7 +217,7 @@
 			</thead>
 
 			<tbody>
-				@for (var year = int.Parse(siteProperties.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
+				@for (var year = int.Parse(annualStatisticsOptions.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
 				{
 					<tr>
 						<td>@year</td>

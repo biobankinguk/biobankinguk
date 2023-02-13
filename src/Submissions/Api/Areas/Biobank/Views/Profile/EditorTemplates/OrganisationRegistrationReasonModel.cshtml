@@ -1,0 +1,10 @@
+@model Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.OrganisationRegistrationReasonModel
+
+<div class="checkbox">
+  <label>
+    @Html.CheckBoxFor(x => x.Active)
+    @Html.DisplayFor(x => x.RegistrationReasonName)
+  </label>
+  @Html.HiddenFor(x => x.RegistrationReasonName)
+  @Html.HiddenFor(x => x.RegistrationReasonId)
+</div>
