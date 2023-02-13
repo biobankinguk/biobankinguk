@@ -6,12 +6,10 @@
     ViewBag.Title = "Sample set";
 }
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/biobank/sampleset")
-}*@
+  <script src="~/dist/js/Biobank/sampleset.min.js" asp-append-version="true"></script>
+}
 
 <h2>
     @ViewBag.Title

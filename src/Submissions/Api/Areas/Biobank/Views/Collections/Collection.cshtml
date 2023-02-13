@@ -182,10 +182,8 @@
 	</div>
 </div>
 
-@*@section FooterScripts
+@section FooterScripts
 {
-	@Scripts.Render("~/bundles/bootbox")
-	@Scripts.Render("~/bundles/datatables")
-	@Scripts.Render("~/bundles/biobank/collection")
+    <script src="~/dist/js/Biobank/collection.min.js" asp-append-version="true"></script>
 }
-*@
+

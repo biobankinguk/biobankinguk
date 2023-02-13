@@ -3,11 +3,11 @@
     ViewBag.Title = "Edit collection";
 }
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/collection-and-capability-crud")
-    @Scripts.Render("~/bundles/help-buttons")
-}*@
+    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
+}
 
 <h2>@ViewBag.Title</h2>
 
