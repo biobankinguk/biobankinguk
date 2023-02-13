@@ -16,8 +16,6 @@ namespace Biobanks.Submissions.Api.Config
 
     public string LegalEntity { get; init; } = "Legal Entity";
 
-    public string AnnualStatsStartYear { get; init; } = string.Empty;
-
     public bool HotjarEnabled { get; set; }
 
     // Google Analytics / Recaptcha
@@ -36,6 +34,5 @@ namespace Biobanks.Submissions.Api.Config
     /// </summary>
     public int ClientSessionTimeout { get; set; } = 1200000; //20 mins in milliseconds
     
-    public string EpmcApiUrl { get; set; } = string.Empty;
   }
 }

@@ -51,7 +51,8 @@ public class ProfileController : Controller
     private readonly IPublicationService _publicationService;
     private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
     private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
-    private readonly SitePropertiesOptions _siteConfig;
+    private readonly AnnualStatisticsOptions _annualStatisticsConfig;
+    private readonly PublicationsOptions _publicationsConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
@@ -68,7 +69,8 @@ public class ProfileController : Controller
         IPublicationService publicationService,
         IReferenceDataCrudService<RegistrationReason> registrationReasonService,
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
-        IOptions<SitePropertiesOptions> siteConfig,
+        IOptions<AnnualStatisticsOptions> annualStatisticsOptions,
+        IOptions<PublicationsOptions> publicationsOptions,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -84,7 +86,8 @@ public class ProfileController : Controller
         _publicationService = publicationService;
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
-        _siteConfig = siteConfig.Value;
+        _annualStatisticsConfig = annualStatisticsOptions.Value;
+        _publicationsConfig = publicationsOptions.Value;
         _userManager = userManager;
     }
     
@@ -711,7 +714,7 @@ public class ProfileController : Controller
             try
             {
                 using var client = new HttpClient();
-                var buildUrl = new UriBuilder(_siteConfig.EpmcApiUrl)
+                var buildUrl = new UriBuilder(_publicationsConfig.EpmcApiUrl)
                
                 {
                     Query = $"query=ext_id:{publicationId} AND SRC:MED" +
@@ -831,7 +834,7 @@ public class ProfileController : Controller
         if (model.Year > DateTime.Now.Year)
             ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
 
-        var annualStatsStartYear = int.Parse(_siteConfig.AnnualStatsStartYear);
+        var annualStatsStartYear = int.Parse(_annualStatisticsConfig.AnnualStatsStartYear);
         if (model.Year < annualStatsStartYear)
             ModelState.AddModelError("", $"Year value for annual stat cannot be earlier than {annualStatsStartYear}");
 

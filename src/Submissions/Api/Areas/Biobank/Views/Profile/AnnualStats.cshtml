@@ -1,4 +1,4 @@
-@inject IOptions<SitePropertiesOptions> _options;
+@inject IOptions<AnnualStatisticsOptions> _annualStatisticsOptions;
 
 @using Biobanks.Submissions.Api.Config
 @using Microsoft.Extensions.Options
@@ -43,7 +43,7 @@
             </thead>
 
             <tbody>
-                @for (var year = int.Parse(_options.Value.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
+                @for (var year = int.Parse(_annualStatisticsOptions.Value.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
                 {
                     <tr>
                         <td>@year</td>
