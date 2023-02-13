@@ -190,7 +190,7 @@ public class CapabilitiesController : Controller
 
     this.SetTemporaryFeedbackMessage("Capability deleted!", FeedbackMessageType.Success);
 
-    return RedirectToAction("Index");
+    return RedirectToAction("Index", "Capabilities", new { biobankId = biobankId });
   }
 
   [HttpGet]

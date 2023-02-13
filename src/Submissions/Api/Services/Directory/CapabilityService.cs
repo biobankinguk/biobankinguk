@@ -229,10 +229,9 @@ public class CapabilityService : ICapabilityService
             var capability = await _db.DiagnosisCapabilities.FindAsync(id);
 
             var entity = await _db.DiagnosisCapabilities
-            .AsNoTracking()
-            .Where(x => x.DiagnosisCapabilityId == id)
-            .FirstOrDefaultAsync();
-
+              .Where(x => x.DiagnosisCapabilityId == id)
+              .FirstOrDefaultAsync();
+            
             _db.DiagnosisCapabilities.Remove(entity);
 
             if (!await _organisationService.IsSuspended(capability.OrganisationId))
