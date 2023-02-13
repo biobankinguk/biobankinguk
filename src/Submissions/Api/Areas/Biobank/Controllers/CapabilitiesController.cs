@@ -92,7 +92,7 @@ public class CapabilitiesController : Controller
 
       this.SetTemporaryFeedbackMessage("Capability added!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Index");
+      return RedirectToAction("Index", new { biobankId = biobankId });
     }
 
     return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
@@ -175,7 +175,7 @@ public class CapabilitiesController : Controller
 
       this.SetTemporaryFeedbackMessage("Capability updated!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Capability", new { id = model.Id });
+      return RedirectToAction("Capability", new { biobankId = biobankId, id = model.Id });
     }
 
     return View((EditCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
