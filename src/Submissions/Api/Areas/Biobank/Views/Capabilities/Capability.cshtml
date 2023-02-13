@@ -11,7 +11,7 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <h2 style="margin-top: 0;">@ViewBag.Title</h2>
+        <h2 style="margin-top: 0;">@ViewBag.Title @ViewContext.RouteData.Values["biobankId"]</h2>
     </div>
     <div class="col-sm-6 text-right">
         @using (Html.BeginForm(
@@ -19,6 +19,7 @@
             FormMethod.Post,
             new
             {
+                biobankId = ViewContext.RouteData.Values["biobankId"],
                 @class = "pull-right",
                 id = "DeleteCapability"
             }))

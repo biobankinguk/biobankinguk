@@ -11,8 +11,7 @@
         <div class="col-sm-offset-2 col-sm-10">
             @if(await _config.GetSiteConfigValue(ConfigKey.CollectionsNotes) != "false")
             {
-              // TODO: Find out where this was meant to point to?
-                <label for="notesText">Notes (NTD Only)  <a style="color: black; text-decoration: none;" class="fa fa-info-circle help-icon-button" target="_blank" href="@Url.Action("Index", "Capabilities")"></a></label>
+              <label for="notesText">Notes (NTD Only)  <a style="color: black; text-decoration: none;" class="fa fa-info-circle help-icon-button" target="_blank" href="@Url.Action("NTD", "Pages")"></a></label>
                 <textarea class="form-control" id="Notes" name="Notes" rows="3"></textarea>
             }
         <table id="Groups" class="table table-striped">
