@@ -3,7 +3,7 @@
     ViewBag.Title = "Publications";
 }
 
-<partial name = "_BiobankTabs" model = "Publications" />
+@await Html.PartialAsync("_BiobankTabs", "Publications")
 
 <h3>
     @ViewBag.Title
@@ -70,7 +70,7 @@
 
             <!-- Modal Form -->
             <form id="modal-publications-form"
-                  data-success-redirect="@Url.Action("AddPublicationSuccessFeedback")"
+                  data-success-redirect="@Url.Action("AddPublicationSuccessFeedback", new { biobankId = Model})"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

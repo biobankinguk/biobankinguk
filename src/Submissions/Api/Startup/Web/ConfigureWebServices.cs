@@ -66,6 +66,8 @@ public static class ConfigureWebServices
     b.Services.AddOptions()
       .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
       .Configure<SitePropertiesOptions>(b.Configuration.GetSection("SiteProperties"))
+      .Configure<PublicationsOptions>(b.Configuration.GetSection("Publications"))
+      .Configure<AnnualStatisticsOptions>(b.Configuration.GetSection("AnnualStatistics"))
       .Configure<JwtBearerConfig>(b.Configuration.GetSection("JWT"))
       .Configure<AggregatorOptions>(b.Configuration.GetSection("Aggregator"))
       .Configure<AnalyticsOptions>(b.Configuration.GetSection("Analytics"))

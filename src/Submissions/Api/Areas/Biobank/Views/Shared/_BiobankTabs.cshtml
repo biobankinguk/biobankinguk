@@ -6,8 +6,8 @@
     <div class="col-md-12">
 		<ul class="nav nav-tabs">
 			<li role="presentation"
-				class="@(Model == (string) await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details" ? "active" : "true")">
-        @Html.ActionLink((string) await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details", "Index", "Profile")
+				class="@(Model == await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details" ? "active" : "true")">
+        @Html.ActionLink(await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Details", "Index", "Profile")
       </li>
 			<li role="presentation"
 				class="@(Model == "Admins" ? "active" : "true")">

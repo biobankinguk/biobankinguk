@@ -243,15 +243,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     };
 
                     // Update Collections
-                    currentOrganisation.Collections
-                        .SelectMany(c => c.SampleSets)
-                        .ToList()
-                        .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
+                    if (organisation.Collections != null)
+                        currentOrganisation.Collections
+                            .SelectMany(c => c.SampleSets)
+                            .ToList()
+                            .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
 
                     // Update Capabilities
-                    currentOrganisation.DiagnosisCapabilities
-                        .ToList()
-                        .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
+                    if (organisation.DiagnosisCapabilities != null)
+                        currentOrganisation.DiagnosisCapabilities
+                            .ToList()
+                            .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
                 }
 
             }
