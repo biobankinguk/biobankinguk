@@ -11,18 +11,18 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <h2 style="margin-top: 0;">@ViewBag.Title @ViewContext.RouteData.Values["biobankId"]</h2>
+        <h2 style="margin-top: 0;">@ViewBag.Title</h2>
     </div>
     <div class="col-sm-6 text-right">
         @using (Html.BeginForm(
-            "DeleteCapability", "Capabilities",
-            FormMethod.Post,
+            "DeleteCapability", "Capabilities",  new{ Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id},
+            FormMethod.Post, null,
             new
             {
-                biobankId = ViewContext.RouteData.Values["biobankId"],
                 @class = "pull-right",
                 id = "DeleteCapability"
-            }))
+            }
+          ))
         {
             @Html.ActionLink("Edit", "EditCapability", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id}, new {@class = "btn btn-primary"})
             @Html.AntiForgeryToken()
