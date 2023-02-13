@@ -236,6 +236,7 @@ public class CapabilityService : ICapabilityService
 
             if (!await _organisationService.IsSuspended(capability.OrganisationId))
               _indexService.DeleteCapability(id);
+            await _db.SaveChangesAsync();
       }
 
       /// <inheritdoc/>
