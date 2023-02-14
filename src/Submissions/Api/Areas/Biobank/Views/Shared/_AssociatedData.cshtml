@@ -31,7 +31,7 @@
                 </tr>
                 @for (int i = 0; i < Model.Groups.Count(); i++)
                 {
-                    <tr class="@Model.Groups[i].GroupId}"><td colspan="5" class="info" >@Html.Raw(Model.Groups[i].Name)</td></tr>
+                  <tr class="@Model.Groups[i].GroupId"><td colspan="5" class="info" >@Html.Raw(Model.Groups[i].Name)</td></tr>
                     for (int j = 0; j < Model.Groups[i].Types.Count(); j++)
                     {
                         @Html.EditorFor(x => Model.Groups[i].Types[j])

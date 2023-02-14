@@ -1,0 +1,10 @@
+@model Biobanks.Submissions.Api.Areas.Biobank.Models.Collections.ConsentRestrictionModel
+
+<div class="checkbox">
+  <label>
+    @Html.CheckBoxFor(x => x.Active)
+    @Html.DisplayFor(x => x.Description)
+  </label>
+  @Html.HiddenFor(x => x.Description)
+  @Html.HiddenFor(x => x.ConsentRestrictionId)
+</div>
