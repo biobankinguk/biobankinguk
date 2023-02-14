@@ -172,10 +172,6 @@ public class CollectionsController : Controller
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> AddCollection(int biobankId, AddCollectionModel model)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     // check linked types are valid
     List<AssociatedDataModel> associatedDataModels = model.ListAssociatedDataModels().ToList();
     // check that any linked associated data is related to the ontology term
@@ -183,9 +179,6 @@ public class CollectionsController : Controller
 
     if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
     {
-
-
-
       var associatedData = associatedDataModels
           .Where(x => x.Active)
           .Select(y => new CollectionAssociatedData
