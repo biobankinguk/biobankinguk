@@ -305,8 +305,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     .Include(x => x.CollectionStatus)
                     .Include(x => x.ConsentRestrictions)
                     .Include(x => x.AssociatedData)
-                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
-                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                        .ThenInclude(x => x.AssociatedDataType)
+                    .Include(x => x.AssociatedData)
+                        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                     .Include(x => x.SampleSets)
                     .FirstOrDefaultAsync()
                 );

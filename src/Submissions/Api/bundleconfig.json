@@ -222,6 +222,7 @@
     "inputFiles": [
       "Frontend/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
       "Frontend/js/init/bootstrap-slider-knockout-binding.js",
+      "Frontend/node_modules/knockout.validation/dist/knockout.validation.min.js",
       "Frontend/js/pages/Biobank/collection-sample-sets.js"
     ],
     "minify": { "enabled": true },

@@ -119,7 +119,7 @@
 						<td>
 							<div class="alert alert-info">
 								There are no associated data in this collection yet.
-								@Html.ActionLink("Edit the collection now.", "EditCollection", new { Model.Id })
+								@Html.ActionLink("Edit the collection now.", "EditCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id })
 							</div>
 						</td>
 					</tr>
@@ -135,7 +135,7 @@
 			Sample sets
 			@if (Model.FromApi == false)
 			{
-				@Html.ActionLink("Add sample set", "AddSampleSet", new { Model.Id }, new { @class = "btn btn-success pull-right" })
+				@Html.ActionLink("Add sample set", "AddSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-success pull-right" })
 			}
 		</h3>
 		<br />
@@ -175,7 +175,7 @@
 				There are no sample sets in this collection yet.
 				@if (Model.FromApi == false)
 				{
-					@Html.ActionLink("Add a sample set now.", "AddSampleSet", new { Model.Id })
+					@Html.ActionLink("Add a sample set now.", "AddSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id })
 				}
 			</div>
 		}

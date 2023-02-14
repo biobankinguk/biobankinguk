@@ -10,7 +10,7 @@
 @section FooterScripts
 {
   
-    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/collection-sample-sets.min.js" asp-append-version="true"></script>
     <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
 
     <script>
@@ -24,12 +24,12 @@
 
             // Material Type
             lookup.materialTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.MaterialTypes)), function (x) {
-                return new RadioBinding(x.Id, x.Description, x.SortOrder);
+                return new RadioBinding(x.Id, x.description, x.sortOrder);
             }));
 
             // Extraction Procedures
             lookup.extractionProcedures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures)), function (x) {
-                return new DropDownBinding(x.OntologyTermId, x.Description);
+                return new DropDownBinding(x.ontologyTermId, x.description);
             }));
             lookup.materialExtractionProcedures(lookup.extractionProcedures());
 
@@ -81,11 +81,11 @@
     {
         @Html.AntiForgeryToken()
         
-        <partial name = "_SampleSetSharedFields" model = Model />
+        @await Html.PartialAsync("_SampleSetSharedFields", Model)
 
         <div class="form-group">
             <div class="col-sm-12 text-center">
-                @Html.ActionLink("Cancel", "Collection", new { id = Model.CollectionId }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel", "Collection", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.CollectionId }, new { @class = "btn btn-default" })
                 <button type="submit" class="btn btn-primary">Create sample set</button>
             </div>
         </div>
