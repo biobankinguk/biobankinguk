@@ -38,7 +38,7 @@
 				<tbody>
 					@foreach (var collection in Model.BiobankCollectionModels)
 					{
-						<tr class="clickable-row" data-href="@Url.Action("Collection", new {@collection.Id})">
+						<tr class="clickable-row" data-href="@Url.Action("Collection", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], @collection.Id})">
 
 							@* Flag Incomplete (Empty) Collections *@
 							<td>

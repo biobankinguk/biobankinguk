@@ -15,13 +15,13 @@
             id = "DeleteCollection"
         }))
     {
-        @Html.ActionLink("Copy", "CopyCollection", new { Model.Id }, new { @class = "btn btn-success" })
+        @Html.ActionLink("Copy", "CopyCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-success" })
         @Html.Raw("&nbsp;")
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("model", Model)
 
-        @Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
+        @Html.ActionLink("Edit", "EditCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-primary" });
 
         <button @(Model.FromApi)
                 type="submit"

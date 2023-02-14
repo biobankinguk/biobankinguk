@@ -11,8 +11,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-
-<partial name = "_DataProtectionAlert"/>
+@await Html.PartialAsync("_DataProtectionAlert")
 
 @using (Html.BeginForm("EditCollection", "Collections", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
