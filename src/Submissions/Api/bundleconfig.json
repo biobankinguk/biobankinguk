@@ -216,6 +216,12 @@
     "sourceMap": true
   },
 
+  //  "~/Scripts/knockout.validation*",
+  //  "~/Scripts/bootstrap-slider.min.js",
+  //  "~/Scripts/bootstrap-slider-knockout-binding.js",
+  //  "~/Scripts/ko.bindingHandlers.dataTable.js",
+  //  "~/Scripts/Biobank/collection-sample-sets.js"));
+
   // Sample Sets CRUD
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-sample-sets.min.js",
@@ -223,6 +229,7 @@
       "Frontend/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
       "Frontend/js/init/bootstrap-slider-knockout-binding.js",
       "Frontend/node_modules/knockout.validation/dist/knockout.validation.min.js",
+      "Frontend/js/pages/Biobank/ko.bindingHandlers.dataTable.js",
       "Frontend/js/pages/Biobank/collection-sample-sets.js"
     ],
     "minify": { "enabled": true },

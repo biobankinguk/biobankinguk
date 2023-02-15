@@ -39,7 +39,7 @@
             }));
 
             // Storage Temperature
-			lookup.storageTemperatures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.StorageTemperatures)), function (x) {
+            lookup.storageTemperatures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.StorageTemperatures)), function (x) {
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
