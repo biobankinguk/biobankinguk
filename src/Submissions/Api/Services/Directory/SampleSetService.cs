@@ -187,6 +187,8 @@ public class SampleSetService : ISampleSetService
                 .ThenInclude(y => y.StorageTemperature)
             .Include(x => x.MaterialDetails)
                 .ThenInclude(y => y.ExtractionProcedure)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(x => x.PreservationType)
             .FirstOrDefaultAsync()
   );
 }
