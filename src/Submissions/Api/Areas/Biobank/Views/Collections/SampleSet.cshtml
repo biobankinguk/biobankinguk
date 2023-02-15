@@ -26,9 +26,9 @@
                 id = "DeleteSampleSet"
             }))
     {
-        @Html.ActionLink("Copy", "CopySampleSet", new { id = Model.Id }, new { @class = "btn btn-success" })
+        @Html.ActionLink("Copy", "CopySampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-success" })
         @Html.Raw("&nbsp;")
-        @Html.ActionLink("Edit", "EditSampleSet", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Edit", "EditSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-primary" })
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("collectionId", Model.CollectionId)
@@ -110,7 +110,7 @@
                             There are no material preservation details for this sample set yet.
                             @if ((bool)ViewData["CollectionApiStatus"] == false)
                             {
-                            @Html.ActionLink("Edit the Sample Set to provide some.", "EditSampleSet", new { id = Model.Id })
+                            @Html.ActionLink("Edit the Sample Set to provide some.", "EditSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id })
                             }
                         </div>
                     </td>
