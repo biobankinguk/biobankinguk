@@ -24,12 +24,12 @@
 
             // Material Type
             lookup.materialTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.MaterialTypes)), function (x) {
-                return new RadioBinding(x.Id, x.description, x.sortOrder);
+                return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
             // Extraction Procedures
             lookup.extractionProcedures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures)), function (x) {
-                return new DropDownBinding(x.ontologyTermId, x.description);
+                return new DropDownBinding(x.OntologyTermId, x.Description);
             }));
             lookup.materialExtractionProcedures(lookup.extractionProcedures());
 
