@@ -156,7 +156,7 @@
 					@foreach (var sampleSet in Model.SampleSets)
 					{
 						<tr class="clickable-row"
-							data-href="@Url.Action("SampleSet", new {@sampleSet.Id})">
+							data-href="@Url.Action("SampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], @sampleSet.Id})">
 							<td>@sampleSet.Sex</td>
 							<td>@sampleSet.Age</td>
 							<td>@sampleSet.MaterialTypes</td>
