@@ -9,7 +9,10 @@
 <h2>
     @ViewBag.Title
     @using (
-        Html.BeginForm("DeleteCollection", "Collections", FormMethod.Post, new
+        Html.BeginForm("DeleteCollection", "Collections",
+          new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id },
+          FormMethod.Post, null,
+          new
         {
             @class = "pull-right",
             id = "DeleteCollection"

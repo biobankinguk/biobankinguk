@@ -233,7 +233,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
                         .ThenInclude(x => x.MaterialType)
                 .Include(x => x.SampleSets)
                     .ThenInclude(x => x.MaterialDetails)
-                        .ThenInclude(x => x.StorageTemperature)
+                        .ThenInclude(x => x.StorageTemperature)                
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.ExtractionProcedure)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.PreservationType)
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>

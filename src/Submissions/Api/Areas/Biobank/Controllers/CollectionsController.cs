@@ -237,11 +237,6 @@ public class CollectionsController : Controller
   [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
   public async Task<ActionResult> CopyCollection(int biobankId, int id)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
-
     // Copy and Add New Collection  
     var newCollection = await _collectionService.Copy(id, biobankId);
 
