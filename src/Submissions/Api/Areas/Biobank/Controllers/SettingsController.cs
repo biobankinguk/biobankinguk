@@ -112,7 +112,10 @@ public class SettingsController : Controller
             {
                 Entity = bb.Name,
                 EntityName = "biobank",
-                ControllerName = "Biobank"
+                ControllerName = "Settings",
+                SuccessAreaName = "Biobank",
+                SuccessControllerName = "Settings",
+                OrganisationId = biobankId
             });
         }
 

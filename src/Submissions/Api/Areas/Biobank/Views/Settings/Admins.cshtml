@@ -9,7 +9,7 @@
 }
 
 
-<partial name = "_BiobankTabs" model ="Admins" />
+@await Html.PartialAsync("_BiobankTabs", "Admins")
 
 <h3>Biobank admins <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h3>
 
@@ -58,6 +58,7 @@
                                         "ResendConfirmLink", "Account",
                                         new
                                         {
+                                            Area = "",
                                             userEmail = admin.UserEmail,
                                             onBehalf = true,
                                             returnUrl = Model.RequestUrl

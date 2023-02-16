@@ -4,7 +4,7 @@
     ViewBag.Title = "Bulk Submissions";
 }
 
-<partial name = "_BiobankTabs" model ="Submissions" />
+@await Html.PartialAsync("_BiobankTabs", "Submissions")
 
 <h2>
     @ViewBag.Title
