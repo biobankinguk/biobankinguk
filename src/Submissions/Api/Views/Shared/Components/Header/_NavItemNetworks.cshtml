@@ -1,27 +1,29 @@
-﻿@model Biobanks.Submissions.Api.Models.Header.NavItemModel
+﻿@using System.Text.Json
+@using Biobanks.Submissions.Api.Constants
+@model Biobanks.Submissions.Api.Models.Header.NavItemModel
 
 @if (User.Identity.IsAuthenticated)
 {
-    @* TODO: figure out how we're doing this in Core
-        
-    var networkRequestClaims = CurrentUser.NetworkRequests;
-    foreach (var network in networkRequestClaims)
-    {
-		<li>
-			<a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = true})">
-			<span class="fa fa-exchange labelled-icon"></span>@(network.Value)
-			</a>
-		</li>
-    }
+  var networkRequestClaims = User.FindAll(CustomClaimType.NetworkRequest);
+  foreach (var network in networkRequestClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
 
-    var networkClaims = CurrentUser.Networks;
-    foreach (var network in networkClaims)
-    {
     <li>
-
-        <a href="@Url.Action("SwitchToNetwork", "Account", new { id = network.Key, newNetwork = false})">
-            <span class="fa fa-exchange labelled-icon"></span>@(network.Value)
-		</a>
-	</li>
-	}*@
+      <a href="@Url.Action("Edit", "Profile", new { Area = "Network", networkId = data.Key, detailsIncomplete = true})">
+        <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
+      </a>
+    </li>
+  }
+ 
+  var networkClaims = User.FindAll(CustomClaimType.Network);
+  foreach (var network in networkClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
+    <li>
+      <a href="@Url.Action("Index", "Collections", new { Area = "Network", networkId = data.Key})">
+        <span class="fa fa-book labelled-icon"></span>@(data.Value)
+      </a>
+    </li>
+  }
 }

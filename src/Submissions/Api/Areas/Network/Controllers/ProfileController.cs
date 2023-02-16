@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
 using Biobanks.Submissions.Api.Auth;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
@@ -82,7 +83,8 @@ public class ProfileController : Controller
 
     return admins;
   }
-  [Authorize(CustomClaimType.Network)]
+  
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
   public async Task<ActionResult> Details(int networkId)
   {
     return View(await GetNetworkDetailsModelAsync(networkId));
@@ -94,7 +96,21 @@ public class ProfileController : Controller
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
 
-    return View(await GetNetworkDetailsModelAsync(networkId)); //network id means we're dealing with an existing network
+    var org = await _organisationService.Get(networkId);
+
+    // network means we're dealing with a request.
+    if (org is null)
+    {
+      var model = await NewNetworkDetailsModelAsync(networkId);
+      
+      // Reset the biobankId in the model state so the form does not populate it.
+      // Ensures a new biobank is created.
+      ModelState.SetModelValue("networkId", new ValueProviderResult());
+      return View(model);
+    }
+    
+    //network id means we're dealing with an existing network
+    return View(await GetNetworkDetailsModelAsync(networkId)); 
   }
 
   [HttpPost]
@@ -267,6 +283,24 @@ public class ProfileController : Controller
     return sopStatuses
         .Select(status => new KeyValuePair<int, string>(status.Id, status.Value))
         .ToList();
+  }
+  
+  private async Task<NetworkDetailsModel> NewNetworkDetailsModelAsync(int networkId)
+  {
+    //prep the SOP Statuses as KeyValuePair for the model
+    var sopStatuses = await GetSopStatusKeyValuePairsAsync();
+
+    //Network doesn't exist yet, but the request does, so get the name
+    var request = await _networkService.GetRegistrationRequest(networkId);
+
+    //validate that the request is accepted
+    if (request.AcceptedDate == null) return null;
+
+    return new NetworkDetailsModel
+    {
+      NetworkName = request.NetworkName,
+      SopStatuses = sopStatuses
+    };
   }
 
   private async Task<NetworkDetailsModel> GetNetworkDetailsModelAsync(int networkId)
