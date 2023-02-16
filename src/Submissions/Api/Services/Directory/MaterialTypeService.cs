@@ -40,9 +40,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection)
     {
       if (collection == null) throw new ArgumentNullException(nameof(collection));
-
-      var x = collection.SampleSets.SelectMany(x => x.MaterialDetails);
-
+      
       return collection.SampleSets
           .SelectMany(x => x.MaterialDetails)
           .Select(x => x.MaterialType?.Value)

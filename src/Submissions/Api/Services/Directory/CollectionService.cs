@@ -209,6 +209,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Include(x => x.CollectionStatus)
                 .Include(x => x.ConsentRestrictions)
                 .Include(x => x.OntologyTerm)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
@@ -263,7 +265,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AsNoTracking()
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.SampleSets)
-                .ThenInclude(x => x.MaterialDetails)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.MaterialType)
                 .Where(x => x.OrganisationId == organisationId || organisationId == default)
                 .ToListAsync();
 
