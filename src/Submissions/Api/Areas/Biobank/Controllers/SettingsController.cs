@@ -52,6 +52,7 @@ public class SettingsController : Controller
       _tokenLoggingService = tokenLoggingService;
   }
 
+        #region Admins  
         [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> Admins(int biobankId)
         {
@@ -224,6 +225,10 @@ public class SettingsController : Controller
             return RedirectToAction("Admins", new { biobankId });
         }
         
+        #endregion
+        
+        #region Submissions
+        
         [HttpGet]
         [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> Submissions(int biobankId)
@@ -291,6 +296,8 @@ public class SettingsController : Controller
                 ClientSecret = credentials.Value
             });
         }
+        
+        #endregion
         
         #region Network Acceptance
 
