@@ -216,12 +216,6 @@
     "sourceMap": true
   },
 
-  //  "~/Scripts/knockout.validation*",
-  //  "~/Scripts/bootstrap-slider.min.js",
-  //  "~/Scripts/bootstrap-slider-knockout-binding.js",
-  //  "~/Scripts/ko.bindingHandlers.dataTable.js",
-  //  "~/Scripts/Biobank/collection-sample-sets.js"));
-
   // Sample Sets CRUD
   {
     "outputFileName": "wwwroot/dist/js/Biobank/collection-sample-sets.min.js",
