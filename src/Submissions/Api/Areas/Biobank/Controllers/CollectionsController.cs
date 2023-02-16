@@ -2,7 +2,6 @@ using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
-using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -21,7 +20,6 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
@@ -37,18 +35,17 @@ public class CollectionsController : Controller
   private readonly IMaterialTypeService _materialTypeService;
 
   public CollectionsController(
-  ICollectionService collectionService,
-  ISampleSetService sampleSetService,
-  IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-  IOntologyTermService ontologyTermService,
-  IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
-  IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
-  IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
-  IMapper mapper,
-  IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
-  IAbstractCrudService abstractCrudService,
-  IMaterialTypeService materialTypeService
-
+      ICollectionService collectionService,
+      ISampleSetService sampleSetService,
+      IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+      IOntologyTermService ontologyTermService,
+      IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+      IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
+      IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
+      IMapper mapper,
+      IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
+      IAbstractCrudService abstractCrudService,
+      IMaterialTypeService materialTypeService
   )
   {
     _collectionService = collectionService;
@@ -62,17 +59,12 @@ public class CollectionsController : Controller
     _macroscopicAssessmentService = macroscopicAssessmentService;
     _abstractCrudService = abstractCrudService;
     _materialTypeService = materialTypeService;
-
-
   }
 
   [HttpGet]
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     var collections = await _collectionService.List(biobankId);
 
     // Build ViewModel.
@@ -284,8 +276,6 @@ public class CollectionsController : Controller
   public async Task<ViewResult> EditCollection(int biobankId, int id)
   {
     var collection = await _collectionService.Get(id);
-    var consentRestrictions = await _consentRestrictionService.List();
-
     var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
     var model = new EditCollectionModel
@@ -303,9 +293,9 @@ public class CollectionsController : Controller
 
     };
 
-    var assdatlist = model.ListAssociatedDataModels();
+    var associatedDataModels = model.ListAssociatedDataModels();
 
-    foreach (var associatedDataModel in assdatlist)
+    foreach (var associatedDataModel in associatedDataModels)
     {
       var associatedData = collection.AssociatedData.FirstOrDefault(x => x.AssociatedDataTypeId == associatedDataModel.DataTypeId);
 
@@ -324,10 +314,6 @@ public class CollectionsController : Controller
   [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
   public async Task<ActionResult> EditCollection(int biobankId, EditCollectionModel model)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     //Retrieve collection
     var collection = await _collectionService.Get(model.Id);
 
