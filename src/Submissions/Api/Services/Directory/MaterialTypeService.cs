@@ -41,9 +41,11 @@ namespace Biobanks.Submissions.Api.Services.Directory
     {
       if (collection == null) throw new ArgumentNullException(nameof(collection));
 
+      var x = collection.SampleSets.SelectMany(x => x.MaterialDetails);
+
       return collection.SampleSets
           .SelectMany(x => x.MaterialDetails)
-          .Select(x => x.MaterialType.Value)
+          .Select(x => x.MaterialType?.Value)
           .Distinct();
     }
   }

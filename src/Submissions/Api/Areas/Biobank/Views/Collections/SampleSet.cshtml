@@ -1,6 +1,5 @@
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 @using Biobanks.Submissions.Api.Config
-@using Biobanks.Submissions.Api.Constants
 @model Biobanks.Submissions.Api.Areas.Biobank.Models.Collections.SampleSetModel
 @{
     ViewBag.Title = "Sample set";
@@ -19,7 +18,8 @@
 
     using (Html.BeginForm(
             "DeleteSampleSet", "Collections",
-            FormMethod.Post,
+            new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id },
+            FormMethod.Post, null,
             new
             {
                 @class = "pull-right",
