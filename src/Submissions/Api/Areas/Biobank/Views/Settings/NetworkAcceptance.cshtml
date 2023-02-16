@@ -28,7 +28,7 @@
                     {
                     <tr>
                         <td>
-                            @Html.ActionLink(bbRequest.NetworkName, "Network", "Profile", new { id = bbRequest.NetworkId }, null)
+                            @Html.ActionLink(bbRequest.NetworkName, "Network", "Profile", new { Area = "Network", id = bbRequest.NetworkId }, null)
                         </td>
                         <td>
                             @bbRequest.NetworkDescription
@@ -41,7 +41,7 @@
                             &nbsp;&nbsp;&nbsp;
                             @if (bbRequest.ApprovedDate == null)
                             {
-                                <a href="@Url.Action("AcceptNetworkRequest", new {biobankId = bbRequest.BiobankId, networkId = bbRequest.NetworkId})"
+                                <a href="@Url.Action("AcceptNetworkRequest", new { biobankId = bbRequest.BiobankId, networkId = bbRequest.NetworkId})"
                                    class="confirm-accept"
                                    data-network-name="@bbRequest.NetworkName"><span class="fa fa-check labelled-icon"></span>Accept</a>
                             }

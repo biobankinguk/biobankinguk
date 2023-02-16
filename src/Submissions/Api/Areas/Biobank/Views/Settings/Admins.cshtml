@@ -68,7 +68,7 @@
                                     </a>
                                 }
                                 &nbsp;
-                                <a href="@Url.Action("DeleteAdmin", new {biobankUserId = admin.UserId, userFullName = admin.UserFullName})"
+                                <a href="@Url.Action("DeleteAdmin", new {biobankId = Model.BiobankId, biobankUserId = admin.UserId, userFullName = admin.UserFullName})"
                                    class="confirm-delete"
                                    data-admin-name="@admin.UserFullName">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
@@ -85,13 +85,8 @@
 
 <div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label"></div>
 
-@*
-TODO: Add bundles
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/biobank/admins")
+    <script src="~/dist/js/Biobank/admins.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/registerentity-admin.min.js" asp-append-version="true"></script>
 }
-*@

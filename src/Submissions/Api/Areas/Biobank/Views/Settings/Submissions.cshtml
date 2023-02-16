@@ -177,9 +177,8 @@ else
     </div>
 }
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/help-buttons") *@
-@*     @Scripts.Render("~/bundles/biobank/submissions") *@
-@* } *@
+@section FooterScripts
+{
+    <script src="~/dist/js/Biobank/submissions.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
+}
