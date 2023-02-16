@@ -10,11 +10,11 @@
   <script src="~/dist/js/Biobank/capabilities.min.js" asp-append-version="true"></script>
 }
 
-<partial name ="_BiobankTabs" model =  "Capabilities"/>
+@await Html.PartialAsync("_BiobankTabs", "Capabilities")
 
 <h3>
   @ViewBag.Title
-  @Html.ActionLink("Add capability", "AddCapability", null, new {@class = "btn btn-success pull-right"})
+  @Html.ActionLink("Add capability", "AddCapability", "Capabilities", new { biobankId = ViewContext.RouteData.Values["biobankId"], @class = "btn btn-success pull-right"})
 </h3>
 
 <div class="row">
@@ -33,7 +33,7 @@
         @foreach (var capability in Model.BiobankCapabilityModels)
         {
           <tr class="capability-link clickable-row"
-              data-href="@Url.Action("Capability", new {@capability.Id})">
+              data-href="@Url.Action("Capability", new { biobankId = ViewContext.RouteData.Values["biobankId"], @capability.Id})">
             <td>@capability.OntologyTerm</td>
             <td>@capability.Protocol</td>
           </tr>
@@ -45,7 +45,7 @@
     {
       <div class="alert alert-info">
         There are no capabilities here yet.
-        @Html.ActionLink("Add a capability now", "AddCapability")
+        @Html.ActionLink("Add a capability now", "AddCapability", new { biobankId = ViewContext.RouteData.Values["biobankId"] })
       </div>
     }
   </div>

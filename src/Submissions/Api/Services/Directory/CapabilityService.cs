@@ -127,12 +127,16 @@ public class CapabilityService : ICapabilityService
                 .AsNoTracking()
                 .Where(x => x.DiagnosisCapabilityId == id)
                 .Include(x => x.Organisation)
-                .Include(x => x.Organisation.OrganisationNetworks.Select(on => @on.Network))
-                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.Organisation.OrganisationNetworks)
+                  .ThenInclude(on => @on.Network)
+                .Include(x => x.Organisation.OrganisationServiceOfferings)
+                  .ThenInclude(x => x.ServiceOffering)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataType)
+                .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                 .Include(x => x.SampleCollectionMode)
                 .FirstOrDefaultAsync()
             );
@@ -153,6 +157,9 @@ public class CapabilityService : ICapabilityService
                 .Where(x => x.DiagnosisCapabilityId == id)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataType)
+                .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                 .Include(x => x.SampleCollectionMode)
                 .FirstOrDefaultAsync()
             );
@@ -222,14 +229,14 @@ public class CapabilityService : ICapabilityService
             var capability = await _db.DiagnosisCapabilities.FindAsync(id);
 
             var entity = await _db.DiagnosisCapabilities
-            .AsNoTracking()
-            .Where(x => x.DiagnosisCapabilityId == id)
-            .FirstOrDefaultAsync();
-
+              .Where(x => x.DiagnosisCapabilityId == id)
+              .FirstOrDefaultAsync();
+            
             _db.DiagnosisCapabilities.Remove(entity);
 
             if (!await _organisationService.IsSuspended(capability.OrganisationId))
               _indexService.DeleteCapability(id);
+            await _db.SaveChangesAsync();
       }
 
       /// <inheritdoc/>

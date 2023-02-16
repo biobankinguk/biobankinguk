@@ -2,6 +2,7 @@ using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -16,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
 using Biobanks.Submissions.Api.Auth;
+using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.AssociatedDataSummaryModel;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 

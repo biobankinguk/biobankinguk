@@ -1,6 +1,7 @@
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Constants;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -31,7 +32,7 @@ public class AbstractCrudService : IAbstractCrudService
 
   public AbstractCrudService(
     IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-    IReferenceDataCrudService<AssociatedDataType> assocaitedDataTypeService,
+    IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
     IOntologyTermService ontologyTermService,
     IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
     IReferenceDataCrudService<AccessCondition> accessConditionService,
@@ -50,7 +51,7 @@ public class AbstractCrudService : IAbstractCrudService
     )
   {
     _associatedDataProcurementTimeframeService = associatedDataProcurementTimeframeService;
-    _associatedDataTypeService = assocaitedDataTypeService;
+    _associatedDataTypeService = associatedDataTypeService;
     _ontologyTermService = ontologyTermService;
     _associatedDataTypeGroupService = associatedDataTypeGroupService;
     _accessConditionService = accessConditionService;

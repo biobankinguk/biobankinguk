@@ -14,7 +14,6 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
 public class CapabilitiesController : Controller
 {
   private readonly IAbstractCrudService _abstractCrudService;
@@ -29,7 +28,9 @@ public class CapabilitiesController : Controller
     _ontologyTermService = ontologyTermService;
     _capabilityService = capabilityService;
   }
+  
   [HttpGet]
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
 
@@ -54,14 +55,16 @@ public class CapabilitiesController : Controller
   }
 
   [HttpGet]
-  public async Task<ViewResult> AddCapability()
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  public async Task<ViewResult> AddCapability(int biobankId)
   {
     return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel())));
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<ActionResult> AddCapability(AddCapabilityModel model, int biobankId)
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  public async Task<ActionResult> AddCapability(int biobankId, AddCapabilityModel model)
   {
 
     if (biobankId == 0)
@@ -89,15 +92,15 @@ public class CapabilitiesController : Controller
 
       this.SetTemporaryFeedbackMessage("Capability added!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Index");
+      return RedirectToAction("Index", new { biobankId = biobankId });
     }
 
     return View((AddCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
   }
 
   [HttpGet]
-  //TODO:[AuthoriseToAdministerCapability]
-  public async Task<ViewResult> EditCapability(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCapability))]
+  public async Task<ViewResult> EditCapability(int biobankId, int id)
   {
     var capability = await _capabilityService.GetCapabilityByIdAsync(id);
     var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
@@ -146,8 +149,8 @@ public class CapabilitiesController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  // TODO: [AuthoriseToAdministerCapability]
-  public async Task<ActionResult> EditCapability(EditCapabilityModel model)
+  [Authorize(nameof(AuthPolicies.CanAdministerCapability))]
+  public async Task<ActionResult> EditCapability(int biobankId, EditCapabilityModel model)
   {
     if (await model.IsValid(ModelState, _ontologyTermService))
     {
@@ -172,7 +175,7 @@ public class CapabilitiesController : Controller
 
       this.SetTemporaryFeedbackMessage("Capability updated!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Capability", new { id = model.Id });
+      return RedirectToAction("Capability", new { biobankId = biobankId, id = model.Id });
     }
 
     return View((EditCapabilityModel)(await _abstractCrudService.PopulateAbstractCRUDAssociatedData(model)));
@@ -180,19 +183,19 @@ public class CapabilitiesController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO: [AuthoriseToAdministerCapability]
-  public async Task<IActionResult> DeleteCapability(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCapability))]
+  public async Task<IActionResult> DeleteCapability(int biobankId, int id)
   {
     await _capabilityService.DeleteCapabilityAsync(id);
 
     this.SetTemporaryFeedbackMessage("Capability deleted!", FeedbackMessageType.Success);
 
-    return RedirectToAction("Index");
+    return RedirectToAction("Index", "Capabilities", new { biobankId = biobankId });
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerCapability]
-  public async Task<ViewResult> Capability(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCapability))]
+  public async Task<ViewResult> Capability(int biobankId, int id)
   {
     var capability = await _capabilityService.GetCapabilityByIdAsync(id);
 
