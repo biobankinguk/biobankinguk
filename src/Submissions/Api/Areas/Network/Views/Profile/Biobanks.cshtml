@@ -8,7 +8,7 @@
 
 <partial name = "_NetworkTabs" model = "Biobanks"/>
 
-<h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", null, new { @class = "btn btn-success pull-right" })</h3>
+<h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"], @class = "btn btn-success pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">
@@ -34,7 +34,7 @@
                         <td class="">
                             @biobank.Name
 
-                            <a href="@Url.Action("DeleteBiobank", new {biobankId = biobank.BiobankId, biobankName = biobank.Name})"
+                            <a href="@Url.Action("DeleteBiobank", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"], biobankId = biobank.BiobankId, biobankName = biobank.Name})"
                                class="pull-right confirm-delete"
                                data-biobank-name="@biobank.Name">
                                 <span class="fa fa-trash"></span>
@@ -71,7 +71,7 @@
         {
             <div class="alert alert-info">
                 There are no Biobanks in your Network yet.
-                @Html.ActionLink("Add a new Biobank now", "AddBiobank")
+                @Html.ActionLink("Add a new Biobank now", "AddBiobank", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"] })
             </div>
         }
     </div>

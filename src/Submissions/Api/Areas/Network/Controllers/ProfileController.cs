@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Biobanks.Services;
 using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
 using Biobanks.Submissions.Api.Auth;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
@@ -533,7 +534,7 @@ public class ProfileController : Controller
               new EmailAddress(biobank.ContactEmail),
               model.BiobankName,
               network.Name,
-              Url.Action("NetworkAcceptance", "Settings", null, Request.Path.ToString())
+              Url.Action("NetworkAcceptance", "Settings", new { Area = "Biobank", biobankId = biobank.OrganisationId  }, Request.Scheme)
                   );
         }
 
