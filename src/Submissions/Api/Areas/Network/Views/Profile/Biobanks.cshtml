@@ -6,7 +6,7 @@
     ViewBag.Title = "Network biobanks";
 }
 
-<partial name = "_NetworkTabs" model = "Biobanks"/>
+@await Html.PartialAsync("_NetworkTabs", "Biobanks")
 
 <h3>Biobanks in your Network @Html.ActionLink("Add a new Biobank", "AddBiobank", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"], @class = "btn btn-success pull-right" })</h3>
 
