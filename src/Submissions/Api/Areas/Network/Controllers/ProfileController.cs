@@ -209,7 +209,7 @@ public class ProfileController : Controller
     {
       var network = await _networkService.Create(networkDto);
       var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-      await _networkService.AddNetworkUser(currentUser.Id, networkDto.NetworkId);
+      await _networkService.AddNetworkUser(currentUser.Id, network.NetworkId);
 
       //update the request to show network created
       var request = await _networkService.GetRegistrationRequestByEmail(User.Identity.Name);
@@ -221,7 +221,7 @@ public class ProfileController : Controller
       //add a claim now that they're associated with the network
       await _userManager.AddClaimsAsync(user, new List<Claim>
                 {
-                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(networkDto.NetworkId, networkDto.Name)))
+                    new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, networkDto.Name)))
                 });
 
       //Logo upload (now we have the id, we can form the filename)
@@ -257,7 +257,7 @@ public class ProfileController : Controller
     this.SetTemporaryFeedbackMessage("Network details updated!", FeedbackMessageType.Success);
 
     //Back to the profile to view your saved changes
-    return RedirectToAction("Index");
+    return RedirectToAction("Details", new { networkId = networkDto.NetworkId });
   }
 
   private async Task<string> UploadNetworkLogoAsync(IFormFile logo, int? networkId)
@@ -389,8 +389,8 @@ public class ProfileController : Controller
   #endregion
 
   #region Biobank membership
-
-  [Authorize(CustomClaimType.Network)]
+  
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
   public async Task<ActionResult> Biobanks(int networkId)
   {
     var networkBiobanks =
@@ -421,9 +421,9 @@ public class ProfileController : Controller
 
     return View(model);
   }
-
-  [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> DeleteBiobank(int biobankId, string biobankName, int networkId)
+  
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+  public async Task<ActionResult> DeleteBiobank(int networkId, int biobankId, string biobankName)
   {
     try
     {
@@ -437,19 +437,19 @@ public class ProfileController : Controller
       this.SetTemporaryFeedbackMessage($"{biobankName} could not be deleted.", FeedbackMessageType.Danger);
     }
 
-    return RedirectToAction("Biobanks");
+    return RedirectToAction("Biobanks", new { networkId });
   }
 
-  [Authorize(CustomClaimType.Network)]
-  public ActionResult AddBiobank()
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+  public ActionResult AddBiobank(int networkId)
   {
     return View(new AddBiobankToNetworkModel());
   }
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> AddBiobank(AddBiobankToNetworkModel model, int networkId)
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+  public async Task<ActionResult> AddBiobank(int networkId, AddBiobankToNetworkModel model)
   {
     //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
     var biobank = await _organisationService.GetByName(model.BiobankName);
@@ -540,7 +540,7 @@ public class ProfileController : Controller
         //send back to the Biobanks list, with feedback
         this.SetTemporaryFeedbackMessage(model.BiobankName + " has been successfully added to your network!",
             FeedbackMessageType.Success);
-        return RedirectToAction("Biobanks");
+        return RedirectToAction("Biobanks", new { networkId });
       }
 
       this.SetTemporaryFeedbackMessage(model.BiobankName + " is already in your network.",
@@ -553,9 +553,9 @@ public class ProfileController : Controller
 
     return View(model);
   }
-
-  [Authorize(CustomClaimType.Network)]
-  public async Task<ActionResult> SearchBiobanks(string wildcard)
+  
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+  public async Task<ActionResult> SearchBiobanks(int networkId, string wildcard)
   {
     var biobanks = await _organisationService.List(wildcard, false);
 

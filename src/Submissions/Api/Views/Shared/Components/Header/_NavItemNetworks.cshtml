@@ -21,7 +21,7 @@
   {
     var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
     <li>
-      <a href="@Url.Action("Index", "Collections", new { Area = "Network", networkId = data.Key})">
+      <a href="@Url.Action("Biobanks", "Profile", new { Area = "Network", networkId = data.Key})">
         <span class="fa fa-book labelled-icon"></span>@(data.Value)
       </a>
     </li>
