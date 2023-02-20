@@ -1,15 +1,17 @@
-﻿using Biobanks.Submissions.Api.Models.Submissions;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Areas.Admin.Models.PagesAdmin;
+using Biobanks.Submissions.Api.Auth;
 using cloudscribe.Web.Navigation;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory
+namespace Biobanks.Submissions.Api.Areas.Admin.Controllers.Directory
 {
-    //TODO:[UserAuthorize(Roles = "ADAC")]
+    [Area("Admin")]
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     public class PagesAdminController : Controller
     {
 
