@@ -161,7 +161,7 @@ public class PagesAdminController : Controller
         var pageName = (await _contentPageService.GetById(id)).Title;
         await _contentPageService.Delete(id);
         this.SetTemporaryFeedbackMessage($"The content page '{pageName}' has been deleted successfully.", FeedbackMessageType.Success);
-        return Json(new
+        return Ok(new
         {
             success = true,
             name = pageName

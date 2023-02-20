@@ -35,9 +35,9 @@
 
           <a title="Delete"
              class="action-icon delete-confirm"
-             data-refdata-model=@contentPage
-             data-resource-url="/PagesAdmin/Delete"
-             data-success-redirect="/PagesAdmin/Index"
+             data-refdata-model='@Json.Serialize(contentPage)'
+             data-resource-url="/Admin/PagesAdmin/Delete"
+             data-success-redirect="/Admin/PagesAdmin"
              data-refdata-type="Content Page"
              href="#">
             <span class="fa fa-trash labelled-icon"></span>Delete
