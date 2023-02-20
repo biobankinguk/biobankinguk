@@ -19,7 +19,6 @@ namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 
 [Area("Network")]
 [Authorize(nameof(AuthPolicies.IsNetworkAdmin))]
-
 public class SettingsController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -40,7 +39,7 @@ public class SettingsController : Controller
         _tokenLoggingService = tokenLoggingService;
     }
 
-    [Authorize(CustomClaimType.Network)]
+    [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
     public async Task<ActionResult> Admins(int networkId)
     {
         return View(new NetworkAdminsModel
@@ -80,14 +79,14 @@ public class SettingsController : Controller
         return Ok(await GetAdminsAsync(networkId, excludeCurrentUser));
     }
 
-    public ActionResult InviteAdminSuccess(string name)
+    public ActionResult InviteAdminSuccess(int networkId, string name)
     {
         //This action solely exists so we can set a feedback message
 
         this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your network admins!",
             FeedbackMessageType.Success);
 
-        return RedirectToAction("Admins");
+        return RedirectToAction("Admins", new { networkId });
     }
 
     public async Task<ActionResult> InviteAdminAjax(int networkId)
@@ -104,12 +103,12 @@ public class SettingsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(CustomClaimType.Network)]
-    public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
+    [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+    public async Task<ActionResult> InviteAdminAjax(int networkId, InviteRegisterEntityAdminModel model)
     {
         if (!ModelState.IsValid)
         {
-            return Ok(new
+            return BadRequest(new
             {
                 success = false,
                 errors = ModelState.Values
@@ -119,7 +118,7 @@ public class SettingsController : Controller
             });
         }
 
-        var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
+        // var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
         var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user == null)
@@ -152,11 +151,11 @@ public class SettingsController : Controller
                             userId = user.Id,
                             token = confirmToken
                         },
-                        Request.GetEncodedUrl()));
+                        Request.Scheme));
             }
             else
             {
-                return Ok(new
+                return BadRequest(new
                 {
                     success = false,
                     errors = result.Errors.ToArray()
@@ -172,7 +171,7 @@ public class SettingsController : Controller
                 new EmailAddress(model.Email),
                 model.Name,
                 model.Entity,
-                Url.Action("Index", "Profile", null, Request.GetEncodedUrl()));
+                Url.Action("Index", "Profile", null, Request.Scheme));
         }
 
         //Add the user/network relationship
@@ -192,8 +191,8 @@ public class SettingsController : Controller
         });
     }
 
-    [Authorize(CustomClaimType.Network)]
-    public async Task<ActionResult> DeleteAdmin(string networkUserId, string userFullName, int networkId)
+    [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
+    public async Task<ActionResult> DeleteAdmin(int networkId, string networkUserId, string userFullName)
     {
         //remove them from the network
         await _networkService.RemoveNetworkUser(networkUserId, networkId);
@@ -204,6 +203,6 @@ public class SettingsController : Controller
 
         this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your network admins!", FeedbackMessageType.Success);
 
-        return RedirectToAction("Admins");
+        return RedirectToAction("Admins", new { networkId });
     }
 }
