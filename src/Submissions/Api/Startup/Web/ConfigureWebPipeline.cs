@@ -76,9 +76,20 @@ public static class ConfigureWebPipeline
     app.MapRazorPages();
 
     // MVC Controllers
-    app.MapControllerRoute(
-      name: "AreasDefault",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{biobankId?}/{id?}");
+    app.MapAreaControllerRoute(
+      name: "AdminArea",
+      areaName: "Admin",
+      pattern: "Admin/{controller=Home}/{action=Index}/{id?}");       
+
+    app.MapAreaControllerRoute(
+      name: "BiobankArea",
+      areaName: "Biobank",
+      pattern: "Biobank/{controller=Home}/{action=Index}/{biobankId?}/{id?}");    
+
+    app.MapAreaControllerRoute(
+      name: "NetworkArea",
+      areaName: "Network",
+      pattern: "Network/{controller=Home}/{action=Index}/{networkId?}/{id?}");
 
     app.MapControllerRoute(
       name: "default",
