@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -266,11 +267,13 @@ public class ProfileController : Controller
     const string networkLogoPrefix = "NETWORK-";
 
     var logoStream = logo.ToProcessableStream();
+    await using var memoryStream = new MemoryStream();
+    await logoStream.CopyToAsync(memoryStream);
 
     var logoName =
         await
             _logoStorageProvider.StoreLogoAsync(
-                (System.IO.MemoryStream)logoStream,
+                (System.IO.MemoryStream)memoryStream,
                 logo.FileName,
                 logo.ContentType,
                 networkLogoPrefix + networkId);
