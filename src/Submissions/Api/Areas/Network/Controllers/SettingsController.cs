@@ -171,7 +171,7 @@ public class SettingsController : Controller
                 new EmailAddress(model.Email),
                 model.Name,
                 model.Entity,
-                Url.Action("Index", "Profile", new { networkId }, Request.Scheme));
+                Url.Action("Biobanks", "Profile", new { networkId }, Request.Scheme));
         }
 
         //Add the user/network relationship
