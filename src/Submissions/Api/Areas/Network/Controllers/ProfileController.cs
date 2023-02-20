@@ -97,7 +97,7 @@ public class ProfileController : Controller
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
 
-    var org = await _organisationService.Get(networkId);
+    var org = await _networkService.Get(networkId);
 
     // network means we're dealing with a request.
     if (org is null)
