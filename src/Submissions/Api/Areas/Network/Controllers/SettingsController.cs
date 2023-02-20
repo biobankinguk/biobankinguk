@@ -8,6 +8,7 @@ using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -22,13 +23,13 @@ namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
 public class SettingsController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly EmailService _emailService;
+    private readonly IEmailService _emailService;
     private readonly INetworkService _networkService;
     private readonly ITokenLoggingService _tokenLoggingService;
 
     public SettingsController(
         UserManager<ApplicationUser> userManager,
-        EmailService emailService,
+        IEmailService emailService,
         INetworkService networkService,
         ITokenLoggingService tokenLoggingService
         )
@@ -45,7 +46,7 @@ public class SettingsController : Controller
         return View(new NetworkAdminsModel
         {
             NetworkId = networkId,
-            Admins = (ICollection<Models.RegisterEntityAdminModel>)await GetAdminsAsync(networkId, excludeCurrentUser: true)
+            Admins = await GetAdminsAsync(networkId, excludeCurrentUser: true)
         });
     }
 
@@ -117,8 +118,7 @@ public class SettingsController : Controller
                     .Select(x => x.ErrorMessage).ToList()
             });
         }
-
-        // var networkId = (await _networkService.GetByName(model.Entity)).NetworkId;
+        
         var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user == null)
@@ -171,7 +171,7 @@ public class SettingsController : Controller
                 new EmailAddress(model.Email),
                 model.Name,
                 model.Entity,
-                Url.Action("Index", "Profile", null, Request.Scheme));
+                Url.Action("Index", "Profile", new { networkId }, Request.Scheme));
         }
 
         //Add the user/network relationship
