@@ -92,6 +92,11 @@ public static class ConfigureWebPipeline
       pattern: "Network/{controller=Home}/{action=Index}/{networkId?}/{id?}");
 
     app.MapControllerRoute(
+      name: "ContentPage",
+      pattern: "Pages/{slug}",
+      defaults: new { controller = "PagesAdmin", action = "ContentPage", Area= "Admin"});
+
+    app.MapControllerRoute(
       name: "default",
       pattern: "{controller=Home}/{action=Index}/{id?}");
 
