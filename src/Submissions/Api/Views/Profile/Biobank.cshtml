@@ -21,7 +21,10 @@
 }
 <br />
 
-@await Html.PartialAsync("_ProfileTabs", "General")
+@await Html.PartialAsync("_ProfileTabs", "General", new ViewDataDictionary(ViewData)
+       {
+         { "id", Model.ExternalId }
+       })
 
 @if (!string.IsNullOrEmpty(Model.Logo))
 {
@@ -41,7 +44,7 @@
             <br />
             <span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
         }
-        <span class="pull-right"><partial name= "_ContactButton" model= "Model.ExternalId") > </span>
+        <span class="pull-right"><partial name= "_ContactButton" model= "Model.ExternalId") /> </span>
     </h2>
 
     @* schema.org/Bioschemas metadata that isn't useful to display to humans *@
