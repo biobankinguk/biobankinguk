@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -57,6 +58,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
       _elasticsearchConfig = elasticsearchConfig.Value;
     }
 
+    [SuppressMessage("ReSharper.DPA", "DPA0009: High execution time of DB command", MessageId = "time: 807ms")]
     private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
        IEnumerable<int> sampleSetIds) =>
     (
@@ -66,21 +68,30 @@ namespace Biobanks.Submissions.Api.Services.Directory
       .Include(x => x.Collection)
       .Include(x => x.Collection.OntologyTerm)
       .Include(x => x.Collection.Organisation)
-      .Include(x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network))
+      .Include(x => x.Collection.Organisation.OrganisationNetworks)
+          .ThenInclude(on => @on.Network)
       .Include(x => x.Collection.CollectionStatus)
       .Include(x => x.Collection.ConsentRestrictions)
       .Include(x => x.Collection.AccessCondition)
       .Include(x => x.Collection.CollectionType)
-      .Include(x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType))
+      .Include(x => x.Collection.AssociatedData)
+          .ThenInclude(ad => ad.AssociatedDataType)
+      .Include(x => x.Collection.AssociatedData)
+          .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
       .Include(x => x.AgeRange)
       .Include(x => x.DonorCount)
       .Include(x => x.Sex)
       .Include(x => x.MaterialDetails)
-      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
-      .Include(x => x.MaterialDetails.Select(y => y.CollectionPercentage))
-      .Include(x => x.MaterialDetails.Select(y => y.MacroscopicAssessment))
-      .Include(x => x.MaterialDetails.Select(y => y.MaterialType))
-      .Include(x => x.MaterialDetails.Select(y => y.StorageTemperature))
+      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
+          .ThenInclude(s => s.ServiceOffering)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.CollectionPercentage)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.MacroscopicAssessment)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.MaterialType)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.StorageTemperature)
       .Include(x => x.Collection.Organisation.Country)
       .Include(x => x.Collection.Organisation.County)
       .ToListAsync()
@@ -127,8 +138,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
     await _context.DiagnosisCapabilities.Where(x =>
               capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
               .Include(x => x.Organisation)
-              .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
-              .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+              .Include(x => x.Organisation.OrganisationNetworks)
+                  .ThenInclude(on => on.Network)
+              .Include(x => x.Organisation.OrganisationServiceOfferings)
+                  .ThenInclude(s => s.ServiceOffering)
               .Include(x => x.OntologyTerm)
               .Include(x => x.AssociatedData)
               .Include(x => x.SampleCollectionMode)
