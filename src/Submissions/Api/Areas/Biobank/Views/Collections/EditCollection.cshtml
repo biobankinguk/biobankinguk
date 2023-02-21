@@ -3,24 +3,23 @@
     ViewBag.Title = "Edit collection";
 }
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/collection-and-capability-crud")
-    @Scripts.Render("~/bundles/help-buttons")
-}*@
+    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
+}
 
 <h2>@ViewBag.Title</h2>
 
-
-<partial name = "_DataProtectionAlert"/>
+@await Html.PartialAsync("_DataProtectionAlert")
 
 @using (Html.BeginForm("EditCollection", "Collections", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
     @Html.AntiForgeryToken()
 
     @Html.HiddenFor(x => x.Id)
-          
-    <partial name = "_CollectionSharedFields" model = "Model" />
+
+    @await Html.PartialAsync("_CollectionSharedFields", Model)
     <div class="form-group">
         <div class="col-sm-12 text-center">
             @Html.ActionLink("Cancel", "Collection", new { id = Model.Id }, new { @class = "btn btn-default" })

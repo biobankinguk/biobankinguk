@@ -10,7 +10,7 @@
 @section FooterScripts
 {
   
-    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/collection-sample-sets.min.js" asp-append-version="true"></script>
     <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
 
     <script>
@@ -39,7 +39,7 @@
             }));
 
             // Storage Temperature
-			lookup.storageTemperatures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.StorageTemperatures)), function (x) {
+            lookup.storageTemperatures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.StorageTemperatures)), function (x) {
                 return new RadioBinding(x.Id, x.Description, x.SortOrder);
             }));
 
@@ -81,11 +81,11 @@
     {
         @Html.AntiForgeryToken()
         
-        <partial name = "_SampleSetSharedFields" model = Model />
+        @await Html.PartialAsync("_SampleSetSharedFields", Model)
 
         <div class="form-group">
             <div class="col-sm-12 text-center">
-                @Html.ActionLink("Cancel", "Collection", new { id = Model.CollectionId }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel", "Collection", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.CollectionId }, new { @class = "btn btn-default" })
                 <button type="submit" class="btn btn-primary">Create sample set</button>
             </div>
         </div>

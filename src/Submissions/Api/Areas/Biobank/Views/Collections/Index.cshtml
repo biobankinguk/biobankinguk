@@ -3,10 +3,11 @@
 @{
 	ViewBag.Title = "Collections";
 }
-<partial name ="_BiobankTabs" model =  "Collections"/>
+@await Html.PartialAsync("_BiobankTabs", "Collections")
+
 <h3>
 	@ViewBag.Title
-	@Html.ActionLink("Add collection", "AddCollection", null, new { @class = "btn btn-success pull-right" })
+	@Html.ActionLink("Add collection", "AddCollection", null, new { biobankId = ViewContext.RouteData.Values["biobankId"], @class = "btn btn-success pull-right" })
 </h3>
 
 
@@ -37,7 +38,7 @@
 				<tbody>
 					@foreach (var collection in Model.BiobankCollectionModels)
 					{
-						<tr class="clickable-row" data-href="@Url.Action("Collection", new {@collection.Id})">
+						<tr class="clickable-row" data-href="@Url.Action("Collection", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], @collection.Id})">
 
 							@* Flag Incomplete (Empty) Collections *@
 							<td>
@@ -61,15 +62,13 @@
 		{
 			<div class="alert alert-info">
 				There are no collections here yet. A collection is the highest level of detail.
-				@Html.ActionLink("Add a collection now.", "AddCollection")
+				@Html.ActionLink("Add a collection now.", "AddCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"]})
 			</div>
 		}
 	</div>
 </div>
 
-@*@section FooterScripts
+@section FooterScripts
 {
-	@Scripts.Render("~/bundles/datatables")
-	@Scripts.Render("~/bundles/biobank/collections")
+  <script src="~/dist/js/Biobank/collections.min.js" asp-append-version="true"></script>
 }
-*@
