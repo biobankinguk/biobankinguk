@@ -71,11 +71,12 @@ public class CapabilityService : ICapabilityService
     }
     private async Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false)
       => await ReadOnlyQuery(id, value, tags, onlyDisplayable).FirstOrDefaultAsync();
-  /// <inheritdoc/>
-  public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
-        => (await _db.DiagnosisCapabilities.Select(x => x.DiagnosisCapabilityId)
-                .ToListAsync()
-            );
+    
+    /// <inheritdoc/>
+    public async Task<IEnumerable<int>> GetAllCapabilityIdsAsync()
+          => (await _db.DiagnosisCapabilities.Select(x => x.DiagnosisCapabilityId)
+                  .ToListAsync()
+              );
     
     /// <inheritdoc/>
     public async Task<int> GetCapabilityCountAsync()
@@ -98,8 +99,10 @@ public class CapabilityService : ICapabilityService
         => (await _db.DiagnosisCapabilities.Where(x =>
                 capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
                 .Include(x => x.Organisation)
-                .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
-                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.Organisation.OrganisationNetworks)
+                    .ThenInclude(on => on.Network)
+                .Include(x => x.Organisation.OrganisationServiceOfferings)
+                    .ThenInclude(s => s.ServiceOffering)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
                 .Include(x => x.SampleCollectionMode)
@@ -113,8 +116,10 @@ public class CapabilityService : ICapabilityService
                 .AsNoTracking()
                 .Where(x => capabilityIds.Contains(x.DiagnosisCapabilityId))
                 .Include(x => x.Organisation)
-                .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
-                .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+                .Include(x => x.Organisation.OrganisationNetworks)
+                    .ThenInclude(on => on.Network)
+                .Include(x => x.Organisation.OrganisationServiceOfferings)
+                    .ThenInclude(s => s.ServiceOffering)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.AssociatedData)
                 .Include(x => x.SampleCollectionMode)
