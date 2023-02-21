@@ -209,6 +209,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Include(x => x.CollectionStatus)
                 .Include(x => x.ConsentRestrictions)
                 .Include(x => x.OntologyTerm)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
@@ -217,17 +219,29 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AsNoTracking()
                 .Include(x => x.AccessCondition)
                 .Include(x => x.AssociatedData)
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
-                .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                    .ThenInclude(x => x.AssociatedDataType)
+                .Include(x => x.AssociatedData)
+                    .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                 .Include(x => x.CollectionType)
                 .Include(x => x.CollectionStatus)
                 .Include(x => x.ConsentRestrictions)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.SampleSets)
-                .Include(x => x.SampleSets.Select(y => y.AgeRange))
-                .Include(x => x.SampleSets.Select(y => y.Sex))
-                .Include(x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.MaterialType)))
-                .Include(x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.StorageTemperature)))
+                    .ThenInclude(x => x.AgeRange)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.Sex)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.MaterialType)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.StorageTemperature)                
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.ExtractionProcedure)
+                .Include(x => x.SampleSets)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.PreservationType)
                 .FirstOrDefaultAsync(x => x.CollectionId == id);
 
         /// <inheritdoc/>
@@ -251,7 +265,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AsNoTracking()
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.SampleSets)
-                .ThenInclude(x => x.MaterialDetails)
+                    .ThenInclude(x => x.MaterialDetails)
+                        .ThenInclude(x => x.MaterialType)
                 .Where(x => x.OrganisationId == organisationId || organisationId == default)
                 .ToListAsync();
 
@@ -299,8 +314,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     .Include(x => x.CollectionStatus)
                     .Include(x => x.ConsentRestrictions)
                     .Include(x => x.AssociatedData)
-                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataType))
-                    .Include(x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe))
+                        .ThenInclude(x => x.AssociatedDataType)
+                    .Include(x => x.AssociatedData)
+                        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
                     .Include(x => x.SampleSets)
                     .FirstOrDefaultAsync()
                 );

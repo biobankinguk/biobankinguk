@@ -1,0 +1,21 @@
+
+@using System.Linq
+@using System.Web
+@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary
+
+@* Only check the EMPTY key below, to effectively ignore property errors *@
+@{ var globalErrors = (Model[""] != null && Model[""].Errors.Count > 0); }
+
+<br/>
+
+<div class="@( !globalErrors ? "validation-summary-valid" : "validation-summary-errors") alert alert-danger"
+     data-valmsg-summary="true">
+    @foreach (var modelError in
+    Model.Where(m => m.Key == "").SelectMany(keyValuePair => keyValuePair.Value.Errors))
+    {
+        <p>
+            <span class="fa fa-exclamation-triangle"></span>
+            @Html.Raw(HttpUtility.HtmlDecode(modelError.ErrorMessage))
+        </p>
+    }
+</div>
