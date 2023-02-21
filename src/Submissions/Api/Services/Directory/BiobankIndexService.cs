@@ -18,6 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Config;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
@@ -34,6 +36,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
     private readonly TelemetryClient _telemetryClient;
     private readonly ApplicationDbContext _context;
+    private readonly ElasticsearchConfig _elasticsearchConfig;
 
     public BiobankIndexService(
             IReferenceDataCrudService<DonorCount> donorCountService,
@@ -41,7 +44,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
             ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient,
-            ApplicationDbContext context
+            ApplicationDbContext context,
+            IOptions<ElasticsearchConfig> elasticsearchConfig
             )
     {
       _donorCountService = donorCountService;
@@ -50,6 +54,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
       _hostEnvironment = hostEnvironment;
       _telemetryClient = telemetryClient;
       _context = context;
+      _elasticsearchConfig = elasticsearchConfig.Value;
     }
 
     private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
@@ -133,11 +138,11 @@ namespace Biobanks.Submissions.Api.Services.Directory
     {
       //Building the Search Index
 
-      var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
       var indexNames = new Dictionary<string, string>
       {
-        ["collections"] = ConfigurationManager.AppSettings["DefaultCollectionsSearchIndex"],
-        ["capabilities"] = ConfigurationManager.AppSettings["DefaultCapabilitiesSearchIndex"]
+        ["collections"] = _elasticsearchConfig.DefaultCollectionsSearchIndex,
+        ["capabilities"] = _elasticsearchConfig.DefaultCapabilitiesSearchIndex,
       };
 
       var _navPaths = new List<string>()
@@ -180,7 +185,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
     public async Task<string> GetClusterHealth()
     {
-      var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
 
       try
       {
