@@ -20,8 +20,8 @@
   var pathAndQuery = path + query;
 }
 <br />
-<partial name= "_ProfileTabs" model= "@("General")" >
 
+@await Html.PartialAsync("_ProfileTabs", "General")
 
 @if (!string.IsNullOrEmpty(Model.Logo))
 {
@@ -201,7 +201,7 @@
 					<th rowspan="2">Year</th>
 					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
 					{
-						<th colspan="@annualStatsGroup.AnnualStatistics.Count" class="text-center">@annualStatsGroup.Value</th>
+						<th colspan="@annualStatsGroup.AnnualStatistics?.Count" class="text-center">@annualStatsGroup?.Value</th>
 					}
 				</tr>
 
@@ -210,7 +210,7 @@
 					{
 						foreach (var annualStat in annualStatsGroup.AnnualStatistics)
 						{
-							<th class="text-center">@annualStat.Value</th>
+							<th class="text-center">@annualStat?.Value</th>
 						}
 					}
 				</tr>
