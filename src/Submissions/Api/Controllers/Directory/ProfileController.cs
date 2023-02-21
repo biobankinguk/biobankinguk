@@ -136,7 +136,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     .OrderBy(x => x.ServiceOffering.SortOrder)
                     .Select(x => x.ServiceOffering.Value)
                     .ToList(),
-                
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
                 AnnualStatisticGroups = await _annualStatisticGroupService.List()
             };

@@ -12,8 +12,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public AnnualStatisticGroupService(ApplicationDbContext db) : base(db) { }
 
         protected override IQueryable<AnnualStatisticGroup> Query()
-          => base.Query()
-            .Include(x => x.AnnualStatistics);
+            => base.Query()
+                .Include(x => x.AnnualStatistics);
 
         public override async Task<int> GetUsageCount(int id)
             => await Query()
