@@ -36,206 +36,212 @@
 
 <div class="@(!string.IsNullOrEmpty(Model.Logo) ? "col-sm-10" : "col-sm-12")" itemscope itemtype="http://schema.org/Organization">
 
-    <h2>
-        @* TODO: we are assuming legalName = name; consider separation? *@
-        <span itemprop="name legalName">@Model.Name</span>
-        @if (!string.IsNullOrEmpty(Model.Url))
-        {
-            <br />
-            <span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
-        }
-        <span class="pull-right"><partial name= "_ContactButton" model= "Model.ExternalId") /> </span>
-    </h2>
+<h2>
+  @* TODO: we are assuming legalName = name; consider separation? *@
+  <span itemprop="name legalName">@Model.Name</span>
+  @if (!string.IsNullOrEmpty(Model.Url))
+  {
+    <br />
+    <span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
+  }
+  <span class="pull-right"><partial name= "_ContactButton" model= "Model.ExternalId") /> </span>
+</h2>
 
-    @* schema.org/Bioschemas metadata that isn't useful to display to humans *@
-    <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
-    <link itemprop="url" href="@pathAndQuery" />
-    <link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' *@
-    <meta itemprop="sameAs" content="@pathAndQuery" />
-    <meta itemprop="identifier" content="@Model.ExternalId" />
-    <meta itemprop="status" content="active" />
-    @if (!string.IsNullOrEmpty(Model.Logo))
-    {
-        <link itemprop="logo" href="@Model.Logo" />
-    }
-    @if (Model.LastUpdated.HasValue)
-    {
-        // yyyy-MM-dd is ISO-8601 format for dates. Be great if .NET had a method for this!
-        <meta itemprop="dateModified" content="@Model.LastUpdated.Value.ToString("yyyy-MM-dd")" />
-    }
+@* schema.org/Bioschemas metadata that isn't useful to display to humans *@
+<link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+<link itemprop="url" href="@pathAndQuery" />
+<link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' *@
+<meta itemprop="sameAs" content="@pathAndQuery" />
+<meta itemprop="identifier" content="@Model.ExternalId" />
+<meta itemprop="status" content="active" />
+@if (!string.IsNullOrEmpty(Model.Logo))
+{
+  <link itemprop="logo" href="@Model.Logo" />
+}
+@if (Model.LastUpdated.HasValue)
+{
+  // yyyy-MM-dd is ISO-8601 format for dates. Be great if .NET had a method for this!
+  <meta itemprop="dateModified" content="@Model.LastUpdated.Value.ToString("yyyy-MM-dd")" />
+}
 
-    <p class="description" itemprop="description">@Model.Description</p>
+<p class="description" itemprop="description">@Model.Description</p>
 
-    @if (Model.Services.Any())
-    {
-        <div class="row">
-            <div class="col-sm-12">
-                <h4>@Html.DisplayNameFor(x => x.Services)</h4>
-                <ul>
-                    @foreach (var service in Model.Services)
-                    {
-                        <li>@service</li>
-                    }
-                </ul>
-            </div>
-        </div>
-    }
-
-	@if (Model.CollectionOntologyTerms.Any())
-	{
-		<div class="row">
-			<div class="col-sm-12">
-				<h3>Existing samples:</h3>
-				<ul>
-					@foreach (var ontologyTerm in Model.CollectionOntologyTerms)
-					{
-						<li>
-							@ontologyTerm
-						</li>
-					}
-				</ul>
-			</div>
-		</div>
-	}
-
-	@if (Model.CapabilityOntologyTerms.Any())
-	{
-		<div class="row">
-			<div class="col-sm-12">
-				<h3>Bespoke collection capabilities:</h3>
-				<ul>
-					@foreach (var ontologyTerm in Model.CapabilityOntologyTerms)
-					{
-						<li>
-							@ontologyTerm
-						</li>
-					}
-				</ul>
-			</div>
-		</div>
-	}
-
-    @if (Model.NetworkMembers.Any())
-    {
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Networks</h3>
-                <ul>
-                    @foreach (var network in Model.NetworkMembers)
-                    {
-                        <li itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
-                            <a href="@Url.Action("Network", "Profile", new { network.Id })" itemprop="name legalName">@network.Name</a>
-                            <span class="hidden" itemprop="description">@network.Description</span>
-                            <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
-                            <link itemprop="sameAs" href="@Url.Action("Network", "Profile", new { network.Id }) /">
-                            <link itemprop="topic" href="http://edamontology.org/topic_2229" /> @* 'Cell biology' TODO: for networks this may be different? *@
-                            <meta itemprop="type" content="consortium" /> @* TODO: all networks are presumaly consirtiums but also maybe other things? *@
-                            <meta itemprop="status" content="active" />
-                        </li>
-                    }
-                </ul>
-            </div>
-        </div>
-    }
-
-    <h3>Contact Information</h3>
+@if (Model.Services.Any())
+{
+  <div class="row">
     <div class="col-sm-12">
-        <dl class="dl-horizontal dt-left">
-            <dt>Email: </dt>
-            <dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
-
-            @if (!string.IsNullOrWhiteSpace(Model.ContactNumber))
-            {
-                <dt>Telephone: </dt>
-                <dd itemprop="telephone">@Model.ContactNumber</dd>
-            }
-
-            <dt>Address: </dt>
-            <dd itemprop="location" itemscope itemtype="http://schema.org/PostalAddress">
-                <br />
-                <span itemprop="streetAddress">
-                    @if (!string.IsNullOrWhiteSpace(Model.AddressLine1))
-                    {
-                        @Model.AddressLine1<br />
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.AddressLine2))
-                    {
-                        @Model.AddressLine2<br />
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.AddressLine3))
-                    {
-                        @Model.AddressLine3<br />
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.AddressLine4))
-                    {
-                        @Model.AddressLine4<br />
-                    }
-                </span>
-                @if (!string.IsNullOrWhiteSpace(Model.City))
-                {
-                    <span itemprop="addressLocality">@Model.City</span><br />
-                }
-                @if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
-                {
-                    <span itemprop="addressRegion">@Model.CountyName</span><br />
-                }
-
-                <span itemprop="postalCode">@Model.PostCode</span><br />
-                @if (!string.IsNullOrWhiteSpace(Model.CountryName))
-                {
-                    <span itemprop="addressCountry">@Model.CountryName</span> @* TODO is this the ISO 3166-1 alpha-2 country code or is it GB? *@
-                }
-
-            </dd>
-        </dl>
+      <h4>@Html.DisplayNameFor(x => x.Services)</h4>
+      <ul>
+        @foreach (var service in Model.Services)
+        {
+          <li>@service</li>
+        }
+      </ul>
     </div>
+  </div>
+}
 
-	@if (Model.LastUpdated.HasValue)
-	{
-		<h4>Last Updated: @Model.LastUpdated.Value.ToShortDateString()</h4>
-		<br />
-	}
+@if (Model.CollectionOntologyTerms.Any())
+{
+  <div class="row">
+    <div class="col-sm-12">
+      <h3>Existing samples:</h3>
+      <ul>
+        @foreach (var ontologyTerm in Model.CollectionOntologyTerms)
+        {
+          <li>
+            @ontologyTerm
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+}
+
+@if (Model.CapabilityOntologyTerms.Any())
+{
+  <div class="row">
+    <div class="col-sm-12">
+      <h3>Bespoke collection capabilities:</h3>
+      <ul>
+        @foreach (var ontologyTerm in Model.CapabilityOntologyTerms)
+        {
+          <li>
+            @ontologyTerm
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+}
+
+@if (Model.NetworkMembers.Any())
+{
+  <div class="row">
+    <div class="col-sm-12">
+      <h3>Networks</h3>
+      <ul>
+        @foreach (var network in Model.NetworkMembers)
+        {
+          <li itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
+            <a href="@Url.Action("Network", "Profile", new { network.Id })" itemprop="name legalName">@network.Name</a>
+            <span class="hidden" itemprop="description">@network.Description</span>
+            <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+            <link itemprop="sameAs" href="@Url.Action("Network", "Profile", new { network.Id }) /">
+            <link itemprop="topic" href="http://edamontology.org/topic_2229" /> @* 'Cell biology' TODO: for networks this may be different? *@
+            <meta itemprop="type" content="consortium" /> @* TODO: all networks are presumaly consirtiums but also maybe other things? *@
+            <meta itemprop="status" content="active" />
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+}
+
+<h3>Contact Information</h3>
+<div class="col-sm-12">
+  <dl class="dl-horizontal dt-left">
+    <dt>Email: </dt>
+    <dd itemprop="email"><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></dd>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ContactNumber))
+    {
+      <dt>Telephone: </dt>
+      <dd itemprop="telephone">@Model.ContactNumber</dd>
+    }
+
+    <dt>Address: </dt>
+    <dd itemprop="location" itemscope itemtype="http://schema.org/PostalAddress">
+      <br />
+      <span itemprop="streetAddress">
+        @if (!string.IsNullOrWhiteSpace(Model.AddressLine1))
+        {
+          @Model.AddressLine1<br />
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.AddressLine2))
+        {
+          @Model.AddressLine2<br />
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.AddressLine3))
+        {
+          @Model.AddressLine3<br />
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.AddressLine4))
+        {
+          @Model.AddressLine4<br />
+        }
+      </span>
+      @if (!string.IsNullOrWhiteSpace(Model.City))
+      {
+        <span itemprop="addressLocality">@Model.City</span><br />
+      }
+      @if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
+      {
+        <span itemprop="addressRegion">@Model.CountyName</span><br />
+      }
+
+      <span itemprop="postalCode">@Model.PostCode</span><br />
+      @if (!string.IsNullOrWhiteSpace(Model.CountryName))
+      {
+        <span itemprop="addressCountry">@Model.CountryName</span> @* TODO is this the ISO 3166-1 alpha-2 country code or is it GB? *@
+      }
+
+    </dd>
+  </dl>
+</div>
+
+@if (Model.LastUpdated.HasValue)
+{
+  <h4>Last Updated: @Model.LastUpdated.Value.ToShortDateString()</h4>
+  <br />
+}
     
-    <h3>Annual Statistics</h3>
-	<div class="row">
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th rowspan="2">Year</th>
-					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-					{
-						<th colspan="@annualStatsGroup.AnnualStatistics?.Count" class="text-center">@annualStatsGroup?.Value</th>
-					}
-				</tr>
+<h3>Annual Statistics</h3>
+<div class="row">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th rowspan="2">Year</th>
+      @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+      {
+        <th colspan="@annualStatsGroup.AnnualStatistics?.Count" class="text-center">@annualStatsGroup?.Value</th>
+      }
+    </tr>
 
-				<tr>
-					@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-					{
-						foreach (var annualStat in annualStatsGroup.AnnualStatistics)
-						{
-							<th class="text-center">@annualStat?.Value</th>
-						}
-					}
-				</tr>
-			</thead>
+    <tr>
+      @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+      {
+        foreach (var annualStat in annualStatsGroup.AnnualStatistics)
+        {
+          <th class="text-center">@annualStat?.Value</th>
+        }
+      }
+    </tr>
+    </thead>
 
-			<tbody>
-				@for (var year = int.Parse(annualStatisticsOptions.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
-				{
-					<tr>
-						<td>@year</td>
-						@foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
-						{
-							foreach (var annualStat in annualStatsGroup.AnnualStatistics)
-							{
-								var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.Id && bas.Year == year)?.Value;
-								<td class="text-center">@(statValue != null ? statValue.ToString() : "N/A")</td>
-							}
-						}
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
+    <tbody>
+    @for (var year = int.Parse(annualStatisticsOptions.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
+    {
+      <tr>
+        <td>@year</td>
+        @foreach (var annualStatsGroup in Model.AnnualStatisticGroups)
+        {
+          foreach (var annualStat in annualStatsGroup.AnnualStatistics)
+          {
+            var statValue = Model.BiobankAnnualStatistics.FirstOrDefault(bas => bas.AnnualStatisticId == annualStat.Id && bas.Year == year)?.Value;
+            <td class="text-center">@(statValue != null ? statValue.ToString() : "N/A")</td>
+          }
+        }
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>
 
 </div>
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Profile/biobank.min.js" asp-append-version="true"></script>
+}
+
