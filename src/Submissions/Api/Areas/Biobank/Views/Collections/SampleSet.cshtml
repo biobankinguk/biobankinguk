@@ -1,17 +1,14 @@
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 @using Biobanks.Submissions.Api.Config
-@using Biobanks.Submissions.Api.Constants
 @model Biobanks.Submissions.Api.Areas.Biobank.Models.Collections.SampleSetModel
 @{
     ViewBag.Title = "Sample set";
 }
 
-@*@section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/biobank/sampleset")
-}*@
+  <script src="~/dist/js/Biobank/sampleset.min.js" asp-append-version="true"></script>
+}
 
 <h2>
     @ViewBag.Title
@@ -21,16 +18,17 @@
 
     using (Html.BeginForm(
             "DeleteSampleSet", "Collections",
-            FormMethod.Post,
+            new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id },
+            FormMethod.Post, null,
             new
             {
                 @class = "pull-right",
                 id = "DeleteSampleSet"
             }))
     {
-        @Html.ActionLink("Copy", "CopySampleSet", new { id = Model.Id }, new { @class = "btn btn-success" })
+        @Html.ActionLink("Copy", "CopySampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-success" })
         @Html.Raw("&nbsp;")
-        @Html.ActionLink("Edit", "EditSampleSet", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Edit", "EditSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-primary" })
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("collectionId", Model.CollectionId)
@@ -112,7 +110,7 @@
                             There are no material preservation details for this sample set yet.
                             @if ((bool)ViewData["CollectionApiStatus"] == false)
                             {
-                            @Html.ActionLink("Edit the Sample Set to provide some.", "EditSampleSet", new { id = Model.Id })
+                            @Html.ActionLink("Edit the Sample Set to provide some.", "EditSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id })
                             }
                         </div>
                     </td>

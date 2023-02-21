@@ -88,7 +88,7 @@
 
         @Html.Hidden("collectionId", Model.CollectionId)
         
-        <partial name = "_SampleSetSharedFields" />
+        @await Html.PartialAsync("_SampleSetSharedFields", Model)
 
         <div class="form-group">
             <div class="col-sm-12 text-center">
