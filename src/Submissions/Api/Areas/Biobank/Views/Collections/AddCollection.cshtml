@@ -3,13 +3,12 @@
     ViewBag.Title = "Add collection";
 }
 
-@*
- @section FooterScripts
+@section FooterScripts
 {
-    @Scripts.Render("~/bundles/collection-and-capability-crud")
-    @Scripts.Render("~/bundles/help-buttons")
+    <script src="~/dist/js/Biobank/collection-and-capability-crud.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/help-buttons.min.js" asp-append-version="true"></script>
 }
-*@
+
 
 <h2>@ViewBag.Title</h2>
 
@@ -19,7 +18,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <partial name ="_CollectionSharedFields" model = "Model"/>
+  @await Html.PartialAsync("_CollectionSharedFields", Model)
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10 text-center">
