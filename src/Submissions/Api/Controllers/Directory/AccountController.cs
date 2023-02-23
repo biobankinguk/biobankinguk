@@ -210,7 +210,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                       userId = user.Id,
                       token = confirmToken
                   },
-                  Request.Protocol));
+                  Request.Scheme));
 
             this.SetTemporaryFeedbackMessage(
                 onBehalf

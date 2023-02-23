@@ -10,7 +10,7 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices;
+using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -25,7 +25,7 @@ public class SettingsController : Controller
 {
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IBiobankService _biobankService;
-  private readonly EmailService _emailService;
+  private readonly IEmailService _emailService;
   private readonly IOrganisationDirectoryService _organisationDirectoryService;
   private readonly INetworkService _networkService;
   private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
@@ -35,7 +35,7 @@ public class SettingsController : Controller
   public SettingsController(
       UserManager<ApplicationUser> userManager,
       IBiobankService biobankService,
-      EmailService emailService,
+      IEmailService emailService,
       IOrganisationDirectoryService organisationDirectoryService,
       INetworkService networkService,
       IReferenceDataCrudService<AccessCondition> accessConditionService,
@@ -52,12 +52,10 @@ public class SettingsController : Controller
       _tokenLoggingService = tokenLoggingService;
   }
 
-        [Authorize(CustomClaimType.Biobank)]
+        #region Admins  
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> Admins(int biobankId)
         {
-            if (biobankId == 0)
-                return RedirectToAction("Index", "Home");
-
             return View(new BiobankAdminsModel
             {
                 BiobankId = biobankId,
@@ -97,14 +95,14 @@ public class SettingsController : Controller
             return Ok(await GetAdminsAsync(biobankId, excludeCurrentUser));
         }
 
-        public ActionResult InviteAdminSuccess(string name)
+        public ActionResult InviteAdminSuccess(int biobankId, string name)
         {
             //This action solely exists so we can set a feedback message
 
             this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your admins!",
                 FeedbackMessageType.Success);
 
-            return RedirectToAction("Admins");
+            return RedirectToAction("Admins", new { biobankId });
         }
 
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
@@ -115,7 +113,10 @@ public class SettingsController : Controller
             {
                 Entity = bb.Name,
                 EntityName = "biobank",
-                ControllerName = "Biobank"
+                ControllerName = "Settings",
+                SuccessAreaName = "Biobank",
+                SuccessControllerName = "Settings",
+                OrganisationId = biobankId
             });
         }
 
@@ -125,7 +126,7 @@ public class SettingsController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return Ok(new
+                return BadRequest(new
                 {
                     success = false,
                     errors = ModelState.Values
@@ -172,7 +173,7 @@ public class SettingsController : Controller
                 }
                 else
                 {
-                    return Ok(new
+                    return BadRequest(new
                     {
                         success = false,
                         errors = result.Errors.ToArray()
@@ -208,13 +209,9 @@ public class SettingsController : Controller
             });
         }
 
-        [Authorize(CustomClaimType.Biobank)]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> DeleteAdmin(int biobankId, string biobankUserId, string userFullName)
         {
-
-            if (biobankId == 0)
-                return RedirectToAction("Index", "Home");
-
             //remove them from the network
             await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
@@ -225,11 +222,15 @@ public class SettingsController : Controller
 
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 
-            return RedirectToAction("Admins");
+            return RedirectToAction("Admins", new { biobankId });
         }
         
+        #endregion
+        
+        #region Submissions
+        
         [HttpGet]
-        [Authorize(CustomClaimType.Biobank)]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> Submissions(int biobankId)
         {
             var model = new SubmissionsModel();
@@ -263,9 +264,9 @@ public class SettingsController : Controller
         }
 
         [HttpPost]
-        [Authorize(CustomClaimType.Biobank)]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Submissions(SubmissionsModel model, int biobankId)
+        public async Task<ActionResult> Submissions(int biobankId, SubmissionsModel model)
         {
             //update Organisations table
             var biobank = await _organisationDirectoryService.Get(biobankId);
@@ -277,11 +278,11 @@ public class SettingsController : Controller
             //Set feedback and redirect
             this.SetTemporaryFeedbackMessage("Submissions settings updated!", FeedbackMessageType.Success);
 
-            return RedirectToAction("Submissions");
+            return RedirectToAction("Submissions", new { biobankId });
         }
 
         [HttpPost]
-        [Authorize(CustomClaimType.Biobank)]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> GenerateApiKeyAjax(int biobankId)
         {
             var credentials =
@@ -296,9 +297,11 @@ public class SettingsController : Controller
             });
         }
         
+        #endregion
+        
         #region Network Acceptance
 
-        [Authorize(CustomClaimType.Biobank)]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> NetworkAcceptance(int biobankId)
         {
           var organisationNetworks = await _networkService.ListOrganisationNetworks(biobankId);
@@ -336,7 +339,7 @@ public class SettingsController : Controller
 
           this.SetTemporaryFeedbackMessage("Biobank added to the network successfully", FeedbackMessageType.Success);
 
-          return RedirectToAction("NetworkAcceptance");
+          return RedirectToAction("NetworkAcceptance", new { biobankId });
         }
         #endregion
   

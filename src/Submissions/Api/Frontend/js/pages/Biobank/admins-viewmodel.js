@@ -12,7 +12,7 @@ function BiobankAdminsViewModel() {
 
   this.openInviteDialog = function () {
     $.ajax({
-      url: "/Biobank/InviteAdminAjax/",
+      url: "/Biobank/Settings/InviteAdminAjax/" + _this.biobankId,
       data: { biobankId: _this.biobankId },
       contentType: "application/html",
       success: function (content) {
@@ -55,9 +55,9 @@ function BiobankAdminsViewModel() {
             form.data("success-redirect") + "?Name=" + data.name;
         } else {
           if (Array.isArray(data.errors)) {
-            data.errors.forEach(function (error, index) { 
+            data.errors.forEach(function (error, index) {
               _this.dialogErrors.push(error);
-            })
+            });
           }
         }
       },
@@ -68,7 +68,7 @@ function BiobankAdminsViewModel() {
     //clear knockout bindings,
     //but leave jQuery/bootstrap bindings intact!
     var original = ko.utils.domNodeDisposal["cleanExternalData"];
-    ko.utils.domNodeDisposal["cleanExternalData"] = function () { };
+    ko.utils.domNodeDisposal["cleanExternalData"] = function () {};
     ko.cleanNode($(nodeSelector)[0]); //designed to work with ID selectors, so only does the first match
     ko.utils.domNodeDisposal["cleanExternalData"] = original;
   };
@@ -103,8 +103,8 @@ $(function () {
     var $link = $(this);
     bootbox.confirm(
       "Are you sure you wish to remove " +
-      $link.data("admin-name") +
-      " from your admins?",
+        $link.data("admin-name") +
+        " from your admins?",
       function (confirmation) {
         confirmation && window.location.assign($link.attr("href"));
       }
@@ -116,7 +116,7 @@ $(function () {
     var $link = $(this);
     bootbox.confirm(
       $link.data("admin-name") +
-      " has not yet confirmed their account.<br/>Do you want to resend their invitation link?",
+        " has not yet confirmed their account.<br/>Do you want to resend their invitation link?",
       function (confirmation) {
         confirmation && window.location.assign($link.attr("href"));
       }
