@@ -57,8 +57,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
       _context = context;
       _elasticsearchConfig = elasticsearchConfig.Value;
     }
-
-    [SuppressMessage("ReSharper.DPA", "DPA0009: High execution time of DB command", MessageId = "time: 807ms")]
+    
     private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
        IEnumerable<int> sampleSetIds) =>
     (
