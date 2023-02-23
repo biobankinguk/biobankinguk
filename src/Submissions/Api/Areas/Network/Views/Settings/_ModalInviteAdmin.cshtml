@@ -29,8 +29,8 @@
         </div>
 
         <form id="modalInviteNetworkAdminForm"
-              data-action="@Url.Action("InviteAdminAjax")"
-              data-success-redirect="@Url.Action("InviteAdminSuccess")"
+              data-action="@Url.Action("InviteAdminAjax", "Settings", new { Area = "Network", networkId = ViewContext.RouteData.Values["networkId"]})"
+              data-success-redirect="@Url.Action("InviteAdminSuccess", "Settings", new { Area = "Network", networkId = ViewContext.RouteData.Values["networkId"] })"
               class="form-horizontal"
               method="post">
             

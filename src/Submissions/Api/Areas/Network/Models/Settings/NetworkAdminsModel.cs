@@ -7,6 +7,6 @@ public class NetworkAdminsModel
 {
     public int NetworkId { get; set; }
 
-    public ICollection<RegisterEntityAdminModel> Admins { get; set; }
+    public List<Api.Models.Shared.RegisterEntityAdminModel> Admins { get; set; }
 
 }
