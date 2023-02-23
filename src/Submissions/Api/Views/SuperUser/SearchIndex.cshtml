@@ -1,11 +1,12 @@
 @model Biobanks.Submissions.Api.Models.SuperUser.SearchIndexModel
+
 @{
     ViewBag.Title = "Search index";
 }
 
 <br />
 
-@* <partial name="_SuperUserTabs" model= "Model" /> *@
+@await Html.PartialAsync("_SuperUserTabs", "Search index")
 
 <h3>Search Index Maintenance</h3>
 
@@ -119,10 +120,3 @@ else if (ViewBag.Status == "red")
         </p>
     </div>
 }
-
-
-
-@*
-  TODO:
-@Scripts.Render("~/bundles/bootbox")
-*@
