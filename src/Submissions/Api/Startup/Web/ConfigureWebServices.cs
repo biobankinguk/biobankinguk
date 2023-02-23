@@ -394,6 +394,7 @@ public static class ConfigureWebServices
       .AddTransient<IConfigService, ConfigService>()
       .AddTransient<IContentPageService, ContentPageService>()
       .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+      .AddTransient<ILogoService, LogoService>()
       .AddTransient<INetworkService, NetworkService>()
       .AddTransient<IOntologyTermService, OntologyTermService>()
       .AddTransient<IOrganisationDirectoryService,

@@ -135,7 +135,7 @@ namespace Biobanks.Submissions.Api.Auth
             {
               var httpContext = (DefaultHttpContext?)context.Resource;
 
-              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("networkId") ?? string.Empty,
                     out var networkId))
                 return false;
 
