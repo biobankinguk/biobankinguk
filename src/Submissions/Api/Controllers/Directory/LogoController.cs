@@ -6,7 +6,8 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     public class LogoController : Controller
     {
-        ILogoService _logoService;
+        readonly ILogoService _logoService;
+        
         public LogoController(ILogoService logoService)
         {
             _logoService = logoService;
@@ -15,10 +16,10 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         //Get: Blob
         public async Task<ActionResult> Index(string logoName)
         {
-            var blob = await _logoService.GetLogoBlobAsync(logoName);
-
-            //filename should have extension, so we don't have to extract it from the content disposition header
-            return Ok(File(blob.Content, blob.ContentType));           
+          var blob = await _logoService.GetLogoBlobAsync(logoName);
+          
+          //filename should have extension, so we don't have to extract it from the content disposition header
+          return File(blob.Content, blob.ContentType);
         }
         public ActionResult NoLogo()
         {

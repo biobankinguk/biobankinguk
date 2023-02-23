@@ -5,17 +5,17 @@
         <ul class="nav nav-tabs">
             <li role="presentation"
                 class="@(Model == "Biobanks" ? "active" : "true")">
-                @Html.ActionLink("Biobanks", "Biobanks", "Profile")
+                @Html.ActionLink("Biobanks", "Biobanks", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"] })
             </li>
       
             <li role="presentation"
                 class="@(Model == "Admins" ? "active" : "true")">
-              @Html.ActionLink("Admins", "Admins", "Settings")
+              @Html.ActionLink("Admins", "Admins", "Settings", new { networkId = ViewContext.RouteData.Values["networkId"] })
             </li>
       
             <li role="presentation"
                 class="@(Model == "Details" ? "active" : "true")">
-              @Html.ActionLink("Network details", "Index", "Profile")
+              @Html.ActionLink("Network details", "Details", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"] })
             </li>
         </ul>
     </div>
