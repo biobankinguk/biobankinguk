@@ -4,10 +4,13 @@ using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Models.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory;
 
+[Authorize(nameof(AuthPolicies.IsSuperUser))]
 public class FlagsController : Controller
 {
     private readonly IConfigService _configService;
@@ -47,7 +50,10 @@ public class FlagsController : Controller
         // Update current config cache
         await _configService.PopulateSiteConfigCache();
         
-        return Ok();
+        return Ok(new
+          {
+            redirect = "UpdateFlagsConfigSuccess"
+          });
     }
 
     public ActionResult UpdateFlagsConfigSuccess()
