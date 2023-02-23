@@ -1,12 +1,13 @@
-# This docker compose will stand up a local instance of elasticsearch 7.x for development use
+# This docker compose will stand up a local instance of elasticsearch 8.x for development use
 # This saves manually installing java, elastic, and kibana.
 # we expose the default elastic ports 9200 and 9300; you can change them below if those ports are in use
 # use Postman to hit the server on 9200, or stand up a kibana container if you really need to.
 
-elastic-search:
-    image: elasticsearch:7.3.0
+services:
+  elastic-search:
+    image: elasticsearch:8.6.2
     environment:
-        - discovery.type=single-node
-    ports: 
-        - "9200:9200"
-        - "9300:9300"
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
