@@ -1,4 +1,5 @@
 @inject IOptions<SitePropertiesOptions> _config
+@model Biobanks.Submissions.Api.Models.Emails.ResendConfirmModel
 
 @{
   var directoryName = @_config.Value.ServiceName;
@@ -13,7 +14,7 @@ We received a request to resend your account confirmation link.
 
 Please use this link below to complete registration and set your password:
 
-@Html.Raw(ViewBag.ConfirmLink)
+<a href="@Model.resetLink">Set Password</a>
 
 Regards,
 @_config.Value.EmailSignature

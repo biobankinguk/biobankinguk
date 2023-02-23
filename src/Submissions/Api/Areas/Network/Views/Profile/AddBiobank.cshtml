@@ -2,6 +2,9 @@
 @model AddBiobankToNetworkModel
 <h2>Add a Biobank to your Network</h2>
 
+@* Enable Javascript to access networkId  *@
+<span id="NetworkId" data-network-id="@ViewContext.RouteData.Values["networkId"]"></span>
+
 <div class="row">
     <div class="col-sm-12 col-sm-offset-3">
         @using (@Html.BeginForm(
@@ -32,9 +35,8 @@
                 </span>
             </div>
 
-
-       }
-            </div>
+        }
+    </div>
 </div>
 
 <hr/>

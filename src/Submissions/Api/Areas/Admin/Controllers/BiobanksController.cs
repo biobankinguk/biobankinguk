@@ -214,7 +214,7 @@ public class BiobanksController : Controller
               new EmailAddress(model.Email),
               model.Name,
               model.Entity,
-              Url.Action("BiobankAdmin", "Biobanks", new { id = biobankId }, Request.GetEncodedUrl()));
+              Url.Action("BiobankAdmin", "Biobanks", new { id = biobankId }, Request.Scheme));
       }
 
       //Add the user/biobank relationship
