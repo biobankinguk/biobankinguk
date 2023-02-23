@@ -133,6 +133,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             .AsNoTracking()
             .Include(x => x.AccessCondition)
             .Include(x => x.CollectionType)
+            .Include(x => x.ApiClients)
             .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         /// <inheritdoc/>

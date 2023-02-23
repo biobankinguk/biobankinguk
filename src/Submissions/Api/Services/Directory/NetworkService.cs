@@ -135,13 +135,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<Network> GetForIndexing(int networkId)
             => await _db.Networks
                 .Include(x => x.SopStatus)
-                .Include(x => x.OrganisationNetworks.Select(y => y.Network))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.Collections.Select(c => c.SampleSets)))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.DiagnosisCapabilities))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.OrganisationServiceOfferings))
-                .Include(x => x.OrganisationNetworks.Select(y => y.Organisation.OrganisationServiceOfferings.Select(o => o.ServiceOffering)))
+                .Include(x => x.OrganisationNetworks)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation.Collections)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation.Collections)
+                        .ThenInclude(c => c.SampleSets)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation.DiagnosisCapabilities)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation.OrganisationServiceOfferings)
+                .Include(x => x.OrganisationNetworks)
+                    .ThenInclude(y => y.Organisation.OrganisationServiceOfferings)
+                        .ThenInclude(o => o.ServiceOffering)
                 .FirstOrDefaultAsync(x => x.NetworkId == networkId);
 
         /// <inheritdoc/>
