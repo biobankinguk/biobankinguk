@@ -32,4 +32,9 @@ public class InviteRegisterEntityAdminModel
   /// The area controller the form will redirect to on success (biobank / network / admin)
   /// </summary>
   public string SuccessAreaName { get; set; }
+  
+  /// <summary>
+  /// The organisation the form will redirect to on success.
+  /// </summary>
+  public int OrganisationId { get; set; }
 }

@@ -79,8 +79,6 @@ namespace Biobanks.Submissions.Api.Services.EmailServices
             to,
             "Emails/ResendConfirm",
             new ResendConfirmModel(name, action));
-    
-          throw new System.NotImplementedException();
         }
     
         public async Task SendNewUserRegisterEntityAdminInvite(EmailAddress to, string name, string entity, string confirmLink)

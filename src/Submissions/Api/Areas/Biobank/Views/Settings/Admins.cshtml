@@ -9,7 +9,7 @@
 }
 
 
-<partial name = "_BiobankTabs" model ="Admins" />
+@await Html.PartialAsync("_BiobankTabs", "Admins")
 
 <h3>Biobank admins <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteBiobankAdmin" data-bind="click: openInviteDialog">Add new admin</a></h3>
 
@@ -58,6 +58,7 @@
                                         "ResendConfirmLink", "Account",
                                         new
                                         {
+                                            Area = "",
                                             userEmail = admin.UserEmail,
                                             onBehalf = true,
                                             returnUrl = Model.RequestUrl
@@ -68,7 +69,7 @@
                                     </a>
                                 }
                                 &nbsp;
-                                <a href="@Url.Action("DeleteAdmin", new {biobankUserId = admin.UserId, userFullName = admin.UserFullName})"
+                                <a href="@Url.Action("DeleteAdmin", new {biobankId = Model.BiobankId, biobankUserId = admin.UserId, userFullName = admin.UserFullName})"
                                    class="confirm-delete"
                                    data-admin-name="@admin.UserFullName">
                                     <span class="fa fa-trash labelled-icon"></span>Delete
@@ -85,13 +86,8 @@
 
 <div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label"></div>
 
-@*
-TODO: Add bundles
 @section FooterScripts
 {
-    @Scripts.Render("~/bundles/datatables")
-    @Scripts.Render("~/bundles/bootbox")
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/biobank/admins")
+    <script src="~/dist/js/Biobank/admins.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/registerentity-admin.min.js" asp-append-version="true"></script>
 }
-*@
