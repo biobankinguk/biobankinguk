@@ -130,7 +130,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
       .FirstOrDefaultAsync()
       );
 
-    private async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
     IEnumerable<int> capabilityIds) => (
     await _context.DiagnosisCapabilities.Where(x =>
               capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
@@ -141,9 +142,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
                   .ThenInclude(s => s.ServiceOffering)
               .Include(x => x.OntologyTerm)
               .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataType)
+              .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
               .Include(x => x.SampleCollectionMode)
               .ToListAsync()
     );
+    
     public async Task BuildIndex()
     {
       //Building the Search Index
@@ -519,17 +524,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
             (capabilityIds
                 .Skip(i * BulkIndexChunkSize)
                 .Take(BulkIndexChunkSize));
-
+      
         BackgroundJob.Enqueue(
             () => _indexProvider.BulkIndexCapabilitySearchDocuments(chunkSampleSets
                 .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
       }
-
+      
       var remainingSampleSets = await GetCapabilitiesByIdsForIndexingAsync
         (capabilityIds
               .Skip(chunkCount * BulkIndexChunkSize)
               .Take(remainingIdCount));
-
+      
       BackgroundJob.Enqueue(
           () => _indexProvider.BulkIndexCapabilitySearchDocuments(remainingSampleSets
               .Select(x => x.ToCapabilitySearchDocument(donorCounts))));

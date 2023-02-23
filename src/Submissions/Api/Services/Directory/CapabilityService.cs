@@ -84,7 +84,7 @@ public class CapabilityService : ICapabilityService
     
     /// <inheritdoc/>
     public async Task<int> GetIndexableCapabilityCountAsync()
-        => (await GetCapabilitiesByIdsForIndexingAsync(await GetAllCapabilityIdsAsync())).Count();
+        => (await _indexService.GetCapabilitiesByIdsForIndexingAsync(await GetAllCapabilityIdsAsync())).Count();
     
     /// <inheritdoc/>
     public async Task<int> GetSuspendedCapabilityCountAsync()
@@ -92,23 +92,8 @@ public class CapabilityService : ICapabilityService
             .AsNoTracking()
             .Where(x => x.Organisation.IsSuspended)
             .CountAsync();
-    
-    /// <inheritdoc/>
-    public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
-        IEnumerable<int> capabilityIds)
-        => (await _db.DiagnosisCapabilities.Where(x =>
-                capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
-                .Include(x => x.Organisation)
-                .Include(x => x.Organisation.OrganisationNetworks)
-                    .ThenInclude(on => on.Network)
-                .Include(x => x.Organisation.OrganisationServiceOfferings)
-                    .ThenInclude(s => s.ServiceOffering)
-                .Include(x => x.OntologyTerm)
-                .Include(x => x.AssociatedData)
-                .Include(x => x.SampleCollectionMode)
-                .ToListAsync()
-            );
 
+    
     /// <inheritdoc/>
     public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexDeletionAsync(
         IEnumerable<int> capabilityIds)
