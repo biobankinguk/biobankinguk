@@ -12,7 +12,7 @@ function NetworkAdminsViewModel() {
 
   this.openInviteDialog = function () {
     $.ajax({
-      url: "/Network/InviteAdminAjax/",
+      url: "/Network/Settings/InviteAdminAjax/" + _this.networkId,
       data: { networkId: _this.networkId },
       contentType: "application/html",
       success: function (content) {
@@ -67,8 +67,8 @@ function NetworkAdminsViewModel() {
         } else {
           if (Array.isArray(data.errors)) {
             data.errors.forEach(function (error, i) {
-              _this.dialogErrors.push(error)
-            })
+              _this.dialogErrors.push(error);
+            });
           }
         }
       },
