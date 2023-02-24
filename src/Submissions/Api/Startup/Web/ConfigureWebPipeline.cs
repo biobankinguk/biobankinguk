@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Middleware;
 using ClacksMiddleware.Extensions;
 using Hangfire;
 using Hangfire.Dashboard;
@@ -38,9 +37,6 @@ public static class ConfigureWebPipeline
     app.UseHttpsRedirection();
     app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
     app.UseStaticFiles();
-
-    // Authenticated users have their last login value updated to now
-    app.UseDirectoryLogin(); // TODO: not sure if this is the best approach to this?
 
     app
       // Simple PUBLIC middleware
@@ -80,9 +76,20 @@ public static class ConfigureWebPipeline
     app.MapRazorPages();
 
     // MVC Controllers
-    app.MapControllerRoute(
-      name: "AreasDefault",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    app.MapAreaControllerRoute(
+      name: "AdminArea",
+      areaName: "Admin",
+      pattern: "Admin/{controller=Home}/{action=Index}/{id?}");       
+    
+    app.MapAreaControllerRoute(
+      name: "BiobankArea",
+      areaName: "Biobank",
+      pattern: "Biobank/{controller=Home}/{action=Index}/{biobankId?}/{id?}");    
+    
+    app.MapAreaControllerRoute(
+      name: "NetworkArea",
+      areaName: "Network",
+      pattern: "Network/{controller=Home}/{action=Index}/{networkId?}/{id?}");
 
     app.MapControllerRoute(
       name: "default",

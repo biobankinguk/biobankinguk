@@ -1,26 +1,29 @@
-﻿@model Biobanks.Submissions.Api.Models.Header.NavItemModel
+﻿@using Biobanks.Submissions.Api.Constants
+@using System.Text.Json
+@model Biobanks.Submissions.Api.Models.Header.NavItemModel
 
 @if (User.Identity.IsAuthenticated)
 {
-	@* TODO: figure out how to do this in core
-		
-	var biobankRequestClaims = CurrentUser.BiobankRequests;
-	foreach (var biobank in biobankRequestClaims)
-	{
-		<li>
-			<a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = true})">
-				<span class="fa fa-book labelled-icon"></span>@(biobank.Value)
-			</a>
-		</li>
-    }
+  var biobankRequestClaims = User.FindAll(CustomClaimType.BiobankRequest);
+  foreach (var biobank in biobankRequestClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
 
-    var biobankClaims = CurrentUser.Biobanks;
-    foreach (var biobank in biobankClaims)
-    {
-        <li>
-            <a href="@Url.Action("SwitchToBiobank", "Account", new { id = biobank.Key, newBiobank = false})">
-                <span class="fa fa-book labelled-icon"></span>@(biobank.Value)
-			</a>
+    <li>
+      <a href="@Url.Action("Edit", "Profile", new { Area = "Biobank", biobankId = data.Key, detailsIncomplete = true})">
+        <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
+      </a>
 		</li>
-	}*@
+  }
+ 
+  var biobankClaims = User.FindAll(CustomClaimType.Biobank);
+  foreach (var biobank in biobankClaims)
+  {
+      var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
+      <li>
+          <a href="@Url.Action("Index", "Collections", new { Area = "Biobank", biobankId = data.Key})">
+              <span class="fa fa-book labelled-icon"></span>@(data.Value)
+          </a>
+      </li>
+	}
 }

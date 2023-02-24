@@ -1,16 +1,13 @@
 @using Biobanks.Submissions.Api.Models.Emails
 @model ExistingUserRegisterEntityAcceptedModel
-@inject IHostEnvironment HostEnvironment
 @inject IOptions<SitePropertiesOptions> _config
 
 @{
     var directoryName = @_config.Value.ServiceName;
     var emailSignature = @_config.Value.EmailSignature;
 
-	// Format Email Subject
-	ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName}"
-		: $"{directoryName} (Environment: {HostEnvironment.EnvironmentName})";
+    // Format Email Subject
+    ViewBag.Subject = $"{directoryName} - Registration Accepted";
 }
 
 Dear @Html.Raw(Model!.name)
@@ -19,7 +16,7 @@ Thanks for your interest in the @directoryName.
 
 We have received your registration for @Html.Raw(Model.entity).
 
-<a hreft="@Html.Raw(Model.link)">Please click this link to login and create a profile. </a> 
+<a href="@Html.Raw(Model.link)">Please click this link to login and create a profile. </a> 
 
 Regards,
 @emailSignature

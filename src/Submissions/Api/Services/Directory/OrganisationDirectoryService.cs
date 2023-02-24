@@ -55,10 +55,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private IQueryable<Organisation> QueryForIndexing()
             => Query()
                 .Include(x => x.Collections)
-                .Include(x => x.Collections.Select(c => c.SampleSets))
+                .ThenInclude(c => c.SampleSets)
                 .Include(x => x.DiagnosisCapabilities)
                 .Include(x => x.OrganisationServiceOfferings)
-                .Include(x => x.OrganisationServiceOfferings.Select(o => o.ServiceOffering));
+                .ThenInclude(o => o.ServiceOffering);
 
         private IQueryable<OrganisationRegisterRequest> QueryRegistrationRequests()
             => _db.OrganisationRegisterRequests
@@ -122,6 +122,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<Organisation> Get(int id)
             => await Query()
                 .AsNoTracking()
+                .Include(x => x.OrganisationRegistrationReasons)
+                .Include(x => x.OrganisationServiceOfferings)
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         public async Task<Organisation> GetForBulkSubmissions(int id)
@@ -129,6 +131,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             .AsNoTracking()
             .Include(x => x.AccessCondition)
             .Include(x => x.CollectionType)
+            .Include(x => x.ApiClients)
             .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         /// <inheritdoc/>
@@ -241,15 +244,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     };
 
                     // Update Collections
-                    currentOrganisation.Collections
-                        .SelectMany(c => c.SampleSets)
-                        .ToList()
-                        .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
+                    if (organisation.Collections != null)
+                        currentOrganisation.Collections
+                            .SelectMany(c => c.SampleSets)
+                            .ToList()
+                            .ForEach(s => BackgroundJob.Enqueue(() => _collectionsIndex.Update(s.Id, partial)));
 
                     // Update Capabilities
-                    currentOrganisation.DiagnosisCapabilities
-                        .ToList()
-                        .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
+                    if (organisation.DiagnosisCapabilities != null)
+                        currentOrganisation.DiagnosisCapabilities
+                            .ToList()
+                            .ForEach(c => BackgroundJob.Enqueue(() => _capabilitiesIndex.Update(c.DiagnosisCapabilityId, partial)));
                 }
 
             }
@@ -408,6 +413,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x.DeclinedDate == null &&
                     x.OrganisationCreatedDate == null)
                 .ToListAsync();
+        
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequestsByUserId(string userId)
+        {
+          var userEmail = _userManager.Users.First(u => u.Id == userId).Email;
+
+          return await QueryRegistrationRequests()
+            .AsNoTracking()
+            .Where(x => x.UserEmail == userEmail)
+            .Where(x => 
+              x.AcceptedDate != null && 
+              x.DeclinedDate == null && 
+              x.OrganisationCreatedDate == null)
+            .ToListAsync();
+        }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListHistoricalRegistrationRequests()
@@ -427,7 +447,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByName(string name)
             => await QueryRegistrationRequests()
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.OrganisationName == name);
 
         /// <inheritdoc/>

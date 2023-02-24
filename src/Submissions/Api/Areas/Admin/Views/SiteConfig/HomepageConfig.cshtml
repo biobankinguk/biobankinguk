@@ -5,7 +5,7 @@
 	ViewBag.Title = "Homepage Config";
 }
 
-<partial name = "_ADACTabs" model ="Homepage Config" />
+@await Html.PartialAsync("_ADACTabs", "Homepage Config")
 
 <h3>
 	Homepage Configuration
@@ -88,8 +88,7 @@
 	</div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@* 	@Scripts.Render("~/bundles/markdowndeep") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+}

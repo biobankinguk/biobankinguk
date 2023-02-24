@@ -17,8 +17,8 @@ $(function () {
       filter: function (x) {
         return $.map(x, function (item) {
           return {
-            desc: item.Description,
-            id: item.OntologyTermId,
+            desc: item.description,
+            id: item.ontologyTermId,
           };
         });
       },
@@ -59,7 +59,7 @@ $(function () {
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: "/Biobank/GetAssociatedDataTypeViewsAjax?id=" + id,
+      url: "/Biobank/Collections/GetAssociatedDataTypeViewsAjax?id=" + id,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },

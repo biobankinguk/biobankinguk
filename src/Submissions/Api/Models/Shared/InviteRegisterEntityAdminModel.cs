@@ -16,10 +16,25 @@ public class InviteRegisterEntityAdminModel
   public string EntityName { get; set; } //for label
   [Required]
   public string Entity { get; set; }
+  
   /// <summary>
-  /// The controller to which this will be redirected (either the biobank or ADAC depending on who is adding admins)
+  /// The controller the form will be submitted to (either the biobank, network, or Admin depending on who is adding admins)
   /// </summary>
-
   ///TODO: Fix once JS urls are done 
   public string ControllerName { get; set; }
+  
+  /// <summary>
+  /// The controller the form will redirect to on success (biobank / network / admin)
+  /// </summary>
+  public string SuccessControllerName { get; set; }  
+  
+  /// <summary>
+  /// The area controller the form will redirect to on success (biobank / network / admin)
+  /// </summary>
+  public string SuccessAreaName { get; set; }
+  
+  /// <summary>
+  /// The organisation the form will redirect to on success.
+  /// </summary>
+  public int OrganisationId { get; set; }
 }

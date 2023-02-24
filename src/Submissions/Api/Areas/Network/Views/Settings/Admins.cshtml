@@ -9,7 +9,7 @@
     ViewBag.Title = "Network admins";
 }
 
-<partial name = "_NetworkTabs" model ="Admins" />
+@await Html.PartialAsync("_NetworkTabs", "Admins")
 
 <h3>Network admins <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteNetworkAdmin" data-bind="click: openInviteDialog">Add new admin</a></h3>
 
@@ -35,7 +35,7 @@
                 </td>
                 <td>
                     <strong>@User.Identity.Name</strong>
-                </td>Bi
+                </td>
                 <td></td>
             </tr>
 
@@ -58,6 +58,7 @@
                                         "ResendConfirmLink", "Account",
                                         new
                                         {
+                                            Area = "",
                                             userEmail = admin.UserEmail,
                                             onBehalf = true,
                                             returnUrl = @Context.Request.GetEncodedUrl()
@@ -67,7 +68,7 @@
                                     <span class="fa fa-repeat labelled-icon"></span>Resend Invite</a>
                             }
                             &nbsp;
-                            <a href="@Url.Action("DeleteAdmin", new {networkUserId = admin.UserId, userFullName = admin.UserFullName})"
+                            <a href="@Url.Action("DeleteAdmin", new {networkId = Model.NetworkId, networkUserId = admin.UserId, userFullName = admin.UserFullName})"
                                class="confirm-delete"
                                data-admin-name="@admin.UserFullName">
                                 <span class="fa fa-trash labelled-icon"></span>Delete
@@ -84,11 +85,8 @@
 
 <div id="modalInviteNetworkAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteNetworkAdmin_Label"></div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/datatables") *@
-@*     @Scripts.Render("~/bundles/bootbox") *@
-@*     @Scripts.Render("~/bundles/knockout") *@
-@*     @Scripts.Render("~/bundles/network/admins") *@
-@* } *@
+@section FooterScripts
+{
+    <script src="~/dist/js/Network/admins.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/registerentity-admin.min.js" asp-append-version="true"></script>
+}

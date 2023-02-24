@@ -2,6 +2,7 @@ using AutoMapper;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
@@ -16,12 +17,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using cloudscribe.Web.Navigation;
 using Biobanks.Submissions.Api.Auth;
+using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.AssociatedDataSummaryModel;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
@@ -37,18 +38,17 @@ public class CollectionsController : Controller
   private readonly IMaterialTypeService _materialTypeService;
 
   public CollectionsController(
-  ICollectionService collectionService,
-  ISampleSetService sampleSetService,
-  IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
-  IOntologyTermService ontologyTermService,
-  IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
-  IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
-  IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
-  IMapper mapper,
-  IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
-  IAbstractCrudService abstractCrudService,
-  IMaterialTypeService materialTypeService
-
+      ICollectionService collectionService,
+      ISampleSetService sampleSetService,
+      IReferenceDataCrudService<AssociatedDataProcurementTimeframe> associatedDataProcurementTimeframeService,
+      IOntologyTermService ontologyTermService,
+      IReferenceDataCrudService<AssociatedDataTypeGroup> associatedDataTypeGroupService,
+      IReferenceDataCrudService<AssociatedDataType> associatedDataTypeService,
+      IReferenceDataCrudService<ConsentRestriction> consentRestrictionService,
+      IMapper mapper,
+      IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
+      IAbstractCrudService abstractCrudService,
+      IMaterialTypeService materialTypeService
   )
   {
     _collectionService = collectionService;
@@ -62,17 +62,12 @@ public class CollectionsController : Controller
     _macroscopicAssessmentService = macroscopicAssessmentService;
     _abstractCrudService = abstractCrudService;
     _materialTypeService = materialTypeService;
-
-
   }
 
   [HttpGet]
-  [Authorize(CustomClaimType.Biobank)]
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     var collections = await _collectionService.List(biobankId);
 
     // Build ViewModel.
@@ -169,12 +164,9 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<ActionResult> AddCollection(AddCollectionModel model, int biobankId)
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  public async Task<ActionResult> AddCollection(int biobankId, AddCollectionModel model)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     // check linked types are valid
     List<AssociatedDataModel> associatedDataModels = model.ListAssociatedDataModels().ToList();
     // check that any linked associated data is related to the ontology term
@@ -182,9 +174,6 @@ public class CollectionsController : Controller
 
     if (await model.IsValid(ModelState, _ontologyTermService) && linkedIsValid)
     {
-
-
-
       var associatedData = associatedDataModels
           .Where(x => x.Active)
           .Select(y => new CollectionAssociatedData
@@ -225,6 +214,7 @@ public class CollectionsController : Controller
 
       return RedirectToAction("Collection", new
       {
+        biobankId = biobankId,
         id = collection.CollectionId
       });
     }
@@ -239,14 +229,9 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  // TODO: [AuthoriseToAdministerCollection]
-  public async Task<ActionResult> CopyCollection(int id, int biobankId)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ActionResult> CopyCollection(int biobankId, int id)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
-
     // Copy and Add New Collection  
     var newCollection = await _collectionService.Copy(id, biobankId);
 
@@ -284,17 +269,16 @@ public class CollectionsController : Controller
 
     return RedirectToAction("Collection", new
     {
+      biobankId = biobankId,
       id = newCollection.CollectionId
     });
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerCollection]
-  public async Task<ViewResult> EditCollection(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ViewResult> EditCollection(int biobankId, int id)
   {
     var collection = await _collectionService.Get(id);
-    var consentRestrictions = await _consentRestrictionService.List();
-
     var groups = await _abstractCrudService.PopulateAbstractCRUDAssociatedData(new AddCapabilityModel());
 
     var model = new EditCollectionModel
@@ -312,9 +296,9 @@ public class CollectionsController : Controller
 
     };
 
-    var assdatlist = model.ListAssociatedDataModels();
+    var associatedDataModels = model.ListAssociatedDataModels();
 
-    foreach (var associatedDataModel in assdatlist)
+    foreach (var associatedDataModel in associatedDataModels)
     {
       var associatedData = collection.AssociatedData.FirstOrDefault(x => x.AssociatedDataTypeId == associatedDataModel.DataTypeId);
 
@@ -330,13 +314,9 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO:[AuthoriseToAdministerCollection]
-  public async Task<ActionResult> EditCollection(EditCollectionModel model, int biobankId)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ActionResult> EditCollection(int biobankId, EditCollectionModel model)
   {
-
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
-
     //Retrieve collection
     var collection = await _collectionService.Get(model.Id);
 
@@ -349,7 +329,7 @@ public class CollectionsController : Controller
 
       this.SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Collection", new { id = model.Id });
+      return RedirectToAction("Collection", new { biobankId = biobankId, id = model.Id });
     }
     // check linked types are valid
     List<AssociatedDataModel> associatedDataModels = model.ListAssociatedDataModels().ToList();
@@ -396,7 +376,7 @@ public class CollectionsController : Controller
 
       this.SetTemporaryFeedbackMessage("Collection updated!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Collection", new { id = model.Id });
+      return RedirectToAction("Collection", new { biobankId = biobankId, id = model.Id });
     }
     else
     {
@@ -410,26 +390,26 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO:[AuthoriseToAdministerCollection]
-  public async Task<ActionResult> DeleteCollection(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ActionResult> DeleteCollection(int biobankId, int id)
   {
     if (!await _collectionService.IsFromApi(id) && await _collectionService.Delete(id))
     {
       this.SetTemporaryFeedbackMessage("Collection deleted!", FeedbackMessageType.Success);
-      return RedirectToAction("Index", "Collections");
+      return RedirectToAction("Index", "Collections", new { biobankId = biobankId });
     }
     else
     {
       this.SetTemporaryFeedbackMessage(
           "The system was unable to delete this collection. Please make sure it doesn't contain any Sample Sets before trying again.",
           FeedbackMessageType.Danger);
-      return RedirectToAction("Collection", new { id });
+      return RedirectToAction("Collection", new { biobankId = biobankId, id });
     }
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerCollection]
-  public async Task<ViewResult> Collection(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ViewResult> Collection(int biobankId, int id)
   {
     var collection = await _collectionService.GetWithSampleSets(id);
 
@@ -467,8 +447,8 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerCollection]
-  public async Task<ViewResult> AddSampleSet(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ViewResult> AddSampleSet(int biobankId, int id)
   {
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(id);
     var model = new AddSampleSetModel
@@ -480,8 +460,8 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO: [AuthoriseToAdministerCollection]
-  public async Task<ActionResult> AddSampleSet(int id, AddSampleSetModel model)
+  [Authorize(nameof(AuthPolicies.CanAdministerCollection))]
+  public async Task<ActionResult> AddSampleSet(int biobankId, int id, AddSampleSetModel model)
   {
     var apiCheck = await _collectionService.IsFromApi(id);
 
@@ -514,15 +494,15 @@ public class CollectionsController : Controller
 
       this.SetTemporaryFeedbackMessage("Sample Set added!", FeedbackMessageType.Success);
 
-      return RedirectToAction("Collection", new { id });
+      return RedirectToAction("Collection", new { biobankId = biobankId, id });
     }
 
     return View((AddSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<ActionResult> CopySampleSet(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ActionResult> CopySampleSet(int biobankId, int id)
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
@@ -555,20 +535,20 @@ public class CollectionsController : Controller
   }
 
   [HttpPost]
-  //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<ActionResult> CopySampleSet(int id, CopySampleSetModel model)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ActionResult> CopySampleSet(int biobankId, int id, CopySampleSetModel model)
   {
     if (await _collectionService.IsFromApi(model.CollectionId))
     {
-      return RedirectToAction("SampleSet", new { id = model.OriginalId });
+      return RedirectToAction("SampleSet", new { biobankId = biobankId, id = model.OriginalId });
     }
     var addModel = _mapper.Map<AddSampleSetModel>(model);
-    return await AddSampleSet(model.CollectionId, addModel);
+    return await AddSampleSet(biobankId, model.CollectionId, addModel);
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<ViewResult> EditSampleSet(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ViewResult> EditSampleSet(int biobankId, int id)
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     
@@ -603,8 +583,8 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO:[AuthoriseToAdministerSampleSet]
-  public async Task<ActionResult> EditSampleSet(int id, EditSampleSetModel model)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ActionResult> EditSampleSet(int biobankId, int id, EditSampleSetModel model)
   {
     var apiCheck = await _collectionService.IsFromApi(model.CollectionId);
     ViewData["CollectionApiStatus"] = apiCheck;
@@ -637,7 +617,7 @@ public class CollectionsController : Controller
 
       this.SetTemporaryFeedbackMessage("Sample Set updated!", FeedbackMessageType.Success);
 
-      return RedirectToAction("SampleSet", new { id = model.Id });
+      return RedirectToAction("SampleSet", new { biobankId = biobankId, id = model.Id });
     }
     
     // Set the last breadcrumb
@@ -649,20 +629,20 @@ public class CollectionsController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<ActionResult> DeleteSampleSet(int id, int collectionId)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ActionResult> DeleteSampleSet(int biobankId, int id, int collectionId)
   {
     if (!await _collectionService.IsFromApi(collectionId))
     {
       await _sampleSetService.DeleteSampleSetAsync(id);
       this.SetTemporaryFeedbackMessage("Sample Set deleted!", FeedbackMessageType.Success);
     }
-    return RedirectToAction("Collection", new { id = collectionId });
+    return RedirectToAction("Collection", new { biobankId = biobankId, id = collectionId });
   }
 
   [HttpGet]
-  //TODO: [AuthoriseToAdministerSampleSet]
-  public async Task<ViewResult> SampleSet(int id)
+  [Authorize(nameof(AuthPolicies.CanAdministerSampleSet))]
+  public async Task<ViewResult> SampleSet(int biobankId, int id)
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     var assessments = await _macroscopicAssessmentService.List();

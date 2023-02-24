@@ -61,7 +61,7 @@ public class RegisterController : Controller
 
 
   //Register a biobank - ADAC Invite
-  [Authorize(Roles = "ADAC")]
+  [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
   public ActionResult AdacBiobank()
   {
       return View("Biobank", new RegisterEntityModel
@@ -186,7 +186,7 @@ public class RegisterController : Controller
       if (model.AdacInvited)
       {
           //ADAC Invited requests should be automatically accepted, and return to the ADAC Admin Requests view
-          return RedirectToAction("AcceptBiobankRequest", "Requests", new { requestId = request.OrganisationRegisterRequestId });
+          return RedirectToAction("AcceptBiobankRequest", "Requests", new { Area = "Admin", requestId = request.OrganisationRegisterRequestId });
       }
       else
       {

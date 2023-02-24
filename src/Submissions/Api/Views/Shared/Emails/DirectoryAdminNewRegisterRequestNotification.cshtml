@@ -1,6 +1,5 @@
 @using Biobanks.Submissions.Api.Models.Emails
 @model DirectoryAdminNewRegisterRequestNotificationModel
-@inject IHostEnvironment HostEnvironment
 @inject IOptions<SitePropertiesOptions> _siteConfig
 
 @{
@@ -8,9 +7,7 @@
     var emailSignature = @_siteConfig.Value.EmailSignature;
 
     // Format Email Subject
-    ViewBag.Subject = HostEnvironment.IsDevelopment()
-        ? $"{directoryName} {ViewBag.Entity} Registration"
-        : $"{directoryName} {ViewBag.Entity} Registration (Environment: {HostEnvironment.EnvironmentName})";
+    ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Registration";
 }
 
 FAO Directory Administrators,

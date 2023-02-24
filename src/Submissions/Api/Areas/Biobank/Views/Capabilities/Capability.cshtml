@@ -15,15 +15,16 @@
     </div>
     <div class="col-sm-6 text-right">
         @using (Html.BeginForm(
-            "DeleteCapability", "Capabilities",
-            FormMethod.Post,
+            "DeleteCapability", "Capabilities",  new{ Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id},
+            FormMethod.Post, null,
             new
             {
                 @class = "pull-right",
                 id = "DeleteCapability"
-            }))
+            }
+          ))
         {
-            @Html.ActionLink("Edit", "EditCapability", new {id = Model.Id}, new {@class = "btn btn-primary"})
+            @Html.ActionLink("Edit", "EditCapability", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id}, new {@class = "btn btn-primary"})
             @Html.AntiForgeryToken()
             @Html.Hidden("id", Model.Id)
             <button type="submit" class="btn btn-default bootbox-confirm" data-form-id="DeleteCapability" data-confirm-message = "Are you sure you wish to delete this capability?">Delete</button>

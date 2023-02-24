@@ -13,7 +13,7 @@
 
   this.openInviteDialog = function () {
     $.ajax({
-      url: "/Adac/InviteAdminAjax/",
+      url: "/Admin/Biobanks/InviteAdminAjax/",
       data: { biobankId: _this.biobankId },
       contentType: "application/html",
       success: function (content) {
@@ -76,7 +76,7 @@
 
   this.openResetBox = function (userid, username) {
     $.ajax({
-      url: "/Adac/GenerateResetLinkAjax/",
+      url: "/Admin/Biobanks/GenerateResetLinkAjax/",
       data: { biobankUserId: userid, biobankUsername: username },
       contentType: "application/html",
       success: function (content) {

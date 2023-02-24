@@ -1,5 +1,17 @@
 @using Biobanks.Submissions.Api.Models.Header
+@using Biobanks.Submissions.Api.Constants
 @model HeaderModel
+
+@{
+    bool organisationRequests = false;
+    if (User.Identity.IsAuthenticated)
+    {
+        // Check for active requests
+        var biobankRequests = User.FindAll(CustomClaimType.BiobankRequest);
+        var networkRequests = User.FindAll(CustomClaimType.NetworkRequest);
+        organisationRequests = biobankRequests.Any() || networkRequests.Any();
+    }
+}
 
 <!-- START Display Upgrade Message for IE 10 or Less -->
 <!-- [if lte IE 9]>
@@ -42,16 +54,22 @@
 
             <!-- Navigation -->
             <div class="navbar-collapse-container">
-                <div id="myNavbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <partial name="_NavMenu.cshtml" for="NavigationItems" />
-                    </ul>
-                    <ul class="nav navbar-nav">
-                        <partial name="_NavMenu.cshtml"
-                                 for="NavigationItems"
-                                 view-data="@(new ViewDataDictionary(ViewData)  { { "Toolbar", true } })" />
-                    </ul>
-                </div>
+              <div id="myNavbar" class="navbar-collapse collapse">
+
+                  <ul class="nav navbar-nav">
+                      @if (organisationRequests)
+                      {
+                        <span class="fa fa-exclamation-circle labelled-icon red" style="margin-right: -160px; z-index:100"></span>
+                      }
+                      <partial name="_NavMenu.cshtml" for="NavigationItems"/>
+                  </ul>
+  
+                  <ul class="nav navbar-nav">
+                      <partial name="_NavMenu.cshtml"
+                          for="NavigationItems"
+                          view-data="@(new ViewDataDictionary(ViewData) { { "Toolbar", true } })"/>
+                  </ul>
+              </div>
             </div>
         </div>
     </div>

@@ -66,6 +66,8 @@ public static class ConfigureWebServices
     b.Services.AddOptions()
       .Configure<IISServerOptions>(opts => opts.AllowSynchronousIO = true)
       .Configure<SitePropertiesOptions>(b.Configuration.GetSection("SiteProperties"))
+      .Configure<PublicationsOptions>(b.Configuration.GetSection("Publications"))
+      .Configure<AnnualStatisticsOptions>(b.Configuration.GetSection("AnnualStatistics"))
       .Configure<JwtBearerConfig>(b.Configuration.GetSection("JWT"))
       .Configure<AggregatorOptions>(b.Configuration.GetSection("Aggregator"))
       .Configure<AnalyticsOptions>(b.Configuration.GetSection("Analytics"))
@@ -85,6 +87,7 @@ public static class ConfigureWebServices
 
     // Identity
     b.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+      .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
       .AddEntityFrameworkStores<ApplicationDbContext>()
       .AddDefaultTokenProviders();
     b.Services.ConfigureApplicationCookie(opts =>
@@ -164,7 +167,16 @@ public static class ConfigureWebServices
         AuthPolicies.IsBiobankAdmin);
       o.AddPolicy(nameof(AuthPolicies.IsNetworkAdmin),
         AuthPolicies.IsNetworkAdmin);
-
+      o.AddPolicy(nameof(AuthPolicies.HasBiobankClaim),
+        AuthPolicies.HasBiobankClaim);
+      o.AddPolicy(nameof(AuthPolicies.HasNetworkClaim),
+        AuthPolicies.HasNetworkClaim);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerSampleSet),
+        AuthPolicies.CanAdministerSampleSet);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerCapability),
+        AuthPolicies.CanAdministerCapability);
+      o.AddPolicy(nameof(AuthPolicies.CanAdministerCollection),
+        AuthPolicies.CanAdministerCollection);
     });
 
     // App Insights
@@ -382,6 +394,7 @@ public static class ConfigureWebServices
       .AddTransient<IConfigService, ConfigService>()
       .AddTransient<IContentPageService, ContentPageService>()
       .AddTransient<ILogoStorageProvider, SqlServerLogoStorageProvider>()
+      .AddTransient<ILogoService, LogoService>()
       .AddTransient<INetworkService, NetworkService>()
       .AddTransient<IOntologyTermService, OntologyTermService>()
       .AddTransient<IOrganisationDirectoryService,

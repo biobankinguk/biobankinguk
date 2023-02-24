@@ -1,15 +1,11 @@
 @inject IOptions<SitePropertiesOptions> _config
-@inject IHostEnvironment HostEnvironment
-@using Biobanks.Submissions.Api.Models.Emails
 
 @{
 	var directoryName = @_config.Value.ServiceName;
 	var emailSignature = @_config.Value.EmailSignature;
 
 	// Format Email Subject
-	ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName} Contact List"
-		: $"{directoryName} Contact List (Environment: {HostEnvironment.EnvironmentName})";
+	ViewBag.Subject = $"{directoryName} Contact List";
 }
 
 Kindly find below the contact information for the Organisations in your list

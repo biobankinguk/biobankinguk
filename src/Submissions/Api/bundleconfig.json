@@ -81,10 +81,20 @@
     "outputFileName": "wwwroot/dist/js/markdown-editor.min.js",
     "inputFiles": [
       "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js", // TODO: copy images
-      "Frontend/js/init/markdown-editor.js" // TODO: copy help file from the package
+      "Frontend/js/init/markdown-editor.js"
     ],
     "minify": { "enabled": true },
     "sourceMap": true
+  },
+
+  // Markdown Deep
+  {
+    "outputFileName": "wwwroot/dist/mdd_help.htm",
+    "inputFiles": [
+      "Frontend/node_modules/markdowndeep/clientSide/mdd_help.htm"
+    ],
+    "minify": { "enabled": false },
+    "sourceMap": false
   },
 
   // Page bundles (grouped by Controller)
@@ -212,6 +222,8 @@
     "inputFiles": [
       "Frontend/node_modules/bootstrap-slider/dist/bootstrap-slider.min.js",
       "Frontend/js/init/bootstrap-slider-knockout-binding.js",
+      "Frontend/node_modules/knockout.validation/dist/knockout.validation.min.js",
+      "Frontend/js/pages/Biobank/ko.bindingHandlers.dataTable.js",
       "Frontend/js/pages/Biobank/collection-sample-sets.js"
     ],
     "minify": { "enabled": true },

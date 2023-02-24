@@ -18,11 +18,11 @@
   @Html.AntiForgeryToken()
   @Html.HiddenFor(x => x.Id)
   
-  <partial name = "_CapabilitySharedFields" model = Model />
+  @await Html.PartialAsync("_CapabilitySharedFields", Model)
 
   <div class="form-group">
     <div class="col-sm-10 col-sm-offset-2 text-center">
-      @Html.ActionLink("Cancel", "Capability", new { id = Model.Id }, new { @class = "btn btn-default" })
+      @Html.ActionLink("Cancel", "Capability", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-default" })
       <button type="submit" class="btn btn-primary">Update capability</button>
     </div>
   </div>

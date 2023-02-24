@@ -26,4 +26,7 @@
     }
 </div>
 
-<partial name = "~/Views/Term/Index.cshtml" model ="@Model" />
+@* Wraps around rendered page content to stop contents spilling over *@
+<div class="container">
+  @await Html.PartialAsync("~/Views/Home/Index.cshtml", Model)
+</div>

@@ -5,7 +5,7 @@
     ViewBag.Title = "Term Page Config";
 }
 
-<partial name="_ADACTabs" model="Term Page Config"/>
+@await Html.PartialAsync("_ADACTabs", "Term Page Config")
 
 <h3>
     Term Page Configuration
@@ -35,8 +35,8 @@
     </div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/markdowndeep") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+}
+

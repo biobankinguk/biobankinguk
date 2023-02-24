@@ -1,4 +1,4 @@
-@inject IOptions<SitePropertiesOptions> _options;
+@inject IOptions<AnnualStatisticsOptions> _annualStatisticsOptions;
 
 @using Biobanks.Submissions.Api.Config
 @using Microsoft.Extensions.Options
@@ -7,7 +7,7 @@
     ViewBag.Title = "Annual Stats";
 }
 
-<partial name = "_BiobankTabs" model ="Annual Stats" />
+@await Html.PartialAsync("_BiobankTabs", "Annual Stats")
 
 <h3>
     @ViewBag.Title
@@ -43,7 +43,7 @@
             </thead>
 
             <tbody>
-                @for (var year = int.Parse(_options.Value.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
+                @for (var year = int.Parse(_annualStatisticsOptions.Value.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
                 {
                     <tr>
                         <td>@year</td>
@@ -67,7 +67,7 @@
 @section FooterScripts
 {
     <script type="text/javascript">
-        var annualStatUpdateUrl = "@Url.Action("UpdateAnnualStatAjax")";
+        var annualStatUpdateUrl = "@Url.Action("UpdateAnnualStatAjax", new { biobankId = Model.BiobankId})";
     </script>
     
     <script src="~/dist/js/Biobank/annualstats.min.js" asp-append-version="true"></script>

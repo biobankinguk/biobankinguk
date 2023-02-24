@@ -135,7 +135,14 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         /// List all untracked, accepted Organisation Registration Requests
         /// </summary>
         /// <returns>Enumerable of all accepted registration requests</returns>
-        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests();
+        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequests();        
+        
+        /// <summary>
+        /// List all untracked, accepted Organisation Registration Requests for a given user
+        /// </summary>
+        /// <param name="userId">The Id of the user</param>
+        /// <returns>Enumerable of all accepted <see cref="OrganisationRegisterRequest"/> for a given user</returns>
+        Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequestsByUserId(string userId);
 
         /// <summary>
         /// List all untracked, open Organisation Registration Requests

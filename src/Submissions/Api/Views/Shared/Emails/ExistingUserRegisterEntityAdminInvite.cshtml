@@ -1,23 +1,20 @@
 @using Biobanks.Submissions.Api.Models.Emails
 @inject IOptions<SitePropertiesOptions> _config
-@inject IHostEnvironment HostEnvironment
 @model ExistingUserRegisterEntityAdminInviteModel
 
 @{
 	var directoryName = @_config.Value.ServiceName;
-    var emailSignature = @_config.Value.EmailSignature;
+  var emailSignature = @_config.Value.EmailSignature;
 
 	// Format Email Subject
-ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName} {ViewBag.Entity} Administration"
-		: $"{directoryName} {ViewBag.Entity} Administration (Environment: {HostEnvironment.EnvironmentName})";
+  ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Administration";
 }
 
 Dear @Html.Raw(Model!.name)
 
 You've been invited to become an admin for @Html.Raw(Model.entity) at the @directoryName.
 
-<a hreft="@Html.Raw(Model.link)">Click this link complete to login </a> 
+<a href="@Html.Raw(Model.link)">Click this link complete to login </a> 
 
 Regards,
 @emailSignature

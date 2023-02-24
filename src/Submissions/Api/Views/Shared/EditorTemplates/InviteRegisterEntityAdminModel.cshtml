@@ -1,0 +1,25 @@
+@model Biobanks.Submissions.Api.Models.Shared.InviteRegisterEntityAdminModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(model => model.Entity)
+
+@{
+    //format the form differently if it's in use in a modal vs on a page
+    var labelWidth = (bool?)ViewData["Modal"] ?? false ? "col-sm-3" : "col-sm-2";
+    var fieldWidth = (bool?)ViewData["Modal"] ?? false ? "col-sm-6" : "col-sm-4";
+}
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Name, new {@class = @labelWidth + " control-label required"})
+    <div class="@fieldWidth">
+        @Html.TextBoxFor(x => x.Name, new {@class = "form-control", placeholder = "Name"})
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Email, new { @class = @labelWidth + " control-label required" })
+    <div class="@fieldWidth">
+        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Email" })
+    </div>
+</div>

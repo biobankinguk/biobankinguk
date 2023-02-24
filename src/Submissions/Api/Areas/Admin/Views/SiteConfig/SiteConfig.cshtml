@@ -7,7 +7,7 @@
 	ViewBag.Title = "Site Config";
 }
 
-<partial name="_ADACTabs" model="Site Config"/>
+@await Html.PartialAsync("_ADACTabs", "Site Config")
 
 <h3>Site Configuration
 	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
@@ -35,26 +35,26 @@
 							<td>@config.Description</td>
 							<td>
 								@switch (config.Key)
-                                {
-                                    // Checkbox boolean 
-                                    case ConfigKey.TrustBiobanks:
-                                    case ConfigKey.EnableDataSharing:
-                                    case ConfigKey.ShowCounties:
-                                    case ConfigKey.ShowPreservationPercentage:
-                                    case ConfigKey.DisplayLiveChat:
-                                    case ConfigKey.FundersFreeText:
-                                    case ConfigKey.DisplayAnalytics:
-                                    case ConfigKey.DisplayPublications:
-                                    case ConfigKey.ContactThirdParty:
+                {
+                  // Checkbox boolean 
+                  case ConfigKey.TrustBiobanks:
+                  case ConfigKey.EnableDataSharing:
+                  case ConfigKey.ShowCounties:
+                  case ConfigKey.ShowPreservationPercentage:
+                  case ConfigKey.DisplayLiveChat:
+                  case ConfigKey.FundersFreeText:
+                  case ConfigKey.DisplayAnalytics:
+                  case ConfigKey.DisplayPublications:
+                  case ConfigKey.ContactThirdParty:
 									case ConfigKey.DisplaySubmissions:
+									case ConfigKey.CollectionsNotes:
+                    <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "")/> break;
 
-										<input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "")/> break;
-
-                                    // Default free text
+                  // Default free text
 									case ConfigKey.DonorCountName:
 									case ConfigKey.MacroscopicAssessmentName:
-                                    case ConfigKey.StorageTemperatureName:
-                                    default:
+                  case ConfigKey.StorageTemperatureName:
+                  default:
 										<input type="text" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") /> break;
 								}
 							</td>
@@ -67,10 +67,7 @@
 	</div>
 </div>
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@* 	@Scripts.Render("~/bundles/knockout") *@
-@* 	@Scripts.Render("~/bundles/datatables") *@
-@* 	@Scripts.Render("~/bundles/adac/site-config") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/site-config.min.js" asp-append-version="true"></script>
+}

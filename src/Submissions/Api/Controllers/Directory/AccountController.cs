@@ -6,10 +6,8 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -22,34 +20,22 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
     {
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly INetworkService _networkService;
-        private readonly IOrganisationDirectoryService _organisationService;
-
         private readonly IEmailService _emailService;
         private readonly ITokenLoggingService _tokenLog;
         private readonly SitePropertiesOptions _siteConfig;
-        private readonly ActionContext _actionContext;
 
-    public AccountController(
-            INetworkService networkService,
-            IOrganisationDirectoryService organisationService,
+        public AccountController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IEmailService emailService,
             ITokenLoggingService tokenLog,
-            IOptions<SitePropertiesOptions> siteConfigOptions,
-            IActionContextAccessor actionContextAccessor
-            )
+            IOptions<SitePropertiesOptions> siteConfigOptions
+        )
         {
-            _networkService = networkService;
-            _organisationService = organisationService;
-
             _signinManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
             _tokenLog = tokenLog;
-            _actionContext = actionContextAccessor.ActionContext
-              ?? throw new InvalidOperationException("Failed to get the ActionContext");
             _siteConfig = siteConfigOptions.Value;
         }
 
@@ -79,10 +65,12 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                   if (user is null)
                     throw new InvalidOperationException(
                     $"Successfully signed in user could not be retrieved! User Email: {model.Email}");
-  
-                //await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId()); 
 
-                return RedirectToAction("Index", "Home");
+                  // Update users last login
+                  user.LastLogin = DateTime.UtcNow;
+                  await _userManager.UpdateAsync(user);
+
+                  return RedirectToAction("Index", "Home");
                 }
 
                 else if (result.IsLockedOut)
@@ -137,7 +125,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         #endregion
-
 
         #region Account Confirmation
 
@@ -214,16 +201,16 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             await _tokenLog.EmailTokenIssued(confirmToken, user.Id);
 
-      await _emailService.ResendAccountConfirmation(
-           new EmailAddress(user.Email),
-          user.Name,
-          Url.Action("Confirm", "Account",
-              new
-              {
-                userId = user.Id,
-                token = confirmToken
-              },
-        Request.GetEncodedUrl()));
+            await _emailService.ResendAccountConfirmation(
+                new EmailAddress(user.Email),
+                user.Name,
+                Url.Action("Confirm", "Account", 
+                  new 
+                  {
+                      userId = user.Id,
+                      token = confirmToken
+                  },
+                  Request.Scheme));
 
             this.SetTemporaryFeedbackMessage(
                 onBehalf
@@ -238,8 +225,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
         }
 
         #endregion
-
-
+        
         #region Password Management
 
         [AllowAnonymous]
@@ -342,7 +328,7 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
 
             if (signInStatus.Succeeded)
             {
-                return RedirectToAction("LoginRedirect");
+                return RedirectToAction("Index", "Home");
             }
             else if (signInStatus.IsLockedOut)
             {
@@ -383,92 +369,11 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             return RedirectToAction("Index", "Home");
         }
 
-    #endregion
+        #endregion
+    
+        #region Account details
 
-    //TODO: 94708 Fix Login Redirect, once session is replaced 
-  /*  public async Task<ActionResult> LoginRedirect(string returnUrl = null)
-    {
-      //This is an action, so that it's a separate request and the user identity cookie has roles and claims available :)
-      //do we need them to create a profile for an associated org or network etc?
-
-      // Start by updating user's last login time
-      await _userManager.UpdateLastLogin(CurrentUser.Identity.GetUserId());
-
-      //Biobank
-
-      //get all accepted biobanks
-      var biobankRequests = await _organisationService.ListAcceptedRegistrationRequests();
-      var firstAcceptedBiobabankRequest = biobankRequests.FirstOrDefault(x => x.UserName == CurrentUser.Name && x.UserEmail == CurrentUser.Email);
-
-      // if there is an unregistered biobank to finish registering, go there
-      if (firstAcceptedBiobabankRequest != null)
-      {
-        Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewBiobank;
-        Session[SessionKeys.ActiveOrganisationId] = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId;
-        Session[SessionKeys.ActiveOrganisationName] = firstAcceptedBiobabankRequest.OrganisationName;
-
-        return RedirectToAction("SwitchToBiobank", new { id = firstAcceptedBiobabankRequest.OrganisationRegisterRequestId, newBiobank = true });
-      }
-
-      //get all accepted networks
-      var networkRequests = await _networkService.ListAcceptedRegistrationRequests();
-      var firstAcceptedNetworkRequest = networkRequests.FirstOrDefault(x => x.UserName == CurrentUser.Identity.GetUserName() && x.UserEmail == CurrentUser.Email);
-
-      // if there is an unregistered network to finish registering, go there
-      if (firstAcceptedNetworkRequest != null)
-      {
-        Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.NewNetwork;
-        Session[SessionKeys.ActiveOrganisationId] = firstAcceptedNetworkRequest.NetworkRegisterRequestId;
-        Session[SessionKeys.ActiveOrganisationName] = firstAcceptedNetworkRequest.NetworkName;
-
-        return RedirectToAction("SwitchToNetwork", new { id = firstAcceptedNetworkRequest.NetworkRegisterRequestId, newNetwork = true });
-      }
-
-      //ADAC
-      if (CurrentUser.IsInRole(Role.ADAC.ToString()))
-        return RedirectToAction("Index", "ADAC");
-
-      // if they have more than one claim, there's no obvious place to send them
-      if (CurrentUser.Biobanks.Count() + CurrentUser.Networks.Count() != 1)
-        return RedirectToAction("Index", "Home");
-
-      //to returnUrl if appropriate, or a default route otherwise
-      if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
-
-      // Biobank admin only
-      if (CurrentUser.IsInRole(Role.BiobankAdmin.ToString()))
-      {
-        var biobank = CurrentUser.Biobanks.FirstOrDefault();
-
-        if (!biobank.Equals(default(KeyValuePair<int, string>)))
-        {
-          Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Biobank;
-          Session[SessionKeys.ActiveOrganisationId] = biobank.Key;
-          Session[SessionKeys.ActiveOrganisationName] = biobank.Value;
-          return RedirectToAction("Collections", "Biobank");
-        }
-      }
-
-      // Network admin only
-      if (CurrentUser.IsInRole(Role.NetworkAdmin.ToString()))
-      {
-        var network = CurrentUser.Networks.FirstOrDefault();
-
-        if (!network.Equals(default(KeyValuePair<int, string>)))
-        {
-          Session[SessionKeys.ActiveOrganisationType] = ActiveOrganisationType.Network;
-          Session[SessionKeys.ActiveOrganisationId] = network.Key;
-          Session[SessionKeys.ActiveOrganisationName] = network.Value;
-          return RedirectToAction("Biobanks", "Network");
-        }
-      }
-
-      //or if no role-specific default
-      return RedirectToAction("Index", "Home");
-    }*/
-    #region Account details
-
-    public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index()
         {
             return View(await GetAccountDetailsModelAsync());
         }
@@ -511,6 +416,18 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             };
         }
 
+        #endregion
+        
+        #region Session Management
+        
+        public JsonResult KeepSessionAliveAjax()
+        {
+            return Json(new
+            {
+                success = true
+            });
+        }
+        
         #endregion
 
     }

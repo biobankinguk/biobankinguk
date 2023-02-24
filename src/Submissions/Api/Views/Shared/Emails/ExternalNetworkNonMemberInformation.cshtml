@@ -1,10 +1,4 @@
 ﻿@inject IOptions<SitePropertiesOptions> _config
-@inject IHostEnvironment HostEnvironment
-@using Biobanks.Submissions.Api.Config
-@using Biobanks.Submissions.Api.Models.Emails
-@using Microsoft.Extensions.Hosting
-@using Microsoft.Extensions.Options
-
 
 @{
 	var directoryName = @_config.Value.ServiceName;
@@ -13,9 +7,7 @@
 	var legalEntity = @_config.Value.LegalEntity;
 
 	// Format Email Subject
-	ViewBag.Subject = HostEnvironment.IsDevelopment()
-		? $"{directoryName} Contact List"
-		: $"{directoryName} Contact List (Environment: {HostEnvironment.EnvironmentName})";
+  ViewBag.Subject = $"{directoryName} Contact List";
 }
 
 

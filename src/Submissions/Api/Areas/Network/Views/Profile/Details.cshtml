@@ -4,9 +4,9 @@
     ViewBag.Title = "Network details";
 }
 
-<partial name= "_NetworkTabs" model= "Details"></partial>
+@await Html.PartialAsync("_NetworkTabs", "Details")
 
-<h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { @class = "btn btn-primary pull-right" })</h3>
+<h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { networkId = Model.NetworkId, @class = "btn btn-primary pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">
@@ -29,7 +29,7 @@
 
                 <dt class="form-group">@Html.DisplayNameFor(x => x.Logo)</dt>
                 <dd class="padded-logo">
-                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new {logoName = Model.LogoName})"/>
+                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new { Area = "", logoName = Model.LogoName })"/>
                 </dd>
             }
 

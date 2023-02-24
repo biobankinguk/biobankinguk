@@ -87,7 +87,7 @@
     <NavNode key="AdminRequests" text="Requests" controller="Requests" area="Admin" action="Index"/>
     <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
     <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
-     <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Biobanks"/> 
+    <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Index"/> 
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="Networks" area="Admin" action="Index"/>
     <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index"/>

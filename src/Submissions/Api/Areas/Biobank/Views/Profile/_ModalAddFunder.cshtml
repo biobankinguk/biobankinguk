@@ -29,7 +29,7 @@
         </div>
 
         <form id="modalAddBiobankFunderForm"
-              data-action="@Url.Action("AddFunderAjax")"
+              data-action="@Url.Action("AddFunderAjax", new {id = Model.BiobankId})"
               data-success-redirect="@Url.Action("AddFunderSuccess")"
               class="form-horizontal">
             

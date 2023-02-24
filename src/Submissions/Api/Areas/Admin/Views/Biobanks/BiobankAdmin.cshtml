@@ -4,7 +4,7 @@
     ViewBag.Title = "Biobank Admin";
 }
 
-<partial name= "_ADACTabs" model= "Biobanks"/>
+@await Html.PartialAsync("_ADACTabs", "Biobanks")
 
 
 <h1>@Model.Name @Html.ActionLink("Delete", "DeleteBiobank", "Biobanks", new { id = @Model.BiobankId }, new { @class = "btn btn-danger" })</h1>
@@ -98,6 +98,7 @@
                                         "ResendConfirmLink", "Account",
                                         new
                                         {
+                                            Area = "",
                                             userEmail = admin.UserEmail,
                                             onBehalf = true,
                                             returnUrl = @Context.Request.GetEncodedUrl()

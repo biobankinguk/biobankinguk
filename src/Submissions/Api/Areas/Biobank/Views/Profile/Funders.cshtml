@@ -5,7 +5,7 @@
     ViewBag.Title = "Funders";
 }
 
-<partial name = "_BiobankTabs" model ="Funders" />
+@await Html.PartialAsync("_BiobankTabs", "Funders")
 
 <h3>Funders <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalAddBiobankFunder" data-bind="click: openAddFunderDialog">Add new funder</a></h3>
 
@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             <div class="pull-right">
-                                <a href="@Url.Action("DeleteFunder", new {funderId = funder.FunderId, funderName = funder.Name})"
+                                <a href="@Url.Action("DeleteFunder", new {biobankId = Model.BiobankId, funderId = funder.FunderId, funderName = funder.Name})"
                                    class="confirm-delete"
                                    data-funder-name="@funder.Name">
                                     <span class="fa fa-trash labelled-icon"></span>Delete

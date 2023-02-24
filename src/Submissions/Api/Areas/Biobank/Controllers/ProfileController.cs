@@ -10,7 +10,6 @@ using Biobanks.Data.Transforms.Url;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
 using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
 using Biobanks.Submissions.Api.Auth;
@@ -27,23 +26,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BiobankPublicationModel = Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankPublicationModel;
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
 public class ProfileController : Controller
 {
-    private IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
+    private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
     private readonly IBiobankService _biobankService;
     private readonly IBiobankWriteService _biobankWriteService;
     private readonly IConfigService _configService;
-    private IReferenceDataCrudService<County> _countyService;
-    private IReferenceDataCrudService<Country> _countryService;
+    private readonly IReferenceDataCrudService<County> _countyService;
+    private readonly IReferenceDataCrudService<Country> _countryService;
     private readonly IReferenceDataCrudService<Funder> _funderService;
     private readonly IMapper _mapper;
     private readonly INetworkService _networkService;
@@ -51,7 +51,8 @@ public class ProfileController : Controller
     private readonly IPublicationService _publicationService;
     private readonly IReferenceDataCrudService<RegistrationReason> _registrationReasonService;
     private readonly IReferenceDataCrudService<ServiceOffering> _serviceOfferingService;
-    private readonly SitePropertiesOptions _siteConfig;
+    private readonly AnnualStatisticsOptions _annualStatisticsConfig;
+    private readonly PublicationsOptions _publicationsConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public ProfileController(
@@ -68,7 +69,8 @@ public class ProfileController : Controller
         IPublicationService publicationService,
         IReferenceDataCrudService<RegistrationReason> registrationReasonService,
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
-        IOptions<SitePropertiesOptions> siteConfig,
+        IOptions<AnnualStatisticsOptions> annualStatisticsOptions,
+        IOptions<PublicationsOptions> publicationsOptions,
         UserManager<ApplicationUser> userManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
@@ -84,13 +86,14 @@ public class ProfileController : Controller
         _publicationService = publicationService;
         _registrationReasonService = registrationReasonService;
         _serviceOfferingService = serviceOfferingService;
-        _siteConfig = siteConfig.Value;
+        _annualStatisticsConfig = annualStatisticsOptions.Value;
+        _publicationsConfig = publicationsOptions.Value;
         _userManager = userManager;
     }
     
     #region Details
-
-    [Authorize(CustomClaimType.Biobank)]
+    
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Index(int biobankId)
     {
         var model = await GetBiobankDetailsModelAsync(biobankId);
@@ -218,9 +221,21 @@ public class ProfileController : Controller
             this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                 FeedbackMessageType.Info);
 
-        return biobankId == 0
-          ? View(await NewBiobankDetailsModelAsync(biobankId)) //no biobank id means we're dealing with a request
-          : View(await GetBiobankDetailsModelAsync(biobankId)); //biobank id means we're dealing with an existing biobank
+        var org = await _organisationService.Get(biobankId);
+
+        // no biobank means we're dealing with a request
+        if (org is null)
+        {
+          var model = await NewBiobankDetailsModelAsync(biobankId);
+          
+          // Reset the biobankId in the model state so the form does not populate it.
+          // Ensures a new biobank is created.
+          ModelState.SetModelValue("biobankId", new ValueProviderResult());
+          return View(model);
+        }
+
+        // biobank id means we're dealing with an existing biobank
+        return View(await GetBiobankDetailsModelAsync(biobankId)); 
     }
 
     private async Task<BiobankDetailsModel> AddCountiesToModel(BiobankDetailsModel model)
@@ -342,7 +357,7 @@ public class ProfileController : Controller
         this.SetTemporaryFeedbackMessage(sampleResource + " details updated!", FeedbackMessageType.Success);
 
         //Back to the profile to view your saved changes
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { biobankId = biobank.OrganisationId } );
     }
 
     private async Task<List<OrganisationServiceModel>> GetAllServicesAsync()
@@ -520,7 +535,7 @@ public class ProfileController : Controller
 
     #region Funders
 
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Funders(int biobankId)
     {
         if (biobankId == 0)
@@ -545,14 +560,14 @@ public class ProfileController : Controller
         //timeStamp can be used to avoid caching issues, notably on IE
         => Json(await GetFundersAsync(biobankId));
     
-    public ActionResult AddFunderSuccess(string name)
+    public ActionResult AddFunderSuccess(int biobankId, string name)
     {
         //This action solely exists so we can set a feedback message
     
         this.SetTemporaryFeedbackMessage($"{name} has been successfully added to your list of funders!",
             FeedbackMessageType.Success);
     
-        return RedirectToAction("Funders");
+        return RedirectToAction("Funders", new { biobankId = biobankId });
     }
     
     public async Task<ActionResult> AddFunderAjax(int biobankId)
@@ -567,10 +582,10 @@ public class ProfileController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> AddFunderAjax(AddFunderModel model, int biobankId)
+    public async Task<ActionResult> AddFunderAjax(int biobankId, AddFunderModel model)
     {
         if (!ModelState.IsValid)
-            return Json(new
+            return BadRequest(new
             {
                 success = false,
                 errors = ModelState.Values
@@ -598,7 +613,7 @@ public class ProfileController : Controller
             {
                 ModelState.AddModelError("", "We couldn't find any funders with the name you entered.");
     
-                return Json(new
+                return BadRequest(new
                 {
                     success = false,
                     errors = ModelState.Values
@@ -621,8 +636,8 @@ public class ProfileController : Controller
         });
     }
     
-    [Authorize( CustomClaimType.Biobank)]
-    public async Task<ActionResult> DeleteFunder(int funderId, string funderName, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> DeleteFunder(int biobankId, int funderId, string funderName)
     {
         if (biobankId == 0)
             return RedirectToAction("Index", "Home");
@@ -632,10 +647,10 @@ public class ProfileController : Controller
     
         this.SetTemporaryFeedbackMessage($"{funderName} has been removed from your list of funders!", FeedbackMessageType.Success);
     
-        return RedirectToAction("Funders");
+        return RedirectToAction("Funders", new { biobankId = biobankId });
     }
     
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public async Task<ActionResult> SearchFunders(string wildcard)
     {
         var funders = await _funderService.List(wildcard);
@@ -655,7 +670,7 @@ public class ProfileController : Controller
     #region Publications
     
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Publications(int biobankId)
     {
         //If turned off in site config
@@ -667,7 +682,7 @@ public class ProfileController : Controller
 
 
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> GetPublicationsAjax(int biobankId)
     {
         //If turned off in site config
@@ -691,7 +706,7 @@ public class ProfileController : Controller
     {
         // Find Given Publication
         var publications = await _publicationService.ListByOrganisation(biobankId);
-        var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+        var publication = publications.FirstOrDefault(x => x.PublicationId == publicationId);
 
         //retrieve from EPMC if not found
         if (publication == null)
@@ -699,7 +714,7 @@ public class ProfileController : Controller
             try
             {
                 using var client = new HttpClient();
-                var buildUrl = new UriBuilder(await _configService.GetSiteConfigValue(_siteConfig.EpmcApiUrl))
+                var buildUrl = new UriBuilder(_publicationsConfig.EpmcApiUrl)
                
                 {
                     Query = $"query=ext_id:{publicationId} AND SRC:MED" +
@@ -728,8 +743,8 @@ public class ProfileController : Controller
     }
 
     [HttpGet]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> RetrievePublicationsAjax(string publicationId, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> RetrievePublicationsAjax(int biobankId, string publicationId)
     {
         
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
@@ -738,7 +753,7 @@ public class ProfileController : Controller
         {
             // Find Publication locally
             var publications = await _publicationService.ListByOrganisation(biobankId);
-            var publication = publications.Where(x => x.PublicationId == publicationId).FirstOrDefault();
+            var publication = publications.FirstOrDefault(x => x.PublicationId == publicationId);
 
             // search online
             if (publication == null)
@@ -751,8 +766,8 @@ public class ProfileController : Controller
     }
 
     [HttpPost]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> AddPublicationAjax(string publicationId, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> AddPublicationAjax(int biobankId, string publicationId)
     {
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
             return Ok(new EmptyResult());
@@ -780,8 +795,8 @@ public class ProfileController : Controller
     }
 
     [HttpPost]
-    [Authorize(CustomClaimType.Biobank)]
-    public async Task<ActionResult> ClaimPublicationAjax(string publicationId, bool accept, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> ClaimPublicationAjax(int biobankId, string publicationId, bool accept)
     {
         if (biobankId == 0 || string.IsNullOrEmpty(publicationId))
             return Ok(new EmptyResult());
@@ -792,10 +807,10 @@ public class ProfileController : Controller
         return Ok(_mapper.Map<BiobankPublicationModel>(publication));
     }
 
-    public ActionResult AddPublicationSuccessFeedback(string publicationId)
+    public ActionResult AddPublicationSuccessFeedback(int biobankId, string publicationId)
     {
         this.SetTemporaryFeedbackMessage($"The publication with PubMed ID \"{publicationId}\" has been added successfully.", FeedbackMessageType.Success);
-        return Redirect("Publications");
+        return RedirectToAction("Publications", new { biobankId = biobankId });
     }
     
     #endregion
@@ -803,20 +818,23 @@ public class ProfileController : Controller
     #region Annual Stats
 
     [HttpGet]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> AnnualStats(int biobankId)
         => View(new BiobankAnnualStatsModel
         {
             AnnualStatisticGroups = await _annualStatisticGroupService.List(),
-            BiobankAnnualStatistics = (await _organisationService.Get(biobankId)).OrganisationAnnualStatistics
+            BiobankAnnualStatistics = (await _organisationService.Get(biobankId)).OrganisationAnnualStatistics,
+            BiobankId = biobankId
         });
 
     [HttpPost]
-    public async Task<JsonResult> UpdateAnnualStatAjax(AnnualStatModel model, int biobankId)
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<JsonResult> UpdateAnnualStatAjax(int biobankId, AnnualStatModel model)
     {
         if (model.Year > DateTime.Now.Year)
             ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
 
-        var annualStatsStartYear = int.Parse(_siteConfig.AnnualStatsStartYear);
+        var annualStatsStartYear = int.Parse(_annualStatisticsConfig.AnnualStatsStartYear);
         if (model.Year < annualStatsStartYear)
             ModelState.AddModelError("", $"Year value for annual stat cannot be earlier than {annualStatsStartYear}");
 

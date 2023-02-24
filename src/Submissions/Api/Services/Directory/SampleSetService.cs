@@ -98,22 +98,22 @@ public class SampleSetService : ISampleSetService
       await _indexService.UpdateSampleSetDetails(sampleSet.Id);
     }
   }
+  
   public async Task DeleteSampleSetAsync(int id)
   {
     //we need to check if the sampleset belongs to a suspended bb, BEFORE we delete the sampleset
     var sampleSet = await _context.SampleSets.Where(x=> x.Id == id).SingleOrDefaultAsync();
-    var collection = await _context.Collections.Where(x => x.CollectionId == id).SingleOrDefaultAsync();
+    var collection = await _context.Collections.Where(x => x.CollectionId == sampleSet.CollectionId).SingleOrDefaultAsync();
     var suspended = await _organisationService.IsSuspended(collection.OrganisationId);
 
     //delete materialdetails to avoid orphaned data or integrity errors
     var materialEntity = await _context.MaterialDetails
-      .AsNoTracking()
       .FirstOrDefaultAsync(x => x.SampleSetId == id);
 
-    _context.MaterialDetails.Remove(materialEntity);
+    if(materialEntity != null)
+      _context.MaterialDetails.Remove(materialEntity);
 
     var sampleEntity = await _context.SampleSets
-      .AsNoTracking()
       .FirstOrDefaultAsync(x => x.Id == id);
 
     _context.SampleSets.Remove(sampleEntity);
@@ -123,6 +123,7 @@ public class SampleSetService : ISampleSetService
     if (!suspended)
       _indexService.DeleteSampleSet(id);
   }
+  
   public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
      IEnumerable<int> sampleSetIds)
   {
@@ -143,10 +144,14 @@ public class SampleSetService : ISampleSetService
         .Include(x => x.Sex)
         .Include(x => x.MaterialDetails)
         .Include(x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
-        .Include(x => x.MaterialDetails.Select(y => y.CollectionPercentage))
-        .Include(x => x.MaterialDetails.Select(y => y.MacroscopicAssessment))
-        .Include(x => x.MaterialDetails.Select(y => y.MaterialType))
-        .Include(x => x.MaterialDetails.Select(y => y.StorageTemperature))
+        .Include(x => x.MaterialDetails)
+            .ThenInclude(y => y.CollectionPercentage)
+        .Include(x => x.MaterialDetails)
+            .ThenInclude(y => y.MacroscopicAssessment)
+        .Include(x => x.MaterialDetails)
+            .ThenInclude(y => y.MaterialType)
+        .Include(x => x.MaterialDetails)
+            .ThenInclude(y => y.StorageTemperature)
         .Include(x => x.Collection.Organisation.Country)
         .Include(x => x.Collection.Organisation.County)
         .FirstOrDefaultAsync();
@@ -174,11 +179,17 @@ public class SampleSetService : ISampleSetService
             .Include(x => x.AgeRange)
             .Include(x => x.DonorCount)
             .Include(x => x.MaterialDetails)
-            .Include(x => x.MaterialDetails.Select(y => y.CollectionPercentage))
-            .Include(x => x.MaterialDetails.Select(y => y.MacroscopicAssessment))
-            .Include(x => x.MaterialDetails.Select(y => y.MaterialType))
-            .Include(x => x.MaterialDetails.Select(y => y.StorageTemperature))
-            .Include(x => x.MaterialDetails.Select(y => y.ExtractionProcedure))
+                .ThenInclude(y => y.CollectionPercentage)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(y => y.MacroscopicAssessment)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(y => y.MaterialType)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(y => y.StorageTemperature)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(y => y.ExtractionProcedure)
+            .Include(x => x.MaterialDetails)
+                .ThenInclude(x => x.PreservationType)
             .FirstOrDefaultAsync()
   );
 }

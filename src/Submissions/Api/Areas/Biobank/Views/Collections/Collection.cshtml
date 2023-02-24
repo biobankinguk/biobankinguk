@@ -9,19 +9,22 @@
 <h2>
     @ViewBag.Title
     @using (
-        Html.BeginForm("DeleteCollection", "Collections", FormMethod.Post, new
+        Html.BeginForm("DeleteCollection", "Collections",
+          new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id },
+          FormMethod.Post, null,
+          new
         {
             @class = "pull-right",
             id = "DeleteCollection"
         }))
     {
-        @Html.ActionLink("Copy", "CopyCollection", new { Model.Id }, new { @class = "btn btn-success" })
+        @Html.ActionLink("Copy", "CopyCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-success" })
         @Html.Raw("&nbsp;")
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("model", Model)
 
-        @Html.ActionLink("Edit", "EditCollection", new { Model.Id }, new { @class = "btn btn-primary" });
+        @Html.ActionLink("Edit", "EditCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-primary" });
 
         <button @(Model.FromApi)
                 type="submit"
@@ -119,7 +122,7 @@
 						<td>
 							<div class="alert alert-info">
 								There are no associated data in this collection yet.
-								@Html.ActionLink("Edit the collection now.", "EditCollection", new { Model.Id })
+								@Html.ActionLink("Edit the collection now.", "EditCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id })
 							</div>
 						</td>
 					</tr>
@@ -135,7 +138,7 @@
 			Sample sets
 			@if (Model.FromApi == false)
 			{
-				@Html.ActionLink("Add sample set", "AddSampleSet", new { Model.Id }, new { @class = "btn btn-success pull-right" })
+				@Html.ActionLink("Add sample set", "AddSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id }, new { @class = "btn btn-success pull-right" })
 			}
 		</h3>
 		<br />
@@ -156,7 +159,7 @@
 					@foreach (var sampleSet in Model.SampleSets)
 					{
 						<tr class="clickable-row"
-							data-href="@Url.Action("SampleSet", new {@sampleSet.Id})">
+							data-href="@Url.Action("SampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], @sampleSet.Id})">
 							<td>@sampleSet.Sex</td>
 							<td>@sampleSet.Age</td>
 							<td>@sampleSet.MaterialTypes</td>
@@ -175,17 +178,15 @@
 				There are no sample sets in this collection yet.
 				@if (Model.FromApi == false)
 				{
-					@Html.ActionLink("Add a sample set now.", "AddSampleSet", new { Model.Id })
+					@Html.ActionLink("Add a sample set now.", "AddSampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], Model.Id })
 				}
 			</div>
 		}
 	</div>
 </div>
 
-@*@section FooterScripts
+@section FooterScripts
 {
-	@Scripts.Render("~/bundles/bootbox")
-	@Scripts.Render("~/bundles/datatables")
-	@Scripts.Render("~/bundles/biobank/collection")
+    <script src="~/dist/js/Biobank/collection.min.js" asp-append-version="true"></script>
 }
-*@
+
