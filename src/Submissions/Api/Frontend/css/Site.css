@@ -667,12 +667,6 @@ ol.breadcrumb {
   margin-bottom: 0;
 }
 
-ul.breadcrumb {
-  padding: 6px 12px;
-  background: none;
-  margin-bottom: 0;
-}
-
 /* Stop green successful validation */
 .has-success .control-label,
 .has-success .radio,
