@@ -309,7 +309,7 @@ function submitEmail(e) {
     toggleButton($button, true);
 
     // Send POST Request
-    var url = "/Home/EmailContactListAjax";
+    var url = "/api/contact/EmailContactListAjax";
     var data = {
       ids: contactIds,
       email: emailAddress,
@@ -390,7 +390,7 @@ function ExternalSiteModalView(modalId) {
         .split(","),
     };
 
-    $.post("/Home/NotifyNetworkNonMembersOfHandoverAjax", ajaxData).done(
+    $.post("/api/contact/NotifyNetworkNonMembersOfHandoverAjax", ajaxData).done(
       function () {
         window.location.href = _this.$link.attr("href");
       }
