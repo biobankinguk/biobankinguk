@@ -1,43 +1,42 @@
-using AutoMapper;
-using Biobanks.Search.Legacy;
-using Biobanks.Shared.Services.Contracts;
-using Biobanks.Submissions.Api.Models.SuperUser;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Biobanks.Data.Transforms.Url;
+using Biobanks.Search.Legacy;
+using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Models.SuperUser;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Web.Controllers
+namespace Biobanks.Submissions.Api.Controllers.Directory
 {
 
-  //[UserAuthorize(Roles = "SuperUser")] TODO: Roles
+  [Authorize(nameof(AuthPolicies.IsSuperUser))]
   public class SuperUserController : Controller
   {
-    private readonly IOrganisationService _organisationService;
+    private readonly IOrganisationDirectoryService _organisationService;
     private readonly ISampleSetService _sampleSetService;
     private readonly ICapabilityService _capabilityService;
     private readonly IBiobankIndexService _indexService;
     private readonly ISearchProvider _searchProvider;
-    private readonly IMapper _mapper;
 
     public SuperUserController(
-        IOrganisationService organisationService,
+        IOrganisationDirectoryService organisationService,
         ISampleSetService sampleSetService,
         ICapabilityService capabilityService,
         IBiobankIndexService indexService,
-        ISearchProvider searchProvider,
-        IMapper mapper)
+        ISearchProvider searchProvider)
     {
       _organisationService = organisationService;
       _sampleSetService = sampleSetService;
       _capabilityService = capabilityService;
       _indexService = indexService;
       _searchProvider = searchProvider;
-      _mapper = mapper;
     }
 
     // GET: SuperUser
@@ -50,8 +49,31 @@ namespace Biobanks.Web.Controllers
     {
       return View();
     }
+    
+    public async Task<RedirectToActionResult> FixOrgURL()
+    {
+      try
+      {
+        var organisations = await _organisationService.List();
+                
+        foreach (var organisation in organisations)
+        {
+          // Update URL
+          organisation.Url = UrlTransformer.Transform(organisation.Url);
 
-    //TODO FixorgURL
+          await _organisationService.Update(organisation);
+        }
+                
+      }
+      catch (Exception e) when (e is HttpRequestException || e is DbUpdateException)
+      {
+        this.SetTemporaryFeedbackMessage($"The process failed to succesfully complete due to: {e.GetType().Name}.", FeedbackMessageType.Warning);
+        return RedirectToAction("Tools");
+      }
+
+      this.SetTemporaryFeedbackMessage("The process of fixing any broken organisation URLs has succesfully completed.", FeedbackMessageType.Success);
+      return RedirectToAction("Tools");
+    }
 
     [HttpGet]
     public async Task<ViewResult> SearchIndex()

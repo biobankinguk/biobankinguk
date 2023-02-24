@@ -32,14 +32,7 @@ public interface ICapabilityService
     /// </summary>
     /// <returns>The number of Capabilities.</returns>
     Task<int> GetSuspendedCapabilityCountAsync();
-
-    /// <summary>
-    /// Gets Capabilities that can be indexed.
-    /// Filters out suspended organisations.
-    /// </summary>
-    /// <param name="capabilityIds">A list of capability Ids to check</param>
-    /// <returns>A list of Capabilities.</returns>
-    Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
+    
 
     /// <summary>
     /// Gets Capabilities for deletion.
