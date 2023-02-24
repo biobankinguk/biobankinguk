@@ -665,17 +665,6 @@
     "sourceMap": true
   },
 
-  //Search
-  {
-    "outputFileName": "wwwroot/dist/js/search.min.js",
-    "inputFiles": [
-      "Frontend/js/init/search-diagnosis-type-ahead.js",
-      "Frontend/js/init/facet-groups.js"
-    ],
-    "minify": { "enabled": true },
-    "sourceMap": true
-  },
-
   // Term
   {
     "outputFileName": "wwwroot/dist/js/Term/diseasetable.min.js",
