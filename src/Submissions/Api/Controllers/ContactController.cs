@@ -12,10 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-  [Route("api/[controller]")]
+    [AllowAnonymous]
+    [Route("api/[controller]")]
     [ApiController]
     public class ContactController : ControllerBase
     {
@@ -43,7 +45,6 @@ namespace Biobanks.Submissions.Api.Controllers
 
 
         [HttpPost("EmailContactListAjax")]
-        
         public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
         {
             
@@ -58,7 +59,8 @@ namespace Biobanks.Submissions.Api.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpGet("BiobankContactDetailsAjax/{id}")]
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
@@ -67,7 +69,7 @@ namespace Biobanks.Submissions.Api.Controllers
             var displayNetworks = _memoryCache.Get(ConfigKey.ContactThirdParty);
             var networkHandoverModels = new List<NetworkHandoverModel>();
 
-            if ((bool)displayNetworks)
+            if (displayNetworks.ToString() == "true")
             {
                 var networks = (await _networkService.List()).Where(n => n.ContactHandoverEnabled);
 
