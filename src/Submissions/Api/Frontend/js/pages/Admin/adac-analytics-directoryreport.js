@@ -4,8 +4,6 @@ $(function () {
 
   //****** Overall Stats *******
 
-  console.log(plotlyAnalytics);
-
   //Total Number of Sessions
   var sessionData = [
     {
@@ -191,7 +189,6 @@ function perQuarterPlot(container, data, ylabel) {
       zeroline: false,
     },
   };
-  console.log(data);
   Plotly.newPlot(container, data, layout, config);
 }
 
