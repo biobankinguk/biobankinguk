@@ -36,7 +36,7 @@
             {
                 <dt class="form-group">@Html.DisplayNameFor(x => x.Logo)</dt>
                 <dd class="padded-logo">
-                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new {logoName = Model.LogoName})" />
+                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new {Area = "", logoName = Model.LogoName})" />
                 </dd>
             }
 
