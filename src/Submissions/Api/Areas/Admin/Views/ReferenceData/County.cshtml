@@ -36,7 +36,7 @@
 					var countryName = item.Key;
 					var counties = item.Value;
 
-					foreach (var county in counties)
+					foreach (var county in counties.Where(c => c.Name is not null))
 					{
 					<tr class="@(county.CountyUsageCount > 0 ? "info" : "")">
 						<td>@county.Name</td>
