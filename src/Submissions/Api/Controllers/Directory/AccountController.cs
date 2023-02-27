@@ -70,6 +70,9 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                   user.LastLogin = DateTime.UtcNow;
                   await _userManager.UpdateAsync(user);
 
+                  if (returnUrl is not null)
+                    return Redirect(returnUrl);
+
                   return RedirectToAction("Index", "Home");
                 }
 
