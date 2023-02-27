@@ -4,7 +4,6 @@ using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -27,8 +26,7 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly IEmailService _emailService; 
- 
- 
+        
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
@@ -56,8 +54,7 @@ namespace Biobanks.Submissions.Api.Controllers
 
             return Ok(model);
         }
-
-        [AllowAnonymous]
+        
         [HttpGet("BiobankContactDetailsAjax/{id}")]
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
