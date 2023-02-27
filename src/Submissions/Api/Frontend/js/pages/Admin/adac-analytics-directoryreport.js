@@ -1,14 +1,16 @@
-﻿$(function () {
+$(function () {
   // Turn on tooltips
   $('[data-toggle="tooltip"]').tooltip();
 
   //****** Overall Stats *******
 
+  console.log(plotlyAnalytics);
+
   //Total Number of Sessions
   var sessionData = [
     {
-      x: plotlyAnalytics.SessionStats.SessionNumberLabels,
-      y: plotlyAnalytics.SessionStats.SessionNumberCount,
+      x: plotlyAnalytics.sessionStats.sessionNumberLabels,
+      y: plotlyAnalytics.sessionStats.sessionNumberCount,
       name: "Total Number of Sessions",
     },
   ];
@@ -18,8 +20,8 @@
   //Average Bouncerate
   var bounceRateData = [
     {
-      x: plotlyAnalytics.SessionStats.AvgBounceRateLabels,
-      y: plotlyAnalytics.SessionStats.AvgBounceRateCount,
+      x: plotlyAnalytics.sessionStats.avgBounceRateLabels,
+      y: plotlyAnalytics.sessionStats.avgBounceRateCount,
       name: "Average Bouncerate",
     },
   ];
@@ -29,8 +31,8 @@
   //Average Ratio of New Sessions
   var newSessionData = [
     {
-      x: plotlyAnalytics.SessionStats.AvgNewSessionLabels,
-      y: plotlyAnalytics.SessionStats.AvgNewSessionCount,
+      x: plotlyAnalytics.sessionStats.avgNewSessionLabels,
+      y: plotlyAnalytics.sessionStats.avgNewSessionCount,
       name: "Average Ratio of New Sessions",
     },
   ];
@@ -40,8 +42,8 @@
   //Average Session Duration
   var sessionDurationData = [
     {
-      x: plotlyAnalytics.SessionStats.AvgSessionDurationLabels,
-      y: plotlyAnalytics.SessionStats.AvgSessionDurationCount,
+      x: plotlyAnalytics.sessionStats.avgSessionDurationLabels,
+      y: plotlyAnalytics.sessionStats.avgSessionDurationCount,
       name: "Average Session Duration",
     },
   ];
@@ -53,8 +55,8 @@
   //Total Number of Sessions (Search)
   var sessionSearchData = [
     {
-      x: plotlyAnalytics.SessionSearchStats.SessionNumberLabels,
-      y: plotlyAnalytics.SessionSearchStats.SessionNumberCount,
+      x: plotlyAnalytics.sessionSearchStats.sessionNumberLabels,
+      y: plotlyAnalytics.sessionSearchStats.sessionNumberCount,
       name: "Total Number of Sessions (Search)",
     },
   ];
@@ -64,8 +66,8 @@
   //Average Bouncerate (Search)
   var bounceRateSearchData = [
     {
-      x: plotlyAnalytics.SessionSearchStats.AvgBounceRateLabels,
-      y: plotlyAnalytics.SessionSearchStats.AvgBounceRateCount,
+      x: plotlyAnalytics.sessionSearchStats.avgBounceRateLabels,
+      y: plotlyAnalytics.sessionSearchStats.avgBounceRateCount,
       name: "Average Bouncerate (Search)",
     },
   ];
@@ -75,8 +77,8 @@
   //Average Ratio of New Sessions (Search)
   var newSessionSearchData = [
     {
-      x: plotlyAnalytics.SessionSearchStats.AvgNewSessionLabels,
-      y: plotlyAnalytics.SessionSearchStats.AvgNewSessionCount,
+      x: plotlyAnalytics.sessionSearchStats.avgNewSessionLabels,
+      y: plotlyAnalytics.sessionSearchStats.avgNewSessionCount,
       name: "Average Ratio of New Sessions (Search)",
     },
   ];
@@ -86,8 +88,8 @@
   //Average Session Duration (Search)
   var sessionDurationSearchData = [
     {
-      x: plotlyAnalytics.SessionSearchStats.AvgSessionDurationLabels,
-      y: plotlyAnalytics.SessionSearchStats.AvgSessionDurationCount,
+      x: plotlyAnalytics.sessionSearchStats.avgSessionDurationLabels,
+      y: plotlyAnalytics.sessionSearchStats.avgSessionDurationCount,
     },
   ];
   sessionDurationSearchDiv = document.getElementById(
@@ -100,8 +102,8 @@
   //Search Type Bar plot
   var typeData = [
     {
-      x: plotlyAnalytics.SearchCharacteristics.SearchTypeLabels,
-      y: plotlyAnalytics.SearchCharacteristics.SearchTypeCount,
+      x: plotlyAnalytics.searchCharacteristics.searchTypeLabels,
+      y: plotlyAnalytics.searchCharacteristics.searchTypeCount,
       type: "bar",
     },
   ];
@@ -111,8 +113,8 @@
   //Search Term Pie plot
   var routeData = [
     {
-      labels: plotlyAnalytics.SearchCharacteristics.SearchTermLabels,
-      values: plotlyAnalytics.SearchCharacteristics.SearchTermCount,
+      labels: plotlyAnalytics.searchCharacteristics.searchTermLabels,
+      values: plotlyAnalytics.searchCharacteristics.searchTermCount,
       type: "pie",
       textinfo: "label+percent",
       insidetextorientation: "radial",
@@ -124,8 +126,8 @@
   //Search Filters Bar plot
   var filterData = [
     {
-      x: plotlyAnalytics.SearchCharacteristics.SearchFilterLabels,
-      y: plotlyAnalytics.SearchCharacteristics.SearchFilterCount,
+      x: plotlyAnalytics.searchCharacteristics.searchFilterLabels,
+      y: plotlyAnalytics.searchCharacteristics.searchFilterCount,
       type: "bar",
     },
   ];
@@ -136,8 +138,8 @@
   //Number of Sample Resource Contact Detail Requests (All Sessions)
   var contactData = [
     {
-      x: plotlyAnalytics.EventStats.ContactNumberLabels,
-      y: plotlyAnalytics.EventStats.ContactNumberCount,
+      x: plotlyAnalytics.eventStats.contactNumberLabels,
+      y: plotlyAnalytics.eventStats.contactNumberCount,
     },
   ];
   contactDiv = document.getElementById("plotly-ContactCount");
@@ -146,8 +148,8 @@
   //Number of Sample Resource Contact Detail Requests (Filtered by date and location)
   var filteredContactData = [
     {
-      x: plotlyAnalytics.EventStats.FilteredContactLabels,
-      y: plotlyAnalytics.EventStats.FilteredContactCount,
+      x: plotlyAnalytics.eventStats.filteredContactLabels,
+      y: plotlyAnalytics.eventStats.filteredContactCount,
     },
   ];
   filteredContactDiv = document.getElementById("plotly-FilteredContactCount");
@@ -156,8 +158,8 @@
   //Number of Mailto User Actions (Filtered by date and location)
   var filteredMailToData = [
     {
-      x: plotlyAnalytics.EventStats.FilteredMailToLabels,
-      y: plotlyAnalytics.EventStats.FilteredMailToCount,
+      x: plotlyAnalytics.eventStats.filteredMailToLabels,
+      y: plotlyAnalytics.eventStats.filteredMailToCount,
     },
   ];
   filteredMailToDiv = document.getElementById("plotly-FilteredMailToCount");
@@ -167,8 +169,8 @@
   //Sample Resource Profile Pages
   var profileRouteData = [
     {
-      x: plotlyAnalytics.ProfilePageStats.PageRouteLabels,
-      y: plotlyAnalytics.ProfilePageStats.RouteCount,
+      x: plotlyAnalytics.profilePageStats.pageRouteLabels,
+      y: plotlyAnalytics.profilePageStats.routeCount,
       type: "bar",
     },
   ];
@@ -189,7 +191,7 @@ function perQuarterPlot(container, data, ylabel) {
       zeroline: false,
     },
   };
-
+  console.log(data);
   Plotly.newPlot(container, data, layout, config);
 }
 

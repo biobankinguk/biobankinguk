@@ -124,6 +124,7 @@ public static class ConfigureWebPipeline
     // Add the middleware
     app.UseHangfireDashboard();
 
+    // Run Hangfire Jobs
     RecurringJob.AddOrUpdate<AnalyticsJob>("analyticjob", x => x.Run(), Cron.Yearly(4));
 
     return app;
