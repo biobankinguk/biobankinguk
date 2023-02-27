@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Models.Contact;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Controllers
@@ -42,21 +43,18 @@ namespace Biobanks.Submissions.Api.Controllers
             _memoryCache = memoryCache;
             _emailService = emailService;
         }
-
-
+        
         [HttpPost("EmailContactListAjax")]
-        public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
+        public async Task<ActionResult> EmailContactListAjax(OrganisationContactModel model)
         {
-            
-            // Convert IDs to list of Email Addresses
-            var biobanks = await _organisationService.ListByExternalIds(ids);
+          // Convert IDs to list of Email Addresses
+          var biobanks = await _organisationService.ListByExternalIds(model.Ids);
             var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
             var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-            await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
-            
+            await _emailService.SendContactList(new EmailAddress(model.To), contactlist, model.ContactMe);
 
-            return Ok();
+            return Ok(model);
         }
 
         [AllowAnonymous]

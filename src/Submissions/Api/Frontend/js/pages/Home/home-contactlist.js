@@ -311,26 +311,31 @@ function submitEmail(e) {
     // Send POST Request
     var url = "/api/contact/EmailContactListAjax";
     var data = {
+      to: emailAddress,
       ids: contactIds,
-      email: emailAddress,
       contactMe: contactMe,
     };
 
-    $.post(url, data)
-      .done(function () {
+    $.ajax({
+      url: url,
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify(data),
+      success: function (data) {
         ClearContactList("Email sent successfully!");
         ResetEmailFields();
-      })
-      .fail(function () {
+      },
+      error: function (error) {
         window.feedbackMessage(
           "Something went wrong while sending email!",
           "danger"
         );
-      })
-      .always(function () {
-        // Stop Spinner
+      },
+      complete: function () {
         toggleButton($button, false);
-      });
+      },
+    });
   }
 }
 
