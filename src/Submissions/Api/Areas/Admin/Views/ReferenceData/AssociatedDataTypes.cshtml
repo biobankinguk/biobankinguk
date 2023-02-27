@@ -10,7 +10,7 @@
     });
 }
 
-<partial name = "_ADACTabs" model = "@ViewBag.Title" />
+@await Html.PartialAsync("_ADACTabs", (string)ViewBag.Title)
 
 <h3>
     Associated Data Types

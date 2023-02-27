@@ -3,7 +3,7 @@
     ViewBag.Title = "This Page/Reference Data is Locked";
 }
 
-<partial name = "_ADACTabs" model =  "@("ViewBag.Title")" />
+@await Html.PartialAsync("_ADACTabs", (string)ViewBag.Title)
 
     <h3>
         The page or reference data selected is currently locked. To access this page, the appropriate configuration value needs to be assigned.    
