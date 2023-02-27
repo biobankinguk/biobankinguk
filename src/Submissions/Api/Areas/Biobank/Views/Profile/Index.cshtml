@@ -10,7 +10,7 @@
 
 @await Html.PartialAsync("_BiobankTabs", (await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details"))
 
-<h3>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) details @Html.ActionLink("Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details", "Edit", null, new { biobankId = Model.BiobankId, @class = "btn btn-primary pull-right" })</h3>
+<h3>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) details @Html.ActionLink("Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details", "Edit", null, new { biobankId = Model.BiobankId}, new{ @class = "btn btn-primary pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">
