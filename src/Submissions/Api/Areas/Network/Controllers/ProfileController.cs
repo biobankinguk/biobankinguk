@@ -457,6 +457,12 @@ public class ProfileController : Controller
   {
     //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
     var biobank = await _organisationService.GetByName(model.BiobankName);
+    
+    if (biobank == null)
+    {
+      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
+      return View(model);
+    }
 
     var network = await _networkService.Get(networkId);
 
@@ -495,13 +501,7 @@ public class ProfileController : Controller
 
 
     var trustedBiobanks = await _configService.GetSiteConfig(ConfigKey.TrustBiobanks);
-
-    if (biobank == null)
-    {
-      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
-      return View(model);
-    }
-
+    
     if (biobank.IsSuspended)
     {
       this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);
