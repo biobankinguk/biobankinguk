@@ -323,8 +323,8 @@ function submitEmail(e) {
       dataType: "json",
       data: JSON.stringify(data),
       success: function (data) {
-        ClearContactList("Email sent successfully!");
-        ResetEmailFields();
+        // ClearContactList("Email sent successfully!");
+        // ResetEmailFields();
       },
       error: function (error) {
         window.feedbackMessage(

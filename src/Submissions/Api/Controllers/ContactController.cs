@@ -47,8 +47,8 @@ namespace Biobanks.Submissions.Api.Controllers
         [HttpPost("EmailContactListAjax")]
         public async Task<ActionResult> EmailContactListAjax(OrganisationContactModel model)
         {
-          // Convert IDs to list of Email Addresses
-          var biobanks = await _organisationService.ListByExternalIds(model.Ids);
+            // Convert IDs to list of Email Addresses
+            var biobanks = await _organisationService.ListByExternalIds(model.Ids);
             var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
             var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
