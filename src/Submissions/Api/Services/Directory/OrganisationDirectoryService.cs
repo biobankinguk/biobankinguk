@@ -124,6 +124,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AsNoTracking()
                 .Include(x => x.OrganisationRegistrationReasons)
                 .Include(x => x.OrganisationServiceOfferings)
+                .Include(x => x.Country)
+                .Include(x => x.County)
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         public async Task<Organisation> GetForBulkSubmissions(int id)
