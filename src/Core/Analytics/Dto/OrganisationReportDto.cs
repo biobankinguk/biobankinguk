@@ -1,19 +1,31 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Biobanks.Analytics.Dto
 {
     public class OrganisationReportDto
     {
+        public string Name { get; set; }
         public string ExternalId { get; set; }
+        public string Logo { get; set; }
         public int Year { get; set; }
         public int EndQuarter { get; set; }
         public int ReportPeriod { get; set; }
         public int NumOfTopBiobanks { get; set; }
+        public ProfileStatusDTO BiobankStatus { get; set; }
+
         public ProfilePageViewsDto ProfilePageViews { get; set; }
         public SearchActivityDto SearchActivity { get; set; }
         public ContactRequestsDto ContactRequests { get; set; }
     }
-
+    
+    public class ProfileStatusDTO
+    {
+        public int CollectionStatus { get; set; }
+        public string CollectionStatusMessage { get; set; }
+        public int CapabilityStatus { get; set; }
+        public string CapabilityStatusMessage { get; set; }
+    }
+    
     public class ProfilePageViewsDto
     {
         public IList<string> QuarterLabels { get; set; }

@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Biobanks.Submissions.Api.Services.Directory.Dto;
 using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Services.Directory.Contracts
@@ -6,8 +6,8 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
     public interface IAnalyticsReportGenerator
     {
         void Dispose();
-        Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period);
+        Task<Analytics.Dto.OrganisationReportDto> GetBiobankReport(int Id, int year, int quarter, int period);
         Task<DirectoryAnalyticReportDTO> GetDirectoryReport(int year, int quarter, int period);
-        Task<ProfileStatusDTO> GetProfileStatus(string biobankId);
+        Task<Analytics.Dto.ProfileStatusDTO> GetProfileStatus(string biobankId);
     }
 }

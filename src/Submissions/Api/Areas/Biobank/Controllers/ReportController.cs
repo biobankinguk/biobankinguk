@@ -38,7 +38,7 @@ public class ReportController : Controller
         _telemetryClient = telemetryClient;
     }
 
-    public async Task<ActionResult> Analytics(int biobankId = 0, int year = 0, int endQuarter = 0, int reportPeriod = 0)
+    public async Task<ActionResult> analytics(int biobankId, int year, int endQuarter, int reportPeriod)
     {
         //If turned off in site config
         if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)

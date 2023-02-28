@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Shared;
@@ -144,6 +144,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<Organisation> GetByExternalId(string externalId)
             => await Query()
                 .AsNoTracking()
+                .Include(x => x.Collections)
+                .Include(x=> x.DiagnosisCapabilities)
                 .FirstOrDefaultAsync(x => x.OrganisationExternalId == externalId);
 
         /// <inheritdoc/>
