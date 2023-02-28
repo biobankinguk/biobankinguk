@@ -49,7 +49,7 @@
         <NavNode key="NetworkAcceptance" text="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
   
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
-        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Index"/>
+        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Analytics"/>
           
         <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
           <Children>
