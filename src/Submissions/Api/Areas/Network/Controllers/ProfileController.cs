@@ -44,6 +44,7 @@ public class ProfileController : Controller
   private readonly IConfigService _configService;
   private readonly IOrganisationDirectoryService _organisationService;
   private readonly IBiobankService _biobankService;
+  private readonly SignInManager<ApplicationUser> _signInManager;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
     IReferenceDataCrudService<SopStatus> sopStatusService, 
@@ -51,7 +52,8 @@ public class ProfileController : Controller
     IEmailService emailService,
     IConfigService configService,
     IOrganisationDirectoryService organisationService,
-    IBiobankService biobankService
+    IBiobankService biobankService,
+    SignInManager<ApplicationUser> signInManager
     )
   {
     _networkService = networkService;
@@ -62,6 +64,7 @@ public class ProfileController : Controller
     _configService = configService;
     _organisationService = organisationService;
     _biobankService = biobankService;
+    _signInManager = signInManager;
   }
 
   private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
@@ -218,16 +221,16 @@ public class ProfileController : Controller
       request.NetworkCreatedDate = DateTime.Now;
       await _networkService.UpdateRegistrationRequest(request);
 
-      var user = await _userManager.GetUserAsync(User);
-
       //add a claim now that they're associated with the network
-      await _userManager.AddClaimsAsync(user, new List<Claim>
+      await _userManager.AddClaimsAsync(currentUser, new List<Claim>
                 {
                     new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, networkDto.Name)))
                 });
+      
+      // Resign in the user so their claims are repopulated.
+      await _signInManager.RefreshSignInAsync(currentUser);
 
       //Logo upload (now we have the id, we can form the filename)
-
       if (model.Logo != null)
       {
         try

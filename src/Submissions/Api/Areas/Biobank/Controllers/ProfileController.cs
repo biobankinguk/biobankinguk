@@ -54,6 +54,7 @@ public class ProfileController : Controller
     private readonly AnnualStatisticsOptions _annualStatisticsConfig;
     private readonly PublicationsOptions _publicationsConfig;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public ProfileController(
         IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
@@ -71,7 +72,8 @@ public class ProfileController : Controller
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
         IOptions<AnnualStatisticsOptions> annualStatisticsOptions,
         IOptions<PublicationsOptions> publicationsOptions,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
         _biobankService = biobankService;
@@ -89,6 +91,7 @@ public class ProfileController : Controller
         _annualStatisticsConfig = annualStatisticsOptions.Value;
         _publicationsConfig = publicationsOptions.Value;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
     
     #region Details
@@ -187,6 +190,10 @@ public class ProfileController : Controller
         {
             new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
         });
+        
+        // Resign in the user so their claims are repopulated.
+        var user = await _userManager.GetUserAsync(User);
+        await _signInManager.RefreshSignInAsync(user);
 
         //Logo upload (now we have the id, we can form the filename)
         if (model.Logo != null)
