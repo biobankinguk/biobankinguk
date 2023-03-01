@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Biobanks.Submissions.Api.Models.Submissions
+namespace Biobanks.Submissions.Api.Areas.Admin.Models.PagesAdmin
 {
     public class ContentPageModel
     {

@@ -83,16 +83,21 @@ public static class ConfigureWebPipeline
       name: "AdminArea",
       areaName: "Admin",
       pattern: "Admin/{controller=Home}/{action=Index}/{id?}");       
-    
+
     app.MapAreaControllerRoute(
       name: "BiobankArea",
       areaName: "Biobank",
       pattern: "Biobank/{controller=Home}/{action=Index}/{biobankId?}/{id?}");    
-    
+
     app.MapAreaControllerRoute(
       name: "NetworkArea",
       areaName: "Network",
       pattern: "Network/{controller=Home}/{action=Index}/{networkId?}/{id?}");
+
+    app.MapControllerRoute(
+      name: "ContentPage",
+      pattern: "Pages/{slug}",
+      defaults: new { controller = "PagesAdmin", action = "ContentPage", Area= "Admin"});
 
     app.MapControllerRoute(
       name: "default",
