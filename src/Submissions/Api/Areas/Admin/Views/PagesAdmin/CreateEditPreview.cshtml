@@ -1,5 +1,4 @@
-﻿@using Biobanks.Submissions.Api.Models.Submissions
-@model ContentPageModel
+﻿@model Biobanks.Submissions.Api.Areas.Admin.Models.PagesAdmin.ContentPageModel
 
 <style>
     .navbar-fixed-top {
@@ -32,7 +31,7 @@
     }
 </div>
 <div class="container">
-  <partial name= "~/Views/PagesAdmin/ContentPage.cshtml" model= "Model") />
+  @await Html.PartialAsync("ContentPage", Model)
 </div>
 @* RenderPage adds a container we don't want *@
 <script>
