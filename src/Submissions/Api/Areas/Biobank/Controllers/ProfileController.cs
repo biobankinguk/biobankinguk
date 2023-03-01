@@ -220,6 +220,37 @@ public class ProfileController : Controller
         return biobank;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="biobankId"></param>
+    /// <returns></returns>
+    [Authorize(nameof(AuthPolicies.HasBiobankRequestClaim))]
+    public async Task<ActionResult> Create(int biobankId)
+    {
+      // Check the organisation request has not been accepted
+      var request = await _organisationService.GetRegistrationRequest(biobankId);
+      if (request.OrganisationCreatedDate.HasValue)
+      {
+        // get the biobank to redirect to.
+        var biobank = await _organisationService.GetByName(request.OrganisationName);
+        this.SetTemporaryFeedbackMessage("This biobank has already been created.", FeedbackMessageType.Info);
+        RedirectToAction("Index", "Collections", new { area = "Biobank", biobank.OrganisationId });
+      }
+      
+      var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+      this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
+        FeedbackMessageType.Info);
+      
+      var model = await NewBiobankDetailsModelAsync(biobankId);
+          
+      // Reset the biobankId in the model state so the form does not populate it.
+      // Ensures a new biobank is created.
+      ModelState.SetModelValue("biobankId", new ValueProviderResult());
+      return View("Edit", model);
+    }
+
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Edit(int biobankId = default, bool detailsIncomplete = false)
     {
         var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
