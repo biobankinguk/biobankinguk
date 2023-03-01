@@ -95,24 +95,37 @@ public class ProfileController : Controller
     return View(await GetNetworkDetailsModelAsync(networkId));
   }
 
+  [Authorize(nameof(AuthPolicies.HasNetworkRequestClaim))]
+  public async Task<ActionResult> Create(int networkId)
+  {
+    // Check the organisation request has not been accepted
+    var request = await _networkService.GetRegistrationRequest(networkId);
+    if (request.NetworkCreatedDate.HasValue)
+    {
+      // get the biobank to redirect to.
+      var network = await _organisationService.GetByName(request.NetworkName);
+      this.SetTemporaryFeedbackMessage("This biobank has already been created.", FeedbackMessageType.Info);
+      RedirectToAction("Biobanks", "Profile", new { area = "Network", network.OrganisationId });
+    }
+      
+    var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+    this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
+      FeedbackMessageType.Info);
+      
+    var model = await NewNetworkDetailsModelAsync(networkId);
+          
+    // Reset the biobankId in the model state so the form does not populate it.
+    // Ensures a new biobank is created.
+    ModelState.SetModelValue("biobankId", new ValueProviderResult());
+    return View("Edit", model);
+  }
+
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
   public async Task<ActionResult> Edit(int networkId, bool detailsIncomplete = false)
   {
     if (detailsIncomplete)
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
-
-    var org = await _networkService.Get(networkId);
-
-    // network means we're dealing with a request.
-    if (org is null)
-    {
-      var model = await NewNetworkDetailsModelAsync(networkId);
-      
-      // Reset the biobankId in the model state so the form does not populate it.
-      // Ensures a new biobank is created.
-      ModelState.SetModelValue("networkId", new ValueProviderResult());
-      return View(model);
-    }
     
     //network id means we're dealing with an existing network
     return View(await GetNetworkDetailsModelAsync(networkId)); 
