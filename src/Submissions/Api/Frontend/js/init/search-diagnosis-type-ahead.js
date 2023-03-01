@@ -24,10 +24,10 @@ $(function () {
       filter: function (x) {
         return $.map(x, function (item) {
           return {
-            desc: item.Description,
-            other: item.OtherTerms,
-            mother: item.MatchingOtherTerms.join(", "),
-            nother: item.NonMatchingOtherTerms.join(", "),
+            desc: item.description,
+            other: item.otherTerms,
+            mother: item.matchingOtherTerms.join(", "),
+            nother: item.nonMatchingOtherTerms.join(", "),
           };
         });
       },
