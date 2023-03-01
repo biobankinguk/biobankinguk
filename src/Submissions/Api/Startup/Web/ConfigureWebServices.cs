@@ -167,6 +167,8 @@ public static class ConfigureWebServices
         AuthPolicies.IsBiobankAdmin);
       o.AddPolicy(nameof(AuthPolicies.IsNetworkAdmin),
         AuthPolicies.IsNetworkAdmin);
+      o.AddPolicy(nameof(AuthPolicies.HasBiobankRequestClaim),
+        AuthPolicies.HasBiobankRequestClaim);
       o.AddPolicy(nameof(AuthPolicies.HasBiobankClaim),
         AuthPolicies.HasBiobankClaim);
       o.AddPolicy(nameof(AuthPolicies.HasNetworkClaim),

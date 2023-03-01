@@ -80,6 +80,36 @@ namespace Biobanks.Submissions.Api.Auth
             .Combine(IsAuthenticated)
             .RequireClaim(ClaimTypes.Role, Role.NetworkAdmin)
             .Build();
+        
+        /// <summary>
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsBiobankAdmin"/>,
+        /// and has a claim to the specific biobank request.
+        /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
+        public static AuthorizationPolicy HasBiobankRequestClaim
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(IsBiobankAdmin)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
+                    out var requestId))
+                return false;
+              
+              // list their biobank request claims
+              var biobanks = context.User.FindAll(CustomClaimType.BiobankRequest).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+              // verify biobank request claim
+              if (!biobanks.ContainsKey(requestId))
+                return false;
+
+              return true;
+            })
+            .Build();
 
         /// <summary>
         /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsBiobankAdmin"/>,
