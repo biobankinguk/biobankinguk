@@ -4,7 +4,6 @@ using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Home;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -12,10 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Models.Contact;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Controllers
 {
-  [Route("api/[controller]")]
+    [AllowAnonymous]
+    [Route("api/[controller]")]
     [ApiController]
     public class ContactController : ControllerBase
     {
@@ -24,8 +26,7 @@ namespace Biobanks.Submissions.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly IEmailService _emailService; 
- 
- 
+        
         public ContactController (
             INetworkService networkService,
             IOrganisationDirectoryService organisationService, 
@@ -40,25 +41,21 @@ namespace Biobanks.Submissions.Api.Controllers
             _memoryCache = memoryCache;
             _emailService = emailService;
         }
-
-
-        [HttpPost("EmailContactListAjax")]
         
-        public async Task<ActionResult> EmailContactListAjax(string to, List<string> ids, bool contactMe)
+        [HttpPost("EmailContactListAjax")]
+        public async Task<ActionResult> EmailContactListAjax(OrganisationContactModel model)
         {
-            
             // Convert IDs to list of Email Addresses
-            var biobanks = await _organisationService.ListByExternalIds(ids);
+            var biobanks = await _organisationService.ListByExternalIds(model.Ids);
             var contacts = _mapper.Map<IEnumerable<ContactBiobankModel>>(biobanks);
             var contactlist = String.Join(", ", contacts.Select(c => c.ContactEmail));
 
-            await _emailService.SendContactList(new EmailAddress(to), contactlist, contactMe);
-            
+            await _emailService.SendContactList(new EmailAddress(model.To), contactlist, model.ContactMe);
 
-            return Ok();
+            return Ok(model);
         }
-
-        [HttpGet]
+        
+        [HttpGet("BiobankContactDetailsAjax/{id}")]
         public async Task<IActionResult> BiobankContactDetailsAjax(string id)
         {
             var biobankExternalIds = (List<string>)JsonConvert.DeserializeObject(id, typeof(List<string>));
@@ -67,7 +64,7 @@ namespace Biobanks.Submissions.Api.Controllers
             var displayNetworks = _memoryCache.Get(ConfigKey.ContactThirdParty);
             var networkHandoverModels = new List<NetworkHandoverModel>();
 
-            if ((bool)displayNetworks)
+            if (displayNetworks.ToString() == "true")
             {
                 var networks = (await _networkService.List()).Where(n => n.ContactHandoverEnabled);
 

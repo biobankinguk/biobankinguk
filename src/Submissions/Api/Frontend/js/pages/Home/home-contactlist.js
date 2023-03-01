@@ -80,7 +80,7 @@ function PrepareBiobankSlugForUrl(slug) {
 
 function UpdateContactList(contactIds) {
   return $.ajax({
-    url: "/Home/BiobankContactDetailsAjax/" + contactIds, //localStorage.getItem("contactIds"),
+    url: "/api/contact/BiobankContactDetailsAjax/" + contactIds, //localStorage.getItem("contactIds"),
     type: "GET",
     success: function (response) {
       //Find table
@@ -96,33 +96,33 @@ function UpdateContactList(contactIds) {
       } else {
         contactListTable.empty(); //clear table
 
-        for (var i = 0; i < response.Contacts.length; i++) {
-          var contact = response.Contacts[i];
+        for (var i = 0; i < response.contacts.length; i++) {
+          var contact = response.contacts[i];
 
           // prettier-ignore
           newRow =
-            '<a href="/Profile/Biobank/' + contact.BiobankExternalId + '" class="detailed-search-link">' +
+            '<a href="/Profile/Biobank/' + contact.biobankExternalId + '" class="detailed-search-link">' +
               '<div class="well well-hover">' +
                 '<div class="row no-link-style">' +
                   '<div class="col-sm-8">' +
-                    "<h4>" + contact.BiobankName + "</h4>" +
+                    "<h4>" + contact.biobankName + "</h4>" +
                   "</div>" +
                   '<div class="col-sm-4 text-right">' +
                     '<button class="btn btn-default contact-button pull-right" ' +
-                      'data-biobank-id="' + contact.BiobankExternalId + '">' +
+                      'data-biobank-id="' + contact.biobankExternalId + '">' +
                     '<span class="fa fa-envelope-o labelled-icon"></span>Remove</button>' +
                   "</div>" +
                 "</div>" +
                 '<div class="row">' +
                   '<div class="col-sm-10 sample-set-summaries">' +
-                    '<p class="no-link-style">' + contact.Description + "</p>" +
+                    '<p class="no-link-style">' + contact.description + "</p>" +
                     "<p>Click for more details...</p>" +
                   "</div>" +
                 "</div>" +
               "</div>" +
             "</a>";
 
-          biobankEmails.push(contact.ContactEmail);
+          biobankEmails.push(contact.contactEmail);
           contactListTable.append(newRow);
         }
 
@@ -133,75 +133,75 @@ function UpdateContactList(contactIds) {
         // Render Networks HTML
         var networkHtml = "";
         $("#third-parties").empty(); //clear table
-        for (i = 0; i < response.Networks.length; i++) {
-          var network = response.Networks[i];
+        for (i = 0; i < response.networks.length; i++) {
+          var network = response.networks[i];
           networkHtml += '<div class="clear-fix';
-          if (network.LogoName != null && network.LogoName.length > 0) {
-            var logoUrl = logoBaseUrl + network.LogoName;
+          if (network.logoName != null && network.logoName.length > 0) {
+            var logoUrl = logoBaseUrl + network.logoName;
             networkHtml +=
               '"><img src="' +
               logoUrl +
               '" class="contact-modal-profile-image pull-left public-profile-logo" alt="' +
-              network.NetworkName +
+              network.networkName +
               '"/>';
           } else {
             networkHtml += ' contact-modal-no-logo-container">';
           }
           var attributeReadyAnonymousIdentifiers =
-            network.NonMemberBiobankAnonymousIds.toString();
-          var url = network.HandoverBaseUrl;
-          if (network.MultipleHandoverOrdIdsParams) {
+            network.nonMemberBiobankAnonymousIds.toString();
+          var url = network.handoverBaseUrl;
+          if (network.multipleHandoverOrdIdsParams) {
             // Add in all those who are already members of the network
             for (
               var bb = 0;
-              bb < network.BiobankExternalIdsInNetwork.length;
+              bb < network.biobankExternalIdsInNetwork.length;
               bb++
             ) {
-              var slug = network.BiobankExternalIdsInNetwork[bb];
+              var slug = network.biobankExternalIdsInNetwork[bb];
               if (slug != null) {
                 url +=
                   "" +
-                  network.HandoverOrgIdsUrlParamName +
+                  network.handoverOrgIdsUrlParamName +
                   PrepareBiobankSlugForUrl(slug);
               }
             }
             // Add in all those who aren't yet part of the network
-            if (network.HandoverNonMembers) {
+            if (network.handoverNonMembers) {
               for (
                 bb = 0;
-                bb < network.NonMemberBiobankAnonymousIds.length;
+                bb < network.nonMemberBiobankAnonymousIds.length;
                 bb++
               ) {
-                var id = network.NonMemberBiobankAnonymousIds[bb];
+                var id = network.nonMemberBiobankAnonymousIds[bb];
                 if (id != null) {
                   url +=
                     "" +
-                    network.HandoverNonMembersUrlParamName +
+                    network.handoverNonMembersUrlParamName +
                     PrepareBiobankSlugForUrl(id);
                 }
               }
             }
           } else {
             // Add in all those who are already members of the network
-            url += "" + network.HandoverOrgIdsUrlParamName;
+            url += "" + network.handoverOrgIdsUrlParamName;
             for (
               bb = 0;
-              bb < network.BiobankExternalIdsInNetwork.length;
+              bb < network.biobankExternalIdsInNetwork.length;
               bb++
             ) {
-              slug = network.BiobankExternalIdsInNetwork[bb];
+              slug = network.biobankExternalIdsInNetwork[bb];
               if (slug != null) {
                 url += PrepareBiobankSlugForUrl(slug) + ",";
               }
             }
             // Add in all those who aren't yet part of the network
-            if (network.HandoverNonMembers) {
+            if (network.handoverNonMembers) {
               for (
                 bb = 0;
-                bb < network.NonMemberBiobankAnonymousIds.length;
+                bb < network.nonMemberBiobankAnonymousIds.length;
                 bb++
               ) {
-                id = network.NonMemberBiobankAnonymousIds[bb];
+                id = network.nonMemberBiobankAnonymousIds[bb];
                 if (id != null) {
                   url += PrepareBiobankSlugForUrl(id) + ",";
                 }
@@ -210,39 +210,39 @@ function UpdateContactList(contactIds) {
           }
           networkHtml +=
             '<p class="contact-modal-network-blurb"><strong>' +
-            network.NetworkName +
+            network.networkName +
             "</strong><br/>";
-          if (network.BiobankExternalIdsInNetwork.length > 0) {
+          if (network.biobankExternalIdsInNetwork.length > 0) {
             networkHtml +=
-              network.BiobankExternalIdsInNetwork.length +
+              network.biobankExternalIdsInNetwork.length +
               " of the " +
-              response.Contacts.length +
+              response.contacts.length +
               ' resources are available to submit a request via <a href="' +
               url +
               '" class="network-handover-link" data-networkid="' +
-              network.NetworkId +
+              network.networkId +
               '" data-nonmemberidentifiers="' +
               attributeReadyAnonymousIdentifiers +
               '">' +
-              network.NetworkName +
+              network.networkName +
               "</a>";
           } else {
             networkHtml +=
               'No resources are available but ask them to sign-up and create you request in <a href="' +
               url +
               '" class="network-handover-link" data-networkid="' +
-              network.NetworkId +
+              network.networkId +
               '" data-nonmemberidentifiers="' +
               attributeReadyAnonymousIdentifiers +
               '">' +
-              network.NetworkName +
+              network.networkName +
               "</a>";
           }
           networkHtml += "</div>";
         }
 
         // Show if Networks Exist
-        if (response.Networks.length > 0) {
+        if (response.networks.length > 0) {
           var $contact = $("#contact-third-party");
           var $parties = $("#third-parties");
 
@@ -309,28 +309,33 @@ function submitEmail(e) {
     toggleButton($button, true);
 
     // Send POST Request
-    var url = "/Home/EmailContactListAjax";
+    var url = "/api/contact/EmailContactListAjax";
     var data = {
+      to: emailAddress,
       ids: contactIds,
-      email: emailAddress,
       contactMe: contactMe,
     };
 
-    $.post(url, data)
-      .done(function () {
+    $.ajax({
+      url: url,
+      type: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify(data),
+      success: function (data) {
         ClearContactList("Email sent successfully!");
         ResetEmailFields();
-      })
-      .fail(function () {
+      },
+      error: function (error) {
         window.feedbackMessage(
           "Something went wrong while sending email!",
           "danger"
         );
-      })
-      .always(function () {
-        // Stop Spinner
+      },
+      complete: function () {
         toggleButton($button, false);
-      });
+      },
+    });
   }
 }
 
@@ -390,7 +395,7 @@ function ExternalSiteModalView(modalId) {
         .split(","),
     };
 
-    $.post("/Home/NotifyNetworkNonMembersOfHandoverAjax", ajaxData).done(
+    $.post("/api/contact/NotifyNetworkNonMembersOfHandoverAjax", ajaxData).done(
       function () {
         window.location.href = _this.$link.attr("href");
       }

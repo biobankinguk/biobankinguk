@@ -16,6 +16,8 @@ namespace Biobanks.Submissions.Api.Config
 
     public string LegalEntity { get; init; } = "Legal Entity";
 
+    public string AlternateHomepage { get; init; } = "false";
+
     public bool HotjarEnabled { get; set; }
 
     // Google Analytics / Recaptcha
