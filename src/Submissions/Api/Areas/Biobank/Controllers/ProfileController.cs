@@ -222,7 +222,7 @@ public class ProfileController : Controller
     /// </summary>
     /// <param name="biobankId">This is actually the organisation request ID,
     /// but is called this for ease of routing.</param>
-    /// <returns></returns>
+    /// <returns>Edit view for Biobank.</returns>
     [Authorize(nameof(AuthPolicies.HasBiobankRequestClaim))]
     public async Task<ActionResult> Create(int biobankId)
     {

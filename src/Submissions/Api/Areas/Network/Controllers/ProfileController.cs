@@ -95,6 +95,12 @@ public class ProfileController : Controller
     return View(await GetNetworkDetailsModelAsync(networkId));
   }
 
+  /// <summary>
+  /// Route to create a new network.
+  /// </summary>
+  /// <param name="networkId">This is actually the request ID,
+  /// but is called this for ease of routing.</param>
+  /// <returns>Edit view for network.</returns>
   [Authorize(nameof(AuthPolicies.HasNetworkRequestClaim))]
   public async Task<ActionResult> Create(int networkId)
   {
