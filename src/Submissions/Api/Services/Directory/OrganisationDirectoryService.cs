@@ -50,6 +50,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Include(x => x.Funders)
                 .Include(x => x.OrganisationAnnualStatistics)
                 .Include(x => x.OrganisationType)
+                .Include(x => x.County)
+                .Include(x => x.Country)
                 .Where(x => x.OrganisationType.Description == "Biobank");
 
         private IQueryable<Organisation> QueryForIndexing()
