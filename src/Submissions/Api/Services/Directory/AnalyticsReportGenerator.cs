@@ -11,6 +11,7 @@ using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics.Dto;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
@@ -53,7 +54,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             }
         }
 
-        public async Task<Analytics.Dto.ProfileStatusDTO> GetProfileStatus(string biobankId)
+        public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
         {
             //can split into two functions that returns status code and status message
             var bb = await _organisationService.GetByExternalId(biobankId);
@@ -62,7 +63,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             int capabilitiesCount = bb.DiagnosisCapabilities.Count;
 
             bool missingSampleSet = false;
-            Analytics.Dto.ProfileStatusDTO profileStatus = new Analytics.Dto.ProfileStatusDTO();
+            ProfileStatusDTO profileStatus = new ProfileStatusDTO();
 
             foreach (var col in bb.Collections)
             {
@@ -106,7 +107,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return profileStatus;
         }
 
-        public async Task<Analytics.Dto.OrganisationReportDto> GetBiobankReport(int Id, int year, int quarter, int period)
+        public async Task<OrganisationReportDto> GetBiobankReport(int Id, int year, int quarter, int period)
         {
             var bb = await _organisationService.Get(Id);
             var biobankId = bb.OrganisationExternalId;
