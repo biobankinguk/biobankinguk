@@ -13,11 +13,12 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Config;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
@@ -34,6 +35,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
     private readonly TelemetryClient _telemetryClient;
     private readonly ApplicationDbContext _context;
+    private readonly ElasticsearchConfig _elasticsearchConfig;
 
     public BiobankIndexService(
             IReferenceDataCrudService<DonorCount> donorCountService,
@@ -41,7 +43,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
             ISearchProvider searchProvider,
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient,
-            ApplicationDbContext context
+            ApplicationDbContext context,
+            IOptions<ElasticsearchConfig> elasticsearchConfig
             )
     {
       _donorCountService = donorCountService;
@@ -50,8 +53,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
       _hostEnvironment = hostEnvironment;
       _telemetryClient = telemetryClient;
       _context = context;
+      _elasticsearchConfig = elasticsearchConfig.Value;
     }
-
+    
     private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
        IEnumerable<int> sampleSetIds) =>
     (
@@ -61,21 +65,30 @@ namespace Biobanks.Submissions.Api.Services.Directory
       .Include(x => x.Collection)
       .Include(x => x.Collection.OntologyTerm)
       .Include(x => x.Collection.Organisation)
-      .Include(x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network))
+      .Include(x => x.Collection.Organisation.OrganisationNetworks)
+          .ThenInclude(on => @on.Network)
       .Include(x => x.Collection.CollectionStatus)
       .Include(x => x.Collection.ConsentRestrictions)
       .Include(x => x.Collection.AccessCondition)
       .Include(x => x.Collection.CollectionType)
-      .Include(x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType))
+      .Include(x => x.Collection.AssociatedData)
+          .ThenInclude(ad => ad.AssociatedDataType)
+      .Include(x => x.Collection.AssociatedData)
+          .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
       .Include(x => x.AgeRange)
       .Include(x => x.DonorCount)
       .Include(x => x.Sex)
       .Include(x => x.MaterialDetails)
-      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
-      .Include(x => x.MaterialDetails.Select(y => y.CollectionPercentage))
-      .Include(x => x.MaterialDetails.Select(y => y.MacroscopicAssessment))
-      .Include(x => x.MaterialDetails.Select(y => y.MaterialType))
-      .Include(x => x.MaterialDetails.Select(y => y.StorageTemperature))
+      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
+          .ThenInclude(s => s.ServiceOffering)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.CollectionPercentage)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.MacroscopicAssessment)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.MaterialType)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(y => y.StorageTemperature)
       .Include(x => x.Collection.Organisation.Country)
       .Include(x => x.Collection.Organisation.County)
       .ToListAsync()
@@ -117,27 +130,34 @@ namespace Biobanks.Submissions.Api.Services.Directory
       .FirstOrDefaultAsync()
       );
 
-    private async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
     IEnumerable<int> capabilityIds) => (
     await _context.DiagnosisCapabilities.Where(x =>
               capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
               .Include(x => x.Organisation)
-              .Include(x => x.Organisation.OrganisationNetworks.Select(on => on.Network))
-              .Include(x => x.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+              .Include(x => x.Organisation.OrganisationNetworks)
+                  .ThenInclude(on => on.Network)
+              .Include(x => x.Organisation.OrganisationServiceOfferings)
+                  .ThenInclude(s => s.ServiceOffering)
               .Include(x => x.OntologyTerm)
               .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataType)
+              .Include(x => x.AssociatedData)
+                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
               .Include(x => x.SampleCollectionMode)
               .ToListAsync()
     );
+    
     public async Task BuildIndex()
     {
       //Building the Search Index
 
-      var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
       var indexNames = new Dictionary<string, string>
       {
-        ["collections"] = ConfigurationManager.AppSettings["DefaultCollectionsSearchIndex"],
-        ["capabilities"] = ConfigurationManager.AppSettings["DefaultCapabilitiesSearchIndex"]
+        ["collections"] = _elasticsearchConfig.DefaultCollectionsSearchIndex,
+        ["capabilities"] = _elasticsearchConfig.DefaultCapabilitiesSearchIndex,
       };
 
       var _navPaths = new List<string>()
@@ -180,7 +200,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
     public async Task<string> GetClusterHealth()
     {
-      var searchBase = ConfigurationManager.AppSettings["ElasticSearchUrl"];
+      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
 
       try
       {
@@ -504,17 +524,17 @@ namespace Biobanks.Submissions.Api.Services.Directory
             (capabilityIds
                 .Skip(i * BulkIndexChunkSize)
                 .Take(BulkIndexChunkSize));
-
+      
         BackgroundJob.Enqueue(
             () => _indexProvider.BulkIndexCapabilitySearchDocuments(chunkSampleSets
                 .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
       }
-
+      
       var remainingSampleSets = await GetCapabilitiesByIdsForIndexingAsync
         (capabilityIds
               .Skip(chunkCount * BulkIndexChunkSize)
               .Take(remainingIdCount));
-
+      
       BackgroundJob.Enqueue(
           () => _indexProvider.BulkIndexCapabilitySearchDocuments(remainingSampleSets
               .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
