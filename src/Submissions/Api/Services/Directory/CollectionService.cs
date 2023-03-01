@@ -263,6 +263,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<IEnumerable<Collection>> List(int organisationId = default)
             => await _db.Collections
                 .AsNoTracking()
+                .Include(x => x.Organisation)
                 .Include(x => x.OntologyTerm)
                 .Include(x => x.SampleSets)
                     .ThenInclude(x => x.MaterialDetails)

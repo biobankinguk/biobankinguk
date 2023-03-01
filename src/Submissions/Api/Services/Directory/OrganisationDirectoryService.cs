@@ -50,6 +50,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .Include(x => x.Funders)
                 .Include(x => x.OrganisationAnnualStatistics)
                 .Include(x => x.OrganisationType)
+                .Include(x => x.County)
+                .Include(x => x.Country)
                 .Where(x => x.OrganisationType.Description == "Biobank");
 
         private IQueryable<Organisation> QueryForIndexing()
@@ -124,6 +126,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AsNoTracking()
                 .Include(x => x.OrganisationRegistrationReasons)
                 .Include(x => x.OrganisationServiceOfferings)
+                .Include(x => x.Country)
+                .Include(x => x.County)
                 .FirstOrDefaultAsync(x => x.OrganisationId == id);
 
         public async Task<Organisation> GetForBulkSubmissions(int id)
@@ -204,7 +208,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
 
                 var allRegistrationReasons = await _db.OrganisationRegistrationReasons.ToListAsync();
-                foreach (var orr in organisation.OrganisationRegistrationReasons)
+                foreach (var orr in organisation.OrganisationRegistrationReasons ?? new List<OrganisationRegistrationReason>())
                 {
                     var orgReason = allRegistrationReasons.SingleOrDefault(x => x.OrganisationId == orr.OrganisationId
                         && x.RegistrationReasonId == orr.RegistrationReasonId);
@@ -212,7 +216,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 }
 
                 var allServiceOfferings = await _db.OrganisationServiceOfferings.ToListAsync();
-                foreach (var ser in organisation.OrganisationServiceOfferings)
+                foreach (var ser in organisation.OrganisationServiceOfferings ?? new List<OrganisationServiceOffering>())
                 {
                     var serviceOffering = allServiceOfferings.SingleOrDefault(x => x.OrganisationId == ser.ServiceOfferingId
                         && x.ServiceOfferingId == ser.ServiceOfferingId);

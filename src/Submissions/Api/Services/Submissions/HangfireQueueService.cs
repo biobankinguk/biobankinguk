@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Services.Submissions.Contracts;
+using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 using Core.Jobs;
 using Core.Submissions.Models;
 using Core.Submissions.Types;
@@ -34,12 +34,12 @@ namespace Biobanks.Submissions.Api.Services.Submissions
             BackgroundJob.Enqueue<CommitJob>(x => x.Run(biobankId, replace));
             return Task.CompletedTask;
         }
-
+        
         /// <inheritdoc />
         public Task Reject(int biobankId)
         {
             BackgroundJob.Enqueue<RejectJob>(x => x.Run(biobankId));
             return Task.CompletedTask;
         }
-    }
+  }
 }

@@ -30,5 +30,13 @@ namespace Biobanks.Submissions.Api.Services.Directory.Contracts
         void BulkDeleteCapabilities(IList<int> capabilityIds);
 
         Task ClearIndex();
+        
+        /// <summary>
+        /// Gets Capabilities that can be indexed.
+        /// Filters out suspended organisations.
+        /// </summary>
+        /// <param name="capabilityIds">A list of capability Ids to check</param>
+        /// <returns>A list of Capabilities.</returns>
+        Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(IEnumerable<int> capabilityIds);
     }
 }

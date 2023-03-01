@@ -665,17 +665,6 @@
     "sourceMap": true
   },
 
-  //Search
-  {
-    "outputFileName": "wwwroot/dist/js/search.min.js",
-    "inputFiles": [
-      "Frontend/js/init/search-diagnosis-type-ahead.js",
-      "Frontend/js/init/facet-groups.js"
-    ],
-    "minify": { "enabled": true },
-    "sourceMap": true
-  },
-
   // Term
   {
     "outputFileName": "wwwroot/dist/js/Term/diseasetable.min.js",
@@ -706,7 +695,7 @@
 
   //Admin pages
   {
-    "outputFileName": "wwwroot/dist/js/pagesadmin.min.js",
+    "outputFileName": "wwwroot/dist/js/Admin/pagesadmin.min.js",
     "inputFiles": ["Frontend/js/pages/Admin/adac-pages-admin.js"],
     "minify": { "enabled": true },
     "sourceMap": true

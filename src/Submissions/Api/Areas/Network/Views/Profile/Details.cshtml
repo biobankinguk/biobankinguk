@@ -6,7 +6,7 @@
 
 @await Html.PartialAsync("_NetworkTabs", "Details")
 
-<h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { networkId = Model.NetworkId, @class = "btn btn-primary pull-right" })</h3>
+<h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { networkId = Model.NetworkId}, new { @class = "btn btn-primary pull-right" })</h3>
 
 <div class="row">
     <div class="col-sm-12">

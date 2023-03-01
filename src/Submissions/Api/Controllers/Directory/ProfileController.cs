@@ -1,38 +1,39 @@
 using Biobanks.Entities.Data.ReferenceData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Biobanks.Shared.Services.Contracts;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Services.Directory;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Biobanks.Entities.Data;
 using System.Linq;
+using System.Text.Json;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Models.Profile;
 using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Utilities;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
     [AllowAnonymous]
     public class ProfileController : Controller
     {
-        private readonly Shared.Services.Contracts.IReferenceDataService<AnnualStatisticGroup> _annualStatisticGroupService;
+        private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
         private readonly ICollectionService _collectionService;
         private readonly IPublicationService _publicationService;
         private readonly INetworkService _networkService;
-
-        private readonly IOrganisationService _organisationService;
+        private readonly IOrganisationDirectoryService _organisationService;
         private readonly IBiobankService _biobankService;
         private readonly IConfigService _configService;
         private readonly ICapabilityService _capabilityService;
 
         public ProfileController(
-            Shared.Services.Contracts.IReferenceDataService<AnnualStatisticGroup> annualStatisticGroupService,
+            IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
             ICollectionService collectionService,
             IPublicationService publicationService,
             INetworkService networkService,
-            IOrganisationService organisationService,
+            IOrganisationDirectoryService organisationService,
             IBiobankService biobankService,
             IConfigService configService,
             ICapabilityService capabilityService)
@@ -55,27 +56,32 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
             //get the biobank
             var bb = await _organisationService.GetByExternalId(id);
             if (bb is null) return NotFound();
-
-            // TODO: Update when the user model is added.
-            /*            if (bb.IsSuspended)
-                        {
-                            //Allow ADAC or this Biobank's admins to view the profile
-                            if (CurrentUser.Biobanks.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin.ToString()) ||
-                                User.IsInRole(Role.ADAC.ToString()))
-                            {
-                                //But alert them that the bb is suspended
-                                SetTemporaryFeedbackMessage(
-                                    "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
-                                    FeedbackMessageType.Warning);
-                            }
-                            else
-                            {
-                                //Anyone else gets a 404
-                                return new HttpNotFoundResult();
-                            }
-                        }
-            */
-
+            
+            if (bb.IsSuspended)
+            {
+                // Allow ADAC or this Biobank's admins to view the profile
+                
+                // Get the users list of Biobank claims
+                var biobankClaims = User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
+                    .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                    .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+                
+                // Verify
+                if (biobankClaims.ContainsKey(bb.OrganisationId) && User.IsInRole(Role.BiobankAdmin) ||
+                     User.IsInRole(Role.DirectoryAdmin))
+                 {
+                     //But alert them that the bb is suspended
+                     this.SetTemporaryFeedbackMessage(
+                         "This biobank is currently suspended, so this public profile will not be accessible to non-admins.",
+                         FeedbackMessageType.Warning);
+                 }
+                 else
+                 {
+                     //Anyone else gets a 404
+                     return NotFound();
+                 }
+            }
+            
             var model = new BiobankModel
             {
                 Description = bb.Description,
@@ -130,7 +136,6 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
                     .OrderBy(x => x.ServiceOffering.SortOrder)
                     .Select(x => x.ServiceOffering.Value)
                     .ToList(),
-
                 BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
                 AnnualStatisticGroups = await _annualStatisticGroupService.List()
             };

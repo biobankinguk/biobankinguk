@@ -365,6 +365,7 @@ public static class ConfigureWebServices
           ? hangfireConnectionString
           : c.GetConnectionString("Default"),
         new() { SchemaName = hangfireConfig.SchemaName }));
+      s.AddHangfireServer();
     }
 
     switch (workersConfig.QueueService)

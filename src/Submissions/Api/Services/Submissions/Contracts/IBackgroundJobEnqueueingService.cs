@@ -1,4 +1,4 @@
-﻿using Core.Submissions.Types;
+using Core.Submissions.Types;
 using System;
 using System.Threading.Tasks;
 
