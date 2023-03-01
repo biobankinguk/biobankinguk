@@ -137,9 +137,9 @@
     @if (User.Identity.IsAuthenticated)
     {
         var currentUrl = Context.Request.GetEncodedUrl();
-        var keepAliveUrl = @Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account"));
-        var redirectUrl = @Html.Raw(@Url.Action("Logout", "Account", new { returnUrl = currentUrl, isTimeout = true }));
-        var logoutUrl = @Html.Raw(@Url.Action("Logout", "Account", new { returnUrl = currentUrl }));
+        var keepAliveUrl = @Html.Raw(@Url.Action("KeepSessionAliveAjax", "Account", new { area = "" }));
+        var redirectUrl = @Html.Raw(@Url.Action("Logout", "Account", new { area = "", returnUrl = currentUrl, isTimeout = true }));
+        var logoutUrl = @Html.Raw(@Url.Action("Logout", "Account", new { area = "", returnUrl = currentUrl }));
         var warningTimeout = @siteProperties.ClientSessionTimeout - 60000; //1 minute warning
 
         <script>
@@ -191,9 +191,9 @@
         $(document).on('click', 'a[href^="#"]', function (event) {
             event.preventDefault();
 
-            $('html, body').animate({
-                scrollTop: $($.attr(this, 'href')).offset.top - 200
-            }, 500);
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
         });
     </script>
 

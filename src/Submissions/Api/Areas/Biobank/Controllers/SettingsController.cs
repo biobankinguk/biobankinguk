@@ -169,7 +169,7 @@ public class SettingsController : Controller
                                 userId = user.Id,
                                 token = confirmToken
                             },
-                            Request.GetEncodedUrl()));
+                            Request.Protocol));
                 }
                 else
                 {
@@ -189,7 +189,7 @@ public class SettingsController : Controller
                     new EmailAddress(model.Email),
                     model.Name,
                     model.Entity,
-                    Url.Action("Index", "Profile", null, Request.GetEncodedUrl()));
+                    Url.Action("Index", "Profile", null, Request.Protocol));
             }
 
             //Add the user/biobank relationship

@@ -194,7 +194,7 @@ public class BiobanksController : Controller
                           userId = user.Id,
                           token = confirmToken
                       },
-                      Request.GetEncodedUrl()));
+                      Request.Protocol));
           }
           else
           {
@@ -316,7 +316,7 @@ public class BiobanksController : Controller
       // Generate the reset URL
       var url = Url.Action("ResetPassword", "Account",
           new { Area = "", userId = biobankUserId, token = resetToken },
-          Request.GetEncodedUrl());
+          Request.Protocol);
 
       return PartialView("_ModalResetPassword", new ResetPasswordEntityModel
       {
