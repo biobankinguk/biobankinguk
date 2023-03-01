@@ -123,27 +123,29 @@ public class SampleSetService : ISampleSetService
     if (!suspended)
       _indexService.DeleteSampleSet(id);
   }
-  
-  public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
+
+  private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
      IEnumerable<int> sampleSetIds)
-  {
-    var sampleSets = await _context.SampleSets
+      => await _context.SampleSets
         .AsNoTracking()
         .Where(x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended)
         .Include(x => x.Collection)
         .Include(x => x.Collection.OntologyTerm)
         .Include(x => x.Collection.Organisation)
-        .Include(x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network))
+        .Include(x => x.Collection.Organisation.OrganisationNetworks)
+            .ThenInclude(on => on.Network)
         .Include(x => x.Collection.CollectionStatus)
         .Include(x => x.Collection.ConsentRestrictions)
         .Include(x => x.Collection.AccessCondition)
         .Include(x => x.Collection.CollectionType)
-        .Include(x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType))
+        .Include(x => x.Collection.AssociatedData)
+            .ThenInclude(ad => ad.AssociatedDataType)
         .Include(x => x.AgeRange)
         .Include(x => x.DonorCount)
         .Include(x => x.Sex)
         .Include(x => x.MaterialDetails)
-        .Include(x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering))
+        .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
+            .ThenInclude(s => s.ServiceOffering)
         .Include(x => x.MaterialDetails)
             .ThenInclude(y => y.CollectionPercentage)
         .Include(x => x.MaterialDetails)
@@ -154,10 +156,8 @@ public class SampleSetService : ISampleSetService
             .ThenInclude(y => y.StorageTemperature)
         .Include(x => x.Collection.Organisation.Country)
         .Include(x => x.Collection.Organisation.County)
-        .FirstOrDefaultAsync();
-
-    return (IEnumerable<SampleSet>)sampleSets;
-  }
+        .ToListAsync();
+  
   public async Task<int> GetSampleSetCountAsync()
   => await _context.SampleSets.CountAsync();
 
@@ -166,6 +166,7 @@ public class SampleSetService : ISampleSetService
 
   public async Task<int> GetIndexableSampleSetCountAsync()
     => (await GetSampleSetsByIdsForIndexingAsync(await GetAllSampleSetIdsAsync())).Count();
+  
   public async Task<int> GetSuspendedSampleSetCountAsync()
      => await _context.SampleSets.CountAsync(
          x => x.Collection.Organisation.IsSuspended);

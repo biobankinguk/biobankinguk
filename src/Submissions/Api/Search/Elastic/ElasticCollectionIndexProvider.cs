@@ -36,6 +36,8 @@ namespace Biobanks.Search.Elastic
                 settings.BasicAuthentication(username, password);
             }
 
+            settings.EnableApiVersioningHeader();
+
             _client = new ElasticClient(settings);
         }
 

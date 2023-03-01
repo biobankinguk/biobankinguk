@@ -1,4 +1,4 @@
-﻿using Biobanks.Analytics;
+using Biobanks.Analytics;
 using Biobanks.Analytics.Services;
 using Biobanks.Analytics.Services.Contracts;
 
