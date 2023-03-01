@@ -151,6 +151,36 @@ namespace Biobanks.Submissions.Api.Auth
               return true;
             })
             .Build();
+        
+        /// <summary>
+        /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsNetworkAdmin"/>,
+        /// and has a claim to the specific network request.
+        /// </summary>
+        /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
+        public static AuthorizationPolicy HasNetworkRequestClaim
+          => new AuthorizationPolicyBuilder()
+            .Combine(IsAuthenticated)
+            .Combine(IsNetworkAdmin)
+            .RequireAssertion(context =>
+            {
+              var httpContext = (DefaultHttpContext?)context.Resource;
+              
+              if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("networkId") ?? string.Empty,
+                    out var requestId))
+                return false;
+              
+              // list their network request claims
+              var networks = context.User.FindAll(CustomClaimType.NetworkRequest).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+              // verify network request claim
+              if (!networks.ContainsKey(requestId))
+                return false;
+
+              return true;
+            })
+            .Build();
 
         /// <summary>
         /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsNetworkAdmin"/>,

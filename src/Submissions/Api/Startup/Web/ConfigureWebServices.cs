@@ -171,6 +171,8 @@ public static class ConfigureWebServices
         AuthPolicies.HasBiobankRequestClaim);
       o.AddPolicy(nameof(AuthPolicies.HasBiobankClaim),
         AuthPolicies.HasBiobankClaim);
+      o.AddPolicy(nameof(AuthPolicies.HasNetworkRequestClaim), 
+        AuthPolicies.HasNetworkRequestClaim);
       o.AddPolicy(nameof(AuthPolicies.HasNetworkClaim),
         AuthPolicies.HasNetworkClaim);
       o.AddPolicy(nameof(AuthPolicies.CanAdministerSampleSet),
