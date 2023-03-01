@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +10,8 @@ using System.Text;
 using Biobanks.Submissions.Api.Services.Directory.Dto;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Analytics.Dto;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
@@ -24,19 +26,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
         private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
 
         private readonly IOrganisationDirectoryService _organisationService;
-        private readonly ICollectionService _collectionService;
+    private readonly IOrganisationReportGenerator _organisationReports;
+    private readonly ICollectionService _collectionService;
 
         private readonly HttpClient _client;
 
 
         public AnalyticsReportGenerator(
             ICollectionService collectionService,
-            IOrganisationDirectoryService organisationService)
+            IOrganisationDirectoryService organisationService,
+            IOrganisationReportGenerator organisationReports)
         {
             _collectionService = collectionService;
             _organisationService = organisationService;
-
-            _client = new HttpClient();
+      _organisationReports = organisationReports;
+      _client = new HttpClient();
 
             if (!string.IsNullOrEmpty(_apiUrl))
             {
@@ -55,6 +59,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             //can split into two functions that returns status code and status message
             var bb = await _organisationService.GetByExternalId(biobankId);
             int collectionCount = bb.Collections.Count;
+            
             int capabilitiesCount = bb.DiagnosisCapabilities.Count;
 
             bool missingSampleSet = false;
@@ -71,7 +76,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             }
 
             //Check Collection Status
-            if (collectionCount == 0)
+            if (collectionCount == 0 )
             {
                 profileStatus.CollectionStatus = 0;
                 profileStatus.CollectionStatusMessage = "No collections registered";
@@ -102,20 +107,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
             return profileStatus;
         }
 
-        public async Task<BiobankAnalyticReportDTO> GetBiobankReport(int Id, int year, int quarter, int period)
+        public async Task<OrganisationReportDto> GetBiobankReport(int Id, int year, int quarter, int period)
         {
             var bb = await _organisationService.Get(Id);
             var biobankId = bb.OrganisationExternalId;
 
             if (bb is null) throw new KeyNotFoundException();
 
-            var endpoint = $"analytics/{year}/{quarter}/{period}/{biobankId}";
-            var response = await _client.GetAsync(endpoint);
-            var contents = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            var report = JsonConvert.DeserializeObject<BiobankAnalyticReportDTO>(contents);
+            var report = await _organisationReports.GetReport(biobankId, year, quarter, period);
 
             var profileStatus = await GetProfileStatus(biobankId);
             report.Name = bb.Name;

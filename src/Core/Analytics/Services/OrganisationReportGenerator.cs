@@ -1,4 +1,4 @@
-﻿using Biobanks.Analytics.Dto;
+using Biobanks.Analytics.Dto;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Entities.Data.Analytics;
 using Biobanks.Extensions;
@@ -48,7 +48,7 @@ namespace Biobanks.Analytics.Services
             var pageViews = GetProfilePageViews(organisationId, biobankData);
             var searchActivity = GetSearchActivity(organisationId, biobankData);
             var contactRequests = GetContactRequests(organisationId, eventData);
-
+          
             return new()
             {
                 ExternalId = organisationId,
@@ -58,7 +58,7 @@ namespace Biobanks.Analytics.Services
                 NumOfTopBiobanks = _config.MetricThreshold,
                 ProfilePageViews = pageViews,
                 SearchActivity = searchActivity,
-                ContactRequests = contactRequests
+                ContactRequests = contactRequests,
             };
         }
 
