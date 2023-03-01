@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Analytics
+namespace Biobanks.Analytics
 {
     public class AnalyticsOptions
     {

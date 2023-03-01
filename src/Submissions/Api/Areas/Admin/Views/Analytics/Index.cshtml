@@ -10,12 +10,12 @@
     var sampleResourceName = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName);
 }
 
-<partial name = "_ADACTabs" model ="Analytics" />
+@await Html.PartialAsync("_ADACTabs", "Analytics")
 
 @* Report Header *@
 <h1>TDCC Analytics Report</h1>
 
-@using (Html.BeginForm("Analytics", "Analytics", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+@using (Html.BeginForm("Index", "Analytics", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
 {
     <div class="form-group">
         <label for="Year" class="col-sm-4 control-label required">
@@ -336,8 +336,7 @@
 </script>
 @* Test Plotly *@
 
-@* TODO: Bundling *@
-@* @section FooterScripts *@
-@* { *@
-@*     @Scripts.Render("~/bundles/analytics/directoryreport") *@
-@* } *@
+@section FooterScripts
+{
+  <script src="~/dist/js/Analytics/directoryreport.min.js"></script>
+}

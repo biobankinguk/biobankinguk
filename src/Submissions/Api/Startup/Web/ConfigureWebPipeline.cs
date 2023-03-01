@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using Biobanks.Submissions.Api.Auth;
 using ClacksMiddleware.Extensions;
+using Core.Jobs;
 using Hangfire;
+using Hangfire.Common;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -105,6 +108,7 @@ public static class ConfigureWebPipeline
 
   private static WebApplication UseAndMapHangfireDashboard(this WebApplication app)
   {
+
     // In Development, Map the dashboard without any auth
     if (app.Environment.IsDevelopment())
     {
@@ -124,6 +128,9 @@ public static class ConfigureWebPipeline
 
     // Add the middleware
     app.UseHangfireDashboard();
+
+    // Run Hangfire Jobs
+    RecurringJob.AddOrUpdate<AnalyticsJob>("analyticjob", x => x.Run(), Cron.Yearly(4));
 
     return app;
   }
