@@ -49,7 +49,7 @@
         <NavNode key="NetworkAcceptance" text="Network Acceptance" controller="Biobank" action="NetworkAcceptance"/>
   
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
-        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Analytics"/>
+        <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Index"/>
           
         <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
           <Children>
@@ -132,14 +132,15 @@
     <!-- Content Pages -->
     <NavNode key="AdminRequests" text="Admin" controller="Requests" area="Admin" action="Index">
       <Children>
-        <NavNode key="PagesAdmin" text="Content Pages Admin" controller="PagesAdmin" action="Index">
+        <NavNode key="PagesAdmin" text="Content Pages Admin" controller="PagesAdmin" area="Admin" action="Index">
           <Children>
-            <NavNode key="PagesCreateEdit" text="CreateEdit" controller="PagesAdmin" action="CreateEdit" preservedRouteParameters="id"/>
+            <NavNode key="PagesCreateEdit" text="Create / Edit" controller="PagesAdmin" area="Admin" action="CreateEdit" preservedRouteParameters="id"/>
           </Children>
         </NavNode>
       </Children>
     </NavNode>
-    <NavNode key="PagesContent" text="Pages" controller="PagesAdmin" action="ContentPage" preservedRouteParameters="slug"/>
+    <NavNode key="PagesContent" text="Pages" controller="PagesAdmin" action="ContentPage" area="Admin" preservedRouteParameters="slug"/>
+    <NavNode key="Pages" text="Pages" namedRoute="ContentPage" preservedRouteParameters="slug"/>
     
   </Children>
 </NavNode>

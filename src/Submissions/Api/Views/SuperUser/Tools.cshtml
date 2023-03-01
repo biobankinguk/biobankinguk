@@ -7,7 +7,7 @@
 
 <br />
 
- <partial name = "_SuperUserTabs" model="Model" />
+@await Html.PartialAsync("_SuperUserTabs", "Tools")
 
 <h2>
     Superuser Tools
@@ -29,8 +29,3 @@
         </p>
     </div>
 }
-
-@*
-  TODO:
-@Scripts.Render("~/bundles/bootbox")
-*@
