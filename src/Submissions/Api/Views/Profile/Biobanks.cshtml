@@ -75,7 +75,7 @@
 							
 							@if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
 							{
-								<td>@organisation.County.Value</td>
+								<td>@organisation.County?.Value</td>
 							}
 							
 							<td>@organisation.Description</td>
