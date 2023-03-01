@@ -1,4 +1,5 @@
 @inject IOptions<SitePropertiesOptions> _config
+@model Biobanks.Submissions.Api.Models.Emails.ContactListEmailModel 
 
 @{
 	var directoryName = @_config.Value.ServiceName;
@@ -10,7 +11,7 @@
 
 Kindly find below the contact information for the Organisations in your list
 
-@Html.Raw(ViewBag.ContactList)
+@Model.Contactlist
 
 If you didn't request this, please ignore this email.
 

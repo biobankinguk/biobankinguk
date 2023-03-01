@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Controllers.Directory
 {
@@ -14,16 +15,20 @@ namespace Biobanks.Submissions.Api.Controllers.Directory
     public class HomeController : Controller
     {
         private readonly IConfigService _configService;
+        private readonly SitePropertiesOptions _sitePropertiesOptions;
 
-        public HomeController(IConfigService configService)
+        public HomeController(
+          IConfigService configService, 
+          IOptions<SitePropertiesOptions> sitePropertiesOptions)
         {
             _configService = configService;
+            _sitePropertiesOptions = sitePropertiesOptions.Value;
         }
 
         // GET: Home
         public async Task<IActionResult> Index()
         {
-            var viewName = ConfigurationManager.AppSettings["AlternateHomepage"] == "true"
+            var viewName = _sitePropertiesOptions.AlternateHomepage == "true"
                 ? "AltIndex" : "Index";
 
             return View(viewName, new HomepageContentModel
