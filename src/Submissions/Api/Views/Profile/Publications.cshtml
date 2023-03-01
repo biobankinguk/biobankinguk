@@ -6,7 +6,11 @@
 }
 
 <br />
-<partial name= "_ProfileTabs" model= "@("Publications")">
+
+@await Html.PartialAsync("_ProfileTabs", "Publications", new ViewDataDictionary(ViewData)
+       {
+         { "id", Model.ExternalId }
+       })
 
 <h3>
 	@ViewBag.Title
@@ -59,3 +63,8 @@
         }
     </div>
 </div>
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Profile/publications.min.js" asp-append-version="true"></script>
+}
