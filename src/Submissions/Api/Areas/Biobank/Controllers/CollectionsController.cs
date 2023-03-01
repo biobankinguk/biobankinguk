@@ -36,6 +36,7 @@ public class CollectionsController : Controller
   private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IAbstractCrudService _abstractCrudService;
   private readonly IMaterialTypeService _materialTypeService;
+  private readonly IOrganisationDirectoryService _organisationService;
 
   public CollectionsController(
       ICollectionService collectionService,
@@ -48,7 +49,8 @@ public class CollectionsController : Controller
       IMapper mapper,
       IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
       IAbstractCrudService abstractCrudService,
-      IMaterialTypeService materialTypeService
+      IMaterialTypeService materialTypeService,
+      IOrganisationDirectoryService organisationService
   )
   {
     _collectionService = collectionService;
@@ -62,6 +64,7 @@ public class CollectionsController : Controller
     _macroscopicAssessmentService = macroscopicAssessmentService;
     _abstractCrudService = abstractCrudService;
     _materialTypeService = materialTypeService;
+    _organisationService = organisationService;
   }
 
   [HttpGet]
@@ -83,6 +86,14 @@ public class CollectionsController : Controller
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
+
+    var biobank = await _organisationService.Get(biobankId);
+
+/*    var currentCrumbAdjuster = new NavigationNodeAdjuster(Request.HttpContext);
+    currentCrumbAdjuster.KeyToAdjust = "ActiveOrganisationName";
+    currentCrumbAdjuster.AdjustedText = biobank.Name;
+    currentCrumbAdjuster.ViewFilterName = NamedNavigationFilters.Breadcrumbs;
+    currentCrumbAdjuster.AddToContext();*/
 
     return View(model);
   }

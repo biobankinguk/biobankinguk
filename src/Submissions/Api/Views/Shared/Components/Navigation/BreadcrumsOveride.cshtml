@@ -1,0 +1,61 @@
+@using Biobanks.Submissions.Api.Constants
+@using System.Text.Json
+@using cloudscribe.Web.Navigation
+@model NavigationViewModel
+@if (Model.CurrentNode != null && Model.ParentChain.Count > 1)
+{
+    <ol class="breadcrumb">
+    @foreach (var node in Model.ParentChain)
+    {
+        if (!(await Model.ShouldAllowView(node))) { continue; }
+
+            if (node.Value.Key == "ActiveOrganisationName")
+            {
+                if((node.Value.Area) == "Biobank")
+                {
+                var biobanks = User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                    .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+                    var biobankId = ViewContext.RouteData.Values["biobankId"];
+                    int intBiobankId = Int32.Parse(biobankId.ToString());
+
+                    var biobankName = biobanks[intBiobankId];
+                    <li>@biobankName</li>
+                }
+            }
+            if (node.Value.Key == "ActiveNetworkName")
+            {
+                if((node.Value.Area) == "Network")
+                {
+                 <li>Network</li>
+                }
+            }
+            else
+            {
+              if (node.EqualsNode(Model.CurrentNode))
+              {
+                  if (Model.TailCrumbs != null)
+                  {
+                      <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li>
+                  }
+                  else
+                  {
+                      <li class="active">@Model.AdjustText(node)</li>
+                  }
+              }
+              else
+              {
+                  <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li>
+              }
+            }
+    }
+    @if (Model.TailCrumbs != null)
+    {
+        foreach (var n in Model.TailCrumbs)
+        {
+            <li class="active">@n.Text</li>
+        }
+    }
+    </ol>
+}

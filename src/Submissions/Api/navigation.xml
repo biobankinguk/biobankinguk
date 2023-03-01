@@ -2,9 +2,8 @@
 <NavNode key="Home" controller="Home" action="Index" text="Home" iconCssClass="glyphicon glyphicon-home">
   <Children>
     
-    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" url="#">
-      <Children>
-        
+    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" area="Biobank" link ="#">
+      <Children>  
         <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index">
           <Children>
             <NavNode key="AddCollection" text="Add collection" controller="Collections" area="Biobank" action="AddCollection"/>
@@ -51,21 +50,26 @@
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
         <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Analytics"/>
           
-        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
-          <Children>
-            <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
-          </Children>
-        </NavNode>
-        <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
-        <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
-          <Children>
-            <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
-          </Children>
-        </NavNode>
+
       </Children>
     </NavNode>
-    
-    <NavNode key="ContactBiobanks" text="Contact Biobanks" controller="Home" action="Contact"/>
+    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" link ="#">
+      <Children>
+      <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
+        <Children>
+          <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
+        </Children>
+      </NavNode>
+
+      <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
+      <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
+        <Children>
+          <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
+        </Children>
+      </NavNode>
+      </Children>
+    </NavNode>
+      <NavNode key="ContactBiobanks" text="Contact Biobanks" controller="Home" action="Contact"/>
     <NavNode key="Cookies" text="Cookie policy" controller="Home" action="Cookies"/>
 
     <NavNode key="CollectionSearch" text="Collection search" controller="Search" action="Collections"/>
