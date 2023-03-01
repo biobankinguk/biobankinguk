@@ -48,7 +48,6 @@ namespace Biobanks.Analytics.Services
             var pageViews = GetProfilePageViews(organisationId, biobankData);
             var searchActivity = GetSearchActivity(organisationId, biobankData);
             var contactRequests = GetContactRequests(organisationId, eventData);
-            
           
             return new()
             {
@@ -60,7 +59,6 @@ namespace Biobanks.Analytics.Services
                 ProfilePageViews = pageViews,
                 SearchActivity = searchActivity,
                 ContactRequests = contactRequests,
-                
             };
         }
 

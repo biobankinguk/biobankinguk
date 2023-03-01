@@ -12,7 +12,6 @@ namespace Biobanks.Analytics.Dto
         public int ReportPeriod { get; set; }
         public int NumOfTopBiobanks { get; set; }
         public ProfileStatusDTO BiobankStatus { get; set; }
-
         public ProfilePageViewsDto ProfilePageViews { get; set; }
         public SearchActivityDto SearchActivity { get; set; }
         public ContactRequestsDto ContactRequests { get; set; }

@@ -65,7 +65,4 @@ public class AnalyticsController : Controller
             return View(new DirectoryAnalyticReport());
         }
     }
-
-
-
 }
