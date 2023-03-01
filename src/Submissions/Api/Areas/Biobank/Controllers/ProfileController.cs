@@ -98,9 +98,6 @@ public class ProfileController : Controller
     {
         var model = await GetBiobankDetailsModelAsync(biobankId);
 
-        if (biobankId == 0)
-            return RedirectToAction("Index", "Home");
-
         //for viewing details only, we include networks
         var networks = await _networkService.ListByOrganisationId(biobankId);
 

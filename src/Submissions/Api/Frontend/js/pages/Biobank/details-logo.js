@@ -24,7 +24,7 @@
           success: function (response) {
             if (response.key === true) {
               var d = new Date();
-              $("#TempNetworkLogo").attr(
+              $("#TempBiobankLogo").attr(
                 "src",
                 response.value + "/" + d.getTime()
               );

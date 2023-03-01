@@ -12,7 +12,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("AddCapability", "Capabilities", FormMethod.Post, new { biobankId = ViewContext.RouteData.Values["biobankId"], @class = "form-horizontal col-sm-10" }))
+@using (Html.BeginForm("AddCapability", "Capabilities", new { biobankId = ViewContext.RouteData.Values["biobankId"]}, FormMethod.Post, true, new { @class = "form-horizontal col-sm-10" }))
 {
   @Html.AntiForgeryToken()
   
