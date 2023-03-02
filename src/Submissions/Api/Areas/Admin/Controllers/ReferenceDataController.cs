@@ -718,7 +718,7 @@ public class ReferenceDataController : Controller
                               }
                            )
                           .Result
-                      )
+                      ).DefaultIfEmpty(new CountyModel() { CountryId = x.Id })
                   )
               }
           );

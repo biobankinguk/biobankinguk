@@ -54,6 +54,7 @@ public class ProfileController : Controller
     private readonly AnnualStatisticsOptions _annualStatisticsConfig;
     private readonly PublicationsOptions _publicationsConfig;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public ProfileController(
         IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
@@ -71,7 +72,8 @@ public class ProfileController : Controller
         IReferenceDataCrudService<ServiceOffering> serviceOfferingService,
         IOptions<AnnualStatisticsOptions> annualStatisticsOptions,
         IOptions<PublicationsOptions> publicationsOptions,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
         _biobankService = biobankService;
@@ -89,6 +91,7 @@ public class ProfileController : Controller
         _annualStatisticsConfig = annualStatisticsOptions.Value;
         _publicationsConfig = publicationsOptions.Value;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
     
     #region Details
@@ -97,9 +100,6 @@ public class ProfileController : Controller
     public async Task<ActionResult> Index(int biobankId)
     {
         var model = await GetBiobankDetailsModelAsync(biobankId);
-
-        if (biobankId == 0)
-            return RedirectToAction("Index", "Home");
 
         //for viewing details only, we include networks
         var networks = await _networkService.ListByOrganisationId(biobankId);
@@ -187,6 +187,10 @@ public class ProfileController : Controller
         {
             new Claim(CustomClaimType.Biobank, JsonConvert.SerializeObject(new KeyValuePair<int, string>(biobank.OrganisationId, biobank.Name)))
         });
+        
+        // Resign in the user so their claims are repopulated.
+        var user = await _userManager.GetUserAsync(User);
+        await _signInManager.RefreshSignInAsync(user);
 
         //Logo upload (now we have the id, we can form the filename)
         if (model.Logo != null)
@@ -213,28 +217,46 @@ public class ProfileController : Controller
         return biobank;
     }
 
-    public async Task<ActionResult> Edit(int biobankId = default, bool detailsIncomplete = false)
+    /// <summary>
+    /// Route to create a new biobank.
+    /// </summary>
+    /// <param name="biobankId">This is actually the organisation request ID,
+    /// but is called this for ease of routing.</param>
+    /// <returns>Edit view for Biobank.</returns>
+    [Authorize(nameof(AuthPolicies.HasBiobankRequestClaim))]
+    public async Task<ActionResult> Create(int biobankId)
+    {
+      // Check the organisation request has not been accepted
+      var request = await _organisationService.GetRegistrationRequest(biobankId);
+      if (request.OrganisationCreatedDate.HasValue)
+      {
+        // get the biobank to redirect to.
+        var biobank = await _organisationService.GetByName(request.OrganisationName);
+        this.SetTemporaryFeedbackMessage("This biobank has already been created.", FeedbackMessageType.Info);
+        RedirectToAction("Index", "Collections", new { area = "Biobank", biobank.OrganisationId });
+      }
+      
+      var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+      this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
+        FeedbackMessageType.Info);
+      
+      var model = await NewBiobankDetailsModelAsync(biobankId);
+          
+      // Reset the biobankId in the model state so the form does not populate it.
+      // Ensures a new biobank is created.
+      ModelState.SetModelValue("biobankId", new ValueProviderResult());
+      return View("Edit", model);
+    }
+
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    public async Task<ActionResult> Edit(int biobankId, bool detailsIncomplete = false)
     {
         var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
 
         if (detailsIncomplete)
             this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
                 FeedbackMessageType.Info);
-
-        var org = await _organisationService.Get(biobankId);
-
-        // no biobank means we're dealing with a request
-        if (org is null)
-        {
-          var model = await NewBiobankDetailsModelAsync(biobankId);
-          
-          // Reset the biobankId in the model state so the form does not populate it.
-          // Ensures a new biobank is created.
-          ModelState.SetModelValue("biobankId", new ValueProviderResult());
-          return View(model);
-        }
-
-        // biobank id means we're dealing with an existing biobank
+        
         return View(await GetBiobankDetailsModelAsync(biobankId)); 
     }
 

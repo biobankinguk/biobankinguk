@@ -44,6 +44,7 @@ public class ProfileController : Controller
   private readonly IConfigService _configService;
   private readonly IOrganisationDirectoryService _organisationService;
   private readonly IBiobankService _biobankService;
+  private readonly SignInManager<ApplicationUser> _signInManager;
 
   public ProfileController(INetworkService networkService, ILogoStorageProvider logoStorageProvider, 
     IReferenceDataCrudService<SopStatus> sopStatusService, 
@@ -51,7 +52,8 @@ public class ProfileController : Controller
     IEmailService emailService,
     IConfigService configService,
     IOrganisationDirectoryService organisationService,
-    IBiobankService biobankService
+    IBiobankService biobankService,
+    SignInManager<ApplicationUser> signInManager
     )
   {
     _networkService = networkService;
@@ -62,6 +64,7 @@ public class ProfileController : Controller
     _configService = configService;
     _organisationService = organisationService;
     _biobankService = biobankService;
+    _signInManager = signInManager;
   }
 
   private async Task<List<RegisterEntityAdminModel>> GetAdminsAsync(int networkId, bool excludeCurrentUser)
@@ -92,24 +95,43 @@ public class ProfileController : Controller
     return View(await GetNetworkDetailsModelAsync(networkId));
   }
 
+  /// <summary>
+  /// Route to create a new network.
+  /// </summary>
+  /// <param name="networkId">This is actually the request ID,
+  /// but is called this for ease of routing.</param>
+  /// <returns>Edit view for network.</returns>
+  [Authorize(nameof(AuthPolicies.HasNetworkRequestClaim))]
+  public async Task<ActionResult> Create(int networkId)
+  {
+    // Check the organisation request has not been accepted
+    var request = await _networkService.GetRegistrationRequest(networkId);
+    if (request.NetworkCreatedDate.HasValue)
+    {
+      // get the biobank to redirect to.
+      var network = await _organisationService.GetByName(request.NetworkName);
+      this.SetTemporaryFeedbackMessage("This biobank has already been created.", FeedbackMessageType.Info);
+      RedirectToAction("Biobanks", "Profile", new { area = "Network", network.OrganisationId });
+    }
+      
+    var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
+    this.SetTemporaryFeedbackMessage("Please fill in the details below for your " + sampleResource + ". Once you have completed these, you'll be able to perform other administration tasks",
+      FeedbackMessageType.Info);
+      
+    var model = await NewNetworkDetailsModelAsync(networkId);
+          
+    // Reset the biobankId in the model state so the form does not populate it.
+    // Ensures a new biobank is created.
+    ModelState.SetModelValue("biobankId", new ValueProviderResult());
+    return View("Edit", model);
+  }
+
+  [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
   public async Task<ActionResult> Edit(int networkId, bool detailsIncomplete = false)
   {
     if (detailsIncomplete)
       this.SetTemporaryFeedbackMessage("Please fill in the details below for your network. Once you have completed these, you'll be able to perform other administration tasks",
           FeedbackMessageType.Info);
-
-    var org = await _networkService.Get(networkId);
-
-    // network means we're dealing with a request.
-    if (org is null)
-    {
-      var model = await NewNetworkDetailsModelAsync(networkId);
-      
-      // Reset the biobankId in the model state so the form does not populate it.
-      // Ensures a new biobank is created.
-      ModelState.SetModelValue("networkId", new ValueProviderResult());
-      return View(model);
-    }
     
     //network id means we're dealing with an existing network
     return View(await GetNetworkDetailsModelAsync(networkId)); 
@@ -218,16 +240,16 @@ public class ProfileController : Controller
       request.NetworkCreatedDate = DateTime.Now;
       await _networkService.UpdateRegistrationRequest(request);
 
-      var user = await _userManager.GetUserAsync(User);
-
       //add a claim now that they're associated with the network
-      await _userManager.AddClaimsAsync(user, new List<Claim>
+      await _userManager.AddClaimsAsync(currentUser, new List<Claim>
                 {
                     new Claim(CustomClaimType.Network, JsonConvert.SerializeObject(new KeyValuePair<int, string>(network.NetworkId, networkDto.Name)))
                 });
+      
+      // Resign in the user so their claims are repopulated.
+      await _signInManager.RefreshSignInAsync(currentUser);
 
       //Logo upload (now we have the id, we can form the filename)
-
       if (model.Logo != null)
       {
         try
@@ -457,6 +479,12 @@ public class ProfileController : Controller
   {
     //Ensure biobankName exists (i.e. they've used the typeahead result, not just typed whatever they like)
     var biobank = await _organisationService.GetByName(model.BiobankName);
+    
+    if (biobank == null)
+    {
+      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
+      return View(model);
+    }
 
     var network = await _networkService.Get(networkId);
 
@@ -495,13 +523,7 @@ public class ProfileController : Controller
 
 
     var trustedBiobanks = await _configService.GetSiteConfig(ConfigKey.TrustBiobanks);
-
-    if (biobank == null)
-    {
-      this.SetTemporaryFeedbackMessage("We couldn't find a Biobank with the name you entered.", FeedbackMessageType.Danger);
-      return View(model);
-    }
-
+    
     if (biobank.IsSuspended)
     {
       this.SetTemporaryFeedbackMessage($"{biobank.Name} cannot be added to a network at this time.", FeedbackMessageType.Danger);

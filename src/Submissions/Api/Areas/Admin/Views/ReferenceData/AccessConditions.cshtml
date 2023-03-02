@@ -4,7 +4,7 @@
     ViewBag.Title = "Access Conditions";
 }
 
-<partial name = "_ADACTabs" model = "Access Conditions"/>
+@await Html.PartialAsync("_ADACTabs", (string)ViewBag.Title)
 
 <h3>Access Condition
 	<a href="#"

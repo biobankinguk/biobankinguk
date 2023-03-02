@@ -99,7 +99,8 @@ public class CollectionsController : Controller
   }
 
   [HttpGet]
-  public async Task<ViewResult> AddCollection()
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  public async Task<ViewResult> AddCollection(int biobankId)
   {
     return View((AddCollectionModel)(await _abstractCrudService.PopulateAbstractCRUDCollectionModel(model: (new AddCollectionModel { FromApi = false }), excludeLinkedData: true)));
   }
