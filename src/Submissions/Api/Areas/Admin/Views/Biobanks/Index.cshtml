@@ -29,16 +29,17 @@
                 {
                     <tr class="@(biobank.IsSuspended ? "danger" : "")">
                         <td class="vtop">
-                            @Html.ActionLink(@biobank.Name, "Index", "Profile", new { Area = "Biobank", id=@biobank.BiobankExternalId }, null)
+                            @Html.ActionLink(@biobank.Name, "Biobank", "Profile", new { Area = "", id=@biobank.BiobankExternalId }, null)
                         </td>
                         <td class="vtop">
                             <a href="mailto:@biobank.ContactEmail">@biobank.ContactEmail</a>
-                        </td>
                         <td class="vtop">
-                            @(biobank.IsSuspended ? Html.Raw("Suspended") : Html.Raw("Active"))
+                          @(biobank.IsSuspended ? "Suspended" : "Active")
                         </td>
                         <td>
-                            @Html.ActionLink("Admin", "BiobankAdmin", "Biobanks", new {id = biobank.BiobankId}, new {@class = "btn btn-edit"})
+                            <a href="@Url.Action("BiobankAdmin", "Biobanks", new { Area = "Admin", id = biobank.BiobankId })">
+                                <span class="fa fa-tools labelled-icon"></span>Admin
+                            </a>
                         </td>
                     </tr>
                 }
