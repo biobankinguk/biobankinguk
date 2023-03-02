@@ -440,7 +440,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => await QueryRegistrationRequests()
                 .AsNoTracking()
                 .Where(x =>
-                    x.AcceptedDate != null &&
+                    x.AcceptedDate != null ||
                     x.DeclinedDate != null)
                 .ToListAsync();
 
