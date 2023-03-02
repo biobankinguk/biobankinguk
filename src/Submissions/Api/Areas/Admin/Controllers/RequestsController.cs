@@ -151,7 +151,7 @@ public class RequestsController : Controller
           new EmailAddress(request.UserEmail),
           request.UserName,
           request.OrganisationName,
-          Url.Action("Edit", "Profile",
+          Url.Action("Create", "Profile",
               new
               {
                 Area = "Biobank",
@@ -314,7 +314,7 @@ public class RequestsController : Controller
           new EmailAddress(request.UserEmail),
           request.UserName,
           request.NetworkName,
-          Url.Action("Edit", "Profile",
+          Url.Action("Create", "Profile",
                   new
                   {
                     Area = "Network",

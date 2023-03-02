@@ -32,6 +32,7 @@ $(function () {
       name: "desc",
       displayKey: "desc",
       source: biobanks.ttAdapter(),
+      limit: 20,
     }
   );
 });

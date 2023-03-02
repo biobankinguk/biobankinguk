@@ -10,7 +10,7 @@
     var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
 
     <li>
-      <a href="@Url.Action("Edit", "Profile", new { Area = "Network", networkId = data.Key, detailsIncomplete = true})">
+      <a href="@Url.Action("Create", "Profile", new { Area = "Network", networkId = data.Key, detailsIncomplete = true})">
         <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
       </a>
     </li>
