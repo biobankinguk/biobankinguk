@@ -29,7 +29,7 @@
                 {
                     <tr class="@(biobank.IsSuspended ? "danger" : "")">
                         <td class="vtop">
-                            @Html.ActionLink(@biobank.Name, "Biobank", "Profile", new { Area = "", id=@biobank.BiobankExternalId }, null)
+                            @Html.ActionLink(@biobank.Name, "Biobank", "Profile", new { Area = "", id=biobank.BiobankExternalId }, null)
                         </td>
                         <td class="vtop">
                             <a href="mailto:@biobank.ContactEmail">@biobank.ContactEmail</a>
