@@ -32,7 +32,7 @@ namespace Biobanks.Submissions.Api.Config
     public string GoogleRecaptchaPublicKey { get; set; } = string.Empty;
     
     /// <summary>
-    /// 
+    /// Allow users to access their own suspended biobanks.
     /// </summary>
     public bool AllowSuspendedBiobanks { get; set; } = true;
 
