@@ -141,7 +141,7 @@ namespace Biobanks.Submissions.Api.Auth
 
               // check if we allow suspended biobanks
               var siteOptions = httpContext?.RequestServices.GetService<IOptions<SitePropertiesOptions>>();
-              if (!siteOptions.Value.AllowSuspendedBiobanks)
+              if (siteOptions != null && !siteOptions.Value.AllowSuspendedBiobanks)
               {
                 // get the biobank
                 var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
