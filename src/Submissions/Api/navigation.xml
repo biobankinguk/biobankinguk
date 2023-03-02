@@ -2,7 +2,7 @@
 <NavNode key="Home" controller="Home" action="Index" text="Home" iconCssClass="glyphicon glyphicon-home">
   <Children>
     
-    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" area="Biobank" link ="#">
+    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" area="Biobank" url ="#">
       <Children>  
         <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index">
           <Children>
@@ -52,7 +52,7 @@
           
       </Children>
     </NavNode>
-    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" link ="#">
+    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" url ="#">
       <Children>
         <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
           <Children>
@@ -60,7 +60,7 @@
           </Children>
         </NavNode>
       <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
-      <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
+      <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks" url ="#">
         <Children>
           <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
         </Children>
