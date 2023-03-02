@@ -50,17 +50,15 @@
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
         <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Index"/>
           
-
       </Children>
     </NavNode>
     <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" link ="#">
       <Children>
-      <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
-        <Children>
-          <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
-        </Children>
-      </NavNode>
-
+        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
+          <Children>
+            <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
+          </Children>
+        </NavNode>
       <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
       <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
         <Children>

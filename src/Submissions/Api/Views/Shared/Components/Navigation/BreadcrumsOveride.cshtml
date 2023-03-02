@@ -24,11 +24,19 @@
                     <li>@biobankName</li>
                 }
             }
-            if (node.Value.Key == "ActiveNetworkName")
+            else if (node.Value.Key == "ActiveNetworkName")
             {
                 if((node.Value.Area) == "Network")
                 {
-                 <li>Network</li>
+                var networks = User.FindAll(CustomClaimType.Network).ToDictionary(x => JsonSerializer
+                .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+                    .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+                    var networkId = ViewContext.RouteData.Values["networkId"];
+                    int intNetworkId = Int32.Parse(networkId.ToString());
+
+                    var biobankName = networks[intNetworkId];
+                    <li>@biobankName</li>
                 }
             }
             else
