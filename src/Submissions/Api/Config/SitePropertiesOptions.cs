@@ -30,6 +30,11 @@ namespace Biobanks.Submissions.Api.Config
     public string GoogleRecaptchaSecret { get; set; } = string.Empty;
     
     public string GoogleRecaptchaPublicKey { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool AllowSuspendedBiobanks { get; set; } = true;
 
     /// <summary>
     /// How long in milliseconds authenticated user sessions should last on the client side
