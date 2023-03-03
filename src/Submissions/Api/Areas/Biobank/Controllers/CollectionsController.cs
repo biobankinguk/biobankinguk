@@ -87,14 +87,6 @@ public class CollectionsController : Controller
       })
     };
 
-    var biobank = await _organisationService.Get(biobankId);
-
-/*    var currentCrumbAdjuster = new NavigationNodeAdjuster(Request.HttpContext);
-    currentCrumbAdjuster.KeyToAdjust = "ActiveOrganisationName";
-    currentCrumbAdjuster.AdjustedText = biobank.Name;
-    currentCrumbAdjuster.ViewFilterName = NamedNavigationFilters.Breadcrumbs;
-    currentCrumbAdjuster.AddToContext();*/
-
     return View(model);
   }
 
