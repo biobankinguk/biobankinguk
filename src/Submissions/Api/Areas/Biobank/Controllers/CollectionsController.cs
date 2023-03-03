@@ -71,6 +71,8 @@ public class CollectionsController : Controller
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
+    if (biobankId == 0)
+      return RedirectToAction("Index", "Home");
     var collections = await _collectionService.List(biobankId);
 
     // Build ViewModel.
@@ -86,6 +88,7 @@ public class CollectionsController : Controller
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
+
 
     return View(model);
   }

@@ -4,7 +4,7 @@
     
     <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" area="Biobank" url ="#">
       <Children>  
-        <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index">
+        <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index" preservedRouteParameters="biobankId">
           <Children>
             <NavNode key="AddCollection" text="Add collection" controller="Collections" area="Biobank" action="AddCollection"/>
             <NavNode key="EditCollection" text="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="id"/>
@@ -22,7 +22,7 @@
           </Children>
         </NavNode>
 
-        <NavNode key="Capabilities" text="Capabilities" controller="Capabilities" area="Biobank" action="Index">
+        <NavNode key="Capabilities" text="Capabilities" controller="Capabilities" area="Biobank" action="Index" preservedRouteParameters="biobankId">
           <Children>
             <NavNode key="AddCapability" text="Add capability" controller="Capabilities" area="Biobank" action="AddCapability"/>
             <NavNode key="Capability" text="Capability" controller="Capabilities" area="Biobank" action="Capability" preservedRouteParameters="id">
@@ -52,16 +52,14 @@
           
       </Children>
     </NavNode>
-    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" url ="#">
+    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" url ="#" preservedRouteParameters="networkId">
       <Children>
-        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
+        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details" preservedRouteParameters="networkId">
           <Children>
             <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
           </Children>
         </NavNode>
-      <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
-      <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks" url ="#">
-        <Children>
+      <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins" preservedRouteParameters="networkId"/>"<NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks" url ="#" preservedRouteParameters="networkId">"<Children>
           <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
         </Children>
       </NavNode>

@@ -46,7 +46,7 @@
             {
               if (Model.TailCrumbs != null)
               {
-              <li><a href="@Url.Content(Model.AdjustUrl(node))/@biobankId@networkId">@Model.AdjustText(node)</a><span class="divider"></span></li>
+              <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li>
               }
               else
               {
@@ -55,7 +55,7 @@
             }
         else
         {
-            <li><a href="@Url.Content(Model.AdjustUrl(node))/@biobankId@networkId">@Model.AdjustText(node)</a><span class="divider"></span></li>
+            <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li>
         }
     }
     </ol>
