@@ -42,17 +42,21 @@
                     <li><a href=@Url.Action("Biobanks","Profile", new { area = "Network",networkId = intNetworkId} ) >@networkName</a><span class="divider"></span></li>
                 }
             }
-            else
+            else if (node.EqualsNode(Model.CurrentNode))
             {
-               if (Model.TailCrumbs != null)
-                  {
-                      <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li>
-                  }
-                 else
-                  {
-                      <li class="active">@Model.AdjustText(node)</li>
-                  }
+              if (Model.TailCrumbs != null)
+              {
+              <li><a href="@Url.Content(Model.AdjustUrl(node))/@biobankId@networkId">@Model.AdjustText(node)</a><span class="divider"></span></li>
+              }
+              else
+              {
+              <li class="active">@Model.AdjustText(node)</li>
+              }
             }
+        else
+        {
+            <li><a href="@Url.Content(Model.AdjustUrl(node))/@biobankId@networkId">@Model.AdjustText(node)</a><span class="divider"></span></li>
+        }
     }
     </ol>
 }
