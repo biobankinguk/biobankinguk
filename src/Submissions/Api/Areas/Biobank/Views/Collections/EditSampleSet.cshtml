@@ -58,7 +58,7 @@
             }
 
             // Material Preservation Details
-            @if (!string.IsNullOrEmpty(Model.MaterialPreservationDetailsJson))
+            @if (Model.MaterialPreservationDetails.Count > 0)
             {
                 @:sampleSetVM.materialPreservationDetails(ko.utils.arrayMap(@Html.Raw(Model.MaterialPreservationDetailsJson), function(x)
                 @:{
