@@ -197,7 +197,7 @@ $(function () {
     columns: [
       { data: "description" },
       { data: "ontologyTermId" },
-      { data: "otherTerms" },
+      { data: "otherTerms", defaultContent: "" },
       { data: "collectionCapabilityCount" },
       {
         data: "displayOnDirectory",
@@ -287,7 +287,7 @@ $(function () {
     ],
     createdRow: function (row, data, dataIndex) {
       // Highlight In Use Disease Statuses
-      if (data.CollectionCapabilityCount > 0) {
+      if (data.collectionCapabilityCount > 0) {
         $(row).addClass("info");
       }
 
