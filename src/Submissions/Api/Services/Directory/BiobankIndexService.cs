@@ -129,6 +129,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
           .ThenInclude(x => x.MaterialType)
       .Include(x => x.MaterialDetails)
           .ThenInclude(x => x.StorageTemperature)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(x => x.ExtractionProcedure)
+      .Include(x => x.MaterialDetails)
+          .ThenInclude(x => x.PreservationType)
       .Include(x => x.Collection.Organisation.Country)
       .Include(x => x.Collection.Organisation.County)
       .FirstOrDefaultAsync()
@@ -306,7 +310,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
                             x.StorageTemperature.SortOrder
                           }),
                           MacroscopicAssessment = x.MacroscopicAssessment.Value,
-                          PercentageOfSampleSet = x.CollectionPercentage?.Value
+                          PercentageOfSampleSet = x.CollectionPercentage?.Value,
+                          PreservationType = x.PreservationType?.Value,
+                          ExtractionProcedure = x.ExtractionProcedure?.Value
                         })
                         .ToList(),
         SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
