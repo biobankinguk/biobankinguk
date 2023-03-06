@@ -113,8 +113,13 @@
     </NavNode>
     <NavNode key="FlagsConfig" text="Config Flags" controller="Flags" action="Index"/>
 
-
-
+    <!-- Biobanks Profile-->
+    <NavNode key="BiobanksProfile" text ="Biobanks" controller="Profile" action ="Biobanks">
+      <Children>
+        <NavNode key="BiobankProfile" text ="Biobank" controller="Profile" action ="Biobank"/>
+        <NavNode key="BiobankProfile" text ="Biobank" controller="Profile" action ="Publications"/>
+      </Children>
+    </NavNode>
 
     <!--    Reference Data-->
     <NavNode key="RefDataAccessConditions" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
