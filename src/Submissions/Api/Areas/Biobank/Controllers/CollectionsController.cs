@@ -21,8 +21,9 @@ using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.Assoc
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
-[Area("Biobank")]
+
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+[Area("Biobank")]
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;
@@ -64,8 +65,8 @@ public class CollectionsController : Controller
     _materialTypeService = materialTypeService;
   }
 
-  [HttpGet]
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+  [HttpGet("Biobank/Collections/{biobankId}")]
   public async Task<ActionResult> Index(int biobankId)
   {
     var collections = await _collectionService.List(biobankId);
@@ -83,7 +84,6 @@ public class CollectionsController : Controller
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
-
     return View(model);
   }
 
