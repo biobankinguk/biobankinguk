@@ -25,6 +25,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public override async Task<AssociatedDataType> Update(AssociatedDataType entity)
         {
             var existing = await this.Get(entity.Id);
+            existing.Value = entity.Value;
             existing.AssociatedDataTypeGroup = entity.AssociatedDataTypeGroup;
             existing.AssociatedDataTypeGroupId = entity.AssociatedDataTypeGroupId;
             existing.Message = entity.Message;
