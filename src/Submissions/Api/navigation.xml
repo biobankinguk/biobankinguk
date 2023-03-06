@@ -2,20 +2,21 @@
 <NavNode key="Home" controller="Home" action="Index" text="Home" iconCssClass="glyphicon glyphicon-home">
   <Children>
     
-    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" url="#">
-      <Children>
-        
-        <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index">
+    <NavNode key="ActiveOrganisationName" text="ActiveOrganisationName" area="Biobank" url ="#">
+      <Children>  
+        <NavNode key="Collections" text="Collections" controller="Collections" area="Biobank" action="Index" preservedRouteParameters="biobankId">
           <Children>
             <NavNode key="AddCollection" text="Add collection" controller="Collections" area="Biobank" action="AddCollection"/>
-            <NavNode key="EditCollection" text="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="id"/>
-            <NavNode key="Collection" text="Collection" controller="Collections" area="Biobank" action="Collection" preservedRouteParameters="id">
+            <NavNode key="Collection" text="Collection" controller="Collections" area="Biobank" action="Collection" preservedRouteParameters="biobankId,Id">
+            <Children>
+            <NavNode key="EditCollection" text="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="Id"/>
+            </Children>
               <Children>
-                <NavNode key="AddSampleSet" text="Add sample set" controller="Collections" area="Biobank" action="AddSampleSet" preservedRouteParameters="id"/>
-                <NavNode key="CopySampleSet" text="Copy sample set" controller="Collections" area="Biobank" action="CopySampleSet" preservedRouteParameters="id"/>
-                <NavNode key="SampleSet" text="Sample set" controller="Collections" area="Biobank" action="SampleSet" preservedRouteParameters="id">
+                <NavNode key="AddSampleSet" text="Add sample set" controller="Collections" area="Biobank" action="AddSampleSet" preservedRouteParameters="biobankId,Id"/>
+                <NavNode key="CopySampleSet" text="Copy sample set" controller="Collections" area="Biobank" action="CopySampleSet" preservedRouteParameters="biobankId,Id"/>
+                <NavNode key="SampleSet" text="Sample set" controller="Collections" area="Biobank" action="SampleSet" preservedRouteParameters="biobankId,Id">
                   <Children>
-                    <NavNode key="EditSampleSet" text="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="id"/>
+                    <NavNode key="EditSampleSet" text="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="biobankId,Id"/>
                   </Children>
                 </NavNode>
               </Children>
@@ -23,12 +24,12 @@
           </Children>
         </NavNode>
 
-        <NavNode key="Capabilities" text="Capabilities" controller="Capabilities" area="Biobank" action="Index">
+        <NavNode key="Capabilities" text="Capabilities" controller="Capabilities" area="Biobank" action="Index" preservedRouteParameters="biobankId">
           <Children>
             <NavNode key="AddCapability" text="Add capability" controller="Capabilities" area="Biobank" action="AddCapability"/>
-            <NavNode key="Capability" text="Capability" controller="Capabilities" area="Biobank" action="Capability" preservedRouteParameters="id">
+            <NavNode key="Capability" text="Capability" controller="Capabilities" area="Biobank" action="Capability" preservedRouteParameters="biobankId,Id">
               <Children>
-                <NavNode key="EditCapability" text="Edit capability" controller="Capabilities" area="Biobank" action="EditCapability" preservedRouteParameters="id"/>
+                <NavNode key="EditCapability" text="Edit capability" controller="Capabilities" area="Biobank" action="EditCapability" preservedRouteParameters="biobankId,Id"/>
               </Children>
             </NavNode>
           </Children>
@@ -36,9 +37,9 @@
   
         <NavNode key="Publications" text="Publications" controller="Profile" area="Biobank" action="Publications"/>
   
-        <NavNode key="SampleResourceDetails" text="Sample resource details" controller="Profile" area="Biobank" action="Index">
+        <NavNode key="SampleResourceDetails" text="Sample resource details" controller="Profile" area="Biobank" action="Index" preservedRouteParameters="biobankId">
           <Children>
-            <NavNode key="EditSampleResourceDetails" text="Edit sample resource details" controller="Profile" area="Biobank" action="Edit"/>
+            <NavNode key="EditSampleResourceDetails" text="Edit sample resource details" controller="Profile" area="Biobank" action="Edit" preservedRouteParameters="biobankId"/>
           </Children>
         </NavNode>
         <NavNode key="Submissions" text="Submissions" controller="Settings" area="Biobank" action="Submissions"/>
@@ -51,21 +52,22 @@
         <NavNode key="AnnualStats" text="Annual stats" controller="Profile" area="Biobank" action="AnnualStats"/>
         <NavNode key="Analytics" text="Analytics" controller="Report" area="Biobank" action="Index"/>
           
-        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details">
-          <Children>
-            <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit"/>
-          </Children>
-        </NavNode>
-        <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins"/>
-        <NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks">
-          <Children>
-            <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank"/>
-          </Children>
-        </NavNode>
       </Children>
     </NavNode>
-    
-    <NavNode key="ContactBiobanks" text="Contact Biobanks" controller="Home" action="Contact"/>
+    <NavNode key="ActiveNetworkName" text="ActiveNetworkName" area="Network" url ="#" preservedRouteParameters="networkId">
+      <Children>
+        <NavNode key="NetworkDetails" text="Network details" controller="Profile" area="Network" action="Details" preservedRouteParameters="networkId">
+          <Children>
+            <NavNode key="EditNetworkDetails" text="Edit network details" controller="Profile" area="Network" action="Edit" preservedRouteParameters="networkId"/>
+          </Children>
+        </NavNode>
+      <NavNode key="NetworkAdmins" text="Network admins" controller="Settings" area="Network" action="Admins" preservedRouteParameters="networkId"/>"<NavNode key="NetworkBiobanks" text="Biobanks in your network" controller="Profile" area="Network" action="Biobanks" url ="#" preservedRouteParameters="networkId">"<Children>
+          <NavNode key="NetworkAdd" text="Add a biobank to your network" controller="Profile" area="Network" action="AddBiobank" preservedRouteParameters="networkId"/>
+        </Children>
+      </NavNode>
+      </Children>
+    </NavNode>
+      <NavNode key="ContactBiobanks" text="Contact Biobanks" controller="Home" action="Contact"/>
     <NavNode key="Cookies" text="Cookie policy" controller="Home" action="Cookies"/>
 
     <NavNode key="CollectionSearch" text="Collection search" controller="Search" action="Collections"/>
@@ -87,11 +89,38 @@
     <NavNode key="AdminRequests" text="Requests" controller="Requests" area="Admin" action="Index"/>
     <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
     <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
-    <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Index"/> 
+    <NavNode key="AdminBiobanks" text="Biobanks test" controller="Biobanks" area="Admin" action="Index">
+      <Children>
+        <NavNode key="BiobanksAdminDelete" text="Delete Biobank" controller="Biobanks" area="Admin" action="DeleteBiobank"/>
+        <NavNode key="BiobanksAdmin" text="Biobank Details" controller="Biobanks" area="Admin" action="BiobankAdmin"/>
+      </Children>
+    </NavNode>
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
+    <NavNode key="Analytics" text="Analytics" controller="Analytics" area="Admin" action="Index"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="Networks" area="Admin" action="Index"/>
-    <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index"/>
-    
+    <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index">
+      <Children>
+        <NavNode key="NetworkFundersDelete" text="Delete Network" controller="Funders" area="Admin" action="DeleteFunder"/>
+      </Children>
+    </NavNode>
+
+    <!--    Super User-->
+    <NavNode key="SuperUserInfo" text="Super User" controller="SuperUser" action="Index">
+      <Children>
+        <NavNode key="SuperUserSearch" text="Super User" controller="SuperUser" action="SearchIndex"/>
+        <NavNode key="SuperUserTools" text="Super User" controller="SuperUser" action="Tools"/>
+      </Children>
+    </NavNode>
+    <NavNode key="FlagsConfig" text="Config Flags" controller="Flags" action="Index"/>
+
+    <!-- Biobanks Profile-->
+    <NavNode key="BiobanksProfile" text ="Biobanks" controller="Profile" action ="Biobanks">
+      <Children>
+        <NavNode key="BiobankProfile" text ="Biobank" controller="Profile" action ="Biobank"/>
+        <NavNode key="BiobankProfile" text ="Biobank" controller="Profile" action ="Publications"/>
+      </Children>
+    </NavNode>
+
     <!--    Reference Data-->
     <NavNode key="RefDataAccessConditions" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
     <NavNode key="RefDataAgeRanges" text="Age Ranges" area="Admin" controller="ReferenceData" action="AgeRanges"/>
@@ -122,8 +151,10 @@
     <NavNode key="RefDataMotd" text="Message of the day" area="Admin" controller="ReferenceData" action="EditMotd"/>
 
     <!-- Site Configuration -->
+    <NavNode key="SiteConfig" text="Sitepage Configuration" controller="SiteConfig" area="Admin" action="SiteConfig"/>
     <NavNode key="HomepageConfig" text="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
     <NavNode key="TermpageConfig" text="Term Page Configuration" controller="SiteConfig" area="Admin" action="TermpageConfig"/>
+    <NavNode key="RegisterPagesConfig" text="Register Page Configuration" controller="SiteConfig" area="Admin" action="RegisterPagesConfig"/>
     <NavNode key="RegisterBiobankConfig" text="Register Biobank Configuration" controller="SiteConfig" area="Admin" action="RegisterBiobankConfig"/>
     <NavNode key="RegisterNetworkConfig" text="Register Network Configuration" controller="SiteConfig" area="Admin" action="RegisterNetworkConfig"/>
     <NavNode key="SiteConfig" text="Site Configuration" Admin="Admin" controller="SiteConfig" action="SiteConfig"/>
