@@ -28,7 +28,7 @@
                 {
                     <tr>
                         <td class="vtop">
-                            @Html.ActionLink(@network.Name, "Network", "Profile", new { id = @network.NetworkId }, null)
+                            @Html.ActionLink(@network.Name,"Network","Profile", new {Area = "", Id = @network.NetworkId})
                         </td>
                         <td>
                             <ul class="list-unstyled">

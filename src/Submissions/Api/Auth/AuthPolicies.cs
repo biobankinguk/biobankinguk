@@ -134,7 +134,7 @@ namespace Biobanks.Submissions.Api.Auth
               var biobanks = context.User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
                 .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
                 .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
-
+              
               // verify biobank claim
               if (!biobanks.ContainsKey(biobankId))
                 return false;

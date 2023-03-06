@@ -18,7 +18,7 @@ public class FlagsController : Controller
     {
         _configService = configService;
     }
-    public async Task<ActionResult> FlagsConfig()
+    public async Task<ActionResult> Index()
     {
 
         return View((await _configService.ListBooleanFlags(BooleanConfigSelection.AllBooleanConfigs))
