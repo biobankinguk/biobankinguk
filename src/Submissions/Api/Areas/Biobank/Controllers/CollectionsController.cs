@@ -49,8 +49,7 @@ public class CollectionsController : Controller
       IMapper mapper,
       IReferenceDataCrudService<MacroscopicAssessment> macroscopicAssessmentService,
       IAbstractCrudService abstractCrudService,
-      IMaterialTypeService materialTypeService,
-      IOrganisationDirectoryService organisationService
+      IMaterialTypeService materialTypeService
   )
   {
     _collectionService = collectionService;
@@ -64,15 +63,12 @@ public class CollectionsController : Controller
     _macroscopicAssessmentService = macroscopicAssessmentService;
     _abstractCrudService = abstractCrudService;
     _materialTypeService = materialTypeService;
-    _organisationService = organisationService;
   }
 
   [HttpGet]
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
-    if (biobankId == 0)
-      return RedirectToAction("Index", "Home");
     var collections = await _collectionService.List(biobankId);
 
     // Build ViewModel.
