@@ -531,8 +531,8 @@ public class ReferenceDataController : Controller
           .Select(x => x.First())
           .Select(x => new AssociatedDataTypeGroupModel
           {
-              AssociatedDataTypeGroupId = x.Id,
-              Name = x.Value,
+              AssociatedDataTypeGroupId = x.AssociatedDataTypeGroup.Id,
+              Name = x.AssociatedDataTypeGroup.Value,
           })
           .ToList();
 
