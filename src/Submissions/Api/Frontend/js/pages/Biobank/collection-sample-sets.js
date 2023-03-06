@@ -240,6 +240,7 @@ function AppViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
+    _this.resetModalValues();
     _this.showModal();
   };
 
