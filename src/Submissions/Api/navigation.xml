@@ -91,6 +91,7 @@
     <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
     <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Index"/> 
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
+    <NavNode key="Analytics" text="Analytics" controller="Analytics" area="Admin" action="Index"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="Networks" area="Admin" action="Index"/>
     <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index"/>
     
@@ -124,8 +125,10 @@
     <NavNode key="RefDataMotd" text="Message of the day" area="Admin" controller="ReferenceData" action="EditMotd"/>
 
     <!-- Site Configuration -->
+    <NavNode key="SiteConfig" text="Sitepage Configuration" controller="SiteConfig" area="Admin" action="SiteConfig"/>
     <NavNode key="HomepageConfig" text="Homepage Configuration" controller="SiteConfig" area="Admin" action="HomepageConfig"/>
     <NavNode key="TermpageConfig" text="Term Page Configuration" controller="SiteConfig" area="Admin" action="TermpageConfig"/>
+    <NavNode key="RegisterPagesConfig" text="Register Page Configuration" controller="SiteConfig" area="Admin" action="RegisterPagesConfig"/>
     <NavNode key="RegisterBiobankConfig" text="Register Biobank Configuration" controller="SiteConfig" area="Admin" action="RegisterBiobankConfig"/>
     <NavNode key="RegisterNetworkConfig" text="Register Network Configuration" controller="SiteConfig" area="Admin" action="RegisterNetworkConfig"/>
     <NavNode key="SiteConfig" text="Site Configuration" Admin="Admin" controller="SiteConfig" action="SiteConfig"/>
