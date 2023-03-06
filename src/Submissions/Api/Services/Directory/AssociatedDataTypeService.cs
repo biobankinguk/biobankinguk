@@ -36,6 +36,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public override async Task<ICollection<AssociatedDataType>> List(string wildcard)
             => await _db.AssociatedDataTypes
                 .AsNoTracking()
+                .Include(x => x.AssociatedDataTypeGroup)
                 .Include(x => x.OntologyTerms)
                 .Where(x => x.Value.Contains(wildcard))
                 .OrderBy(x => x.SortOrder)
