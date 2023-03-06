@@ -36,7 +36,6 @@ public class CollectionsController : Controller
   private readonly IReferenceDataCrudService<MacroscopicAssessment> _macroscopicAssessmentService;
   private readonly IAbstractCrudService _abstractCrudService;
   private readonly IMaterialTypeService _materialTypeService;
-  private readonly IOrganisationDirectoryService _organisationService;
 
   public CollectionsController(
       ICollectionService collectionService,
@@ -84,7 +83,6 @@ public class CollectionsController : Controller
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
-
 
     return View(model);
   }
