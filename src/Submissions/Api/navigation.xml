@@ -89,12 +89,33 @@
     <NavNode key="AdminRequests" text="Requests" controller="Requests" area="Admin" action="Index"/>
     <NavNode key="RegistrationDomainRules" text="Block/Allow" controller="RegistrationDomainRules" area="Admin" action="BlockAllowList"/>
     <NavNode key="RequestHistory" text="Request history" controller="Requests" area="Admin" action="Historical"/>
-    <NavNode key="AdminBiobanks" text="Biobanks" controller="Biobanks" area="Admin" action="Index"/> 
+    <NavNode key="AdminBiobanks" text="Biobanks test" controller="Biobanks" area="Admin" action="Index">
+      <Children>
+        <NavNode key="BiobanksAdminDelete" text="Delete Biobank" controller="Biobanks" area="Admin" action="DeleteBiobank"/>
+        <NavNode key="BiobanksAdmin" text="Biobank Details" controller="Biobanks" area="Admin" action="BiobankAdmin"/>
+      </Children>
+    </NavNode>
     <NavNode key="BiobankActivity" text="Biobank Activity" controller="Requests" area="Admin" action="BiobankActivity"/>
     <NavNode key="Analytics" text="Analytics" controller="Analytics" area="Admin" action="Index"/>
     <NavNode key="NetworkAdmin" text="Networks" controller="Networks" area="Admin" action="Index"/>
-    <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index"/>
-    
+    <NavNode key="NetworkFunders" text="Funders" controller="Funders" area="Admin" action="Index">
+      <Children>
+        <NavNode key="NetworkFundersDelete" text="Delete Network" controller="Funders" area="Admin" action="DeleteFunder"/>
+      </Children>
+    </NavNode>
+
+    <!--    Super User-->
+    <NavNode key="SuperUserInfo" text="Super User" controller="SuperUser" action="Index">
+      <Children>
+        <NavNode key="SuperUserSearch" text="Super User" controller="SuperUser" action="SearchIndex"/>
+        <NavNode key="SuperUserTools" text="Super User" controller="SuperUser" action="Tools"/>
+      </Children>
+    </NavNode>
+    <NavNode key="FlagsConfig" text="Config Flags" controller="Flags" action="Index"/>
+
+
+
+
     <!--    Reference Data-->
     <NavNode key="RefDataAccessConditions" text="Access Conditions" area="Admin" controller="ReferenceData" action="AccessConditions"/>
     <NavNode key="RefDataAgeRanges" text="Age Ranges" area="Admin" controller="ReferenceData" action="AgeRanges"/>
