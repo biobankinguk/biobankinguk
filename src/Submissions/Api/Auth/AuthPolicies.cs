@@ -11,7 +11,9 @@ using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Biobanks.Submissions.Api.Auth
 {
@@ -137,16 +139,21 @@ namespace Biobanks.Submissions.Api.Auth
               if (!biobanks.ContainsKey(biobankId))
                 return false;
 
-              // get the biobank
-              var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
-              if (organisationService is null)
-                return false;
+              // check if we allow suspended biobanks
+              var siteOptions = httpContext?.RequestServices.GetService<IOptions<SitePropertiesOptions>>();
+              if (siteOptions != null && !siteOptions.Value.AllowSuspendedBiobanks)
+              {
+                // get the biobank
+                var organisationService = httpContext?.RequestServices.GetService<IOrganisationDirectoryService>();
+                if (organisationService is null)
+                  return false;
 
-              var biobank = Task.Run(async () => await organisationService.Get(biobankId)).Result;
+                var biobank = Task.Run(async () => await organisationService.Get(biobankId)).Result;
 
-              //only fail if suspended
-              if (biobank is { IsSuspended: true })
-                return false;
+                //only fail if suspended
+                if (biobank is { IsSuspended: true })
+                  return false;
+              }
 
               return true;
             })

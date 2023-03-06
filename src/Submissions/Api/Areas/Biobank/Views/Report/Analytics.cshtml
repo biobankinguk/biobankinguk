@@ -7,7 +7,7 @@
     ViewBag.Title = "Analytics";
 }
 
-<partial name = "_BiobankTabs" model ="Analytics" />
+@await Html.PartialAsync("_BiobankTabs", "Analytics")
 
 @* Report Header *@
 <h1>TDCC Analytics Report</h1>

@@ -84,9 +84,11 @@
 
     <ItemGroup>
       <Assets_Fonts Include="Frontend/node_modules/font-awesome/fonts/**/*.*" />
+      <Assets_Markdown Include="Frontend/node_modules/markdowndeep/clientSide/*.png;Frontend/node_modules/markdowndeep/clientSide/*.gif" />
     </ItemGroup>
 
     <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(Assets_Markdown)" DestinationFiles="wwwroot/dist/css/%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
  
 </Project>

@@ -46,7 +46,7 @@
       // DataTables
       "Frontend/node_modules/datatables.net/js/jquery.dataTables.min.js",
       "Frontend/node_modules/datetime-moment/datetime-moment.js",
-      "Frontend/node_modules/datatables.net-bs/js/dataTables.bootstrap.min.js", // TODO: copy images
+      "Frontend/node_modules/datatables.net-bs/js/dataTables.bootstrap.min.js",
       "Frontend/node_modules/datatables.net-buttons/js/dataTables.buttons.min.js",
       "Frontend/node_modules/datatables.net-buttons-bs/js/buttons.bootstrap.min.js",
       "Frontend/node_modules/datatables.net-buttons/js/buttons.html5.min.js",
@@ -80,7 +80,7 @@
   {
     "outputFileName": "wwwroot/dist/js/markdown-editor.min.js",
     "inputFiles": [
-      "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js", // TODO: copy images
+      "Frontend/node_modules/markdowndeep/clientSide/MarkdownDeepLib.min.js",
       "Frontend/js/init/markdown-editor.js"
     ],
     "minify": { "enabled": true },
