@@ -87,12 +87,12 @@ public static class ConfigureWebPipeline
     app.MapAreaControllerRoute(
       name: "BiobankArea",
       areaName: "Biobank",
-    pattern: "Biobank/{controller=Home}/{action=List}/{biobankId?}/{id?}");
+    pattern: "Biobank/{controller=Home}/{biobankId?}/{action=Index}/{id?}");
 
     app.MapAreaControllerRoute(
       name: "NetworkArea",
       areaName: "Network",
-      pattern: "Network/{controller=Home}/{action=Index}/{networkId?}/{id?}");
+      pattern: "Network/{controller=Home}/{networkId?}/{action=Index}/{id?}");
 
     app.MapControllerRoute(
       name: "ContentPage",

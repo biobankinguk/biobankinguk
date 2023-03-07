@@ -3,8 +3,6 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Models.Biobank;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -66,7 +64,7 @@ public class CollectionsController : Controller
   }
 
   [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
-  [HttpGet("Biobank/Collections/{biobankId}")]
+  [HttpGet]
   public async Task<ActionResult> Index(int biobankId)
   {
     var collections = await _collectionService.List(biobankId);
