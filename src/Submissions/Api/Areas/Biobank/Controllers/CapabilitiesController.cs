@@ -1,7 +1,7 @@
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Auth;
+using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Models.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -14,6 +14,7 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+[SuspendedWarning]
 public class CapabilitiesController : Controller
 {
   private readonly IAbstractCrudService _abstractCrudService;

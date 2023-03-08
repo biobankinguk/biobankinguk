@@ -16,8 +16,8 @@ using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
 using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Extensions;
+using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Models.Directory;
-using Biobanks.Submissions.Api.Models.Profile;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -36,6 +36,7 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+[SuspendedWarning]
 public class ProfileController : Controller
 {
     private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
