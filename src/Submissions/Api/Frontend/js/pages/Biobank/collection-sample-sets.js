@@ -11,6 +11,10 @@ function DropDownBinding(id, description) {
 
 function preservationValidation() {
   var selectedOption = $("input[name='radPreservation']:checked").val();
+  var selectedPreservationType = $(
+    "input[name='radPreservationType']:checked"
+  ).val();
+
   $("input[name='radPreservationType']").attr("disabled", true);
   $("input[name='radPreservationType']").attr("checked", false);
   //Resetting the stored selected value
@@ -31,6 +35,13 @@ function preservationValidation() {
           "input[name='radPreservationType'][value='" + value + "']"
         );
         temp.attr("disabled", false);
+
+        // Set the value again if it already existed.
+        if (selectedPreservationType == value) {
+          sampleSetVM.modal
+            .materialPreservationDetail()
+            .preservationType(value);
+        }
       });
     },
   });
@@ -229,6 +240,7 @@ function AppViewModel() {
 
   this.openModalForAdd = function () {
     _this.modal.mode(_this.modal.modalModeAdd);
+    _this.resetModalValues();
     _this.showModal();
   };
 
