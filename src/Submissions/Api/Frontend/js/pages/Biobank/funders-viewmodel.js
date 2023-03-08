@@ -11,7 +11,7 @@ function BiobankFundersViewModel() {
 
   this.openAddFunderDialog = function () {
     $.ajax({
-      url: `/Biobank/Profile/${this.biobankId}/AddFunderAjax/`,
+      url: "/Biobank/Profile/" + this.biobankId + "/AddFunderAjax/",
       data: { biobankId: this.biobankId },
       contentType: "application/html",
       success: function (content) {
