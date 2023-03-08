@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -21,20 +23,18 @@ public class SuspendedWarningAttribute : ActionFilterAttribute
   /// functionality.
   /// </summary>
   /// <param name="context">The context of the action being executed.</param>
-  public override async void OnActionExecuting(ActionExecutingContext context)
+  public override void OnActionExecuting(ActionExecutingContext context)
   {
     if (context.Controller is Controller controller)
     {
-      // TODO: Make this safer - can't assume every action on the controller has a biobankId.
-      int biobankId = (int)context.ActionArguments["biobankId"];
-      // int.TryParse(context.ActionArguments.TryGetValue("biobankId", out var biobankId) ?? String.Empty);
-      // if (!int.TryParse((string?)httpContext?.Request.RouteValues.GetValueOrDefault("biobankId") ?? string.Empty,
-      //       out var biobankId))
-      //   return false;
-  
+      // Get the biobankId from the route parameter safely
+      int.TryParse((string)context.RouteData.Values.GetValueOrDefault("biobankId") ?? string.Empty,
+        out var biobankId);
+
       var organisationService = context.HttpContext.RequestServices.GetService<IOrganisationDirectoryService>();
-      
-      controller.ViewBag.ShowSuspendedWarning = await organisationService.IsSuspended(biobankId);
+
+      if (organisationService is not null)
+        controller.ViewBag.ShowSuspendedWarning = Task.Run(async () => await organisationService.IsSuspended(biobankId)).Result;
     }
   }
 }
