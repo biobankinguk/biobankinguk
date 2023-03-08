@@ -91,7 +91,7 @@
 
         <div class="form-group">
             <div class="col-sm-12 text-center">
-                @Html.ActionLink("Cancel", "SampleSet", new { id = Model.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel", "SampleSet", new { biobankId = ViewContext.RouteData.Values["biobankId"], id = Model.Id }, new { @class = "btn btn-default" })
                 @Html.HiddenFor(x => x.Id)
                 @Html.HiddenFor(x => x.CollectionId)
                 <button type="submit" class="btn btn-primary">Update sample set</button>

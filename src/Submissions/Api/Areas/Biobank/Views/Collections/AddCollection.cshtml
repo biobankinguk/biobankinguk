@@ -22,7 +22,7 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10 text-center">
-            @Html.ActionLink("Cancel", "Collections", null, new { @class = "btn btn-default" })
+            @Html.ActionLink("Cancel", "Index", "Collections", new { biobankId = ViewContext.RouteData.Values["biobankId"] }, new { @class = "btn btn-default" })
             <button type="submit" class="btn btn-primary">Create collection</button>
         </div>
     </div>

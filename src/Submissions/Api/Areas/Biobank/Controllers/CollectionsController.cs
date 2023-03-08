@@ -3,6 +3,7 @@ using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
+using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
@@ -22,6 +23,8 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 [Area("Biobank")]
+[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+[SuspendedWarning]
 public class CollectionsController : Controller
 {
   private readonly ICollectionService _collectionService;

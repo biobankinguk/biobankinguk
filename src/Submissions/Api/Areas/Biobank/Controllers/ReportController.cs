@@ -6,6 +6,7 @@ using AutoMapper;
 using Biobanks.Submissions.Api.Areas.Biobank.Models;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Config;
+using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Services.Directory;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.ApplicationInsights;
@@ -17,7 +18,7 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
-
+[SuspendedWarning]
 public class ReportController : Controller
 {
     private readonly IAnalyticsReportGenerator _analyticsReportGenerator;
