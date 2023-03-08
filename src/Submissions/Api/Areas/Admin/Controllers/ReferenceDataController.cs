@@ -525,16 +525,16 @@ public class ReferenceDataController : Controller
           )
           .ToList();
 
-      var groups = associatedDataTypes
-          .Where(x => x.AssociatedDataTypeGroup != null)
-          .GroupBy(x => x.AssociatedDataTypeGroupId)
-          .Select(x => x.First())
-          .Select(x => new AssociatedDataTypeGroupModel
-          {
-              AssociatedDataTypeGroupId = x.AssociatedDataTypeGroup.Id,
-              Name = x.AssociatedDataTypeGroup.Value,
-          })
-          .ToList();
+      var groups = (await _associatedDataTypeGroupService.List())
+        .Select(x =>
+          Task.Run(() => Task.FromResult(new AssociatedDataTypeGroupModel
+            {
+              AssociatedDataTypeGroupId = x.Id,
+              Name = x.Value
+            }))
+            .Result
+        )
+        .ToList();
 
       return View(new AssociatedDataTypesModel
       {
