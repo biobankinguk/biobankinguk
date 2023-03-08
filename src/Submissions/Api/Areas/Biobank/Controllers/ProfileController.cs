@@ -495,7 +495,7 @@ public class ProfileController : Controller
             SharingOptOut = bb.SharingOptOut,
             EthicsRegistration = bb.EthicsRegistration,
             BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
-            OtherRegistrationReason = bb.OtherRegistrationReason,
+            OtherRegistrationReason = bb.OtherRegistrationReason
         };
 
         model = await AddCountiesToModel(model);
