@@ -7,6 +7,7 @@ using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
 using Biobanks.Submissions.Api.Auth;
 using Biobanks.Submissions.Api.Constants;
+using Biobanks.Submissions.Api.Filters;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
@@ -21,6 +22,7 @@ namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
+[SuspendedWarning]
 public class SettingsController : Controller
 {
   private readonly UserManager<ApplicationUser> _userManager;
