@@ -164,12 +164,10 @@
     <NavNode key="SampleResourceConfig" text="Sample Resource Configuration" controller="SiteConfig" area="Admin" action="SampleResourceConfig"/>
 
     <!-- Content Pages -->
-    <NavNode key="AdminRequests" text="Admin" controller="Requests" area="Admin" action="Index">
-        <NavNode key="PagesAdmin" text="Content Pages Admin" controller="PagesAdmin" area="Admin" action="Index">
-          <Children>
-            <NavNode key="PagesCreateEdit" text="Create / Edit" controller="PagesAdmin" area="Admin" action="CreateEdit" preservedRouteParameters="id"/>
-          </Children>
-        </NavNode>
+    <NavNode key="PagesAdmin" text="Content Pages Admin" controller="PagesAdmin" area="Admin" action="Index">
+      <Children>
+        <NavNode key="PagesCreateEdit" text="Create / Edit" controller="PagesAdmin" area="Admin" action="CreateEdit" preservedRouteParameters="id"/>
+      </Children>
     </NavNode>
     <NavNode key="PagesContent" text="Pages" controller="PagesAdmin" action="ContentPage" area="Admin" preservedRouteParameters="slug"/>
     <NavNode key="Pages" text="Pages" namedRoute="ContentPage" preservedRouteParameters="slug"/>
