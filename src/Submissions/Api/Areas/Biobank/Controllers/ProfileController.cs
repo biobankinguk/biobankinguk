@@ -167,6 +167,9 @@ public class ProfileController : Controller
                 biobank.OrganisationServiceOfferings.Add(new OrganisationServiceOffering
                 { OrganisationId = biobank.OrganisationId, ServiceOfferingId = sm.ServiceOfferingId });
         }
+        
+        // Preserve its suspended state
+        biobank.IsSuspended = await _organisationService.IsSuspended(biobank.OrganisationId);
 
         biobank.Logo = logoName;
         return await _organisationService.Update(biobank);
@@ -492,7 +495,7 @@ public class ProfileController : Controller
             SharingOptOut = bb.SharingOptOut,
             EthicsRegistration = bb.EthicsRegistration,
             BiobankAnnualStatistics = bb.OrganisationAnnualStatistics,
-            OtherRegistrationReason = bb.OtherRegistrationReason
+            OtherRegistrationReason = bb.OtherRegistrationReason,
         };
 
         model = await AddCountiesToModel(model);
