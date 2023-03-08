@@ -8,13 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Biobanks.Submissions.Api.Filters;
 
 /// <summary>
-/// An <see cref="ActionFilterAttribute"/> that can be applied to a Biobank controller
-/// to check if a biobank is suspended and show the warning message if needed.
+/// An <see cref="ActionFilterAttribute"/> that can be applied to a biobank area controller
+/// to check if a biobank is suspended, and show the warning message if it is.
 /// </summary>
 /// <remarks>
-/// This attribute overrides the OnActionExecuting method of the base class and checks
+/// This attribute overrides the <see cref="OnActionExecuting"/> method of the base class and checks
 /// the 'biobankId' parameter of the action's context to determine if the biobank is suspended. 
 /// If it is, it sets the 'ShowSuspendedWarning' property of the controller's ViewBag to true.
+/// The property is implemented in the 'SuspendedWarning' partial view.
 /// </remarks>
 public class SuspendedWarningAttribute : ActionFilterAttribute
 {
@@ -27,7 +28,7 @@ public class SuspendedWarningAttribute : ActionFilterAttribute
   {
     if (context.Controller is Controller controller)
     {
-      // Get the biobankId from the route parameter safely
+      // Get the biobankId from the route value safely
       int.TryParse((string)context.RouteData.Values.GetValueOrDefault("biobankId") ?? string.Empty,
         out var biobankId);
 
