@@ -21,7 +21,6 @@ using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.Assoc
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
 
-[Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 [SuspendedWarning]
@@ -66,8 +65,8 @@ public class CollectionsController : Controller
     _materialTypeService = materialTypeService;
   }
 
-  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   [HttpGet]
+  [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
   public async Task<ActionResult> Index(int biobankId)
   {
     var collections = await _collectionService.List(biobankId);
