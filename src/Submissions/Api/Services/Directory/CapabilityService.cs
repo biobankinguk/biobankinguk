@@ -191,7 +191,6 @@ public class CapabilityService : ICapabilityService
       public async Task UpdateCapabilityAsync(CapabilityDTO capabilityDTO, IEnumerable<CapabilityAssociatedData> associatedData)
         {
         var existingCapability = (await _db.DiagnosisCapabilities
-          .AsNoTracking()
           .Where(x => x.DiagnosisCapabilityId == capabilityDTO.Id)
           .Include(x => x.AssociatedData)
           .FirstOrDefaultAsync());
