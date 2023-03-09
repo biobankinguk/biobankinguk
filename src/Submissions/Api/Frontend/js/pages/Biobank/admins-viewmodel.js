@@ -12,7 +12,7 @@ function BiobankAdminsViewModel() {
 
   this.openInviteDialog = function () {
     $.ajax({
-      url: "/Biobank/Settings/InviteAdminAjax/" + _this.biobankId,
+      url: "/Biobank/Settings/" + _this.biobankId + "/InviteAdminAjax/",
       data: { biobankId: _this.biobankId },
       contentType: "application/html",
       success: function (content) {
