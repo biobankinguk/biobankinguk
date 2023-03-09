@@ -1,4 +1,4 @@
-﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +45,6 @@ public class PagesAdminController : Controller
         {
             if (page.IsEnabled || User.IsInRole("Admin"))
             {
-                // Set the last breadcrumb
-                var breadCrumbHelper = new TailCrumbUtility(HttpContext);
-                breadCrumbHelper.AddTailCrumb(page.Title, page.Title, "");
                 
                 return View(new ContentPageModel
                 {

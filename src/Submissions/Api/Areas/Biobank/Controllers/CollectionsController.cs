@@ -508,10 +508,6 @@ public class CollectionsController : Controller
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
-    // Set the last breadcrumb
-    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
-    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
-
     //Build the model using all details of the existing sampleset, except id, which is stored in a separate property
     var model = new CopySampleSetModel
     {
@@ -553,10 +549,6 @@ public class CollectionsController : Controller
   {
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     
-    // Set the last breadcrumb
-    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
-    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
-
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
     var model = new EditSampleSetModel
@@ -620,10 +612,6 @@ public class CollectionsController : Controller
 
       return RedirectToAction("SampleSet", new { biobankId = biobankId, id = model.Id });
     }
-    
-    // Set the last breadcrumb
-    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
-    breadCrumbHelper.AddTailCrumb("SampleSet", model.CollectionId.ToString(), "");
 
     return View((EditSampleSetModel)(await _abstractCrudService.PopulateAbstractCRUDSampleSetModel(model)));
   }
@@ -648,10 +636,6 @@ public class CollectionsController : Controller
     var sampleSet = await _sampleSetService.GetSampleSetByIdAsync(id);
     var assessments = await _macroscopicAssessmentService.List();
     
-    // Set the last breadcrumb
-    var breadCrumbHelper = new TailCrumbUtility(HttpContext);
-    breadCrumbHelper.AddTailCrumb("SampleSet", sampleSet.CollectionId.ToString(), "");
-
     ViewData["CollectionApiStatus"] = await _collectionService.IsFromApi(sampleSet.CollectionId);
 
     var model = new SampleSetModel

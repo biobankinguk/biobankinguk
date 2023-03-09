@@ -8,17 +8,15 @@
           <Children>
             <NavNode key="AddCollection" text="Add collection" controller="Collections" area="Biobank" action="AddCollection"/>
             <NavNode key="Collection" text="Collection" controller="Collections" area="Biobank" action="Collection" preservedRouteParameters="biobankId,Id">
-            <Children>
-            <NavNode key="EditCollection" text="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="Id"/>
-            </Children>
               <Children>
-                <NavNode key="AddSampleSet" text="Add sample set" controller="Collections" area="Biobank" action="AddSampleSet" preservedRouteParameters="biobankId,Id"/>
-                <NavNode key="CopySampleSet" text="Copy sample set" controller="Collections" area="Biobank" action="CopySampleSet" preservedRouteParameters="biobankId,Id"/>
-                <NavNode key="SampleSet" text="Sample set" controller="Collections" area="Biobank" action="SampleSet" preservedRouteParameters="biobankId,Id">
-                  <Children>
-                    <NavNode key="EditSampleSet" text="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="biobankId,Id"/>
-                  </Children>
-                </NavNode>
+              <NavNode key="EditCollection" text="Edit collection" controller="Collections" area="Biobank" action="EditCollection" preservedRouteParameters="Id"/>
+              </Children>
+            </NavNode>
+            <NavNode key="SampleSet" text="Sample set" controller="Collections" area="Biobank" action="SampleSet" preservedRouteParameters="biobankId,Id">
+              <NavNode key="AddSampleSet" text="Add sample set" controller="Collections" area="Biobank" action="AddSampleSet" preservedRouteParameters="biobankId,Id"/>
+              <NavNode key="CopySampleSet" text="Copy sample set" controller="Collections" area="Biobank" action="CopySampleSet" preservedRouteParameters="biobankId,Id"/>
+              <Children>
+                <NavNode key="EditSampleSet" text="Edit sample set" controller="Collections" area="Biobank" action="EditSampleSet" preservedRouteParameters="biobankId,Id"/>
               </Children>
             </NavNode>
           </Children>
