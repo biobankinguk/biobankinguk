@@ -20,6 +20,7 @@ using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.Assoc
 
 namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
 
+
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
 [SuspendedWarning]
@@ -83,7 +84,6 @@ public class CollectionsController : Controller
         NumberOfSampleSets = x.SampleSets.Count
       })
     };
-
     return View(model);
   }
 
