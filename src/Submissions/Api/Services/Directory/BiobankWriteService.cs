@@ -72,16 +72,20 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task DeleteBiobankServiceAsync(int biobankId, int serviceId)
         {
             //make sure the biobank has this service
-            if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId))
-                .FirstOrDefault() != null)
-            {
-                await
-                _organisationServiceOfferingRepository.DeleteWhereAsync(
-                    x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId);
-            }
 
-            await _context.SaveChangesAsync();
+               var biobank = await _context.OrganisationServiceOfferings
+                .AsNoTracking()
+                .Where(x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId)
+                .ToListAsync();
+
+              var entity = _context.OrganisationServiceOfferings.Where(x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId).FirstOrDefault();
+
+                if(biobank.FirstOrDefault() != null)
+                  {
+                    _context.OrganisationServiceOfferings.Remove(entity);
+                  }
+
+              await _context.SaveChangesAsync();
         }
 
         public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
