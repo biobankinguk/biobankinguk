@@ -1,4 +1,4 @@
-# Submissions
+# Directory & Submissions
 
 ## Directory Web App
 
@@ -10,9 +10,13 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
 
 Prerequisites:
 
-- .NET 6.0
-- PostgreSQL Server in some form
-- ❔ Optionally the Docker Desktop client.
+- .NET 6.0 SDK
+- Node.js >=16
+- PostgreSQL 14 in some form
+
+Optionally:
+
+- Docker
 
 ### Essential steps
 
@@ -30,14 +34,14 @@ Prerequisites:
      - being a `SuperUser` doesn't automatically put you in the `DirectoryAdmin` role too. Sorry.
 1. Check Email Configuration
    - by default for local development, the app will write emails to `/Temp`
-   - Instructions below
+   - See [Email Sending](#email-sending)
 
 ### Optional steps
 
 To use Search functionality:
 
 1. Setup a local Elastic Search instance
-   - Instructions below, Docker recommended
+   - See [Elastic Search](#elastic-search), Docker recommended
 
 ## Elastic Search
 
@@ -60,19 +64,18 @@ Interacting with the Elastic Search REST API is documented in `elastic-search/RE
 
 The Directory sends emails particularly around Account Management (for example password resets).
 
-It supports sending via **SendGrid**, or the `System.Net` mail services.
+It supports sending via **SendGrid**, or the local mail services.
 
 It works out what to do as follows:
 
-- If `UseSendGrid` is `true` in `Web.Config`, it will try to use **SendGrid** if an API key is available
-  - If `UseKeyVault` is `true` in `Web.Config` it will get the API key from **Azure KeyVault**, else it will take it from `Web.Config`.
+- If `Provider` is `sendgrid` in `Config`, it will try to use **SendGrid** if an API key is available
 - If `UseSendGrid` is `false` or no API key can be found, it will use `System.Net`
 
 The above is achieved by conditionally resolving `IEmailService` with either a basic `EmailService` or a `SendGridEmailService`.
 
 ### Basic `EmailService`
 
-If the basic `EmailService` is used, it will behave differently based on the `System.Net` mail settings in `Web.Config`.
+If the basic `EmailService` is used, it will behave differently based on the `System.Net` mail settings in `Config`.
 
 - By default, it will write mails to disk, at `/Temp`.
 - It can be configured to use any SMTP Server
