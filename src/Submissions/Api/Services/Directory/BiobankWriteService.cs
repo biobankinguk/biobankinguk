@@ -148,9 +148,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             var entity = _context.OrganisationRegistrationReasons.Where(x => x.OrganisationId == organisationId && x.RegistrationReasonId == registrationReasonId).FirstOrDefault();
 
-          if (biobank.FirstOrDefault() == null) 
+          if (biobank.FirstOrDefault() != null) 
             {
-                _context.OrganisationRegistrationReasons.Remove(entity)
+             _context.OrganisationRegistrationReasons.Remove(entity);
             };
 
             await _context.SaveChangesAsync();
