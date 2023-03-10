@@ -22,19 +22,19 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public BiobankWriteService(
             ILogoStorageProvider logoStorageProvider,
             ApplicationDbContext context)
-        {
-            _logoStorageProvider = logoStorageProvider;
-            _context = context;
-    }
+            {
+                _logoStorageProvider = logoStorageProvider;
+                _context = context;
+            }
 
         #endregion
        
          public async Task<string> StoreLogoAsync(Stream logoFileStream, string logoFileName, string logoContentType, string reference)
-        {
-            var resizedLogoStream = await ImageService.ResizeImageStream(logoFileStream, maxX: 300, maxY: 300);
+         {
+              var resizedLogoStream = await ImageService.ResizeImageStream(logoFileStream, maxX: 300, maxY: 300);
 
-            return await _logoStorageProvider.StoreLogoAsync(resizedLogoStream, logoFileName, logoContentType, reference);
-        }
+              return await _logoStorageProvider.StoreLogoAsync(resizedLogoStream, logoFileName, logoContentType, reference);
+         }
 
         public async Task RemoveLogoAsync(int organisationId)
         {
