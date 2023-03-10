@@ -22,11 +22,12 @@ Prerequisites:
    - Change directory to the `Frontend` folder
    - Run `npm install`
 
-1. Add yourself as a user
-   - Run the `add-user.sql` script
-   - For local dev use you probably want the roles: `SuperUser`, and `ADAC`
-     - being a `SuperUser` doesn't automatically put you in the `ADAC` role too. Sorry.
-   - When you run the app, use the `Forgot password` functionality to set your password.
+1. Add a new user
+   - Change directory next to the `Api.csproj` file.
+   - Run `dotnet run -- users add {email} {username} -r {roles} -p {password}`
+   - For example: `dotnet run -- users add admin@example.com Admin -r SuperUser DirectoryAdmin -p Password1!`
+   - For local dev use you probably want the roles: `SuperUser`, and `DirectoryAdmin`
+     - being a `SuperUser` doesn't automatically put you in the `DirectoryAdmin` role too. Sorry.
 1. Check Email Configuration
    - by default for local development, the app will write emails to `/Temp`
    - Instructions below
@@ -38,6 +39,11 @@ To use Search functionality:
 1. Setup a local Elastic Search instance
    - Instructions below, Docker recommended
 
+## Directory CLI
+
+To use the command line interface:
+
+- ``
 
 ## Elastic Search
 
