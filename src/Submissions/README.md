@@ -11,7 +11,7 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
 Prerequisites:
 
 - .NET 6.0 SDK
-- Node.js >=16
+- Node.js >=14
 - PostgreSQL 14 in some form
 
 Optionally:
@@ -33,7 +33,7 @@ Optionally:
    - For local dev use you probably want the roles: `SuperUser`, and `DirectoryAdmin`
      - being a `SuperUser` doesn't automatically put you in the `DirectoryAdmin` role too. Sorry.
 1. Check Email Configuration
-   - by default for local development, the app will write emails to `/Temp`
+   - by default for local development, the app will write emails to `~/temp`
    - See [Email Sending](#email-sending)
 
 ### Optional steps
@@ -64,20 +64,20 @@ Interacting with the Elastic Search REST API is documented in `elastic-search/RE
 
 The Directory sends emails particularly around Account Management (for example password resets).
 
-It supports sending via **SendGrid**, or the local mail services.
+It supports sending via **SendGrid**, or local mail services.
 
 It works out what to do as follows:
 
-- If `Provider` is `sendgrid` in `Config`, it will try to use **SendGrid** if an API key is available
-- If `UseSendGrid` is `false` or no API key can be found, it will use `System.Net`
+- If `Provider` is `sendgrid` in `appsettings.OutboundEmail`, it will try to use **SendGrid** if an API key is available
+- If `Provider` is `local` in `appsettings.OutboundEmail`, it will use local
 
 The above is achieved by conditionally resolving `IEmailService` with either a basic `EmailService` or a `SendGridEmailService`.
 
 ### Basic `EmailService`
 
-If the basic `EmailService` is used, it will behave differently based on the `System.Net` mail settings in `Config`.
+If the basic `EmailService` is used, it will behave differently based on the configuration in `appsettings.OutboundEmail`.
 
-- By default, it will write mails to disk, at `/Temp`.
+- By default, it will write mails to disk, at `~/temp`.
 - It can be configured to use any SMTP Server
   - **SendGrid** is typically preferable though
 
