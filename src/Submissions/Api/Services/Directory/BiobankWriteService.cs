@@ -1,3 +1,4 @@
+using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Services;
@@ -17,35 +18,18 @@ namespace Biobanks.Submissions.Api.Services.Directory
         
         private readonly IBiobankIndexService _indexService;
         private readonly ILogoStorageProvider _logoStorageProvider;
-        private readonly IGenericEFRepository<Funder> _funderRepository;
-        private readonly IGenericEFRepository<Organisation> _organisationRepository;
-        private readonly IGenericEFRepository<OrganisationAnnualStatistic> _organisationAnnualStatisticRepository;
-        private readonly IGenericEFRepository<OrganisationRegistrationReason> _organisationRegistrationReasonRepository;
-        private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
-        private readonly IGenericEFRepository<RegistrationReason> _registrationReasonRepository;
-        private readonly IGenericEFRepository<ServiceOffering> _serviceOfferingRepository;
-        
-        public BiobankWriteService(
+        private readonly ApplicationDbContext _context;
+
+    public BiobankWriteService(
             IBiobankIndexService indexService,
             ILogoStorageProvider logoStorageProvider,
             IGenericEFRepository<Funder> funderRepository,
-            IGenericEFRepository<Organisation> organisationRepository,
-            IGenericEFRepository<OrganisationAnnualStatistic> organisationAnnualStatisticRepository,
-            IGenericEFRepository<OrganisationRegistrationReason> organisationRegistrationReasonRepository,
-            IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<RegistrationReason> registrationReasonRepository,
-            IGenericEFRepository<ServiceOffering> serviceOfferingRepository)
+            ApplicationDbContext context)
         {
             _indexService = indexService;
             _logoStorageProvider = logoStorageProvider;
-            _funderRepository = funderRepository;
-            _organisationRepository = organisationRepository;
-            _organisationAnnualStatisticRepository = organisationAnnualStatisticRepository;
-            _organisationRegistrationReasonRepository = organisationRegistrationReasonRepository;
-            _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
-            _registrationReasonRepository = registrationReasonRepository;
-            _serviceOfferingRepository = serviceOfferingRepository;
-        }
+            _context = context;
+    }
 
         #endregion
        
@@ -66,19 +50,23 @@ namespace Biobanks.Submissions.Api.Services.Directory
             foreach (var service in services)
             {
                 //Validate service id first - don't want to go around inserting new unnamed services
-                if (await _serviceOfferingRepository.GetByIdAsync(service.ServiceOfferingId) != null)
+                if (await _context.FindAsync<ServiceOffering>(service.ServiceOfferingId) != null)
                 {
-                    //now make sure the biobank doesn't already have this service listed
-                    if ((await _organisationServiceOfferingRepository.ListAsync(false,
-                        x => x.OrganisationId == service.OrganisationId && x.ServiceOfferingId == service.ServiceOfferingId))
-                        .FirstOrDefault() == null)
-                    {
-                        _organisationServiceOfferingRepository.Insert(service);
-                    }
+
+               //now make sure the biobank doesn't already have this service listed
+                var biobank = await _context.OrganisationServiceOfferings
+                .AsNoTracking()
+                .Where(x => x.OrganisationId == service.OrganisationId && x.ServiceOfferingId == service.ServiceOfferingId)
+                .ToListAsync();
+
+                if(biobank.FirstOrDefault() == null)
+                  {
+                    _context.Add(service);
+                  }
                 }
                 //atm we just silently fail if the service id is invalid; should we be throwing?
             }
-            await _organisationServiceOfferingRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBiobankServiceAsync(int biobankId, int serviceId)
@@ -93,7 +81,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId);
             }
 
-            await _organisationServiceOfferingRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> AddFunderToBiobankAsync(int funderId, int biobankId)
@@ -108,7 +96,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 funder.Organisations.Add(bb);
 
                 _funderRepository.Update(funder);
-                await _funderRepository.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -129,7 +117,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     .FirstOrDefault(x => x.OrganisationId == biobankId));
 
             _funderRepository.Update(funder);
-            await _funderRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBiobankAsync(int id)
@@ -141,7 +129,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             // Delete Organisation
             await _organisationRepository.DeleteAsync(id);
-            await _organisationRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateOrganisationAnnualStatisticAsync(int organisationId, int statisticId, int? value, int year)
@@ -168,7 +156,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             else
                 _organisationAnnualStatisticRepository.Insert(organisationAnnualStatistic);
 
-            await _organisationAnnualStatisticRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons)
@@ -187,7 +175,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     }
                 }
             }
-            await _organisationRegistrationReasonRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId)
@@ -202,7 +190,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                     x => x.OrganisationId == organisationId && x.RegistrationReasonId == registrationReasonId);
             }
 
-            await _organisationRegistrationReasonRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
     }
