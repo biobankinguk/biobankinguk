@@ -4,7 +4,7 @@
 
 The Directory project is the core piece of the BiobankingUK stack. Everything else in the stack serves to optionally augment the Directory.
 
-It consists of an ASP.NET MVC5 web application, backed by a SQL Server database, which interacts with an Elastic Search server.
+It consists of an .NET Core MVC web application, backed by a PostgreSQL database, which interacts with an Elastic Search server.
 
 ## Start Developing
 
@@ -24,7 +24,7 @@ Prerequisites:
 
 1. Add a new user
    - Change directory next to the `Api.csproj` file.
-   - Run `dotnet run -- users add {email} {username} -r {roles} -p {password}`
+   - Run `dotnet run -- users add <EMAIL> <FULL-NAME> -r <ROLES> -p <PASSWORD>`
    - For example: `dotnet run -- users add admin@example.com Admin -r SuperUser DirectoryAdmin -p Password1!`
    - For local dev use you probably want the roles: `SuperUser`, and `DirectoryAdmin`
      - being a `SuperUser` doesn't automatically put you in the `DirectoryAdmin` role too. Sorry.
@@ -38,12 +38,6 @@ To use Search functionality:
 
 1. Setup a local Elastic Search instance
    - Instructions below, Docker recommended
-
-## Directory CLI
-
-To use the command line interface:
-
-- ``
 
 ## Elastic Search
 
@@ -86,6 +80,24 @@ If the basic `EmailService` is used, it will behave differently based on the `Sy
 
 The default on-disk solution is the easiest for local development, as there is no delay and no receiving mailbox required.
 
+## Directory CLI
+
+The command line interface to administer the application, run commands as `dotnet run -- <COMMAND>`
+
+- `crypto` : Actions for working with secure identifiers
+  - `generate-id` : Generates a secure unique identifier in Base64Url format, suitable for use as a secret.
+  - `hash <INPUT>` : Hash a string input (such as a secret) per BiobankingUK expectations
+- `api-clients` : Actions for managing BiobankingUK ApiClients
+  - `add <BIOBANKID>` : Add a new ApiClient to target BiobankingUK Directory Database
+- `ref-data` : Actions for managing BiobankingUK Reference Data
+  - `seed` : Seed Reference Data into empty tables from provided JSON files
+- `users` : Actions for managing BiobankingUK Users
+  - `add <EMAIL> <FULL-NAME>` : Add a new User
+  - `roles <EMAIL>` : Manage roles for a User; listing, adding and/or removing
+  - `list-roles` : List the names of user roles in the system
+
+Run `--help` against any of these commands for further options.
+
 ---
 
 ## API Services
@@ -110,9 +122,9 @@ The Submissions Service consists of the following elements:
 
 - An HTTP API for accepting and managing data in bulk
 - Two Worker processes:
-    - A scheduled Expiry task which runs on a schedule and expires stale uncommitted submissions
-    - A background Processing task which performs validation and persistence of accepted submissions
-        - this is not performed by the API directly due to the time it can take to process large submissions
+  - A scheduled Expiry task which runs on a schedule and expires stale uncommitted submissions
+  - A background Processing task which performs validation and persistence of accepted submissions
+    - this is not performed by the API directly due to the time it can take to process large submissions
 
 ## API Authorization
 
