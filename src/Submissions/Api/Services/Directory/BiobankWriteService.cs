@@ -16,17 +16,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
     {
         #region Properties and ctor
         
-        private readonly IBiobankIndexService _indexService;
         private readonly ILogoStorageProvider _logoStorageProvider;
         private readonly ApplicationDbContext _context;
 
     public BiobankWriteService(
-            IBiobankIndexService indexService,
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<Funder> funderRepository,
             ApplicationDbContext context)
         {
-            _indexService = indexService;
             _logoStorageProvider = logoStorageProvider;
             _context = context;
     }
