@@ -11,7 +11,7 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
 Prerequisites:
 
 - .NET 6.0 SDK
-- Node.js >=14
+- Node.js >=16
 - PostgreSQL 14 in some form
 
 Optionally:
@@ -87,19 +87,7 @@ The default on-disk solution is the easiest for local development, as there is n
 
 The command line interface to administer the application, run commands as `dotnet run -- <COMMAND>`
 
-- `crypto` : Actions for working with secure identifiers
-  - `generate-id` : Generates a secure unique identifier in Base64Url format, suitable for use as a secret.
-  - `hash <INPUT>` : Hash a string input (such as a secret) per BiobankingUK expectations
-- `api-clients` : Actions for managing BiobankingUK ApiClients
-  - `add <BIOBANKID>` : Add a new ApiClient to target BiobankingUK Directory Database
-- `ref-data` : Actions for managing BiobankingUK Reference Data
-  - `seed` : Seed Reference Data into empty tables from provided JSON files
-- `users` : Actions for managing BiobankingUK Users
-  - `add <EMAIL> <FULL-NAME>` : Add a new User
-  - `roles <EMAIL>` : Manage roles for a User; listing, adding and/or removing
-  - `list-roles` : List the names of user roles in the system
-
-Run `--help` against any of these commands for further options.
+Read the [CLI documentation](https://docs.biobankinguk.org/dev/cli/overview).
 
 ---
 

@@ -7,7 +7,6 @@ Seed Reference Data into empty tables from provided JSON files.
 ### Command
 
 - `seed` : Seed Reference Data into empty tables from provided JSON files
-- use `--help` to see all the options and arguments
 
 ### Options
 

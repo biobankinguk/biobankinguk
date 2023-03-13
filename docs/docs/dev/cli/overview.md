@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Overview
 
 This is a Command Line tool useful for managing some application access tasks.
@@ -20,12 +24,10 @@ Get help with the `--help` option.
 
 The command line interface to administer the application, run commands as `dotnet run -- <COMMAND>`
 
-- [`crypto`](crypto) : Actions for working with secure identifiers
 - [`api-clients`](api) : Actions for managing BiobankingUK ApiClients
+- [`crypto`](crypto) : Actions for working with secure identifiers
 - [`ref-data`](ref-data) : Actions for managing BiobankingUK Reference Data
 - [`users`](users) : Actions for managing BiobankingUK Users
-
-Run `--help` against any of the commands for further options and arguments.
 
 ### Options
 

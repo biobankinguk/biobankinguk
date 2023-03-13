@@ -30,7 +30,6 @@ Hash a string. This can be used to hash a string in the same consistent way that
 ### Command
 
 - `crypto hash <INPUT>`
-- use `--help` to see all the options and arguments
 
 ### Usage Scenarios
 
