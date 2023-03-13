@@ -9,14 +9,13 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
 
 ## Setup
 
-> ℹ Complete the instructions in [Getting Started](overview) first.
+> ℹ Complete the instructions in [Getting Started](/dev/getting-started/overview) first.
 
 1. Enable [Corepack](https://nodejs.org/api/corepack.html)
    - Simply run `corepack enable` in your cli
 
 1. Install Node Packages
-   - Change directory to the `Frontend` folder
-   - Run `pnpm install`
+   - Run `pnpm i` from the project root.
 
 1. Add a new user
    - Change directory next to the `Api.csproj` file.
