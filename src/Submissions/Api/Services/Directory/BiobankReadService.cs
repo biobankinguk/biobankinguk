@@ -58,7 +58,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         #region RefData: Extraction Procedure
         
         public async Task<int> GetExtractionProcedureMaterialDetailsCount(string id)
-            => await _materialDetailRepository.CountAsync(x => x.ExtractionProcedureId == id);
+            => await _context.MaterialDetails.CountAsync(x => x.ExtractionProcedureId == id);
 
         public async Task<bool> IsExtractionProcedureInUse(string id)
             => (await GetExtractionProcedureMaterialDetailsCount(id) > 0);

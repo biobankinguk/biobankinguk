@@ -119,7 +119,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             foreach (var registrationReason in activeRegistrationReasons)
             {
                 //Validate reason id first - don't want to go around inserting new unnamed reasons
-                if (await _context.OrganisationRegistrationReasons.FindAsync(registrationReason.RegistrationReasonId) != null)
+                if (await _context.RegistrationReasons.FindAsync(registrationReason.RegistrationReasonId) != null)
                 {
                     //now make sure the biobank doesn't already have this reason listed
                     var biobank = await _context.OrganisationRegistrationReasons
