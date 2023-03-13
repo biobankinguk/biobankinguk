@@ -21,9 +21,9 @@ Kibana et al. are unnecessary for local development - Postman or similar can be 
 
 ## Usage
 
-Here are some useful queries for the Elastic Search API.
+Here are some useful queries for the Elasticsearch API.
 
-All request endpoints should be appended to the Elastic Search server's hostname and port:
+All request endpoints should be appended to the Elasticsearch server's hostname and port:
 
 - `http://<HOST>:<PORT>/<ENDPOINT>`
   - default port is `9200`
@@ -68,7 +68,7 @@ There are two separate indexes for `collections` and `capabilities`: `collection
 
 ### Check Cluster Health
 
-Elastic search runs in a cluster of an odd number of servers. For Biobanks we have always run a cluster of one!
+Elasticsearch runs in a cluster of an odd number of servers. For Biobanks we have always run a cluster of one!
 
 This request checks health of the cluster. You're mostly just looking for **GREEN**
 
@@ -91,6 +91,7 @@ An ES Cluster contains several servers (or nodes), and each node can contain mul
 I don't understand sharding in detail, but typically if there is a problematic shard, it can be easily resolved if you delete the index, recreate it and repopulate it.
 
 Request details:
+
 - Method: **GET**
 - Endpoint: `_cat/shards`
 
@@ -103,11 +104,13 @@ The Biobanks indexes *should* be configured to not need replica nodes (and there
 This request will force all existing indexes not to use replica nodes, just in case.
 
 Request details:
+
 - Method: **PUT**
 - Endpoint: `*/_settings`
   - the * is a wildcard for ALL indexes
 - Payload:
-  ```
+
+  ```json
   {
     "index": {
       "number_of_replicas": 0
@@ -120,10 +123,12 @@ Request details:
 As above, but theoretically sets the default for new indexes.
 
 Request details:
+
 - Method: **PUT**
 - Endpoint: `_settings`
 - Payload:
-  ```
+
+  ```json
   {
     "index": {
       "number_of_replicas": 0
@@ -135,7 +140,7 @@ Request details:
 
 This isn't a query per se, but is another use for deleting indexes.
 
-Ok, so Marvel was a component of old Elastic Search (2.x) used for monitoring. It was used on the old 2.x servers for Biobanks.
+Ok, so Marvel was a component of old Elasticsearch (2.x) used for monitoring. It was used on the old 2.x servers for Biobanks.
 
 It logs to search indexes, one per day I think. Theoretically any Biobanks ES server actually in use should be configured to clean up these logs from both disk and the ES indexes regularly, to avoid filling up the server hard drive.
 

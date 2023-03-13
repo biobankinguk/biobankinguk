@@ -2,13 +2,13 @@
 
 The Directory project is the core piece of the BiobankingUK stack. Everything else in the stack serves to optionally augment the Directory.
 
-It consists of an .NET Core MVC web application, backed by a PostgreSQL database, which interacts with an Elastic Search server.
+It consists of an .NET Core MVC web application, backed by a PostgreSQL database, which interacts with an Elasticsearch server.
 
 ## Setup
 
 > ℹ Complete the instructions in [Getting Started](overview) first.
 
-1. **Enable [Corepack](https://nodejs.org/api/corepack.html)**
+1. Enable [Corepack](https://nodejs.org/api/corepack.html)
    - Simply run `corepack enable` in your cli
 
 1. Install Node Packages
@@ -21,13 +21,14 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
    - For example: `dotnet run -- users add admin@example.com Admin -r SuperUser DirectoryAdmin -p Password1!`
    - For local dev use you probably want the roles: `SuperUser`, and `DirectoryAdmin`
      - being a `SuperUser` doesn't automatically put you in the `DirectoryAdmin` role too. Sorry.
+   - See [users CLI documentation](/dev/cli/users#add)
 1. Check Email Configuration
    - by default for local development, the app will write emails to `~/temp`
    - See [Email Sending](email-sending)
 
 ## Optional steps
 
-To use Search functionality:
+To use the Search functionality:
 
-1. Setup a local Elastic Search instance
-   - See [Elastic Search](elasticsearch), Docker recommended
+1. Setup a local Elasticsearch instance
+   - See [Elasticsearch](elasticsearch), Docker recommended
