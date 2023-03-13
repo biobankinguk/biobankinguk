@@ -1,3 +1,26 @@
+# Elasticsearch
+
+Elasticsearch is used to support the search functionality of the [Directory web app](directory).
+
+## Prerequisites
+
+- Elasticsearch `8.x` instance.
+
+## Setup
+
+### With Docker
+
+- `docker-compose up` inside the `elastic-search/` directory will provide a suitable dev search server.
+- payloads for index configuration and example queries are also in the `elastic-search/` directory.
+
+### Without Docker
+
+Elasticsearch can be installed locally. It depends on Java.
+
+Kibana et al. are unnecessary for local development - Postman or similar can be used to hit the ES REST API.
+
+## Usage
+
 Here are some useful queries for the Elastic Search API.
 
 All request endpoints should be appended to the Elastic Search server's hostname and port:
@@ -6,12 +29,12 @@ All request endpoints should be appended to the Elastic Search server's hostname
   - default port is `9200`
   - for development, use `localhost`
 
-## Warning: Content Type
+### Warning: Content Type
 
 All requests with bodies need the content type to be set to `application/json`.
 Just one to watch out for if your tools don't default to it.
 
-# Create the Biobanks Search Index
+### Create the Biobanks Search Index
 
 This needs to be done before the .NET app can interact with the index.
 
@@ -30,7 +53,7 @@ There are two separate indexes for `collections` and `capabilities`.
   - Index name: `collections`
   - payload: `./directory index setup/collections.json`
 
-# Delete the Biobanks Search Index
+### Delete the Biobanks Search Index
 
 If something's wrong with the index, or you're experimenting with different configurations, delete it and recreate it.
 
@@ -41,9 +64,9 @@ Request details:
 
 There are two separate indexes for `collections` and `capabilities`: `collections` and `capabilities` respectively.
 
-# Health checks
+## Health checks
 
-## Check Cluster Health
+### Check Cluster Health
 
 Elastic search runs in a cluster of an odd number of servers. For Biobanks we have always run a cluster of one!
 
@@ -54,14 +77,14 @@ Request details:
 - Method: **GET**
 - Endpoint: `_cluster/health`
 
-## Check Index health
+### Check Index health
 
 This will check the health of all indexes in the cluster.
 
 - Method: **GET**
 - Endpoint: `_cluster/health?level=indices&pretty=`
 
-## Find problem shards
+### Find problem shards
 
 An ES Cluster contains several servers (or nodes), and each node can contain multiple shards. This checks shard health, so you can see if there any problematic shards.
 
@@ -71,7 +94,7 @@ Request details:
 - Method: **GET**
 - Endpoint: `_cat/shards`
 
-## Force all indexes to use no replicas
+### Force all indexes to use no replicas
 
 In the past, ES has complained about only having one node in the cluster, and this has caused sharding problems, resulting in **RED** or **YELLOW** Cluster Health.
 
@@ -92,7 +115,7 @@ Request details:
   }
   ```
 
-## Force future indexes to use no replicas
+### Force future indexes to use no replicas
 
 As above, but theoretically sets the default for new indexes.
 
@@ -108,7 +131,7 @@ Request details:
   }
   ```
 
-## Delete Old Marvel Indexes
+### Delete Old Marvel Indexes
 
 This isn't a query per se, but is another use for deleting indexes.
 
