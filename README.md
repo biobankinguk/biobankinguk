@@ -4,11 +4,11 @@ This monorepo contains all the applications and tools for the complete Biobankin
 
 The stack is used to run the **UKCRC Tissue Directory and Co-ordination Centre** Directory and its peripheral services, but is open source and can be used in part or wholly for other instances.
 
-## 📂 Guide to Repository Structure
+## ➡️ Getting Started
 
-The `src/` folder contains roughly project or app categorised folders, which also have Visual Studio Solutions in. Each Solution contains all the relevant projects including dev dependencies, so it's generally a good idea to use the solution of the project or app area you are doing work on.
+User and Developer Guidance can be found in the [documentation](https://docs.biobankinguk.org).
 
-### Repository structure
+## 📂 Repository Contents
 
 - `.github/` - GitHub Actions and Workflows for building and releasing the stack, managing the repo
 - `docs/` - Source for the documentation site
@@ -18,11 +18,9 @@ The `src/` folder contains roughly project or app categorised folders, which als
 - `sql/` - Various SQL scripts used to add/repair database records
 - `src/` - Projects Source Code, detailed below
 
-## 🧾 License
+## 🧾 License and Contribution
 
 Source code in this repository is licensed under the MIT license, unless otherwise specified. Content licenses and attributions are retained adjacent to and in reference to the relevant content where required by the license.
-
-## 👩‍🏭 Contribute
 
 Currently contributions are not accepted from outside of the University of Nottingham Digital Research Service team.
 
