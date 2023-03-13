@@ -18,13 +18,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
         #region Properties and ctor
         private readonly ILogoStorageProvider _logoStorageProvider;
 
-        private readonly UserManager<ApplicationUser> _userManager;
-
         private readonly ApplicationDbContext _context;
 
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
-            UserManager<ApplicationUser> userManager,
             ApplicationDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
