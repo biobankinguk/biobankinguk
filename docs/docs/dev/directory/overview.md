@@ -1,4 +1,7 @@
-# Directory Web Application
+---
+sidebar_position: 1
+---
+# Overview
 
 The Directory project is the core piece of the BiobankingUK stack. Everything else in the stack serves to optionally augment the Directory.
 
