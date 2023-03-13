@@ -16,7 +16,7 @@ Optionally:
 
 ## Database Setup
 
-If you're doing some development on the repository, you'll want to look at the repository structure guide below this, and follow instructions for the particular area of the codebase you're working with.
+If you're doing some development on the repository, you'll want to look at the [repository structure guide](structure), and follow instructions for the particular area of the codebase you're working with.
 
 However, you will almost certainly need a development instance of the directory database to work with.
 

@@ -18,16 +18,6 @@ The `src/` folder contains roughly project or app categorised folders, which als
 - `sql/` - Various SQL scripts used to add/repair database records
 - `src/` - Projects Source Code, detailed below
 
-### Projects (in `src/`)
-
-| Folder                        | Description                                                                                                                                       | `README` |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `Core/`                       | .NET 6 Central Class Libary of shared code with minimal shared dependencies                                                                       | ❌       |
-| `Core/Jobs`                   | .NET 6 Collection of Worker Jobs used for background processes                                                                                    | ❌       |
-| `Data/`                       | EF Core 6 Database Context, Entity classes representing tables in the database, and Migrations for the directory database                                                                             | ❌       |
-| `Submissions/`                | .NET 6 Web App, the core functionality of the Tissue Directory, and workers for bulk submission of data to the directory database                                                                  | ✔        |
-| `Omop/`                | .NET 6 OMOP Database Context                                                                  | ❌        |
-
 ## 🧾 License
 
 Source code in this repository is licensed under the MIT license, unless otherwise specified. Content licenses and attributions are retained adjacent to and in reference to the relevant content where required by the license.
