@@ -18,231 +18,41 @@ namespace Biobanks.Submissions.Api.Services.Directory
         #region Properties and ctor
         private readonly ILogoStorageProvider _logoStorageProvider;
 
-        private readonly IGenericEFRepository<Collection> _collectionRepository;
-        private readonly IGenericEFRepository<DiagnosisCapability> _capabilityRepository;
-        private readonly IGenericEFRepository<SampleSet> _sampleSetRepository;
-        private readonly IGenericEFRepository<Organisation> _organisationRepository;
-        private readonly IGenericEFRepository<MaterialDetail> _materialDetailRepository;
-        private readonly IGenericEFRepository<OrganisationServiceOffering> _organisationServiceOfferingRepository;
-        private readonly IGenericEFRepository<OrganisationUser> _organisationUserRepository;
-        private readonly IGenericEFRepository<TokenValidationRecord> _tokenValidationRecordRepository;
-        private readonly IGenericEFRepository<TokenIssueRecord> _tokenIssueRecordRepository;
-        
         private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly ApplicationDbContext _context;
 
         public BiobankReadService(
             ILogoStorageProvider logoStorageProvider,
-            IGenericEFRepository<Collection> collectionRepository,
-            IGenericEFRepository<DiagnosisCapability> capabilityRepository,
-            IGenericEFRepository<SampleSet> sampleSetRepository,
-            IGenericEFRepository<Organisation> organisationRepository,
-            IGenericEFRepository<MaterialDetail> materialDetailRepository,
-            IGenericEFRepository<OrganisationServiceOffering> organisationServiceOfferingRepository,
-            IGenericEFRepository<OrganisationUser> organisationUserRepository,
             UserManager<ApplicationUser> userManager,
-            IGenericEFRepository<TokenValidationRecord> tokenValidationRecordRepository,
-            IGenericEFRepository<TokenIssueRecord> tokenIssueRecordRepository,
             ApplicationDbContext context)
         {
             _logoStorageProvider = logoStorageProvider;
 
-            _collectionRepository = collectionRepository;
-            _capabilityRepository = capabilityRepository;
-            _sampleSetRepository = sampleSetRepository;
-            _organisationRepository = organisationRepository;
-            _materialDetailRepository = materialDetailRepository;
-            _organisationServiceOfferingRepository = organisationServiceOfferingRepository;
-            _organisationUserRepository = organisationUserRepository;
-            _userManager = userManager;
-            _tokenValidationRecordRepository = tokenValidationRecordRepository;
-            _tokenIssueRecordRepository = tokenIssueRecordRepository;
 
             _context = context;
         }
 
         #endregion
-        
-        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
-            IEnumerable<int> sampleSetIds)
-        {
-            var sampleSets = await _sampleSetRepository.ListAsync(false,
-                x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended,
-                null,
-                x => x.Collection,
-                x => x.Collection.OntologyTerm,
-                x => x.Collection.Organisation,
-                x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionStatus,
-                x => x.Collection.ConsentRestrictions,
-                x => x.Collection.AccessCondition,
-                x => x.Collection.CollectionType,
-                x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
-                x => x.AgeRange,
-                x => x.DonorCount,
-                x => x.Sex,
-                x => x.MaterialDetails,
-                x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.MaterialDetails.Select(y => y.CollectionPercentage),
-                x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
-                x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.StorageTemperature),
-                x => x.Collection.Organisation.Country,
-                x => x.Collection.Organisation.County
-            );
+    
 
-            return sampleSets;
-        }
-
-        public async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexDeletionAsync(
-                IEnumerable<int> sampleSetIds)
-            => await _sampleSetRepository.ListAsync(false, x => sampleSetIds.Contains(x.Id), null,
-                x => x.Collection,
-                x => x.Collection.OntologyTerm,
-                x => x.Collection.Organisation,
-                x => x.Collection.Organisation.OrganisationNetworks.Select(on => on.Network),
-                x => x.Collection.CollectionStatus,
-                x => x.Collection.ConsentRestrictions,
-                x => x.Collection.AccessCondition,
-                x => x.Collection.CollectionType,
-                x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
-                x => x.AgeRange,
-                x => x.DonorCount,
-                x => x.Sex,
-                x => x.MaterialDetails,
-                x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                x => x.MaterialDetails.Select(y => y.CollectionPercentage),
-                x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
-                x => x.MaterialDetails.Select(y => y.MaterialType),
-                x => x.MaterialDetails.Select(y => y.StorageTemperature),
-                x => x.Collection.Organisation.Country,
-                x => x.Collection.Organisation.County
-            );       
-        
-        public async Task<Collection> GetCollectionByIdAsync(int id)
-            => (await _collectionRepository.ListAsync(false,
-                x => x.CollectionId == id,
-                null,
-                x => x.OntologyTerm,
-                x => x.AccessCondition,
-                x => x.CollectionType,
-                x => x.CollectionStatus,
-                x => x.ConsentRestrictions,
-                x => x.AssociatedData
-            )).FirstOrDefault();
-
-        public async Task<bool> IsCollectionFromApi(int id)
-            => (await _collectionRepository.CountAsync(x => x.CollectionId == id && x.FromApi)) > 0;
-
-        public async Task<Collection> GetCollectionByIdForIndexingAsync(int id)
-            => (await _collectionRepository.ListAsync(false,
-                x => x.CollectionId == id,
-                null,
-                x => x.OntologyTerm,
-                x => x.AccessCondition,
-                x => x.CollectionType,
-                x => x.CollectionStatus,
-                x => x.ConsentRestrictions,
-                x => x.AssociatedData,
-                x => x.AssociatedData.Select(y => y.AssociatedDataType),
-                x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
-                x => x.SampleSets
-            )).FirstOrDefault();
-
-        public async Task<Collection> GetCollectionWithSampleSetsByIdAsync(int id)
-            => (await _collectionRepository.ListAsync(false,
-                x => x.CollectionId == id,
-                null,
-                x => x.OntologyTerm,
-                x => x.AccessCondition,
-                x => x.CollectionType,
-                x => x.CollectionStatus,
-                x => x.ConsentRestrictions,
-                x => x.AssociatedData.Select(y => y.AssociatedDataType),
-                x => x.AssociatedData.Select(y => y.AssociatedDataProcurementTimeframe),
-                x => x.SampleSets.Select(y => y.Sex),
-                x => x.SampleSets.Select(y => y.AgeRange),
-                x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.MaterialType)),
-                x => x.SampleSets.Select(y => y.MaterialDetails.Select(z => z.StorageTemperature))
-            )).FirstOrDefault();
-
-        public async Task<IEnumerable<Collection>> ListCollectionsAsync()
-        {
-            var collections = await _collectionRepository.ListAsync(
-                false,
-                null,
-                null,
-                x => x.OntologyTerm,
-                x => x.SampleSets.Select(y => y.MaterialDetails));
-
-            return collections;
-        }
-
-        public async Task<IEnumerable<Collection>> ListCollectionsAsync(int organisationId)
-        {
-            var collections = await _collectionRepository.ListAsync(
-                false,
-                x => x.OrganisationId == organisationId,
-                null,
-                x => x.OntologyTerm,
-                x => x.SampleSets.Select(y => y.MaterialDetails));
-
-            return collections;
-        }
-
-        public async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id)
-        {
-            try
-            {
-                var sets = (await _sampleSetRepository.ListAsync(false, x => x.Id == id, null,
-                    x => x.Collection,
-                    x => x.Collection.OntologyTerm,
-                    x => x.Collection.Organisation,
-                    x => x.Collection.Organisation.OrganisationNetworks.Select(on => @on.Network),
-                    x => x.Collection.CollectionStatus,
-                    x => x.Collection.ConsentRestrictions,
-                    x => x.Collection.AccessCondition,
-                    x => x.Collection.CollectionType,
-                    x => x.Collection.AssociatedData.Select(ad => ad.AssociatedDataType),
-                    x => x.AgeRange,
-                    x => x.DonorCount,
-                    x => x.Sex,
-                    x => x.MaterialDetails,
-                    x => x.Collection.Organisation.OrganisationServiceOfferings.Select(s => s.ServiceOffering),
-                    x => x.MaterialDetails.Select(y => y.CollectionPercentage),
-                    x => x.MaterialDetails.Select(y => y.MacroscopicAssessment),
-                    x => x.MaterialDetails.Select(y => y.MaterialType),
-                    x => x.MaterialDetails.Select(y => y.StorageTemperature),
-                    x => x.Collection.Organisation.Country,
-                    x => x.Collection.Organisation.County
-                )).FirstOrDefault();
-
-                return sets;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
 
         public bool CanThisBiobankAdministerThisCollection(int biobankId, int collectionId)
-            => _collectionRepository.List(
-                false,
-                x => x.OrganisationId == biobankId &&
-                     x.CollectionId == collectionId).Any();
+            => _context.Collections
+            .AsNoTracking()
+            .Where(x => x.OrganisationId == biobankId && x.CollectionId == collectionId)
+            .Any();
 
         public bool CanThisBiobankAdministerThisSampleSet(int biobankId, int sampleSetId)
-            => _sampleSetRepository.List(
-                false,
-                x => x.Collection.OrganisationId == biobankId &&
-                     x.Id == sampleSetId).Any();
-        
-        public bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId)
-            => _capabilityRepository.List(
-                false,
-                x => x.OrganisationId == biobankId &&
-                     x.DiagnosisCapabilityId == capabilityId).Any();
+            => _context.SampleSets
+            .AsNoTracking()
+            .Where(x => x.Collection.OrganisationId == biobankId &&
+                     x.Id == sampleSetId)
+            .Any();
+
+    public bool CanThisBiobankAdministerThisCapability(int biobankId, int capabilityId)
+            => _context.DiagnosisCapabilities.AsNoTracking()
+            .Where(x => x.OrganisationId == biobankId &&  x.DiagnosisCapabilityId == capabilityId).Any();
 
 
         #region RefData: Extraction Procedure
@@ -255,12 +65,9 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
         #endregion
         
-        public async Task<IEnumerable<int>> GetCollectionIdsByOntologyTermAsync(string ontologyTerm)
-            => (await _collectionRepository.ListAsync(false,
-                x => x.OntologyTerm.Value == ontologyTerm)).Select(x => x.CollectionId);
 
         public async Task<int> GetMaterialTypeMaterialDetailCount(int id)
-            => await _materialDetailRepository.CountAsync(x => x.MaterialTypeId == id);
+            => await _context.MaterialDetails.CountAsync(x => x.MaterialTypeId == id);
 
         public async Task<bool> IsMaterialTypeAssigned(int id)
             => await _context.OntologyTerms
@@ -269,14 +76,10 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 .AnyAsync(x => x.MaterialTypes.Any(y => y.Id == id));
 
         public async Task<int> GetServiceOfferingOrganisationCount(int id)
-            => (await _organisationServiceOfferingRepository.ListAsync(
-            false,
-             x => x.ServiceOfferingId == id)).Count();
-
-        
-
-        public List<Organisation> GetOrganisations() => _organisationRepository.List(false, x => x.IsSuspended == false, x => x.OrderBy(c => c.Name)).ToList();
-
+            => await _context.OrganisationServiceOfferings
+                .AsNoTracking()
+                .Where( x => x.ServiceOfferingId == id)
+                .CountAsync();
         
     }
 }
