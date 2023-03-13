@@ -11,20 +11,31 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
 Prerequisites:
 
 - .NET 6.0 SDK
-- Node.js >=16
+- Node.js `>=16.9` and `<17`
 - PostgreSQL 14 in some form
 
 Optionally:
 
 - Docker
 
+## Working with JavaScript
+
+This monorepo uses [pnpm](https://pnpm.io) workspaces to manage JS dependencies and scripts.
+
+Basically, where you might normally use `npm` or `yarn`, please use `pnpm` commands instead.
+
+You don't need to install anything special; Corepack will.
+
 ### Essential steps
 
 > ℹ Complete the instructions in the repository `README` first!
 
+1. **Enable [Corepack](https://nodejs.org/api/corepack.html)**
+   - Simply run `corepack enable` in your cli
+
 1. Install Node Packages
    - Change directory to the `Frontend` folder
-   - Run `npm install`
+   - Run `pnpm install`
 
 1. Add a new user
    - Change directory next to the `Api.csproj` file.
