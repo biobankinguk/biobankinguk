@@ -16,7 +16,7 @@ Optionally:
 
 ## Database Setup
 
-If you're doing some development on the repository, you'll want to look at the [repository structure guide](structure), and follow instructions for the particular area of the codebase you're working with.
+If you're doing some development on the repository, you'll want to look at the [repository structure guide](getting-started/structure), and follow instructions for the particular area of the codebase you're working with.
 
 However, you will almost certainly need a development instance of the directory database to work with.
 
@@ -39,7 +39,7 @@ Here's how to get that going.
    - `dotnet run -- ref-data seed -d <path to seed data directory>`
        - e.g. to use the sample data: `dotnet run -- ref-data seed -d ../../../sample-seed-data`
        - use `--help` for other options
-   - See [seed documentation](/dev/cli/ref-data#seed) for further guidance.
+   - See [seed documentation](cli/ref-data#seed) for further guidance.
 
 ## Working with JavaScript
 
@@ -49,4 +49,4 @@ Basically, where you might normally use `npm` or `yarn`, please use `pnpm` comma
 
 You don't need to install anything special; Corepack will.
 
-A brief pnpm cheatsheet is provided [here](pnpm-cheatsheet).
+A brief pnpm cheatsheet is provided [here](getting-started/pnpm-cheatsheet).

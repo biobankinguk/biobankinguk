@@ -24,10 +24,10 @@ Get help with the `--help` option.
 
 The command line interface to administer the application, run commands as `dotnet run -- <COMMAND>`
 
-- [`api-clients`](api) : Actions for managing BiobankingUK ApiClients
-- [`crypto`](crypto) : Actions for working with secure identifiers
-- [`ref-data`](ref-data) : Actions for managing BiobankingUK Reference Data
-- [`users`](users) : Actions for managing BiobankingUK Users
+- [`api-clients`](cli/api) : Actions for managing BiobankingUK ApiClients
+- [`crypto`](cli/crypto) : Actions for working with secure identifiers
+- [`ref-data`](cli/ref-data) : Actions for managing BiobankingUK Reference Data
+- [`users`](cli/users) : Actions for managing BiobankingUK Users
 
 ### Options
 

@@ -1,6 +1,6 @@
 # Elasticsearch
 
-Elasticsearch is used to support the search functionality of the [Directory web app](directory).
+Elasticsearch is used to support the search functionality of the [Directory web app](/dev/directory).
 
 ## Prerequisites
 
