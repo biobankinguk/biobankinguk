@@ -11,18 +11,18 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class SqlServerLogoStorageProvider : ILogoStorageProvider
     {
-      private readonly ApplicationDbContext _context;
+      private readonly ApplicationDbContext _db;
 
       public SqlServerLogoStorageProvider(
-          ApplicationDbContext context)
+          ApplicationDbContext db)
         {
-          _context = context;
+          _db = db;
         }
 
         public async Task<Blob> GetLogoBlobAsync(string resourceName)
         {
         
-            var blob = await _context.Blobs
+            var blob = await _db.Blobs
                 .AsNoTracking()
                 .Where(x => x.FileName == resourceName)
                 .FirstOrDefaultAsync();
@@ -50,23 +50,23 @@ namespace Biobanks.Submissions.Api.Services.Directory
             //we want to replace, not keep adding and storing new files
      
             var existing = await GetLogoBlobAsync(logoBlob.FileName);
-              _context.Remove(existing.Id);
+              _db.Remove(existing.Id);
 
             //write to db
-            _context.Add(logoBlob);
-            await _context.SaveChangesAsync();
+            _db.Add(logoBlob);
+            await _db.SaveChangesAsync();
 
             return logoBlob.FileName;
         }
 
         public async Task RemoveLogoAsync(int organisationId)
         {
-            var organisation = await _context.FindAsync<Organisation>(organisationId);
-            var entity = _context.Blobs.Where(x => x.FileName == organisation.Logo);
+            var organisation = await _db.FindAsync<Organisation>(organisationId);
+            var entity = _db.Blobs.Where(x => x.FileName == organisation.Logo);
             if (organisation != null)
-                _context.Remove(entity);
+                _db.Remove(entity);
              
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
     }
   }
 }

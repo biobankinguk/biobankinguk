@@ -15,18 +15,18 @@ namespace Biobanks.Submissions.Api.Services.Directory
     public class BiobankService : IBiobankService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
 
         public BiobankService(
             UserManager<ApplicationUser> userManager,
-            ApplicationDbContext context)
+            ApplicationDbContext db)
         {
           _userManager = userManager;
-          _context = context;
+          _db = db;
         }
 
         public async Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId)
-              => await _context.OrganisationServiceOfferings
+              => await _db.OrganisationServiceOfferings
                   .AsNoTracking()
                   .Where(x => x.OrganisationId == biobankId)
                   .Include(x => x.ServiceOffering)
@@ -35,7 +35,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId)
         {
 
-          var adminIds = await _context.OrganisationUsers
+          var adminIds = await _db.OrganisationUsers
             .AsNoTracking()
             .Where(x => x.OrganisationId == biobankId)
             .Select(x => x.OrganisationUserId)
@@ -45,7 +45,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         public async Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId)
-            => await _context.Organisations
+            => await _db.Organisations
                 .AsNoTracking()
                 .Where(x => x.OrganisationId == biobankId)
                 .Include(x => x.Funders)
@@ -56,7 +56,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         {
           // Returns users who have admin role only for this biobank
           // TODO remove the generic repo when upgrading to netcore, as it doesn't support groupby fully
-          var admins = await _context.OrganisationUsers.AsNoTracking().ToListAsync();
+          var admins = await _db.OrganisationUsers.AsNoTracking().ToListAsync();
           var adminIds = admins.GroupBy(a => a.OrganisationUserId)
             .Where(g => g.Count() == 1)
             .Select(a => a.FirstOrDefault(ai => ai.OrganisationId == biobankId))
@@ -68,13 +68,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
         public async Task<string> GetUnusedTokenByUser(string biobankUserId)
         {
           // Check most recent token record
-          var tokenIssue = _context.TokenIssueRecords
+          var tokenIssue = _db.TokenIssueRecords
               .AsNoTracking()
               .Where(x => x.UserId.Contains(biobankUserId))
               .OrderBy(x => x.IssueDate)
               .FirstOrDefault();
 
-          var tokenValidation = await _context.TokenValidationRecords
+          var tokenValidation = await _db.TokenValidationRecords
             .AsNoTracking()
             .Where(x => x.UserId.Contains(biobankUserId))
             .ToListAsync();

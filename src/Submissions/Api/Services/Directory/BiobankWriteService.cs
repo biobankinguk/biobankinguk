@@ -17,14 +17,14 @@ namespace Biobanks.Submissions.Api.Services.Directory
         #region Properties and ctor
         
         private readonly ILogoStorageProvider _logoStorageProvider;
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
 
     public BiobankWriteService(
             ILogoStorageProvider logoStorageProvider,
-            ApplicationDbContext context)
+            ApplicationDbContext db)
             {
                 _logoStorageProvider = logoStorageProvider;
-                _context = context;
+                _db = db;
             }
 
         #endregion
@@ -46,42 +46,42 @@ namespace Biobanks.Submissions.Api.Services.Directory
             foreach (var service in services)
             {
                 //Validate service id first - don't want to go around inserting new unnamed services
-                if (await _context.FindAsync<ServiceOffering>(service.ServiceOfferingId) != null)
+                if (await _db.FindAsync<ServiceOffering>(service.ServiceOfferingId) != null)
                 {
 
                //now make sure the biobank doesn't already have this service listed
-                var biobank = await _context.OrganisationServiceOfferings
+                var biobank = await _db.OrganisationServiceOfferings
                 .AsNoTracking()
                 .Where(x => x.OrganisationId == service.OrganisationId && x.ServiceOfferingId == service.ServiceOfferingId)
                 .ToListAsync();
 
                 if(biobank.FirstOrDefault() == null)
                   {
-                    _context.Add(service);
+                    _db.Add(service);
                   }
                 }
                 //atm we just silently fail if the service id is invalid; should we be throwing?
             }
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteBiobankServiceAsync(int biobankId, int serviceId)
         {
             //make sure the biobank has this service
 
-               var biobank = await _context.OrganisationServiceOfferings
+               var biobank = await _db.OrganisationServiceOfferings
                 .AsNoTracking()
                 .Where(x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId)
                 .ToListAsync();
 
-              var entity = _context.OrganisationServiceOfferings.Where(x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId).FirstOrDefault();
+              var entity = _db.OrganisationServiceOfferings.Where(x => x.OrganisationId == biobankId && x.ServiceOfferingId == serviceId).FirstOrDefault();
 
                 if(biobank.FirstOrDefault() != null)
                   {
-                    _context.OrganisationServiceOfferings.Remove(entity);
+                    _db.OrganisationServiceOfferings.Remove(entity);
                   }
 
-              await _context.SaveChangesAsync();
+              await _db.SaveChangesAsync();
         }
 
 
@@ -95,7 +95,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 Year = year
             };
 
-            var organistaionAnnualStats = await _context.OrganisationAnnualStatistics
+            var organistaionAnnualStats = await _db.OrganisationAnnualStatistics
             .AsNoTracking()
             .Where(x => x.OrganisationId == organisationId && x.AnnualStatisticId == statisticId && x.Year == year)
             .ToListAsync();
@@ -105,13 +105,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
             if (existingEntry != null)
             {
                 existingEntry.Value = value;
-                _context.OrganisationAnnualStatistics.Update(existingEntry);
+                _db.OrganisationAnnualStatistics.Update(existingEntry);
             }
 
             else
-                _context.OrganisationAnnualStatistics.Update(organisationAnnualStatistic);
+                _db.OrganisationAnnualStatistics.Update(organisationAnnualStatistic);
 
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         public async Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons)
@@ -119,37 +119,37 @@ namespace Biobanks.Submissions.Api.Services.Directory
             foreach (var registrationReason in activeRegistrationReasons)
             {
                 //Validate reason id first - don't want to go around inserting new unnamed reasons
-                if (await _context.RegistrationReasons.FindAsync(registrationReason.RegistrationReasonId) != null)
+                if (await _db.RegistrationReasons.FindAsync(registrationReason.RegistrationReasonId) != null)
                 {
                     //now make sure the biobank doesn't already have this reason listed
-                    var biobank = await _context.OrganisationRegistrationReasons
+                    var biobank = await _db.OrganisationRegistrationReasons
                     .Where(x => x.OrganisationId == registrationReason.OrganisationId && x.RegistrationReasonId == registrationReason.RegistrationReasonId)
                     .ToListAsync();
 
                     if (biobank.FirstOrDefault() == null) 
                     {
-                        _context.OrganisationRegistrationReasons.Add(registrationReason);
+                        _db.OrganisationRegistrationReasons.Add(registrationReason);
                     }
                 }
             }
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteBiobankRegistrationReasonAsync(int organisationId, int registrationReasonId)
         {
             //make sure the biobank has this reason
-            var biobank = await _context.OrganisationRegistrationReasons
+            var biobank = await _db.OrganisationRegistrationReasons
             .Where(x => x.OrganisationId == organisationId && x.RegistrationReasonId == registrationReasonId)
             .ToListAsync();
 
-            var entity = _context.OrganisationRegistrationReasons.Where(x => x.OrganisationId == organisationId && x.RegistrationReasonId == registrationReasonId).FirstOrDefault();
+            var entity = _db.OrganisationRegistrationReasons.Where(x => x.OrganisationId == organisationId && x.RegistrationReasonId == registrationReasonId).FirstOrDefault();
 
           if (biobank.FirstOrDefault() != null) 
             {
-             _context.OrganisationRegistrationReasons.Remove(entity);
+             _db.OrganisationRegistrationReasons.Remove(entity);
             };
 
-            await _context.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
     }
