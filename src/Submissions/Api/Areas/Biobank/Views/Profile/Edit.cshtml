@@ -1,6 +1,7 @@
 @inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
 
 @using Biobanks.Submissions.Api.Config
+@using MimeKit.Text
 @model Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankDetailsModel;
 
 @{
@@ -95,10 +96,11 @@
             </div>
 
             <div id="BiobankLogoUploadError" class="alert alert-danger" role="alert" style="margin-bottom: 20px; display: none;">Error Message Will Go Here!</div>
-
-            @Html.EditorFor(x => x.Logo, new { @class = "form-control" })
+          
+            @Html.EditorFor(x => x.Logo, 
+              new { htmlAttributes = new { @class = "form-control", data_resource_url = Url.Action("AddTempLogo", "Profile", new { Area = "Biobank", biobankId = Model.BiobankId }) } })
             <button type="button" id="BiobankLogoFileDialogueTrigger" class="btn btn-success">Select New Logo</button>
-            <button type="button" id="RemoveBiobankLogoTrigger" class="btn btn-default">Remove Logo</button>
+            <button type="button" id="RemoveBiobankLogoTrigger" class="btn btn-default" data-resource-url="@Url.Action("RemoveTempLogo", "Profile", new { Area = "Biobank", biobankId = Model.BiobankId } )">Remove Logo</button>
             @Html.HiddenFor(x => x.RemoveLogo)
         </div>
     </div>

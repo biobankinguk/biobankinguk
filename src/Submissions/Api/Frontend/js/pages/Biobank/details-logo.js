@@ -10,13 +10,14 @@
   $("#Logo").change(function () {
     if ($("#Logo").val() != "") {
       var data = new FormData();
-      var files = $("#Logo").get(0).files;
+      var form = $("#Logo");
+      var files = form.get(0).files;
 
       if (files.length > 0) {
         data.append("TempLogo", files[0]);
 
         $.ajax({
-          url: "/Biobank/Profile/AddTempLogo",
+          url: form.data("resource-url"),
           type: "POST",
           processData: false,
           contentType: false,
@@ -42,9 +43,11 @@
     }
   });
 
-  $("#RemoveBiobankLogoTrigger").click(function () {
+  $("#RemoveBiobankLogoTrigger").click(function (e) {
+    var form = $(e.target);
+
     $.ajax({
-      url: "/Biobank/Profile/RemoveTempLogo",
+      url: form.data("resource-url"),
       type: "POST",
       success: function () {
         $("#Logo").val("");
