@@ -8,8 +8,13 @@
         <span id="support-email" data-email="@ConfigurationManager.AppSettings["AdacSupportEmail"]"></span>
     </label>
     <div class="col-sm-8">
-        @Html.TextBoxFor(x => x.Diagnosis, new { @class = "form-control diagnosis-search", autocomplete = "off" })
-        @Html.ValidationMessageFor(x => x.Diagnosis)
+      @Html.TextBoxFor(x => x.Diagnosis, 
+        new { 
+          @class = "form-control diagnosis-search", 
+          autocomplete = "off", 
+          data_resource_url = Url.Action("GetAssociatedDataTypeViewsAjax", "Collections", new { Area = "Biobank" }) 
+        })
+      @Html.ValidationMessageFor(x => x.Diagnosis)
     </div>
 </div>
 

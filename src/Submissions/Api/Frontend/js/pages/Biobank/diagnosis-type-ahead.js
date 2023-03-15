@@ -50,16 +50,16 @@ $(function () {
     });
   function onchangeAssociatedData() {
     // first get the id of the inputted ontologyTerm
-    var id = $(".diagnosis-search").attr("data-id")
-      ? $(".diagnosis-search").attr("data-id")
-      : null;
+    var form = $(".diagnosis-search");
+    var id = form.data("id") ? form.data("id") : null;
+
     $(".linked-data").remove();
     // if the data-id is undefined then don't do the query
     if (!id) return;
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: "/Biobank/Collections/GetAssociatedDataTypeViewsAjax?id=" + id,
+      url: form.data("resource-url") + "?id=" + id,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },
