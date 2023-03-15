@@ -208,24 +208,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 currentOrganisation.OrganisationRegistrationReasons?.Clear();
                 currentOrganisation.OrganisationServiceOfferings?.Clear();
 
-
-                var allRegistrationReasons = await _db.OrganisationRegistrationReasons.ToListAsync();
-                foreach (var orr in organisation.OrganisationRegistrationReasons ?? new List<OrganisationRegistrationReason>())
-                {
-                    var orgReason = allRegistrationReasons.SingleOrDefault(x => x.OrganisationId == orr.OrganisationId
-                        && x.RegistrationReasonId == orr.RegistrationReasonId);
-                    currentOrganisation.OrganisationRegistrationReasons.Add(orgReason);
-                }
-
-                var allServiceOfferings = await _db.OrganisationServiceOfferings.ToListAsync();
-                foreach (var ser in organisation.OrganisationServiceOfferings ?? new List<OrganisationServiceOffering>())
-                {
-                    var serviceOffering = allServiceOfferings.SingleOrDefault(x => x.OrganisationId == ser.ServiceOfferingId
-                        && x.ServiceOfferingId == ser.ServiceOfferingId);
-                }
-
                 // Set Timestamp
-                currentOrganisation.LastUpdated = DateTime.Now;
+               currentOrganisation.LastUpdated = DateTime.Now;
 
                 // Ensure AnonymousIdentifier Exists
                 if (!currentOrganisation.AnonymousIdentifier.HasValue)
