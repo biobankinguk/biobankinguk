@@ -1,11 +1,12 @@
 ﻿var fundersList = [];
 
 function initFundersBloodhound() {
+  var biobankId = $("#BiobankId").data("biobank-id");
   var funders = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.whitespace("vval"),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: "/Biobank/Profile/0/SearchFunders?wildcard=%QUERY",
+      url: "/Biobank/Profile/" + biobankId + "/SearchFunders?wildcard=%QUERY",
       filter: function (x) {
         return $.map(x, function (item) {
           return { desc: item.name };
