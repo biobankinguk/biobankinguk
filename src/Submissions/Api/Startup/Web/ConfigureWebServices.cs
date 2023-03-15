@@ -407,7 +407,6 @@ public static class ConfigureWebServices
       .AddTransient<IRecaptchaService, RecaptchaService>()
       .AddTransient<IRegistrationDomainService, RegistrationDomainService>()
       .AddTransient<ISampleSetService, SampleSetService>()
-      .AddTransient(typeof(IGenericEFRepository<>), typeof(GenericEFRepository<>))
       .AddTransient<ITokenLoggingService, TokenLoggingService>();
   }
 

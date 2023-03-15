@@ -1,5 +1,7 @@
+using Biobanks.Data;
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,23 +11,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class SqlServerLogoStorageProvider : ILogoStorageProvider
     {
-        private readonly IGenericEFRepository<Blob> _blobRepository;
-        private readonly IGenericEFRepository<Organisation> _organisationRepository;
+      private readonly ApplicationDbContext _db;
 
-        public SqlServerLogoStorageProvider(
-            IGenericEFRepository<Blob> blobRepository,
-            IGenericEFRepository<Organisation> organisationRepository)
+      public SqlServerLogoStorageProvider(
+          ApplicationDbContext db)
         {
-            _blobRepository = blobRepository;
-            _organisationRepository = organisationRepository;
+          _db = db;
         }
 
         public async Task<Blob> GetLogoBlobAsync(string resourceName)
         {
-            var blob = (await _blobRepository.ListAsync(
-                false,
-                x => x.FileName == resourceName))
-                .FirstOrDefault();
+        
+            var blob = await _db.Blobs
+                .AsNoTracking()
+                .Where(x => x.FileName == resourceName)
+                .FirstOrDefaultAsync();
 
             if (blob == null) throw new ApplicationException();
 
@@ -48,26 +48,25 @@ namespace Biobanks.Submissions.Api.Services.Directory
 
             //is there an existing logo blob for this biobank?
             //we want to replace, not keep adding and storing new files
-            try
-            {
-                var existing = await GetLogoBlobAsync(logoBlob.FileName);
-                await _blobRepository.DeleteAsync(existing.Id);
-            }
-            catch (ApplicationException) { } //no worries if nothing found
+     
+            var existing = await GetLogoBlobAsync(logoBlob.FileName);
+              _db.Remove(existing.Id);
 
             //write to db
-            _blobRepository.Insert(logoBlob);
-            await _blobRepository.SaveChangesAsync();
+            _db.Add(logoBlob);
+            await _db.SaveChangesAsync();
 
             return logoBlob.FileName;
         }
 
         public async Task RemoveLogoAsync(int organisationId)
         {
-            var organisation = await _organisationRepository.GetByIdAsync(organisationId);
-
+            var organisation = await _db.FindAsync<Organisation>(organisationId);
+            var entity = _db.Blobs.Where(x => x.FileName == organisation.Logo);
             if (organisation != null)
-                await _blobRepository.DeleteWhereAsync(x => x.FileName == organisation.Logo);
-        }
+                _db.Remove(entity);
+             
+            await _db.SaveChangesAsync();
     }
+  }
 }

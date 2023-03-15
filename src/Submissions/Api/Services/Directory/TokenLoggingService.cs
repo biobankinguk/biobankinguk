@@ -1,23 +1,23 @@
-﻿using System;
+using System;
 using Biobanks.Entities.Data;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data;
 
 namespace Biobanks.Submissions.Api.Services.Directory
 {
     public class TokenLoggingService : ITokenLoggingService
     {
-        private readonly IGenericEFRepository<TokenValidationRecord> _validationRepository;
-        private readonly IGenericEFRepository<TokenIssueRecord> _issueRepository;
+      private readonly ApplicationDbContext _context;
 
-        public TokenLoggingService(
-            IGenericEFRepository<TokenValidationRecord> validationRepository,
-            IGenericEFRepository<TokenIssueRecord> issueRepository)
-        {
-            _validationRepository = validationRepository;
-            _issueRepository = issueRepository;
-        }
+      public TokenLoggingService(
+
+           ApplicationDbContext context
+           )
+          {
+            _context = context;
+          }
 
         /// <summary>
         /// Creates a Token Validation Record to indicate that the token has been through a validation process.
@@ -36,8 +36,8 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 ValidationDate = DateTime.Now,
                 ValidationSuccessful = false
             };
-            _validationRepository.Insert(record);
-            await _validationRepository.SaveChangesAsync();
+                _context.Add(record);
+            await _context.SaveChangesAsync();
 
             return record.Id;
         }
@@ -56,13 +56,13 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <exception cref="KeyNotFoundException">Thrown if the provided ID doesn't return a Token Validation Record</exception>
         public async Task ValidationSuccessful(int validationRecordId)
         {
-            var record = await _validationRepository.GetByIdAsync(validationRecordId);
+            var record = await _context.FindAsync<TokenValidationRecord>(validationRecordId);
 
             if (record == null) throw new KeyNotFoundException();
 
             record.ValidationSuccessful = true;
 
-            await _validationRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// <returns></returns>
         public async Task TokenIssued(string token, string userId, string purpose)
         {
-            _issueRepository.Insert(new TokenIssueRecord
+            _context.Add(new TokenIssueRecord
             {
                 Token = token,
                 UserId = userId,
@@ -82,7 +82,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
                 IssueDate = DateTime.Now
             });
 
-            await _issueRepository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task EmailTokenIssued(string token, string userId)

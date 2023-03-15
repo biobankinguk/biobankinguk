@@ -1,21 +1,16 @@
 import React, { useEffect } from "react";
 import OriginalLayout from "@theme-original/Layout";
-import useThemeContext from "@theme/hooks/useThemeContext";
-import { useColorMode } from "@chakra-ui/react";
+import { useColorMode as useDocsColorMode } from "@docusaurus/theme-common";
+import { useColorMode as useChakraColorMode } from "@chakra-ui/react";
 
 const ColorModeSync = () => {
-  const { isDarkTheme } = useThemeContext();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode: docsColorMode } = useDocsColorMode();
+  const { colorMode: chakraColorMode, toggleColorMode: toggleChakraColorMode } =
+    useChakraColorMode();
 
   useEffect(() => {
-    switch (colorMode) {
-      case "dark":
-        if (!isDarkTheme) toggleColorMode();
-        break;
-      default:
-        if (isDarkTheme) toggleColorMode();
-    }
-  }, [isDarkTheme, colorMode, toggleColorMode]);
+    if (docsColorMode !== chakraColorMode) toggleChakraColorMode();
+  }, [docsColorMode, chakraColorMode, toggleChakraColorMode]);
 
   return null;
 };
