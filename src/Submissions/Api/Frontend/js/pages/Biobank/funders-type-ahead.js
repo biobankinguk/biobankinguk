@@ -5,7 +5,7 @@ function initFundersBloodhound() {
     datumTokenizer: Bloodhound.tokenizers.whitespace("vval"),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: "/Biobank/Profile/SearchFunders?wildcard=%QUERY",
+      url: "/Biobank/Profile/0/SearchFunders?wildcard=%QUERY",
       filter: function (x) {
         return $.map(x, function (item) {
           return { desc: item.name };
