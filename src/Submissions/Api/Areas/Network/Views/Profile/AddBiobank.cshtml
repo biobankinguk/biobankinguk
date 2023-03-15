@@ -2,9 +2,6 @@
 @model AddBiobankToNetworkModel
 <h2>Add a Biobank to your Network</h2>
 
-@* Enable Javascript to access networkId  *@
-<span id="NetworkId" data-network-id="@ViewContext.RouteData.Values["networkId"]"></span>
-
 <div class="row">
     <div class="col-sm-12 col-sm-offset-3">
         @using (@Html.BeginForm(
@@ -18,7 +15,11 @@
             <div id="bloodhound" class="form-group">
                 @Html.LabelFor(x => x.BiobankName, new { @class = "col-sm-2 control-label" })
                 <div class="col-sm-8">
-                    @Html.TextBoxFor(x => x.BiobankName, new { @class = "form-control", autocomplete = "off" })
+                    @Html.TextBoxFor(x => x.BiobankName, 
+                      new { 
+                        @class = "form-control", 
+                        autocomplete = "off", 
+                        data_resource_url = Url.Action("SearchBiobanks", "Profile", new { networkId = ViewContext.RouteData.Values["networkId"] }) })
                 </div>
             </div>
             
