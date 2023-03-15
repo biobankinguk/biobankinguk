@@ -18,6 +18,7 @@
       {
         @class = "form-control diagnosis-search", 
         autocomplete = "off",
+        data_search_url = Url.Action("ListOntologyTerms", "Search"),
         data_resource_url = Url.Action("GetAssociatedDataTypeViewsAjax", "Collections", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"] }) 
       })
     @Html.ValidationMessageFor(x => x.Diagnosis)

@@ -1,6 +1,7 @@
 ﻿var diseaselist = [];
 
 $(function () {
+  var searchElement = $(".diagnosis-search");
   var diseases = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.whitespace("vval"),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -13,7 +14,7 @@ $(function () {
     //    }
     //},
     remote: {
-      url: "/Search/ListOntologyTerms?wildcard=%QUERY",
+      url: searchElement.data("search-url") + "?wildcard=%QUERY",
       filter: function (x) {
         return $.map(x, function (item) {
           return {
@@ -28,7 +29,6 @@ $(function () {
 
   diseases.initialize();
 
-  var searchElement = $(".diagnosis-search");
   searchElement
     .typeahead(
       {
@@ -45,13 +45,12 @@ $(function () {
       }
     )
     .bind("typeahead:select", function (ev, item) {
-      $(".diagnosis-search").attr("data-id", item.id);
+      searchElement.attr("data-id", item.id);
       onchangeAssociatedData();
     });
   function onchangeAssociatedData() {
     // first get the id of the inputted ontologyTerm
-    var form = $(".diagnosis-search");
-    var id = form.data("id") ? form.data("id") : null;
+    var id = searchElement.data("id") ? searchElement.data("id") : null;
 
     $(".linked-data").remove();
     // if the data-id is undefined then don't do the query
@@ -59,7 +58,7 @@ $(function () {
     // next make an ajax call using the ontology term id
     $.ajax({
       type: "GET",
-      url: form.data("resource-url") + "?id=" + id,
+      url: searchElement.data("resource-url") + "?id=" + id,
       beforeSend: function () {
         setLoading(true); // Show loader icon
       },
@@ -98,7 +97,7 @@ $(function () {
     });
 
   function removeId() {
-    $(".diagnosis-search").removeAttr("data-id");
+    searchElement.removeAttr("data-id");
     $(".linked-data").remove();
   }
 });
