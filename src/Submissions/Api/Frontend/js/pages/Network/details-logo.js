@@ -1,22 +1,23 @@
 ﻿$(function () {
   var noLogo = "/images/NoLogo.png";
+  var form = $("#Logo");
 
-  $("#Logo").hide();
+  form.hide();
 
   $("#NetworkLogoFileDialogueTrigger").click(function () {
-    $("#Logo").click();
+    form.click();
   });
 
-  $("#Logo").change(function () {
-    if ($("#Logo").val() != "") {
+  form.change(function () {
+    if (form.val() != "") {
       var data = new FormData();
-      var files = $("#Logo").get(0).files;
+      var files = form.get(0).files;
 
       if (files.length > 0) {
         data.append("TempLogo", files[0]);
 
         $.ajax({
-          url: "/Network/Profile/AddTempLogo",
+          url: form.data("resource-url"),
           type: "POST",
           processData: false,
           contentType: false,
@@ -42,9 +43,11 @@
     }
   });
 
-  $("#RemoveNetworkLogoTrigger").click(function () {
+  $("#RemoveNetworkLogoTrigger").click(function (e) {
+    var form = $(e.target);
+
     $.ajax({
-      url: "/Network/Profile/RemoveTempLogo",
+      url: form.data("resource-url"),
       type: "POST",
       success: function () {
         $("#Logo").val("");

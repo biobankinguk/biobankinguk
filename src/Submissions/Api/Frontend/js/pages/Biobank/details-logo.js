@@ -1,16 +1,16 @@
 ﻿$(function () {
   var noLogo = "/images/NoLogo.png";
+  var form = $("#Logo");
 
-  $("#Logo").hide();
+  form.hide();
 
   $("#BiobankLogoFileDialogueTrigger").click(function () {
-    $("#Logo").click();
+    form.click();
   });
 
-  $("#Logo").change(function () {
-    if ($("#Logo").val() != "") {
+  form.change(function () {
+    if (form.val() != "") {
       var data = new FormData();
-      var form = $("#Logo");
       var files = form.get(0).files;
 
       if (files.length > 0) {
