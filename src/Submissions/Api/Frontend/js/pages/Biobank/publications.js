@@ -15,7 +15,7 @@ function link(name, classes, onclick, href) {
 // Ajax Calls
 function claimPublication(publicationId, accept) {
   $.post(
-    "/Biobank/Profile/ClaimPublicationAjax/" + biobankId,
+    "/Biobank/Profile/" + biobankId + "/ClaimPublicationAjax/",
     {
       publicationId: publicationId,
       accept: accept,
@@ -121,7 +121,7 @@ $(function () {
       search: "Filter: ",
     },
     ajax: {
-      url: "/Biobank/Profile/GetPublicationsAjax/" + biobankId,
+      url: "/Biobank/Profile/" + biobankId + "/GetPublicationsAjax",
       dataSrc: "",
     },
     columns: [
@@ -296,9 +296,9 @@ function PublicationsViewModel() {
     var action = _this.modal.mode();
     if (action == _this.modal.modalModeSearch) {
       $.getJSON(
-        "/Biobank/Profile/RetrievePublicationsAjax/" +
+        "/Biobank/Profile/" +
           biobankId +
-          "?publicationId=" +
+          "/RetrievePublicationsAjax/?publicationId=" +
           _this.modal.publicationId(),
         function (data) {
           if (data && !jQuery.isEmptyObject(data)) {
@@ -331,7 +331,7 @@ function PublicationsViewModel() {
       );
     } else if (action == _this.modal.modalModeApprove) {
       $.post(
-        "/Biobank/Profile/AddPublicationAjax/" + biobankId,
+        "/Biobank/Profile/" + biobankId + "/AddPublicationAjax",
         { publicationId: publicationId },
         function (data) {
           //if successfull
