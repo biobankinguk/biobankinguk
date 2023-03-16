@@ -37,7 +37,7 @@ public class AnalyticsController : Controller
     {
         //If turned off in site config
         if (await _configService.GetFlagConfigValue(ConfigKey.DisplayAnalytics) == false)
-            return RedirectToAction(""); // TODO: Redirect to reference data controller lockedref.
+            return RedirectToAction("LockedRef", "ReferenceData");
 
         //set default options
         if (year == 0)
