@@ -278,9 +278,7 @@
 
     @Html.HiddenFor(x => x.AccessConditionId)
     @Html.HiddenFor(x => x.CollectionTypeId)
-
-    @* TODO: 'other' registration reason *@
-
+    
     <div class="form-group">
         <div class="col-sm-12 text-center">
           @Html.ActionLink("Cancel", "Index", "Profile", new { biobankId = Model.BiobankId }, new { @class = "btn btn-default" })

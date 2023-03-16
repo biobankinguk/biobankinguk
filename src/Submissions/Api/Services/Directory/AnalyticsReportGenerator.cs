@@ -1,14 +1,5 @@
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using System.Configuration;
-using Biobanks.Shared.Services.Contracts;
-using System.Net.Http;
-using System.Text;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Analytics.Dto;
@@ -16,21 +7,13 @@ using Biobanks.Analytics.Dto;
 namespace Biobanks.Submissions.Api.Services.Directory
 {
     /// <summary>
-    /// This Service makes HTTP calls to an API to generate Analytics Reports for the Directory
+    /// This Service generates Analytics Reports for a Biobank
     /// </summary>
-    public class AnalyticsReportGenerator : IDisposable, IAnalyticsReportGenerator
+    public class AnalyticsReportGenerator : IAnalyticsReportGenerator
     {
-        // TODO: genericise this for Directory calls to the Directory API
-        private readonly string _apiUrl = ConfigurationManager.AppSettings["DirectoryApiUrl"] ?? "";
-        private readonly string _apiClientId = ConfigurationManager.AppSettings["DirectoryApiClientId"] ?? "";
-        private readonly string _apiClientSecret = ConfigurationManager.AppSettings["DirectoryApiClientSecret"] ?? "";
-
         private readonly IOrganisationDirectoryService _organisationService;
-    private readonly IOrganisationReportGenerator _organisationReports;
-    private readonly ICollectionService _collectionService;
-
-        private readonly HttpClient _client;
-
+        private readonly IOrganisationReportGenerator _organisationReports;
+        private readonly ICollectionService _collectionService;
 
         public AnalyticsReportGenerator(
             ICollectionService collectionService,
@@ -39,19 +22,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         {
             _collectionService = collectionService;
             _organisationService = organisationService;
-      _organisationReports = organisationReports;
-      _client = new HttpClient();
-
-            if (!string.IsNullOrEmpty(_apiUrl))
-            {
-                _client.BaseAddress = new Uri(_apiUrl);
-
-                if (new[] { _apiClientId, _apiClientSecret }.All(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    _client.DefaultRequestHeaders.Add("Authorization",
-                        $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_apiClientId}:{_apiClientSecret}"))}");
-                }
-            }
+            _organisationReports = organisationReports;
         }
 
         public async Task<ProfileStatusDTO> GetProfileStatus(string biobankId)
@@ -122,22 +93,6 @@ namespace Biobanks.Submissions.Api.Services.Directory
             report.BiobankStatus = profileStatus;
 
             return report;
-        }
-
-        public async Task<DirectoryAnalyticReportDTO> GetDirectoryReport(int year, int quarter, int period)
-        {
-            var endpoint = $"analytics/{year}/{quarter}/{period}";
-            var response = await _client.GetAsync(endpoint);
-            var contents = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return JsonConvert.DeserializeObject<DirectoryAnalyticReportDTO>(contents);
-        }
-
-        public void Dispose()
-        {
-            _client.Dispose();
         }
     }
 }

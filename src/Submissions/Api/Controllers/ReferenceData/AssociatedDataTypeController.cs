@@ -1,20 +1,18 @@
 ﻿using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Models.Submissions;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]
@@ -38,7 +36,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// </summary>
         /// <returns>List of Associated Data Type.</returns>
         /// <response code="200">Request Successful</response>
-        [HttpGet("")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Get()
         {

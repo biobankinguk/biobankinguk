@@ -1,5 +1,4 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Biobanks.Submissions.Api.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +7,11 @@ using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]

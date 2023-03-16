@@ -8,9 +8,11 @@ using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]

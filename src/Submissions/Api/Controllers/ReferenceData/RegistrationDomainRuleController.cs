@@ -8,9 +8,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Biobanks.Entities.Data;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]
@@ -29,6 +31,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         /// <returns>The list of Registration Domain Rules.</returns>
         /// <response code="200">Request Successful</response>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerResponse(200, Type = typeof(RegistrationDomainRuleModel))]
         public async Task<IList> Get() =>
             (await _registrationDomainService.ListRules())

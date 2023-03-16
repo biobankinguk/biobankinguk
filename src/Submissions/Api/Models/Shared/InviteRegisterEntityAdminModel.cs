@@ -20,7 +20,6 @@ public class InviteRegisterEntityAdminModel
   /// <summary>
   /// The controller the form will be submitted to (either the biobank, network, or Admin depending on who is adding admins)
   /// </summary>
-  ///TODO: Fix once JS urls are done 
   public string ControllerName { get; set; }
   
   /// <summary>

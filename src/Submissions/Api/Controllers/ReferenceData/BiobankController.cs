@@ -1,14 +1,13 @@
-﻿using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Models.Submissions;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    //TODO: Register IOrganisationService in startup.cs
-
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]

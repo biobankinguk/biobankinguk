@@ -1,5 +1,7 @@
 @page "{statusCode:int}"
-@using System.Configuration
+@using Biobanks.Submissions.Api.Config
+@using Microsoft.Extensions.Options
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
 @model Biobanks.Submissions.Api.Pages.StatusCodeModel
 
 @{
@@ -37,7 +39,7 @@
                         <li>You could verify the logged in user is you (at the top right of this page).</li>
                         <li>You could try logging out and logging back in again</li>
                         <li>You could use the navigation above to get back to where you were, and try again.</li>
-                        <li>You could head back to the <a href="/">@ConfigurationManager.AppSettings["DirectoryName"] homepage</a>.</li>
+                        <li>You could head back to the <a href="/">@_sitePropertiesOptions.Value.ServiceName homepage</a>.</li>
                     </ul>
                 </div>
             </div>
