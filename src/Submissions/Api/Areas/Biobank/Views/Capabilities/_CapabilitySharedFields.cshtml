@@ -13,7 +13,14 @@
   </label>
   <div class="col-sm-8">
     <span id="support-email" data-email="@_options.Value.SupportAddress"></span>
-    @Html.TextBoxFor(x => x.Diagnosis, new { @class = "form-control diagnosis-search", autocomplete = "off" })
+    @Html.TextBoxFor(x => x.Diagnosis, 
+      new
+      {
+        @class = "form-control diagnosis-search", 
+        autocomplete = "off",
+        data_search_url = Url.Action("ListOntologyTerms", "Search"),
+        data_resource_url = Url.Action("GetAssociatedDataTypeViewsAjax", "Collections", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"] }) 
+      })
     @Html.ValidationMessageFor(x => x.Diagnosis)
   </div>
 </div>

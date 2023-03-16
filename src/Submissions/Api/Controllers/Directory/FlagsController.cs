@@ -59,7 +59,7 @@ public class FlagsController : Controller
     public ActionResult UpdateFlagsConfigSuccess()
     {
         this.SetTemporaryFeedbackMessage("Flags configuration saved successfully.", FeedbackMessageType.Success);
-        return RedirectToAction("FlagsConfig");
+        return RedirectToAction("Index");
     }
     
 }

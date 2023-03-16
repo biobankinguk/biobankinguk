@@ -14,7 +14,8 @@
 <div id="bloodhound" class="form-group">
   @Html.LabelFor(x => x.FunderName, new { @class = @labelWidth + " control-label required" })
   <div class="@fieldWidth">
-    @Html.TextBoxFor(x => x.FunderName, new { @class = "form-control", placeholder = "Name" })
+    @Html.TextBoxFor(x => x.FunderName, 
+      new { @class = "form-control", placeholder = "Name", data_resource_url = Url.Action("SearchFunders") })
   </div>
 </div>
 

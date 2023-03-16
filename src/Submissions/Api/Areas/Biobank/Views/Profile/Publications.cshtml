@@ -24,7 +24,7 @@
             Approving publications will help people find you by your research.
         </div>
 
-        <table id="biobank-publications" class="table table-striped table-hover" style="width:100%"></table>
+        <table id="biobank-publications" class="table table-striped table-hover" data-resource-url="@Url.Action("GetPublicationsAjax", "Profile", new { Area= "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"] })" style="width:100%"></table>
     </div>
 </div>
 
@@ -71,6 +71,9 @@
             <!-- Modal Form -->
             <form id="modal-publications-form"
                   data-success-redirect="@Url.Action("AddPublicationSuccessFeedback", new { biobankId = Model})"
+                  data-resource-url="@Url.Action("AddPublicationAjax", "Profile", new { biobankId = Model })"
+                  data-retrieve-url="@Url.Action("RetrievePublicationsAjax", "Profile", new { biobankId = Model })"
+                  data-claim-url="@Url.Action("ClaimPublicationAjax", "Profile", new { biobankId = Model })"
                   class="form-horizontal">
                 <div class="modal-body">
                     <div class="row">

@@ -14,8 +14,9 @@ function link(name, classes, onclick, href) {
 
 // Ajax Calls
 function claimPublication(publicationId, accept) {
+  var form = $("#modal-publications-form");
   $.post(
-    "/Biobank/Profile/ClaimPublicationAjax/" + biobankId,
+    form.data("claim-url"),
     {
       publicationId: publicationId,
       accept: accept,
@@ -113,7 +114,8 @@ function filter(filterFn) {
 }
 
 $(function () {
-  table = $("#biobank-publications").DataTable({
+  var publications = $("#biobank-publications");
+  table = publications.DataTable({
     paging: true,
     pageLength: 25,
     info: false,
@@ -121,7 +123,7 @@ $(function () {
       search: "Filter: ",
     },
     ajax: {
-      url: "/Biobank/Profile/GetPublicationsAjax/" + biobankId,
+      url: publications.data("resource-url"),
       dataSrc: "",
     },
     columns: [
@@ -289,6 +291,7 @@ function PublicationsViewModel() {
 
   this.modalSubmit = function (e) {
     e.preventDefault();
+    var form = $(e.target);
 
     var publicationId = _this.modal.publicationId();
 
@@ -296,8 +299,7 @@ function PublicationsViewModel() {
     var action = _this.modal.mode();
     if (action == _this.modal.modalModeSearch) {
       $.getJSON(
-        "/Biobank/Profile/RetrievePublicationsAjax/" +
-          biobankId +
+        form.data("retrieve-url") +
           "?publicationId=" +
           _this.modal.publicationId(),
         function (data) {
@@ -331,13 +333,13 @@ function PublicationsViewModel() {
       );
     } else if (action == _this.modal.modalModeApprove) {
       $.post(
-        "/Biobank/Profile/AddPublicationAjax/" + biobankId,
+        form.data("resource-url"),
         { publicationId: publicationId },
         function (data) {
           //if successfull
           if (data && !jQuery.isEmptyObject(data)) {
             window.location.href =
-              $(e.target).data("success-redirect") +
+              form.data("success-redirect") +
               "?publicationId=" +
               data.publicationId;
           } else

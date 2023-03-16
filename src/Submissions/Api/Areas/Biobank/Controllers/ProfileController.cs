@@ -508,6 +508,7 @@ public class ProfileController : Controller
     #region Temp Logo Management
     
     [HttpPost]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public async Task<ActionResult> AddTempLogo()
     {
         if (!HttpContext.Request.Form.Files.Any())
@@ -544,6 +545,7 @@ public class ProfileController : Controller
     }
     
     [HttpGet]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public ActionResult TempLogo()
     {
         var bytes = HttpContext.Session.Get("TempLogo");
@@ -551,7 +553,7 @@ public class ProfileController : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "BiobankAdmin")]
+    [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]
     public void RemoveTempLogo()
     {
         HttpContext.Session.Remove("TempLogo");

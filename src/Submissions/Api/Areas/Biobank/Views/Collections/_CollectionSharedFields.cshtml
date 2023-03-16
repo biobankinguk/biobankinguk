@@ -10,8 +10,15 @@
         <span id="support-email" data-email="@_sitePropertiesOptions.Value.SupportAddress"></span>
     </label>
     <div class="col-sm-8">
-        @Html.TextBoxFor(x => x.Diagnosis, new { @class = "form-control diagnosis-search", autocomplete = "off" })
-        @Html.ValidationMessageFor(x => x.Diagnosis)
+      @Html.TextBoxFor(x => x.Diagnosis, 
+        new 
+        { 
+          @class = "form-control diagnosis-search", 
+          autocomplete = "off",
+          data_search_url = Url.Action("ListOntologyTerms", "Search"),
+          data_resource_url = Url.Action("GetAssociatedDataTypeViewsAjax", "Collections", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"] }) 
+        })
+      @Html.ValidationMessageFor(x => x.Diagnosis)
     </div>
 </div>
 
