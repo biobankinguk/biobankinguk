@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
-    //TODO: Register IOrganisationService in startup.cs
-
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]
