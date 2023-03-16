@@ -1,11 +1,13 @@
 ﻿var fundersList = [];
 
 function initFundersBloodhound() {
+  var searchElement = $("#FunderName");
+
   var funders = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.whitespace("vval"),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: "/Biobank/Profile/SearchFunders?wildcard=%QUERY",
+      url: searchElement.data("resource-url") + "?wildcard=%QUERY",
       filter: function (x) {
         return $.map(x, function (item) {
           return { desc: item.name };
@@ -16,8 +18,6 @@ function initFundersBloodhound() {
   });
 
   funders.initialize();
-
-  var searchElement = $("#FunderName");
 
   searchElement.typeahead(
     {

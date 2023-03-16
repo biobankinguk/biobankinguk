@@ -84,7 +84,9 @@
     </div>
 </div>
 
-<div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label"></div>
+<div id="modalInviteBiobankAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteBiobankAdmin_Label"
+     data-resource-url="@Url.Action("InviteAdminAjax", "Settings", new { biobankId = Model.BiobankId })">
+</div>
 
 @section FooterScripts
 {

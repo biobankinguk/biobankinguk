@@ -14,14 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      # Enable corepack before node for pnpm cache config
+      - run: corepack enable
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
           cache: pnpm
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.16
-          run_install: true
       - run: pnpm i --frozen-lockfile --filter docs
       - run: pnpm --filter docs build
 

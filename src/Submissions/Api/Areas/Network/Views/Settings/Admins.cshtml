@@ -83,7 +83,9 @@
     </div>
 </div>
 
-<div id="modalInviteNetworkAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteNetworkAdmin_Label"></div>
+<div id="modalInviteNetworkAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteNetworkAdmin_Label"
+     data-resource-url="@Url.Action("InviteAdminAjax", "Settings", new { networkId = Model.NetworkId })">
+</div>
 
 @section FooterScripts
 {

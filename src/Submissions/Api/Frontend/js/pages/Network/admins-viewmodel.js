@@ -12,7 +12,7 @@ function NetworkAdminsViewModel() {
 
   this.openInviteDialog = function () {
     $.ajax({
-      url: "/Network/Settings/" + _this.networkId + "/InviteAdminAjax/",
+      url: $(_this.elements.modal).data("resource-url"),
       data: { networkId: _this.networkId },
       contentType: "application/html",
       success: function (content) {
