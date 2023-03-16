@@ -7,16 +7,17 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Models.Submissions;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Reference Data")]
     public class CollectionStatusController : ControllerBase
     {
-        private IReferenceDataCrudService<CollectionStatus> _collectionStatusService;
+        private readonly IReferenceDataCrudService<CollectionStatus> _collectionStatusService;
 
         public CollectionStatusController(IReferenceDataCrudService<CollectionStatus> collectionStatusService)
         {

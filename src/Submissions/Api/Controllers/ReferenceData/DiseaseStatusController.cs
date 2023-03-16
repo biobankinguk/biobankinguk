@@ -12,17 +12,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Api.Auth;
 
 namespace Biobanks.Submissions.Api.Controllers.ReferenceData
 {
+    [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
     [ApiController]
     public class DiseaseStatusController : ControllerBase
     {
         private readonly IOntologyTermService _ontologyTermService;
-
         private readonly IDiseaseStatusService _diseaseStatusService;
-        //TODO ADAC authorization
+
         public DiseaseStatusController(
             IOntologyTermService ontologyTermService,
             IDiseaseStatusService diseaseStatusService)
