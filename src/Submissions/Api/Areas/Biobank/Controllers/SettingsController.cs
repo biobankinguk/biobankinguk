@@ -33,7 +33,6 @@ public class SettingsController : Controller
   private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
   private readonly ITokenLoggingService _tokenLoggingService;
-  private readonly SignInManager<ApplicationUser> _signInManager;
 
   public SettingsController(
       UserManager<ApplicationUser> userManager,
@@ -43,8 +42,7 @@ public class SettingsController : Controller
       INetworkService networkService,
       IReferenceDataCrudService<AccessCondition> accessConditionService,
       IReferenceDataCrudService<CollectionType> collectionTypeService,
-      ITokenLoggingService tokenLoggingService,
-      SignInManager<ApplicationUser> signInManager)
+      ITokenLoggingService tokenLoggingService)
   {
       _userManager = userManager;
       _biobankService = biobankService;
@@ -54,7 +52,6 @@ public class SettingsController : Controller
       _accessConditionService = accessConditionService;
       _collectionTypeService = collectionTypeService;
       _tokenLoggingService = tokenLoggingService;
-      _signInManager = signInManager;
   }
 
         #region Admins  
