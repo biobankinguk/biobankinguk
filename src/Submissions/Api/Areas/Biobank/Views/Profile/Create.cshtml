@@ -4,12 +4,12 @@
 @model Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankDetailsModel;
 
 @{
-    ViewBag.Title = "Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details";
+    ViewBag.Title = "Create " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details";
 }
 
 <h2>Edit @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) details</h2>
 
-@using (Html.BeginForm("Edit", "Profile",
+@using (Html.BeginForm("Create", "Profile",
   FormMethod.Post,
   new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
