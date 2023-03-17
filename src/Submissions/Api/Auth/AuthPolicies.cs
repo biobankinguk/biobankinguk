@@ -115,7 +115,7 @@ namespace Biobanks.Submissions.Api.Auth
 
         /// <summary>
         /// Requires a request <see cref="IsAuthenticated"/>, <see cref="IsBiobankAdmin"/>,
-        /// and has a claim to the specific biobank, which is not suspended.
+        /// and has a claim to the specific biobank.
         /// </summary>
         /// <returns>A new <see cref="AuthorizationPolicy"/> built from the requirements.</returns>
         public static AuthorizationPolicy HasBiobankClaim

@@ -39,6 +39,7 @@ public class ReportController : Controller
         _telemetryClient = telemetryClient;
     }
 
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> Analytics(int biobankId = 0, int year = 0, int endQuarter = 0, int reportPeriod = 0)
     {
         //If turned off in site config

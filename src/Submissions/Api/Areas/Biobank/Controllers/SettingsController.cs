@@ -90,13 +90,6 @@ public class SettingsController : Controller
             return admins;
         }
 
-        public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
-        {
-            //timeStamp can be used to avoid caching issues, notably on IE
-            
-            return Ok(await GetAdminsAsync(biobankId, excludeCurrentUser));
-        }
-
         public ActionResult InviteAdminSuccess(int biobankId, string name)
         {
             //This action solely exists so we can set a feedback message
@@ -107,6 +100,7 @@ public class SettingsController : Controller
             return RedirectToAction("Admins", new { biobankId });
         }
 
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
             var bb = await _organisationDirectoryService.Get(biobankId);
@@ -123,6 +117,7 @@ public class SettingsController : Controller
         }
 
         [HttpPost]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
@@ -332,6 +327,7 @@ public class SettingsController : Controller
           return View(model);
         }
 
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
           var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);
