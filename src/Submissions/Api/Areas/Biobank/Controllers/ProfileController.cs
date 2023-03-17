@@ -249,7 +249,22 @@ public class ProfileController : Controller
       // Reset the biobankId in the model state so the form does not populate it.
       // Ensures a new biobank is created.
       ModelState.SetModelValue("biobankId", new ValueProviderResult());
-      return View("Edit", model);
+      return View(model);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(BiobankDetailsModel model)
+    {
+      try
+      {
+        await UpdateBiobank("Create", model);
+      }
+      catch
+      {
+        return View(model);
+      }
+      return RedirectToAction("Index", new { biobankId = model.BiobankId } );
     }
 
     [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
@@ -275,10 +290,26 @@ public class ProfileController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Edit(BiobankDetailsModel model)
     {
+      try
+      {
+        await UpdateBiobank("Edit", model);
+      }
+      catch
+      {
+        return View(model);
+      }
+      return RedirectToAction("Index", new { biobankId = model.BiobankId } );
+    }
+    
+    // TODO: Make the return type the model - and handle model state.
+    // This shouldn't handle views, just updating.
+    // Currently runs and does the work properly, just the view redirecting is broken.
+    public async Task<ActionResult> UpdateBiobank(string view, BiobankDetailsModel model)
+    {
         if (!ModelState.IsValid)
         {
             model = await AddCountiesToModel(model);
-            return View(model);
+            return View(view, model);
         }
 
         //Extra form validation that the model state can't do for us
@@ -292,7 +323,7 @@ public class ProfileController : Controller
         {
             model = await AddCountiesToModel(model);
             ModelState.AddModelError("", ex.Message);
-            return View(model);
+            return View(view, model);
         }
 
         //URL, if any
@@ -305,7 +336,7 @@ public class ProfileController : Controller
             model = await AddCountiesToModel(model);
             ModelState.AddModelError("", e.Message);
             model = await AddCountiesToModel(model);
-            return View(model);
+            return View(view, model);
         }
         catch (UriFormatException)
         {
@@ -313,7 +344,7 @@ public class ProfileController : Controller
             ModelState.AddModelError("",
                 $"{model.Url} is not a valid URL.");
             model = await AddCountiesToModel(model);
-            return View(model);
+            return View(view, model);
         }
 
         if (!string.IsNullOrWhiteSpace(model.Url))
@@ -327,14 +358,14 @@ public class ProfileController : Controller
                 {
                     ModelState.AddModelError(string.Empty, $"{model.Url} does not appear to be a valid URL.");
                     model = await AddCountiesToModel(model);
-                    return View(model);
+                    return View(view, model);
                 }
             }
             catch
             {
                 ModelState.AddModelError(string.Empty, $"Could not access URL {model.Url}.");
                 model = await AddCountiesToModel(model);
-                return View(model);
+                return View(view, model);
             }
         }
 
