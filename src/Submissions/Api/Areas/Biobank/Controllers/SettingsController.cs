@@ -117,8 +117,8 @@ public class SettingsController : Controller
         }
 
         [HttpPost]
-        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         [ValidateAntiForgeryToken]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
             if (!ModelState.IsValid)

@@ -605,9 +605,9 @@ public class ProfileController : Controller
         });
     }
     
-    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> AddFunderAjax(int biobankId, AddFunderModel model)
     {
         if (!ModelState.IsValid)
