@@ -406,7 +406,7 @@ public class ProfileController : Controller
   }
 
   [HttpPost]
-  [Authorize(Roles = "BiobankAdmin")]
+  [Authorize(nameof(AuthPolicies.IsNetworkAdmin))]
   public void RemoveTempLogo()
   {
     HttpContext.Session.Remove("TempLogo");

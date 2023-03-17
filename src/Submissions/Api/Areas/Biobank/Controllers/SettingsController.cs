@@ -221,7 +221,7 @@ public class SettingsController : Controller
             var userBiobanks = await _organisationDirectoryService.ListByUserId(biobankUserId);
             
             if (!userBiobanks.Any())
-              //and remove them from the role if they are not.
+              // and remove them from the admin role if they are not.
               await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
 
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
