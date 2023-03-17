@@ -33,6 +33,7 @@ public class SettingsController : Controller
   private readonly IReferenceDataCrudService<AccessCondition> _accessConditionService;
   private readonly IReferenceDataCrudService<CollectionType> _collectionTypeService;
   private readonly ITokenLoggingService _tokenLoggingService;
+  private readonly SignInManager<ApplicationUser> _signInManager;
 
   public SettingsController(
       UserManager<ApplicationUser> userManager,
@@ -42,7 +43,8 @@ public class SettingsController : Controller
       INetworkService networkService,
       IReferenceDataCrudService<AccessCondition> accessConditionService,
       IReferenceDataCrudService<CollectionType> collectionTypeService,
-      ITokenLoggingService tokenLoggingService)
+      ITokenLoggingService tokenLoggingService,
+      SignInManager<ApplicationUser> signInManager)
   {
       _userManager = userManager;
       _biobankService = biobankService;
@@ -52,6 +54,7 @@ public class SettingsController : Controller
       _accessConditionService = accessConditionService;
       _collectionTypeService = collectionTypeService;
       _tokenLoggingService = tokenLoggingService;
+      _signInManager = signInManager;
   }
 
         #region Admins  
@@ -209,13 +212,17 @@ public class SettingsController : Controller
         [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> DeleteAdmin(int biobankId, string biobankUserId, string userFullName)
         {
-            //remove them from the network
+            //remove them from the biobank
             await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
             var biobankUser = await _userManager.FindByIdAsync(biobankUserId);
 
-            //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
-            await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
+            // Check if they are admin for any other biobanks
+            var userBiobanks = await _organisationDirectoryService.ListByUserId(biobankUserId);
+            
+            if (!userBiobanks.Any())
+              //and remove them from the role if they are not.
+              await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
 
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 

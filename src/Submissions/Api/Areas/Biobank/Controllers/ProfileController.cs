@@ -270,8 +270,7 @@ public class ProfileController : Controller
         model.Countries = await _countryService.List();
         return model;
     }
-
-    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Edit(BiobankDetailsModel model)
