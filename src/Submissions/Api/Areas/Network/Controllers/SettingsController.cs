@@ -7,11 +7,9 @@ using Biobanks.Submissions.Api.Constants;
 using Biobanks.Submissions.Api.Models.Emails;
 using Biobanks.Submissions.Api.Models.Shared;
 using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices;
 using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
 using Biobanks.Submissions.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetworkAdminsModel = Biobanks.Submissions.Api.Areas.Network.Models.Settings.NetworkAdminsModel;
@@ -73,13 +71,6 @@ public class SettingsController : Controller
         return admins;
     }
 
-    public async Task<ActionResult> GetAdminsAjax(int networkId, bool excludeCurrentUser = false, int timeStamp = 0)
-    {
-        //timeStamp can be used to avoid caching issues, notably on IE
-
-        return Ok(await GetAdminsAsync(networkId, excludeCurrentUser));
-    }
-
     public ActionResult InviteAdminSuccess(int networkId, string name)
     {
         //This action solely exists so we can set a feedback message
@@ -90,6 +81,7 @@ public class SettingsController : Controller
         return RedirectToAction("Admins", new { networkId });
     }
 
+    [Authorize(nameof(AuthPolicies.HasNetworkClaim))]
     public async Task<ActionResult> InviteAdminAjax(int networkId)
     {
         var network = await _networkService.Get(networkId);
@@ -196,10 +188,15 @@ public class SettingsController : Controller
     {
         //remove them from the network
         await _networkService.RemoveNetworkUser(networkUserId, networkId);
-
-        //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
+        
         var networkUser = await _userManager.FindByIdAsync(networkUserId);
-        await _userManager.RemoveFromRolesAsync(networkUser, new List<string> {Role.NetworkAdmin});
+        
+        // Check if they are admin for any other networks
+        var userNetworks = await _networkService.ListByUserId(networkUserId);
+        
+        if (!userNetworks.Any())
+          // and remove them from the admin role if they are not
+          await _userManager.RemoveFromRolesAsync(networkUser, new List<string> {Role.NetworkAdmin});
 
         this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your network admins!", FeedbackMessageType.Success);
 

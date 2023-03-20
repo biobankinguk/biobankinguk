@@ -90,13 +90,6 @@ public class SettingsController : Controller
             return admins;
         }
 
-        public async Task<ActionResult> GetAdminsAjax(int biobankId, bool excludeCurrentUser = false, int timeStamp = 0)
-        {
-            //timeStamp can be used to avoid caching issues, notably on IE
-            
-            return Ok(await GetAdminsAsync(biobankId, excludeCurrentUser));
-        }
-
         public ActionResult InviteAdminSuccess(int biobankId, string name)
         {
             //This action solely exists so we can set a feedback message
@@ -107,6 +100,7 @@ public class SettingsController : Controller
             return RedirectToAction("Admins", new { biobankId });
         }
 
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> InviteAdminAjax(int biobankId)
         {
             var bb = await _organisationDirectoryService.Get(biobankId);
@@ -124,6 +118,7 @@ public class SettingsController : Controller
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> InviteAdminAjax(InviteRegisterEntityAdminModel model)
         {
             if (!ModelState.IsValid)
@@ -214,13 +209,17 @@ public class SettingsController : Controller
         [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> DeleteAdmin(int biobankId, string biobankUserId, string userFullName)
         {
-            //remove them from the network
+            //remove them from the biobank
             await _organisationDirectoryService.RemoveUserFromOrganisation(biobankUserId, biobankId);
 
             var biobankUser = await _userManager.FindByIdAsync(biobankUserId);
 
-            //and remove them from the role, since they can only be admin of one network at a time, and we just removed it!
-            await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
+            // Check if they are admin for any other biobanks
+            var userBiobanks = await _organisationDirectoryService.ListByUserId(biobankUserId);
+            
+            if (!userBiobanks.Any())
+              // and remove them from the admin role if they are not.
+              await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
 
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 
@@ -332,6 +331,7 @@ public class SettingsController : Controller
           return View(model);
         }
 
+        [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
         public async Task<ActionResult> AcceptNetworkRequest(int biobankId, int networkId)
         {
           var organisationNetwork = await _networkService.GetOrganisationNetwork(biobankId, networkId);

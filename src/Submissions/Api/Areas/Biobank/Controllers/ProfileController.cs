@@ -584,10 +584,6 @@ public class ProfileController : Controller
                 Name = bbFunder.Value
             }).ToList();
     
-    public async Task<JsonResult> GetFundersAjax(int biobankId, int timeStamp = 0)
-        //timeStamp can be used to avoid caching issues, notably on IE
-        => Json(await GetFundersAsync(biobankId));
-    
     public ActionResult AddFunderSuccess(int biobankId, string name)
     {
         //This action solely exists so we can set a feedback message
@@ -598,6 +594,7 @@ public class ProfileController : Controller
         return RedirectToAction("Funders", new { biobankId = biobankId });
     }
     
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> AddFunderAjax(int biobankId)
     {
         var bb = await _organisationService.Get(biobankId);
@@ -610,6 +607,7 @@ public class ProfileController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(nameof(AuthPolicies.HasBiobankClaim))]
     public async Task<ActionResult> AddFunderAjax(int biobankId, AddFunderModel model)
     {
         if (!ModelState.IsValid)
@@ -730,7 +728,7 @@ public class ProfileController : Controller
 
     }
 
-    public async Task<Publication> PublicationSearch(string publicationId, int biobankId)
+    private async Task<Publication> PublicationSearch(string publicationId, int biobankId)
     {
         // Find Given Publication
         var publications = await _publicationService.ListByOrganisation(biobankId);
