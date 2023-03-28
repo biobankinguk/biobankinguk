@@ -9,23 +9,19 @@
 "Area: Analytics":
   - src/Core/Analytics/**/*
   - src/Core/Jobs/AnalyticsJob.cs
-"Area: Submissions":
+"Area: Directory":
   - src/Submissions/**/*
+"Area: Submissions":
+  - src/Core/Submissions/**/*
   - src/Core/Jobs/RejectJob.cs
   - src/Core/Jobs/ExpiryJob.cs
   - src/Core/Jobs/CommitJob.cs
   - src/Core/Jobs/StagingJob.cs
 "Area: Data":
   - src/Data/**/*
-"Area: Directory":
-  - src/Directory/**/*
-"Area: Directory Data":
-  - src/Directory/Data/**/*
 "Area: Publications":
   - src/Core/Publications/**/*
   - src/Core/Jobs/PublicationsJob.cs
-"Area: Entities":
-  - src/Entities/**/*
 "Area: Aggregator":
   - src/Core/Aggregator/**/*
   - src/Core/Jobs/AggregatorJob.cs
