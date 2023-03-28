@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: deepakputhraya/action-pr-title@master
         with:
-          regex: '^AB#\d+: ' # Match pull request titles in the form AB#<id>: Title.
+          regex: '^AB#\d+' # Match pull request titles in the form AB#<id> Title.
           github_token: ${{ github.token }} # Default: ${{ github.token }}
   # if found, comment to ensure it gets linked
   # only one comment will be made per PR, but will be updated
