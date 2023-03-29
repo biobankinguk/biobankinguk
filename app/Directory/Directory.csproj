@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <DocumentationFile>swagger.xml</DocumentationFile>
-    <RootNamespace>Biobanks.Submissions.Api</RootNamespace>
-    <AssemblyName>Biobanks.Submissions.Api</AssemblyName>
+    <RootNamespace>Biobanks.Directory</RootNamespace>
+    <AssemblyName>Biobanks.Directory</AssemblyName>
     <UserSecretsId>216e442f-ab1c-4cb2-8e0e-ed462d282d2b</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -59,9 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.csproj" />
-    <ProjectReference Include="..\..\Data\Data.csproj" />
-    <ProjectReference Include="..\..\Omop\Omop\Omop.csproj" />
+    <ProjectReference Include="..\..\lib\Core\Core.csproj" />
+    <ProjectReference Include="..\..\lib\Data\Data.csproj" />
+    <ProjectReference Include="..\..\lib\Omop\Omop.csproj" />
   </ItemGroup>
 
   <ItemGroup>

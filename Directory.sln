@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{EF09E824-9559-4FD7-8938-18313DB6D008}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "..\Data\Data.csproj", "{2880CAC6-8659-435A-A2A3-4F622CB7D2C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Directory", "app\Directory\Directory.csproj", "{EF09E824-9559-4FD7-8938-18313DB6D008}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{E6110395-5696-4D01-BF99-A1BF9F0C6A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "lib\Data\Data.csproj", "{2880CAC6-8659-435A-A2A3-4F622CB7D2C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omop", "..\Omop\Omop\Omop.csproj", "{60BDA32C-8090-48D8-8758-0840694D8A2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "lib\Core\Core.csproj", "{1C1EAC80-4E7E-4058-ABFA-1E3A9B1D1F8F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omop", "lib\Omop\Omop.csproj", "{60BDA32C-8090-48D8-8758-0840694D8A2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

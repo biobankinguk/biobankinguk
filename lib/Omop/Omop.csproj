@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>Biobanks.Omop</AssemblyName>
+    <RootNamespace>Biobanks.Omop</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
