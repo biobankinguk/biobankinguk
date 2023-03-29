@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Core.Submissions.Services.Contracts
+namespace Biobanks.Submissions.Services.Contracts
 {
     public interface ISubmissionExpiryService
     {

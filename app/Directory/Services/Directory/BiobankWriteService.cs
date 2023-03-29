@@ -1,16 +1,15 @@
-using Biobanks.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Services;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Submissions;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class BiobankWriteService : IBiobankWriteService
     {

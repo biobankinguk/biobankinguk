@@ -1,4 +1,4 @@
-@model IEnumerable<Biobanks.Submissions.Api.Areas.Admin.Models.Funders.FunderModel>
+@model IEnumerable<Biobanks.Directory.Areas.Admin.Models.Funders.FunderModel>
 
 @{
     ViewBag.Title = "Funders";
@@ -44,7 +44,7 @@
                                 </a>
                             </td>
                             <td>
-                                @Html.ActionLink("Delete", "DeleteFunder", "Funders", new {id = funder.FunderId}, new {@class = "btn btn-danger"})
+                              @Html.ActionLink("Delete", "DeleteFunder", "Funders", new {id = funder.FunderId}, new {@class = "btn btn-danger"})
                             </td>
                         </tr>
                     }

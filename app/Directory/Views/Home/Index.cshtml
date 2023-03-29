@@ -1,7 +1,9 @@
-@using Biobanks.Submissions.Api.HtmlHelpers
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@inject IConfigService _config
 
-@model Biobanks.Submissions.Api.Models.Home.HomepageContentModel
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.HtmlHelpers
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Home.HomepageContentModel
 @{
 	ViewBag.Title = "Index";
 	ViewBag.WideLayout = true;

@@ -1,12 +1,11 @@
-using Biobanks.Submissions.Api.Services.Directory.Constants;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Biobanks.Directory.Services.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Biobanks.Submissions.Api.Models.Shared;
+namespace Biobanks.Directory.Models.Shared;
 
 public class AbstractCRUDCapabilityModel : AbstractCRUDWithAssociatedDataModel
 {

@@ -1,6 +1,7 @@
-@using Biobanks.Submissions.Api.Config
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@model Biobanks.Submissions.Api.Models.Shared.MacroscopicAssessmentsModel
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Shared.MacroscopicAssessmentsModel
 
 @{
 	ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.MacroscopicAssessmentName);

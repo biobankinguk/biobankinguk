@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Biobanks.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.Documents;
 using Nest;
 
-namespace Biobanks.Search.Dto.PartialDocuments
+namespace Biobanks.Directory.Search.Dto.PartialDocuments
 {
     public class PartialCollection
     {

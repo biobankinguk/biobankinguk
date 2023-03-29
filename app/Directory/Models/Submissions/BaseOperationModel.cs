@@ -1,6 +1,6 @@
-﻿using Core.Submissions.Types;
+﻿using Biobanks.Submissions.Types;
 
-namespace Biobanks.Submissions.Api.Models.Submissions
+namespace Biobanks.Directory.Models.Submissions
 {
     /// <summary>
     /// Represents the core elements of a viewmodel which provides an entity operation type (e.g. submit, delete).

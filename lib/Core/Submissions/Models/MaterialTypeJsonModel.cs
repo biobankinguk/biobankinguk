@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Submissions.Models
+namespace Biobanks.Submissions.Models
 {
     public class MaterialTypeJsonModel
     {

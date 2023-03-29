@@ -1,14 +1,14 @@
-﻿using Biobanks.Aggregator;
-using Biobanks.Aggregator.Services.Contracts;
-using Biobanks.Entities.Api;
-using Biobanks.Shared.Services.Contracts;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Aggregator;
+using Biobanks.Aggregator.Services.Contracts;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Shared.Services.Contracts;
+using Microsoft.Extensions.Options;
 
-namespace Core.Jobs
+namespace Biobanks.Jobs
 {
     public class AggregatorJob
     {

@@ -1,14 +1,15 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Models.Shared;
+using System.Threading.Tasks;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Enums;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Directory.Controllers.Directory;
 
 [Authorize(nameof(AuthPolicies.IsSuperUser))]
 public class FlagsController : Controller
@@ -40,7 +41,7 @@ public class FlagsController : Controller
         await _configService.UpdateSiteConfigsAsync(
             values
                 .OrderBy(x => x.Key)
-                .Select(x => new Entities.Data.Config
+                .Select(x => new Data.Entities.Config
                 {
                     Key = x.Key,
                     Value = x.Value ?? "", // Store nulls as empty strings

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class Network
     {

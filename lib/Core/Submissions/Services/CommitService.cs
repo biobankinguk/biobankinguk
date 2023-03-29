@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
-using Core.Submissions.Consts;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
+using Biobanks.Submissions.Consts;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
 using Microsoft.EntityFrameworkCore;
-using Z.EntityFramework.Plus;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     /// <inheritdoc />
     public class CommitService : ICommitService

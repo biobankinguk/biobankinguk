@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Submissions.Models
+namespace Biobanks.Submissions.Models
 {
     public class SampleIdModel
     {

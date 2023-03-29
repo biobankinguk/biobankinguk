@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+namespace Biobanks.Directory.Areas.Biobank.Models.Collections;
 
 public class SampleSetModel
 {

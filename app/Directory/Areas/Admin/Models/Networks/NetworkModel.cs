@@ -1,7 +1,7 @@
-using Biobanks.Submissions.Api.Models.Shared;
 using System.Collections.Generic;
+using Biobanks.Directory.Models.Shared;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.Networks;
+namespace Biobanks.Directory.Areas.Admin.Models.Networks;
 
 public class NetworkModel
 {

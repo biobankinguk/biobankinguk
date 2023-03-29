@@ -1,7 +1,9 @@
 @inject IOptions<SitePropertiesOptions> _options;
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@inject IConfigService _config
 
-@model Biobanks.Submissions.Api.Models.Register.RegisterEntityModel
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Register.RegisterEntityModel
 
 @{
     var sampleResourceName = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName);

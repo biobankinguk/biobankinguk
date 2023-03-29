@@ -1,10 +1,9 @@
-﻿using Biobanks.Publications.Services.Contracts;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Biobanks.Publications.Services.Contracts;
 using Biobanks.Shared.Services.Contracts;
 
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Core.Jobs
+namespace Biobanks.Jobs
 {
     public class PublicationsJob
     {

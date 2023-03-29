@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
-using Biobanks.Analytics.Services.Contracts;
+using System.Threading.Tasks;
 using Biobanks.Analytics.Dto;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Directory.Services.Directory.Contracts;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     /// <summary>
     /// This Service generates Analytics Reports for a Biobank

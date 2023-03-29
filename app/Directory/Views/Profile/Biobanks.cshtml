@@ -1,6 +1,7 @@
-@using Biobanks.Entities.Data
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@model IEnumerable<Organisation>
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model IEnumerable<Biobanks.Data.Entities.Organisation>
 
 <div>
 	<p>

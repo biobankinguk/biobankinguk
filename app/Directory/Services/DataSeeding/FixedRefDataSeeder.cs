@@ -4,12 +4,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Constants;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
 using Microsoft.AspNetCore.Identity;
 
-namespace Biobanks.Submissions.Api.Services.DataSeeding;
+namespace Biobanks.Directory.Services.DataSeeding;
 
 public class FixedRefDataSeeder
 {
@@ -32,9 +32,9 @@ public class FixedRefDataSeeder
 
   public async Task SeedDirectoryConfigs()
   {
-    var set = _db.Set<Entities.Data.Config>();
+    var set = _db.Set<Data.Entities.Config>();
 
-    var defaults = new List<Entities.Data.Config>
+    var defaults = new List<Data.Entities.Config>
     {
       #region Display
 

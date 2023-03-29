@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace Biobanks.Submissions.Api.Services.EmailServices
+namespace Biobanks.Directory.Services.EmailServices
 {
     public class RazorViewService
     {

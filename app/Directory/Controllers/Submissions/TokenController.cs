@@ -1,20 +1,17 @@
-﻿using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Config;
-
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Utilities.IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-
 using Swashbuckle.AspNetCore.Annotations;
 
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Biobanks.Submissions.Api.Utilities.IdentityModel;
-
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Directory.Controllers.Submissions
 {
     /// <summary>
     /// Controller for Token issuing

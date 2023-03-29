@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class OrganisationRegistrationReason
     {

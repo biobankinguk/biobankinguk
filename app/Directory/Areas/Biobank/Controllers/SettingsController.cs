@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Filters;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Areas.Biobank.Models.Settings;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Filters;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Directory.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]

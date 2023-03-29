@@ -1,6 +1,6 @@
-@using Biobanks.Submissions.Api.Extensions
-@using Biobanks.Submissions.Api.Models.Search
-@model Biobanks.Submissions.Api.Models.Search.BaseSearchModel
+@using Biobanks.Directory.Extensions
+@using Biobanks.Directory.Models.Search
+@model Biobanks.Directory.Models.Search.BaseSearchModel
 @{
     ViewBag.Title = "Search Results";
 }
@@ -29,12 +29,12 @@
             foreach (var biobank in Model.Biobanks)
             {
                 <a href="@Url.Action("CapabilitiesDetail", "Search",
-                             new
-                             {
-                                 biobankExternalId = biobank.ExternalId,
-                                 diagnosis = Model.OntologyTerm,
-                                 selectedFacets = Context.Request.Query["selectedFacets"]
-                             })" class="detailed-search-link">
+                           new
+                           {
+                             biobankExternalId = biobank.ExternalId,
+                             diagnosis = Model.OntologyTerm,
+                             selectedFacets = Context.Request.Query["selectedFacets"]
+                           })" class="detailed-search-link">
                     <div class="well well-hover">
                         <div class="row">
                             <div class="col-sm-8">

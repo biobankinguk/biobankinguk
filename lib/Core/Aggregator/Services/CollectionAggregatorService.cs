@@ -1,10 +1,10 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
-using Biobanks.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services

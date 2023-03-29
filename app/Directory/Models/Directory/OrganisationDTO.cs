@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Directory
+﻿namespace Biobanks.Directory.Models.Directory
 {
     public class OrganisationDTO
     { 

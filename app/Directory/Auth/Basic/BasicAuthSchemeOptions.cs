@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
-using System;
-
-namespace Biobanks.Submissions.Api.Auth.Basic
+namespace Biobanks.Directory.Auth.Basic
 {
     /// <summary>
     /// AuthenticationScheme Options for Basic Auth

@@ -1,11 +1,11 @@
 using System.Linq;
 using AutoMapper;
-using Biobanks.Search.Dto.Facets;
-using Biobanks.Search.Dto.Results;
-using Biobanks.Submissions.Api.Extensions;
-using Biobanks.Submissions.Api.Models.Search;
+using Biobanks.Directory.Extensions;
+using Biobanks.Directory.Models.Search;
+using Biobanks.Directory.Search.Dto.Facets;
+using Biobanks.Directory.Search.Dto.Results;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class BaseSearchProfile : Profile
 {

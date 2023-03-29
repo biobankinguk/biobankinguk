@@ -1,24 +1,23 @@
-using AutoMapper;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
-using Biobanks.Submissions.Api.Filters;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using cloudscribe.Web.Navigation;
-using Biobanks.Submissions.Api.Auth;
-using AssociatedDataSummaryModel = Biobanks.Submissions.Api.Models.Biobank.AssociatedDataSummaryModel;
+using AutoMapper;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Areas.Biobank.Models.Capabilities;
+using Biobanks.Directory.Areas.Biobank.Models.Collections;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Filters;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using AssociatedDataSummaryModel = Biobanks.Directory.Models.Biobank.AssociatedDataSummaryModel;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Directory.Areas.Biobank.Controllers;
 
 
 [Area("Biobank")]

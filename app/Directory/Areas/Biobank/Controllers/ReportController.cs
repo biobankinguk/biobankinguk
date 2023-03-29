@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Filters;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Areas.Biobank.Models.Report;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Filters;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Directory.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]

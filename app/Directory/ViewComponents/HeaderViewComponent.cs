@@ -1,17 +1,17 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
-using Microsoft.AspNetCore.Mvc;
-using Biobanks.Submissions.Api.Models.Header;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Header;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Biobanks.Submissions.Api.Config;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.ViewComponents;
+namespace Biobanks.Directory.ViewComponents;
 
 public class HeaderViewComponent : ViewComponent
 {

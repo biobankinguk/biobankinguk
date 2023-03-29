@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Shared;
+namespace Biobanks.Directory.Models.Shared;
 
 public abstract class AbstractCRUDWithAssociatedDataModel
 {

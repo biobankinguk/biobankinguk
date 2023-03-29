@@ -1,13 +1,12 @@
 ﻿using Biobanks.Analytics.Services.Contracts;
 using Biobanks.Data;
-using Biobanks.Entities.Data.Analytics;
-
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.Analytics;
 
 namespace Biobanks.Analytics.Services
 {

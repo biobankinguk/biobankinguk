@@ -1,10 +1,10 @@
-using Nest;
 using System.Collections.Generic;
 using System.Linq;
-using Biobanks.Search.Constants;
-using Biobanks.Search.Dto.Documents;
+using Biobanks.Directory.Search.Constants;
+using Biobanks.Directory.Search.Dto.Documents;
+using Nest;
 
-namespace Biobanks.Search.Dto.Facets
+namespace Biobanks.Directory.Search.Dto.Facets
 {
     public static class FacetList
     {

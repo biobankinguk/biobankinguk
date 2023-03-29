@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Biobanks.Submissions.Api.Startup.EfCoreMigrations;
+namespace Biobanks.Directory.Startup.EfCoreMigrations;
 
 public static class EfCoreMigrations
 {

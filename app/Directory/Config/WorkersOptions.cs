@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Config
+namespace Biobanks.Directory.Config
 {
     /// <summary>
     /// Possible recurring jobs that the API can trigger using Hangfire.

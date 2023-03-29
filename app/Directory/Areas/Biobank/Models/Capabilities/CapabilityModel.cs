@@ -1,7 +1,6 @@
-using Biobanks.Submissions.Api.Models.Biobank;
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
+namespace Biobanks.Directory.Areas.Biobank.Models.Capabilities;
 
 public class CapabilityModel
 {

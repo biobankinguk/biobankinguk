@@ -1,14 +1,13 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Areas.Admin.Models.RegistrationDomainRules;
-using Biobanks.Submissions.Api.Models.Shared;
-using Microsoft.AspNetCore.Mvc;
-using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Directory.Areas.Admin.Models.RegistrationDomainRules;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+namespace Biobanks.Directory.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]

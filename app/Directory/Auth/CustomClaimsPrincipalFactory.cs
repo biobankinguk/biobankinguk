@@ -6,12 +6,12 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Auth;
+namespace Biobanks.Directory.Auth;
 
 public class CustomClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
 {

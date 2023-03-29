@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Constants
+﻿namespace Biobanks.Directory.Constants
 {
     public static class Role
     {

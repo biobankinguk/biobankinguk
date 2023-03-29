@@ -1,8 +1,8 @@
 using AutoMapper;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Services.Directory.Dto;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class NetworkDtoProfile : Profile
 {

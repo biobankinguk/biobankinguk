@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Config
+﻿namespace Biobanks.Submissions.Config
 {
     public class ExpiryConfigModel
     {

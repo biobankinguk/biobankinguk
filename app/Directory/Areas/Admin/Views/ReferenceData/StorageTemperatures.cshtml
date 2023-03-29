@@ -1,7 +1,8 @@
-@using Biobanks.Submissions.Api.Config
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@inject IConfigService _config
 
-@model Biobanks.Submissions.Api.Models.Shared.StorageTemperaturesModel
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Shared.StorageTemperaturesModel
 
 @{
 	ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.StorageTemperatureName);

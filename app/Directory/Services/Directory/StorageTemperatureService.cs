@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class StorageTemperatureService : ReferenceDataCrudService<StorageTemperature>
     {

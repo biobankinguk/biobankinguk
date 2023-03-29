@@ -1,10 +1,9 @@
-﻿using System;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IOntologyTermService
     {

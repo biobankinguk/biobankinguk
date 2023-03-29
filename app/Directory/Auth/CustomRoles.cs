@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Auth
+namespace Biobanks.Directory.Auth
 {
     /// <summary>
     /// Custom Identity Roles used in the Application

@@ -1,6 +1,6 @@
-@using Biobanks.Submissions.Api.Models.Emails
 @inject IOptions<SitePropertiesOptions> _config
-@model NewBiobankNetworkRegistrationNotificationModel
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.NewBiobankNetworkRegistrationNotificationModel
 @{
   var directoryName = @_config.Value.ServiceName;
   

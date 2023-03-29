@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Biobanks.Submissions.Api.Utilities.IdentityModel
+namespace Biobanks.Directory.Utilities.IdentityModel
 {
   public static class Crypto
   {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Entities.Data.ReferenceData
+namespace Biobanks.Data.Entities.ReferenceData
 {
     public class AccessCondition : BaseReferenceData
     {

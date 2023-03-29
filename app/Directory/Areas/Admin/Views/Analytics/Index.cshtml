@@ -1,9 +1,8 @@
+@inject IConfigService _config
 
-@using Biobanks.Submissions.Api.Config
-
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-
-@model Biobanks.Submissions.Api.Areas.Admin.Models.Analytics.DirectoryAnalyticReport
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Admin.Models.Analytics.DirectoryAnalyticReport
 
 @{
     ViewBag.Title = "Analytics";

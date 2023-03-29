@@ -2,17 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Search.Constants;
-using Biobanks.Search.Contracts;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.Facets;
-using Biobanks.Search.Dto.Results;
+using Biobanks.Directory.Search.Constants;
+using Biobanks.Directory.Search.Contracts;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.Facets;
+using Biobanks.Directory.Search.Dto.Results;
 using Elasticsearch.Net;
 using Nest;
-using DirectorySearchResult = Biobanks.Search.Dto.Results.Result;
-using Result = Biobanks.Search.Dto.Results.Result;
+using Result = Biobanks.Directory.Search.Dto.Results.Result;
 
-namespace Biobanks.Search.Elastic
+namespace Biobanks.Directory.Search.Elastic
 {
     // TODO major renaming work
     // biobank -> organisation

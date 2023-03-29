@@ -1,7 +1,7 @@
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-
-@using Biobanks.Submissions.Api.Config
-@model Biobanks.Submissions.Api.Areas.Admin.Models.SiteConfig.RegisterConfigModel
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Admin.Models.SiteConfig.RegisterConfigModel
 @{
     ViewBag.Title = "Register Pages Config";
 }

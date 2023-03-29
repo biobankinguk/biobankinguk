@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Core.Submissions.Config;
-using Core.Submissions.Dto;
-using Core.Submissions.Services.Contracts;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Config;
+using Biobanks.Submissions.Dto;
+using Biobanks.Submissions.Services.Contracts;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     public class TreatmentValidationService : ITreatmentValidationService
     {

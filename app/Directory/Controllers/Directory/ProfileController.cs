@@ -1,20 +1,19 @@
-using Biobanks.Entities.Data.ReferenceData;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.Directory;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using Biobanks.Entities.Data;
 using System.Linq;
 using System.Text.Json;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Models.Profile;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Utilities;
+using System.Threading.Tasks;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Models.Profile;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory
+namespace Biobanks.Directory.Controllers.Directory
 {
     [AllowAnonymous]
     public class ProfileController : Controller

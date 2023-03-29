@@ -1,16 +1,16 @@
-﻿using Biobanks.Data;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     public class ReferenceDataReadService : IReferenceDataReadService
     {

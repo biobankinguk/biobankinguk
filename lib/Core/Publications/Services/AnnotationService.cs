@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Data;
+using Biobanks.Data.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Publications.Dto;

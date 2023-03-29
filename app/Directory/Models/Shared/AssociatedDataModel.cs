@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Biobanks.Submissions.Api.Models.Shared;
+namespace Biobanks.Directory.Models.Shared;
 
 public class AssociatedDataModel
 {

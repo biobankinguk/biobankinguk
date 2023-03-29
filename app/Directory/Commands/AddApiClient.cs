@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using Biobanks.Data;
-using Biobanks.Submissions.Api.Commands.Helpers;
+using Biobanks.Directory.Commands.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands;
+namespace Biobanks.Directory.Commands;
 
 internal class AddApiClient : Command
 {
@@ -56,8 +55,8 @@ internal class AddApiClient : Command
         overrideConnectionString) =>
       {
         // Get some extra dependencies off the context
-        var logger = context.BindingContext.GetRequiredService<ILoggerFactory>();
-        var config = context.BindingContext.GetRequiredService<IConfiguration>();
+        var logger = ServiceProviderServiceExtensions.GetRequiredService<ILoggerFactory>(context.BindingContext);
+        var config = ServiceProviderServiceExtensions.GetRequiredService<IConfiguration>(context.BindingContext);
         var console = context.Console;
 
         // figure out the connection string from the option, or config
@@ -65,10 +64,9 @@ internal class AddApiClient : Command
 
         // Configure DI and run the command handler
         await this
-          .ConfigureServices(s => s
-            .AddSingleton(_ => logger)
+          .ConfigureServices(s => ServiceCollectionServiceExtensions.AddSingleton(s, _ => logger)
             .AddSingleton(_ => config)
-            .AddSingleton(_ => console)
+            .AddSingleton<IConsole>(_ => console)
             .AddDbContext<ApplicationDbContext>(
               o => o.UseNpgsql(
                 connectionString,

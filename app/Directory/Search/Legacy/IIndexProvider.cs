@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
 
-namespace Biobanks.Search.Legacy
+namespace Biobanks.Directory.Search.Legacy
 {
     // TODO: This is a legacy contract for bridging to the old index service code
     // It should be thrown away when the services are rewritten

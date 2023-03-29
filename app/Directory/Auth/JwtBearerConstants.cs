@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Auth
+﻿namespace Biobanks.Directory.Auth
 {
     /// <summary>
     /// Constant values used for configuring JWT Bearer Auth

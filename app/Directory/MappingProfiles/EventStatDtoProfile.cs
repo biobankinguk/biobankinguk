@@ -1,8 +1,8 @@
 using AutoMapper;
 using Biobanks.Analytics.Dto;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Analytics;
+using Biobanks.Directory.Areas.Admin.Models.Analytics;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class EventStatDtoProfile : Profile
 {

@@ -1,20 +1,20 @@
-using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Account;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Account;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory
+namespace Biobanks.Directory.Controllers.Directory
 {
   public class AccountController : Controller
     {

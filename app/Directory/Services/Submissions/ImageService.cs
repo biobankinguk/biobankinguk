@@ -5,7 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 
-namespace Biobanks.Services
+namespace Biobanks.Directory.Services.Submissions
 {
     // General helpers for working with images
     public static class ImageService

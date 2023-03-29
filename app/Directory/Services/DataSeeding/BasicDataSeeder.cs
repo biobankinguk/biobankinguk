@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services.DataSeeding;
+namespace Biobanks.Directory.Services.DataSeeding;
 
 public class BasicDataSeeder
 {

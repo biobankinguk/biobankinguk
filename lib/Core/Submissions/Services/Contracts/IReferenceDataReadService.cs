@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Core.Submissions.Services.Contracts
+namespace Biobanks.Submissions.Services.Contracts
 {
     public interface IReferenceDataReadService
     {

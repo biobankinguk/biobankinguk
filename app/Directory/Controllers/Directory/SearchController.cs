@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Search.Constants;
-using Biobanks.Search.Dto.Facets;
-using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Search;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Constants;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Search;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Search.Constants;
+using Biobanks.Directory.Search.Dto.Facets;
+using Biobanks.Directory.Search.Legacy;
+using Biobanks.Directory.Services.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Directory.Controllers.Directory;
 
 [AllowAnonymous]
 public class SearchController : Controller

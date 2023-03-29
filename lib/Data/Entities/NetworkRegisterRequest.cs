@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class NetworkRegisterRequest
     {

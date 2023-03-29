@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.CommandLine;
-using Biobanks.Submissions.Api.Utilities.IdentityModel;
+using Biobanks.Directory.Utilities.IdentityModel;
 using ConsoleTableExt;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Runners;
+namespace Biobanks.Directory.Commands.Runners;
 
 public class Hash
 {

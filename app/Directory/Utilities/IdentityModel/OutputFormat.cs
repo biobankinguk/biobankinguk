@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Utilities.IdentityModel
+﻿namespace Biobanks.Directory.Utilities.IdentityModel
 {
   /// <summary>
   /// Encoded formats for representing a byte array as a string

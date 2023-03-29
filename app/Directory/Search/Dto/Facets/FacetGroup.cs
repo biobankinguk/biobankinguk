@@ -1,6 +1,6 @@
-using Biobanks.Search.Constants;
+using Biobanks.Directory.Search.Constants;
 
-namespace Biobanks.Search.Dto.Facets
+namespace Biobanks.Directory.Search.Dto.Facets
 {
     public class FacetGroup
     {

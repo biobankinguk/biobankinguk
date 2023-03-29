@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models;
+namespace Biobanks.Directory.Areas.Biobank.Models.Report;
 
 public class BiobankAnalyticReport
 {

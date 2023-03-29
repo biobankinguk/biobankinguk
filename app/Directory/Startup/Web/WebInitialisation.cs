@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Submissions.Api.Services.DataSeeding;
-using Biobanks.Submissions.Api.Services.Directory;
+using Biobanks.Directory.Services.DataSeeding;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Biobanks.Submissions.Api.Startup.Web;
+namespace Biobanks.Directory.Startup.Web;
 
 public static class WebInitialisation
 {

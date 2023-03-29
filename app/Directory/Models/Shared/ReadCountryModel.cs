@@ -1,5 +1,4 @@
-﻿using System;
-namespace Biobanks.Submissions.Api.Models.Shared
+﻿namespace Biobanks.Directory.Models.Shared
 {
     public class ReadCountryModel : CountryModel
     {

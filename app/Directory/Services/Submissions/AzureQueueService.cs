@@ -1,12 +1,12 @@
-﻿using Biobanks.Submissions.Api.Services.Submissions.Contracts;
-using Core.Submissions.Models;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
-using System;
+﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Biobanks.Directory.Services.Submissions.Contracts;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
 
-namespace Biobanks.Submissions.Api.Services.Submissions
+namespace Biobanks.Directory.Services.Submissions
 {
     /// <inheritdoc />
     public class AzureQueueService : IBackgroundJobEnqueueingService

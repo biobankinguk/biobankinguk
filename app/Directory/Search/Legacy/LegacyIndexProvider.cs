@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Biobanks.Search.Contracts;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Search.Contracts;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
 
-namespace Biobanks.Search.Legacy
+namespace Biobanks.Directory.Search.Legacy
 {
     // Implements the legacy interface used by the current Directory services
     // Just a wrapper for the new interfaces

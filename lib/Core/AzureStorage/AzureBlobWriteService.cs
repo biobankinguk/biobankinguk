@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Core.Submissions.Services.Contracts;
+using Biobanks.Submissions.Services.Contracts;
 
-namespace Core.AzureStorage
+namespace Biobanks.AzureStorage
 {
     /// <inheritdoc />
     public class AzureBlobWriteService : IBlobWriteService

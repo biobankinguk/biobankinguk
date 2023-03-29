@@ -1,7 +1,7 @@
-@using Biobanks.Submissions.Api.Config
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@model Biobanks.Submissions.Api.Models.Shared.AbstractCRUDWithAssociatedDataModel
-@using Biobanks.Submissions.Api.Constants;
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Shared.AbstractCRUDWithAssociatedDataModel
 
 <div class="col-sm-offset-1 col-sm-10">
     <h4>Associated data <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-associateddata"></span></h4>

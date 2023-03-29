@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Models.Shared
+namespace Biobanks.Directory.Models.Shared
 {
     public class PreservationTypesModel
     {

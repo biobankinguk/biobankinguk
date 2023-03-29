@@ -1,11 +1,9 @@
-﻿
-
+﻿using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class CollectionStatusService : ReferenceDataCrudService<CollectionStatus>
     {

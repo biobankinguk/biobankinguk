@@ -1,11 +1,10 @@
-﻿using Biobanks.Data.Entities;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Models.Directory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Models.Directory;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IOrganisationDirectoryService
     {

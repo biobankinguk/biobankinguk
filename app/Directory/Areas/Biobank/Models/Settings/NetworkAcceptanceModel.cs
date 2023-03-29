@@ -1,6 +1,6 @@
 using System;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
+namespace Biobanks.Directory.Areas.Biobank.Models.Settings;
 
 public class NetworkAcceptanceModel
 {

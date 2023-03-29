@@ -1,19 +1,19 @@
-﻿using Biobanks.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.PartialDocuments;
-using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Services.Directory.Extensions;
+using Biobanks.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Search.Legacy;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Extensions;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     /// <inheritdoc/>
     public class CollectionService : ICollectionService

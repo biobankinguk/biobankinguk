@@ -1,7 +1,7 @@
 using System.CommandLine.Binding;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Biobanks.Submissions.Api.Commands.Helpers;
+namespace Biobanks.Directory.Commands.Helpers;
 
 internal static class Bind
 {

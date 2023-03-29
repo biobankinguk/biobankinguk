@@ -1,6 +1,7 @@
 @inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
 
-@model Biobanks.Submissions.Api.Models.Home.HomepageContentModel
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Home.HomepageContentModel
 
 @{
     var siteProperties = _sitePropertiesOptions.Value;

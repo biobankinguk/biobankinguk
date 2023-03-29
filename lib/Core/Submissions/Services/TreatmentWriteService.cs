@@ -1,19 +1,18 @@
-﻿using Biobanks.Data;
-using Biobanks.Entities.Api;
-using Core.Submissions.Dto;
-using Core.Submissions.Exceptions;
-using Core.Submissions.Extensions;
-using Core.Submissions.Services.Contracts;
-using Microsoft.EntityFrameworkCore;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Dto;
+using Biobanks.Submissions.Exceptions;
+using Biobanks.Submissions.Extensions;
+using Biobanks.Submissions.Services.Contracts;
+using Microsoft.EntityFrameworkCore;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     public class TreatmentWriteService : ITreatmentWriteService
     {

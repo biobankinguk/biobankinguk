@@ -1,18 +1,17 @@
 using System;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Register;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Register;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Directory.Controllers.Directory;
 
 public class RegisterController : Controller
 {

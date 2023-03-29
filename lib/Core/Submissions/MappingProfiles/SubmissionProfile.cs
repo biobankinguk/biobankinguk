@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using Biobanks.Entities.Api;
-using Core.Submissions.Models;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Models;
 
-namespace Core.Submissions.MappingProfiles
+namespace Biobanks.Submissions.MappingProfiles
 {
     /// <inheritdoc />
     public class SubmissionProfile : Profile

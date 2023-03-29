@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Entities.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IMaterialTypeService : IReferenceDataCrudService<MaterialType>
     {

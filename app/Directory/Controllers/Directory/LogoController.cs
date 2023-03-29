@@ -1,8 +1,8 @@
-﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
+﻿using System.Threading.Tasks;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory
+namespace Biobanks.Directory.Controllers.Directory
 {
     public class LogoController : Controller
     {

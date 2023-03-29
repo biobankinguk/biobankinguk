@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Submissions.Exceptions
+namespace Biobanks.Submissions.Exceptions
 {
     public class AggregateBiobanksValidationException : Exception
     {

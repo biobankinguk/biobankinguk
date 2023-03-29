@@ -4,14 +4,15 @@ using System.CommandLine.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Entities.Shared;
-using Biobanks.Submissions.Api.Commands.Helpers;
-using Biobanks.Submissions.Api.Utilities.IdentityModel;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.Shared;
+using Biobanks.Directory.Commands.Helpers;
+using Biobanks.Directory.Utilities.IdentityModel;
 using ConsoleTableExt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Runners;
+namespace Biobanks.Directory.Commands.Runners;
 
 internal class AddApiClient
 {
@@ -78,7 +79,7 @@ internal class AddApiClient
       Name = clientName ?? clientId,
       ClientId = clientId,
       ClientSecretHash = clientSecret.Sha256(),
-      Organisations = new List<Entities.Data.Organisation>()
+      Organisations = new List<Organisation>()
     };
 
     foreach (var id in biobankIds)

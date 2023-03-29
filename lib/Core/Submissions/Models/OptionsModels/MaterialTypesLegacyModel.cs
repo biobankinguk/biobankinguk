@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Core.Submissions.Models.OptionsModels
+namespace Biobanks.Submissions.Models.OptionsModels
 {
 
     public class MaterialTypesLegacyModel

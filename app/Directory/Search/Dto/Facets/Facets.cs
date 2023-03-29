@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Biobanks.Search.Dto.Facets
+namespace Biobanks.Directory.Search.Dto.Facets
 {
     public static class Facets
     {

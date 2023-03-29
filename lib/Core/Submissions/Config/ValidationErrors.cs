@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Submissions.Config
+namespace Biobanks.Submissions.Config
 {
     public static class ValidationErrors
     {

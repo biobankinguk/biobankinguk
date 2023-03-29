@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using System;
-
-namespace Biobanks.Submissions.Api.Auth.Basic
+namespace Biobanks.Directory.Auth.Basic
 {
     // based on
     // https://joonasw.net/view/creating-auth-scheme-in-aspnet-core-2

@@ -1,11 +1,9 @@
-using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Shared.Services;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Directory.Services
+namespace Biobanks.Shared.Services
 {
     public class AccessConditionService : ReferenceDataService<AccessCondition>
 

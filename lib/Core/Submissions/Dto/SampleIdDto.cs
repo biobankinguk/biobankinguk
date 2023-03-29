@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Api.Contracts;
+using Biobanks.Data.Entities.Api.Contracts;
 
-namespace Core.Submissions.Dto
+namespace Biobanks.Submissions.Dto
 {
     public class SampleIdDto : ISubmissionTimestamped, IOrganisationOwnedDto
     {

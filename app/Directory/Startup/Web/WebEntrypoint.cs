@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 
-namespace Biobanks.Submissions.Api.Startup.Web;
+namespace Biobanks.Directory.Startup.Web;
 
 public static class WebEntrypoint
 {

@@ -1,8 +1,8 @@
-﻿using Core.Submissions.Models;
-using Core.Submissions.Services.Contracts;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Services.Contracts;
 
-namespace Core.Jobs
+namespace Biobanks.Jobs
 {
     public class StagingJob
     {

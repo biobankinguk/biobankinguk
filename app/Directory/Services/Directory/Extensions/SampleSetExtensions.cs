@@ -1,11 +1,11 @@
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Search.Dto.Documents;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Search.Dto.Documents;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Extensions
+namespace Biobanks.Directory.Services.Directory.Extensions
 {
     public static class SampleSetExtensions
     {

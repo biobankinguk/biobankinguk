@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Consts
+﻿namespace Biobanks.Submissions.Consts
 {
     /// <summary>
     /// SQL 'constants'

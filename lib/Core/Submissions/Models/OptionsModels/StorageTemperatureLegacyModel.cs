@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Core.Submissions.Models.OptionsModels
+namespace Biobanks.Submissions.Models.OptionsModels
 {
 
     public class StorageTemperatureLegacyModel

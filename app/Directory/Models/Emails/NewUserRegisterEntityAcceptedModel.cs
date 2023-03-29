@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Models.Emails;
+namespace Biobanks.Directory.Models.Emails;
 
 public record NewUserRegisterEntityAcceptedModel(
   string name,

@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Search.Dto.Results
+﻿namespace Biobanks.Directory.Search.Dto.Results
 {
     public class AssociatedDataSummary
     {

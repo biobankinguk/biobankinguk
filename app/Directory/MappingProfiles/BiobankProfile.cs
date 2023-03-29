@@ -1,8 +1,8 @@
 using AutoMapper;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Areas.Admin.Models.Biobanks;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class BiobankProfile : Profile
 {

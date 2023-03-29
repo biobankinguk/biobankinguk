@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.Submissions.Types;
+using Biobanks.Submissions.Types;
 
-namespace Core.Submissions.Models
+namespace Biobanks.Submissions.Models
 {
     public class OperationsQueueItem
     {

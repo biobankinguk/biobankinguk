@@ -1,6 +1,6 @@
 @using Newtonsoft.Json
-@using Biobanks.Submissions.Api.Extensions
-@model Biobanks.Submissions.Api.Models.Search.FacetsModel
+@using Biobanks.Directory.Extensions
+@model Biobanks.Directory.Models.Search.FacetsModel
 
 <div class="col-sm-4">
 	@if (!Model.Facets.IsNullOrEmpty())
@@ -106,13 +106,13 @@
 															{
 																<li>
 																	<a href="@Url.Action(Model.Action, "Search", new
-																			 {
-																				 ontologyTerm = Model.OntologyTerm,
-																				 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
-																				 {
-																					 facetValue.FacetId
-																				 }))
-																			 })">
+																	         {
+																	           ontologyTerm = Model.OntologyTerm,
+																	           selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
+																	           {
+																	             facetValue.FacetId
+																	           }))
+																	         })">
 																		<span class="fa fa-circle-o"></span>
 																		@facetValueName
 																	</a>
@@ -123,11 +123,11 @@
 															{
 																<li>
 																	<a href="@Url.Action(Model.Action, "Search", new
-																			 {
-																				 ontologyTerm = Model.OntologyTerm,
-																				 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
-																					 x => x != facetValue.FacetId))
-																			 })">
+																	         {
+																	           ontologyTerm = Model.OntologyTerm,
+																	           selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
+																	             x => x != facetValue.FacetId))
+																	         })">
 																		<span class="fa fa-check-circle"></span>
 																		@facetValueName
 																	</a>
@@ -170,13 +170,13 @@
                                             {
                                                 <li>
                                                     <a href="@Url.Action(Model.Action, "Search", new
-														 {
-															 ontologyTerm = Model.OntologyTerm,
-															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
-															 {
-																 facetValue.FacetId
-															 }))
-														 })">
+                                                             {
+                                                               ontologyTerm = Model.OntologyTerm,
+                                                               selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Concat(new List<string>
+                                                               {
+                                                                 facetValue.FacetId
+                                                               }))
+                                                             })">
                                                         <span class="fa fa-circle-o"></span>
                                                         @facetValueName
                                                     </a>
@@ -187,11 +187,11 @@
                                             {
                                                 <li>
                                                     <a href="@Url.Action(Model.Action, "Search", new
-														 {
-															 ontologyTerm = Model.OntologyTerm,
-															 selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
-																 x => x != facetValue.FacetId))
-														 })">
+                                                             {
+                                                               ontologyTerm = Model.OntologyTerm,
+                                                               selectedFacets = JsonConvert.SerializeObject(Model.SelectedFacets.Where(
+                                                                 x => x != facetValue.FacetId))
+                                                             })">
                                                         <span class="fa fa-check-circle"></span>
                                                         @facetValueName
                                                     </a>

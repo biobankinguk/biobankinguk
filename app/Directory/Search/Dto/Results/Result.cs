@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Biobanks.Search.Dto.Facets;
+using Biobanks.Directory.Search.Dto.Facets;
 
-namespace Biobanks.Search.Dto.Results
+namespace Biobanks.Directory.Search.Dto.Results
 {
     public class Result
     {

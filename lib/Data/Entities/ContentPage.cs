@@ -1,10 +1,7 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data.ReferenceData;
-using System;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class ContentPage
     {

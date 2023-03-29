@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Biobanks.Entities.Api;
-using Core.Submissions.Dto;
-using Core.Submissions.Models;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Dto;
+using Biobanks.Submissions.Models;
 
-namespace Core.Submissions.MappingProfiles
+namespace Biobanks.Submissions.MappingProfiles
 {
     public class TreatmentProfile : Profile
     {

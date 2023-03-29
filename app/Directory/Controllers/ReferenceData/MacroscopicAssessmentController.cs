@@ -1,17 +1,16 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Config;
+﻿using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Collections;
-using System.Linq;
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Auth;
 
-namespace Biobanks.Submissions.Api.Controllers.ReferenceData
+namespace Biobanks.Directory.Controllers.ReferenceData
 {
     [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
@@ -68,7 +67,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Post(MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _macroscopicAssessmentService.Exists(model.Description))
@@ -108,7 +107,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Put(int id, MacroscopicAssessmentModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             // Validate model
             if (await _macroscopicAssessmentService.Exists(model.Description))
@@ -152,7 +151,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = await _macroscopicAssessmentService.Get(id);
 
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.MacroscopicAssessmentName);
 
             if (await _macroscopicAssessmentService.IsInUse(id))
             {

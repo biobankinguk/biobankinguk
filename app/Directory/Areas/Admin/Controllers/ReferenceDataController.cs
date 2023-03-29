@@ -1,21 +1,19 @@
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Admin.Models.ReferenceData;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Models.Submissions;
-using Biobanks.Submissions.Api.Services.Directory.Constants;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Areas.Admin.Models.ReferenceData;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Biobanks.Submissions.Api.Auth;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+namespace Biobanks.Directory.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]

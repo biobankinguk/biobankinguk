@@ -1,9 +1,7 @@
-﻿using Biobanks.Entities.Data;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Entities.Shared
+namespace Biobanks.Data.Entities.Shared
 {
     public class ApiClient
     {

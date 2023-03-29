@@ -1,6 +1,5 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-
+﻿using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {

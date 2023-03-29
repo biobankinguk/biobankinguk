@@ -1,11 +1,11 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
-using Biobanks.Entities.Api;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.Api;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services

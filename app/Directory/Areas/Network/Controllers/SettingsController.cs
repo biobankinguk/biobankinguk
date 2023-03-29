@@ -2,19 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NetworkAdminsModel = Biobanks.Submissions.Api.Areas.Network.Models.Settings.NetworkAdminsModel;
+using NetworkAdminsModel = Biobanks.Directory.Areas.Network.Models.Settings.NetworkAdminsModel;
 
-namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
+namespace Biobanks.Directory.Areas.Network.Controllers;
 
 [Area("Network")]
 [Authorize(nameof(AuthPolicies.IsNetworkAdmin))]

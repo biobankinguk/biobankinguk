@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Biobanks.Analytics.Services
+namespace Biobanks.Analytics.Services.Contracts
 {
     /// <summary>
     /// For working with Google AnalyticsReporting API v4

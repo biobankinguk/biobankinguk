@@ -5,12 +5,12 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services.DataSeeding;
+namespace Biobanks.Directory.Services.DataSeeding;
 
 internal class CountriesDto
 {
@@ -126,7 +126,7 @@ internal class CustomRefDataSeeder
     var configKey = "site.display.counties";
     var config = _db.Configs.Local // EF might already be tracking this config if we seeded it earlier
                    .SingleOrDefault(x => x.Key == configKey)
-                 ?? new Entities.Data.Config()
+                 ?? new Data.Entities.Config()
                  {
                    Key = configKey
                  };

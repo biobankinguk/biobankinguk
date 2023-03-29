@@ -1,4 +1,4 @@
-namespace Biobanks.Search.Constants
+namespace Biobanks.Directory.Search.Constants
 {
     public enum SearchType
     {

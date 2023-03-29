@@ -8,7 +8,7 @@ using ConsoleTableExt;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Runners;
+namespace Biobanks.Directory.Commands.Runners;
 
 public class AddUser
 {

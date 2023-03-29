@@ -1,10 +1,9 @@
-using Biobanks.Data.Entities;
-using Biobanks.Entities.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IBiobankService
     {

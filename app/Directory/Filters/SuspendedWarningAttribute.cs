@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Biobanks.Submissions.Api.Filters;
+namespace Biobanks.Directory.Filters;
 
 /// <summary>
 /// An <see cref="ActionFilterAttribute"/> that can be applied to a biobank area controller

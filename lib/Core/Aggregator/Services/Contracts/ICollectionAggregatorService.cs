@@ -1,5 +1,5 @@
-﻿using Biobanks.Entities.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Biobanks.Data.Entities;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {

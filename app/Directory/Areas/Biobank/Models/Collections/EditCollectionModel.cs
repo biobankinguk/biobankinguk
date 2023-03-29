@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+namespace Biobanks.Directory.Areas.Biobank.Models.Collections;
 
 public class EditCollectionModel : AbstractCRUDCollectionModel
 {

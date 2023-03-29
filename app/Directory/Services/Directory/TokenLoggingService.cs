@@ -1,11 +1,11 @@
 using System;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Biobanks.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Services.Directory.Contracts;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class TokenLoggingService : ITokenLoggingService
     {

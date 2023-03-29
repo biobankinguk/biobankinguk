@@ -1,17 +1,16 @@
-﻿using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory;
+﻿using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Collections;
-using System.Linq;
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Auth;
 
-namespace Biobanks.Submissions.Api.Controllers.ReferenceData
+namespace Biobanks.Directory.Controllers.ReferenceData
 {
     [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
@@ -70,7 +69,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Post(DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
             if (await _donorCountService.ExistsExcludingId(model.Id, model.Description))
@@ -113,7 +112,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Put(int id, DonorCountModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // Validate model
             if (await _donorCountService.ExistsExcludingId(id, model.Description))
@@ -159,7 +158,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
             var model = await _donorCountService.Get(id);
 
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.DonorCountName);
 
             // If in use, prevent update
             if (await _donorCountService.IsInUse(id))

@@ -1,11 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Directory.Models.Submissions;
 
-using Biobanks.Entities.Api;
-using Biobanks.Submissions.Api.Models;
-
-using System.Text.Json;
-
-namespace Biobanks.Submissions.Api.MappingProfiles
+namespace Biobanks.Directory.MappingProfiles
 {
     /// <inheritdoc />
     public class ErrorProfile : Profile

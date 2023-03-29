@@ -1,4 +1,5 @@
-﻿@inject IOptions<SitePropertiesOptions> _config
+﻿@using Biobanks.Directory.Config
+@inject IOptions<SitePropertiesOptions> _config
 
 @{
 	var directoryName = @_config.Value.ServiceName;

@@ -1,8 +1,8 @@
-using Biobanks.Submissions.Api.Models.Biobank;
 using System;
 using System.Collections.Generic;
+using Biobanks.Directory.Models.Biobank;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+namespace Biobanks.Directory.Areas.Biobank.Models.Collections;
 
 public class CollectionModel
 {

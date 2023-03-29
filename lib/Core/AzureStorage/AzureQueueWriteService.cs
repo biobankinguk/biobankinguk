@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Azure.Storage.Queues;
-using Core.Submissions.Services.Contracts;
+using Biobanks.Submissions.Services.Contracts;
 
-namespace Core.AzureStorage
+namespace Biobanks.AzureStorage
 {
     /// <inheritdoc />
     public class AzureQueueWriteService : IQueueWriteService

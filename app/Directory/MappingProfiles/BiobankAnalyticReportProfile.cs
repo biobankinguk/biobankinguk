@@ -1,8 +1,8 @@
 using AutoMapper;
 using Biobanks.Analytics.Dto;
-using Biobanks.Submissions.Api.Areas.Biobank.Models;
+using Biobanks.Directory.Areas.Biobank.Models.Report;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class BiobankAnalyticReportProfile : Profile
 {

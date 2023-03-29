@@ -1,15 +1,15 @@
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Constants;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Areas.Biobank.Models.Capabilities;
+using Biobanks.Directory.Areas.Biobank.Models.Collections;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
 
-namespace Biobanks.Submissions.Api.Services.Directory;
+namespace Biobanks.Directory.Services.Directory;
 
 public class AbstractCrudService : IAbstractCrudService
 {

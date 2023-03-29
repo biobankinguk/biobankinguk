@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 
-namespace Biobanks.Submissions.Api.Utilities
+namespace Biobanks.Directory.Utilities
 {
    
     public class FeedbackMessage

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Models.Shared;
 
-namespace Biobanks.Submissions.Api.Models.Profile
+namespace Biobanks.Directory.Models.Profile
 {
     public class BiobankModel
     {

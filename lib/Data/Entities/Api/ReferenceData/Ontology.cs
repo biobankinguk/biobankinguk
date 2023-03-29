@@ -1,7 +1,7 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Api.ReferenceData
+namespace Biobanks.Data.Entities.Api.ReferenceData
 {
     /// <summary>
     /// Ontology - for examples, see https://www.ebi.ac.uk/ols/ontologies.

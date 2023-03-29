@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Biobanks.Entities.Data.Analytics
+namespace Biobanks.Data.Entities.Analytics
 {
     public class DirectoryAnalyticEvent
     {

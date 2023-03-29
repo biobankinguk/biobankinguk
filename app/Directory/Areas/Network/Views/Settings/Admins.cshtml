@@ -3,7 +3,7 @@
 @using Biobanks.Data.Entities
 @using Microsoft.AspNetCore.Http.Extensions
 @using Microsoft.AspNetCore.Identity
-@model Biobanks.Submissions.Api.Areas.Network.Models.Settings.NetworkAdminsModel
+@model Biobanks.Directory.Areas.Network.Models.Settings.NetworkAdminsModel
 
 @{
     ViewBag.Title = "Network admins";
@@ -55,14 +55,14 @@
                             @if (!admin.EmailConfirmed)
                             {
                                 <a href="@Url.Action(
-                                        "ResendConfirmLink", "Account",
-                                        new
-                                        {
-                                            Area = "",
-                                            userEmail = admin.UserEmail,
-                                            onBehalf = true,
-                                            returnUrl = @Context.Request.GetEncodedUrl()
-                                        })"
+                                           "ResendConfirmLink", "Account",
+                                           new
+                                           {
+                                             Area = "",
+                                             userEmail = admin.UserEmail,
+                                             onBehalf = true,
+                                             returnUrl = @Context.Request.GetEncodedUrl()
+                                           })"
                                    class="confirm-resend"
                                    data-admin-name="@admin.UserFullName">
                                     <span class="fa fa-repeat labelled-icon"></span>Resend Invite</a>

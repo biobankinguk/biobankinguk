@@ -1,12 +1,12 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
-using Biobanks.Entities.Api;
-using Biobanks.Entities.Data;
 using Biobanks.Submissions.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.Api;
 using Z.EntityFramework.Plus;
 
 namespace Biobanks.Aggregator.Services

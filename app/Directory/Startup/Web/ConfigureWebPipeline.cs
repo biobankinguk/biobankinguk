@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Auth;
+using Biobanks.Directory.Auth;
+using Biobanks.Jobs;
 using ClacksMiddleware.Extensions;
-using Core.Jobs;
 using Hangfire;
-using Hangfire.Common;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using UoN.AspNetCore.VersionMiddleware;
 
-namespace Biobanks.Submissions.Api.Startup.Web;
+namespace Biobanks.Directory.Startup.Web;
 
 public static class ConfigureWebPipeline
 {

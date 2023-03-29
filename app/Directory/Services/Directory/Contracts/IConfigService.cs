@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Directory.Services.Directory.Enums;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     /// <summary>
     /// Domain specific service
@@ -15,21 +16,21 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// </summary>
         /// <param name="wildcard"> Optional, specifies area/type of config </param>
         /// <returns>List of Site Configs</returns>
-        IEnumerable<Entities.Data.Config> ListSiteConfigs(string wildcard = "");
+        IEnumerable<Data.Entities.Config> ListSiteConfigs(string wildcard = "");
 
         /// <summary>
         /// Async version of ListSiteConfigs()
         /// </summary>
         /// <param name="wildcard"> Optional, specifies area/type of config </param>
         /// <returns>List of Site Configs</returns>
-        Task<IEnumerable<Entities.Data.Config>> ListSiteConfigsAsync(string wildcard = "");
+        Task<IEnumerable<Data.Entities.Config>> ListSiteConfigsAsync(string wildcard = "");
 
         /// <summary>
         /// Get Site Config given its key
         /// </summary>
         /// <param name="key">Config key</param>
         /// <returns>Config obj</returns>
-        Task<Entities.Data.Config> GetSiteConfig(string key);
+        Task<Data.Entities.Config> GetSiteConfig(string key);
 
         /// <summary>
         /// Gets site Config value given its key
@@ -45,7 +46,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// </summary>
         /// <param name="configs">List of Config objs to be updatd</param>
         /// <returns></returns>
-        Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs);
+        Task UpdateSiteConfigsAsync(IEnumerable<Data.Entities.Config> configs);
 
         /// <summary>
         /// Updates cached config values.
@@ -71,7 +72,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         /// </param>
         /// <param name="wildcard">Optional, specifies area/type of config</param>
         /// <returns>List of Config objs</returns>
-        Task<List<Entities.Data.Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "");
+        Task<List<Data.Entities.Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "");
 
         /// <summary>
         /// Updates boolean flag value

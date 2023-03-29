@@ -1,15 +1,15 @@
 using System;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailSender;
-using Biobanks.Submissions.Api.Services.EmailServices;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailSender;
+using Biobanks.Directory.Services.EmailServices;
+using Biobanks.Directory.Services.EmailServices.Contracts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Biobanks.Submissions.Api.Startup.ConfigureServicesExtensions
+namespace Biobanks.Directory.Startup.ConfigureServicesExtensions
 {
   public static class EmailSenderServices
   {

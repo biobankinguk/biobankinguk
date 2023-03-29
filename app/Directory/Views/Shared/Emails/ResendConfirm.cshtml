@@ -1,5 +1,6 @@
 @inject IOptions<SitePropertiesOptions> _config
-@model Biobanks.Submissions.Api.Models.Emails.ResendConfirmModel
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.ResendConfirmModel
 
 @{
   var directoryName = @_config.Value.ServiceName;

@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Models.Footer
+namespace Biobanks.Directory.Models.Footer
 {
     public class FooterModel
     {

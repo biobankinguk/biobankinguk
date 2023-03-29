@@ -1,7 +1,7 @@
 using AutoMapper;
-using Biobanks.Entities.Data;
+using Biobanks.Data.Entities;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class NetworkRegisterRequestProfile : Profile
 {

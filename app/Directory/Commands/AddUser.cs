@@ -1,17 +1,15 @@
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using Biobanks.Data;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Commands.Helpers;
+using Biobanks.Directory.Commands.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands;
+namespace Biobanks.Directory.Commands;
 
 internal class AddUser : Command
 {
@@ -47,22 +45,22 @@ internal class AddUser : Command
         password, roles) =>
       {
         // figure out the connection string from the option, or config
-        var connectionString = overrideConnectionString ?? config.GetConnectionString("Default");
+        var connectionString = overrideConnectionString ?? ConfigurationExtensions.GetConnectionString(config, "Default");
 
         // Configure DI and run the command handler
         await this
           .ConfigureServices(s =>
           {
-            s.AddSingleton(_ => logger)
-              .AddSingleton(_ => config)
-              .AddSingleton(_ => console)
+            ServiceCollectionServiceExtensions.AddSingleton<ILoggerFactory>(s, _ => logger)
+              .AddSingleton<IConfiguration>(_ => config)
+              .AddSingleton<IConsole>(_ => console)
               .AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(connectionString));
 
-            s.AddLogging()
+            LoggingServiceCollectionExtensions.AddLogging(s)
               .AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            s.AddTransient<Runners.AddUser>();
+            ServiceCollectionServiceExtensions.AddTransient<Runners.AddUser>(s);
           })
           .GetRequiredService<Runners.AddUser>()
           .Run(email, fullName, password, roles);

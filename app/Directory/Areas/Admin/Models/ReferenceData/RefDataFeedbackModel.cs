@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.ReferenceData;
+namespace Biobanks.Directory.Areas.Admin.Models.ReferenceData;
 
 public class RefDataFeedbackModel
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Settings;
+namespace Biobanks.Directory.Areas.Biobank.Models.Settings;
 
 public class SubmissionsModel
 {

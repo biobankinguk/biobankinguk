@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Config
+﻿namespace Biobanks.Directory.Config
 {
     /// <summary>
     /// Keys for cached Data (i.e. NOT cached Site Config values)

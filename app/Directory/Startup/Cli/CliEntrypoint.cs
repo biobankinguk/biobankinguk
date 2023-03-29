@@ -1,7 +1,7 @@
 using System.CommandLine;
-using Biobanks.Submissions.Api.Commands;
+using Biobanks.Directory.Commands;
 
-namespace Biobanks.Submissions.Api.Startup.Cli;
+namespace Biobanks.Directory.Startup.Cli;
 
 public class CliEntrypoint : RootCommand
 {

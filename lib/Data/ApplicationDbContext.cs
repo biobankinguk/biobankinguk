@@ -1,11 +1,10 @@
 using Biobanks.Data.Entities;
-using Biobanks.Entities.Api;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.Analytics;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.Analytics;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Data.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;

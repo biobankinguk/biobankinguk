@@ -1,20 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Home;
-using Biobanks.Submissions.Api.Services.Directory;
-using Microsoft.AspNetCore.Mvc;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
-using Biobanks.Submissions.Api.Areas.Admin.Models.SiteConfig;
-using Biobanks.Submissions.Api.Models.Search;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Directory.Areas.Admin.Models.SiteConfig;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Home;
+using Biobanks.Directory.Models.Search;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Biobanks.Submissions.Api.Auth;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+namespace Biobanks.Directory.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
@@ -62,17 +60,17 @@ public class SiteConfigController : Controller
     public async Task<ActionResult> SaveHomepageConfig(HomepageContentModel homepage)
     {
       await _configService.UpdateSiteConfigsAsync(
-          new List<Entities.Data.Config>
+          new List<Data.Entities.Config>
           {
-              new Entities.Data.Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.HomepageSearchSubTitle, Value = homepage.SearchSubTitle ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
-              new Entities.Data.Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.RegisterBiobankTitle, Value = homepage.ResourceRegistrationButton ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.RegisterNetworkTitle, Value = homepage.NetworkRegistrationButton ?? ""}
+              new Data.Entities.Config { Key = ConfigKey.HomepageTitle, Value = homepage.Title ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.HomepageSearchTitle, Value = homepage.SearchTitle ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.HomepageSearchSubTitle, Value = homepage.SearchSubTitle ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.HomepageResourceRegistration, Value = homepage.ResourceRegistration ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.HomepageNetworkRegistration, Value = homepage.NetworkRegistration ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.HomepageSearchRadioSamplesCollected, Value = homepage.RequireSamplesCollected ?? ""},
+              new Data.Entities.Config { Key = ConfigKey.HomepageSearchRadioAccessSamples, Value = homepage.AccessExistingSamples ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.RegisterBiobankTitle, Value = homepage.ResourceRegistrationButton ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.RegisterNetworkTitle, Value = homepage.NetworkRegistrationButton ?? ""}
           }
       );
     
@@ -119,9 +117,9 @@ public class SiteConfigController : Controller
     public async Task<ActionResult> SaveTermpageConfig(TermpageContentModel termpage)
     {
       await _configService.UpdateSiteConfigsAsync(
-          new List<Entities.Data.Config>
+          new List<Data.Entities.Config>
           {
-              new Entities.Data.Config { Key = ConfigKey.TermpageInfo, Value = termpage.PageInfo ?? "" }
+              new Data.Entities.Config { Key = ConfigKey.TermpageInfo, Value = termpage.PageInfo ?? "" }
           }
       );
     
@@ -189,15 +187,15 @@ public class SiteConfigController : Controller
     public async Task<ActionResult> SaveRegisterPagesConfig(RegisterConfigModel registerConfigModel)
     {
       await _configService.UpdateSiteConfigsAsync(
-          new List<Entities.Data.Config>
+          new List<Data.Entities.Config>
           {
-              new Entities.Data.Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
-              new Entities.Data.Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
-              new Entities.Data.Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.EnableRegisterRegistrationHelpUrl, Value = registerConfigModel.EnableRegistrationHelpUrl ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.RegisterRegistrationHelpUrl, Value = registerConfigModel.RegistrationHelpUrl ?? "" },
-              new Entities.Data.Config { Key = ConfigKey.RegistrationEmails, Value = registerConfigModel.RegistrationEmails ?? "" }
+              new Data.Entities.Config { Key = ConfigKey.RegisterBiobankTitle, Value = registerConfigModel.BiobankTitle ?? ""},
+              new Data.Entities.Config { Key = ConfigKey.RegisterBiobankDescription, Value = registerConfigModel.BiobankDescription ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.RegisterNetworkTitle, Value = registerConfigModel.NetworkTitle ?? ""},
+              new Data.Entities.Config { Key = ConfigKey.RegisterNetworkDescription, Value = registerConfigModel.NetworkDescription ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.EnableRegisterRegistrationHelpUrl, Value = registerConfigModel.EnableRegistrationHelpUrl ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.RegisterRegistrationHelpUrl, Value = registerConfigModel.RegistrationHelpUrl ?? "" },
+              new Data.Entities.Config { Key = ConfigKey.RegistrationEmails, Value = registerConfigModel.RegistrationEmails ?? "" }
           }
       );
     
@@ -231,7 +229,7 @@ public class SiteConfigController : Controller
       await _configService.UpdateSiteConfigsAsync(
           values
               .OrderBy(x => x.Key)
-              .Select(x => new Entities.Data.Config
+              .Select(x => new Data.Entities.Config
               {
                   Key = x.Key,
                   Value = x.Value ?? "", // Store nulls as empty strings
@@ -281,9 +279,9 @@ public class SiteConfigController : Controller
     public async Task<IActionResult> UpdateReferenceTermName(string newReferenceTermKey, string newReferenceTermName)
     {
     
-      List<Entities.Data.Config> values = new List<Entities.Data.Config>();
+      List<Data.Entities.Config> values = new List<Data.Entities.Config>();
     
-      values.Add(new Entities.Data.Config
+      values.Add(new Data.Entities.Config
       {
           Key = newReferenceTermKey,
           Value = newReferenceTermName ?? ""

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Search;
+namespace Biobanks.Directory.Models.Search;
 
 public class DetailedCollectionSearchSampleSetModel
 {

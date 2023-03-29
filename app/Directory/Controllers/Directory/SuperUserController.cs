@@ -4,16 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Biobanks.Data.Transforms.Url;
-using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Models.SuperUser;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Models.SuperUser;
+using Biobanks.Directory.Search.Legacy;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory
+namespace Biobanks.Directory.Controllers.Directory
 {
 
   [Authorize(nameof(AuthPolicies.IsSuperUser))]

@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Config;
+namespace Biobanks.Directory.Config;
 
 /// <summary>
 /// Configurations values for the Elasticsearch 

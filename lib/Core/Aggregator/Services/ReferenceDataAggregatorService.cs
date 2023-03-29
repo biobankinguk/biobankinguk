@@ -1,12 +1,12 @@
 ﻿using Biobanks.Aggregator.Services.Contracts;
 using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
 using Biobanks.Submissions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
 namespace Biobanks.Aggregator.Services
 {

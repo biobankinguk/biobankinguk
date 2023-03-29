@@ -1,6 +1,6 @@
-@using Biobanks.Submissions.Api.Models.Emails
 @inject IOptions<SitePropertiesOptions> _config
-@model NewUserRegisterEntityAdminInviteModel
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.NewUserRegisterEntityAdminInviteModel
 
 @{
 	var directoryName = @_config.Value.ServiceName;

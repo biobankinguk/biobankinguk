@@ -1,14 +1,14 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Auth;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Controllers.ReferenceData
+namespace Biobanks.Directory.Controllers.ReferenceData
 {
     [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]

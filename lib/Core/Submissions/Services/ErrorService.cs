@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Microsoft.EntityFrameworkCore;
 using Biobanks.Data;
-using Core.Submissions.Exceptions;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Exceptions;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
+using Microsoft.EntityFrameworkCore;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     /// <inheritdoc />
     public class ErrorService : IErrorService

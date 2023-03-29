@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+namespace Biobanks.Directory.Areas.Biobank.Models.Profile;
 
 public class OrganisationServiceModel
 {

@@ -1,11 +1,10 @@
 ﻿using Biobanks.Analytics.Services.Contracts;
-using Biobanks.Entities.Data.Analytics;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Biobanks.Data.Entities.Analytics;
 
 namespace Biobanks.Analytics.Services
 {

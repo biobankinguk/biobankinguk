@@ -6,22 +6,20 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
 using Biobanks.Data.Transforms.Url;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Services;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Extensions;
-using Biobanks.Submissions.Api.Filters;
-using Biobanks.Submissions.Api.Models.Directory;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
+using Biobanks.Directory.Areas.Admin.Models.Funders;
+using Biobanks.Directory.Areas.Biobank.Models.Profile;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Extensions;
+using Biobanks.Directory.Filters;
+using Biobanks.Directory.Models.Directory;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Submissions;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -30,9 +28,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using BiobankPublicationModel = Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankPublicationModel;
+using BiobankPublicationModel = Biobanks.Directory.Areas.Biobank.Models.Profile.BiobankPublicationModel;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Directory.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]

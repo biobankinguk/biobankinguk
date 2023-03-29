@@ -3,15 +3,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Biobanks.Analytics.Services.Contracts;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Analytics;
+using Biobanks.Directory.Areas.Admin.Models.Analytics;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Biobanks.Submissions.Api.Auth;
-using Microsoft.AspNetCore.Authorization;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+namespace Biobanks.Directory.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]

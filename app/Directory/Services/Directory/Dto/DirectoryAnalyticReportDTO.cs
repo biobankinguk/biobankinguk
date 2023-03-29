@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Dto
+namespace Biobanks.Directory.Services.Directory.Dto
 {
     public class DirectoryAnalyticReportDTO
     {

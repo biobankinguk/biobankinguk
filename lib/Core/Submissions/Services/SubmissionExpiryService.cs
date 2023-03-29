@@ -1,17 +1,16 @@
-﻿using Biobanks.Data;
-using Core.Submissions.Config;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Biobanks.Data;
+using Biobanks.Submissions.Config;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Z.EntityFramework.Plus;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     public class SubmissionExpiryService : ISubmissionExpiryService
     {

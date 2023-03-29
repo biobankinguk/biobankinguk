@@ -1,6 +1,5 @@
 using Biobanks.Analytics.Dto;
 using Biobanks.Analytics.Services.Contracts;
-using Biobanks.Entities.Data.Analytics;
 using Biobanks.Extensions;
 
 using Microsoft.Extensions.Options;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.Analytics;
 
 namespace Biobanks.Analytics.Services
 {

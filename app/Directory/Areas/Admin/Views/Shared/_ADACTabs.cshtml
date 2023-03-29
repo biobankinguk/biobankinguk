@@ -1,6 +1,6 @@
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-
-@using Biobanks.Submissions.Api.Config
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
 @model string
 
 <script src="~/dist/js/Admin/tabs.min.js" asp-append-version="true"></script>
@@ -234,7 +234,7 @@
 
             <li role="presentation"
                 class="@(Model == "Content Pages" ? "active" : "true")">
-                @Html.ActionLink("Content Pages ", "Index", "PagesAdmin")
+              @Html.ActionLink("Content Pages ", "Index", "PagesAdmin")
             </li>
 
         </ul>

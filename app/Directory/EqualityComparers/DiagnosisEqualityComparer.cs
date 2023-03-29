@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Biobanks.Entities.Api;
+using Biobanks.Data.Entities.Api;
 
-namespace Biobanks.Submissions.Api.EqualityComparers
+namespace Biobanks.Directory.EqualityComparers
 {
     /// <inheritdoc />
     public class DiagnosisEqualityComparer : EqualityComparer<Diagnosis>

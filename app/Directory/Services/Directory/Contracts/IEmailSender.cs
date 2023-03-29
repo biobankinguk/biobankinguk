@@ -1,9 +1,9 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Models.Emails;
+using Biobanks.Directory.Models.Emails;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IEmailSender
     {

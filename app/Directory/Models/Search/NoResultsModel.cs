@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Biobanks.Search.Constants;
-using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Search.Constants;
 
-namespace Biobanks.Submissions.Api.Models.Search;
+namespace Biobanks.Directory.Models.Search;
 
 public class NoResultsModel
 {

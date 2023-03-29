@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Core.Submissions.Services.Contracts
+namespace Biobanks.Submissions.Services.Contracts
 {
     /// <summary>
     /// Service for writing messages to storage queues.

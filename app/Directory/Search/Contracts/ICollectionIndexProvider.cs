@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
 
-namespace Biobanks.Search.Contracts
+namespace Biobanks.Directory.Search.Contracts
 {
     public interface ICollectionIndexProvider
     {

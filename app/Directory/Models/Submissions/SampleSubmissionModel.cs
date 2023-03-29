@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Core.Submissions.Models;
-using Core.Submissions.Types;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Types;
 
-namespace Biobanks.Submissions.Api.Models
+namespace Biobanks.Directory.Models.Submissions
 {
     /// <inheritdoc />
     public class SampleSubmissionModel : SampleIdModel

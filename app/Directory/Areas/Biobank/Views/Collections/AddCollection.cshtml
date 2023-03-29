@@ -1,4 +1,4 @@
-@model Biobanks.Submissions.Api.Areas.Biobank.Models.Collections.AddCollectionModel
+@model Biobanks.Directory.Areas.Biobank.Models.Collections.AddCollectionModel
 @{
     ViewBag.Title = "Add collection";
 }
@@ -22,8 +22,8 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10 text-center">
-            @Html.ActionLink("Cancel", "Index", "Collections", new { biobankId = ViewContext.RouteData.Values["biobankId"] }, new { @class = "btn btn-default" })
-            <button type="submit" class="btn btn-primary">Create collection</button>
+          @Html.ActionLink("Cancel", "Index", "Collections", new { biobankId = ViewContext.RouteData.Values["biobankId"] }, new { @class = "btn btn-default" })
+          <button type="submit" class="btn btn-primary">Create collection</button>
         </div>
     </div>
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Submissions.Dto;
+using Biobanks.Submissions.Dto;
 
-namespace Core.Submissions.Services.Contracts
+namespace Biobanks.Submissions.Services.Contracts
 {
     public interface ITreatmentWriteService
     {

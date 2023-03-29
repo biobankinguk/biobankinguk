@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Models.Register;
+namespace Biobanks.Directory.Models.Register;
 
 public class RegisterEntityModel
 {

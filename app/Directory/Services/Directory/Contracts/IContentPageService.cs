@@ -1,9 +1,8 @@
-﻿using System;
-using Biobanks.Entities.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IContentPageService
     {

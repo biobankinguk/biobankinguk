@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Biobank
+﻿namespace Biobanks.Directory.Models.Biobank
 {
     public class AssociatedDataSummaryModel
     {

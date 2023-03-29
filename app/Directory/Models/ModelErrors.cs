@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Models;
+namespace Biobanks.Directory.Models;
 
 public class ModelErrors
 {

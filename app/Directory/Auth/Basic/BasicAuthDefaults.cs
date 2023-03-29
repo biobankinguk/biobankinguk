@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Auth.Basic
+﻿namespace Biobanks.Directory.Auth.Basic
 {
     /// <summary>
     /// Default Options values for Basic Auth

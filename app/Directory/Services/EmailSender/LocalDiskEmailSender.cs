@@ -1,16 +1,16 @@
 #nullable enable
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices;
-using Microsoft.Extensions.Options;
-using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices;
+using Microsoft.Extensions.Options;
+using MimeKit;
 
-namespace Biobanks.Submissions.Api.Services.EmailSender
+namespace Biobanks.Directory.Services.EmailSender
 {
     public class LocalDiskEmailSender : IEmailSender
     {

@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Services.Directory
+﻿namespace Biobanks.Directory.Services.Directory.Enums
 {
     public enum BooleanConfigSelection
     {

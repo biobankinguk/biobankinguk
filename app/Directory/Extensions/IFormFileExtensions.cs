@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
-namespace Biobanks.Submissions.Api.Extensions;
+namespace Biobanks.Directory.Extensions;
 
 public static class IFormFileExtensions
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Submissions.Dto
+namespace Biobanks.Submissions.Dto
 {
     public class SampleDto : SampleIdDto
     {

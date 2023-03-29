@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Models.Search;
+using Biobanks.Directory.Models.Search;
 
-namespace Biobanks.Submissions.Api.Models.Shared;
+namespace Biobanks.Directory.Models.Shared;
 
 public class TermPageModel
 {

@@ -2,7 +2,7 @@
 @using Biobanks.Data.Entities
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> userManager
-@model Biobanks.Submissions.Api.Areas.Biobank.Models.Settings.BiobankAdminsModel
+@model Biobanks.Directory.Areas.Biobank.Models.Settings.BiobankAdminsModel
 
 @{
     ViewBag.Title = "Admins";
@@ -55,14 +55,14 @@
                                 @if (!admin.EmailConfirmed)
                                 {
                                     <a href="@Url.Action(
-                                        "ResendConfirmLink", "Account",
-                                        new
-                                        {
-                                            Area = "",
-                                            userEmail = admin.UserEmail,
-                                            onBehalf = true,
-                                            returnUrl = Model.RequestUrl
-                                        })"
+                                               "ResendConfirmLink", "Account",
+                                               new
+                                               {
+                                                 Area = "",
+                                                 userEmail = admin.UserEmail,
+                                                 onBehalf = true,
+                                                 returnUrl = Model.RequestUrl
+                                               })"
                                        class="confirm-resend"
                                        data-admin-name="@admin.UserFullName">
                                         <span class="fa fa-repeat labelled-icon"></span>Resend Invite

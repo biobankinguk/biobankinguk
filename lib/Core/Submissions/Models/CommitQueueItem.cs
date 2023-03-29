@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Models
+﻿namespace Biobanks.Submissions.Models
 {
     public class CommitQueueItem
     {

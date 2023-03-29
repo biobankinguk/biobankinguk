@@ -1,14 +1,11 @@
-using Biobanks.Analytics;
-using Biobanks.Analytics.Services;
-using Biobanks.Analytics.Services.Contracts;
-
-using Microsoft.Extensions.Options;
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Analytics;
+using Biobanks.Analytics.Services.Contracts;
+using Microsoft.Extensions.Options;
 
-namespace Core.Jobs
+namespace Biobanks.Jobs
 {
     public class AnalyticsJob
     {

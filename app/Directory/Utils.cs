@@ -1,8 +1,8 @@
 ﻿using System;
-using Core.Submissions.Models;
-using Core.Submissions.Types;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Types;
 
-namespace Biobanks.Submissions.Api
+namespace Biobanks.Directory
 {
     /// <summary>
     /// General Utility methods

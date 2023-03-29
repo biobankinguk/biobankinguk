@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Biobanks.Submissions.Api.Utilities.IdentityModel
+namespace Biobanks.Directory.Utilities.IdentityModel
 {
   /// <summary>
   /// Cryptography related Extension Methods for string

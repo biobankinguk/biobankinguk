@@ -1,8 +1,7 @@
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-
-@using Biobanks.Submissions.Api.Config
-@using Biobanks.Submissions.Api.Models.Shared
-@model IEnumerable<SiteConfigModel>
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model IEnumerable<Biobanks.Directory.Models.Shared.SiteConfigModel>
 
 @{
     ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Config";

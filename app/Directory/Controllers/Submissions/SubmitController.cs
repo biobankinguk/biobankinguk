@@ -1,23 +1,22 @@
-﻿using AutoMapper;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.EqualityComparers;
-using Biobanks.Submissions.Api.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
+using AutoMapper;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.EqualityComparers;
+using Biobanks.Directory.Models.Submissions;
+using Biobanks.Directory.Services.Submissions.Contracts;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
 using Microsoft.AspNetCore.Authorization;
-using Core.Submissions.Models;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Xml;
-using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions
+namespace Biobanks.Directory.Controllers.Submissions
 {
     /// <summary>
     /// Controller for handling submissions of data for a biobank

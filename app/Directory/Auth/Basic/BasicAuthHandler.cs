@@ -1,10 +1,4 @@
-﻿using Biobanks.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -12,9 +6,14 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Utilities.IdentityModel;
+using Biobanks.Data;
+using Biobanks.Directory.Utilities.IdentityModel;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Auth.Basic
+namespace Biobanks.Directory.Auth.Basic
 {
     internal class BasicAuthHandler : AuthenticationHandler<BasicAuthSchemeOptions>
     {

@@ -1,9 +1,8 @@
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Entities.Data.ReferenceData;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class MaterialDetail //"Material Preservation Details" in the model
     {

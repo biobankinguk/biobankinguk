@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Biobanks.Submissions.Api.Models;
-using Core.Submissions.Models;
+using Biobanks.Directory.Models.Submissions;
+using Biobanks.Submissions.Models;
 
-namespace Biobanks.Submissions.Api.MappingProfiles
+namespace Biobanks.Directory.MappingProfiles
 {
     /// <inheritdoc />
     public class DiagnosisProfile : Profile

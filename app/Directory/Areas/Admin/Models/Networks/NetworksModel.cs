@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.Networks;
+namespace Biobanks.Directory.Areas.Admin.Models.Networks;
 
 public class NetworksModel
 {

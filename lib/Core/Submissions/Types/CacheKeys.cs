@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Types
+﻿namespace Biobanks.Submissions.Types
 {
     public static class CacheKeys
     {

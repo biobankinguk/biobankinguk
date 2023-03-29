@@ -1,10 +1,9 @@
-using System;
 using System.CommandLine;
-using Biobanks.Submissions.Api.Commands.Helpers;
+using Biobanks.Directory.Commands.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands;
+namespace Biobanks.Directory.Commands;
 
 public class Hash : Command
 {
@@ -18,8 +17,8 @@ public class Hash : Command
       {
         this
           .ConfigureServices((s) =>
-            s.AddSingleton(_ => logger)
-              .AddSingleton(_ => console)
+            ServiceCollectionServiceExtensions.AddSingleton<ILoggerFactory>(s, _ => logger)
+              .AddSingleton<IConsole>(_ => console)
               .AddTransient<Runners.Hash>()
           )
           .GetRequiredService<Runners.Hash>()

@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Config
+﻿namespace Biobanks.Directory.Config
 {
     /// <summary>
     /// Options for configuring the API's Hangfire instance

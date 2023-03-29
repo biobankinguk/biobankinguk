@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Areas.Admin.Models;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Funders;
+using Biobanks.Directory.Areas.Admin.Models.Funders;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+namespace Biobanks.Directory.Areas.Biobank.Models.Profile;
 
 public class BiobankFundersModel
 {

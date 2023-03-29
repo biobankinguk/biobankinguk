@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Biobanks.Submissions.Api.Auth.Basic
+namespace Biobanks.Directory.Auth.Basic
 {
     internal class BasicAuthParsingException : Exception
     {

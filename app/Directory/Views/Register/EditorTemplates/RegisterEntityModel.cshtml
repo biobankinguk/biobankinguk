@@ -1,5 +1,7 @@
-@model Biobanks.Submissions.Api.Models.Register.RegisterEntityModel;
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Register.RegisterEntityModel;
+@inject IConfigService _config
 
 
 @Html.HiddenFor(x => x.AdacInvited)

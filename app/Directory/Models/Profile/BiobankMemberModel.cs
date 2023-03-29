@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Profile
+﻿namespace Biobanks.Directory.Models.Profile
 {
     public class BiobankMemberModel
     {

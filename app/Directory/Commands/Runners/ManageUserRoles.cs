@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
 using ConsoleTableExt;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Runners;
+namespace Biobanks.Directory.Commands.Runners;
 
 public class ManageUserRoles
 {

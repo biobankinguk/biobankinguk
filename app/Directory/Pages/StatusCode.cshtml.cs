@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Biobanks.Submissions.Api.Pages;
+namespace Biobanks.Directory.Pages;
 
 public class StatusCodeModel : PageModel
 {

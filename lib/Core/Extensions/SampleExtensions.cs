@@ -1,4 +1,4 @@
-﻿using Biobanks.Entities.Api;
+﻿using Biobanks.Data.Entities.Api;
 
 namespace Biobanks.Extensions
 {

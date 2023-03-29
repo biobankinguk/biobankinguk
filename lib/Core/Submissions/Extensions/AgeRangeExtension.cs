@@ -1,6 +1,6 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using System;
+﻿using System;
 using System.Xml;
+using Biobanks.Data.Entities.ReferenceData;
 
 namespace Biobanks.Submissions.Extensions
 {

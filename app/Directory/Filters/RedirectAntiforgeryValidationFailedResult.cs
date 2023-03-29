@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 
-namespace Biobanks.Submissions.Api.Filters;
+namespace Biobanks.Directory.Filters;
 
 public class RedirectAntiforgeryValidationFailedResult : IAlwaysRunResultFilter
 {

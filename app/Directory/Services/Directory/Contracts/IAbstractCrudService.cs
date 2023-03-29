@@ -1,10 +1,10 @@
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
-using Biobanks.Submissions.Api.Models.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Areas.Biobank.Models.Collections;
+using Biobanks.Directory.Models.Shared;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts;
+namespace Biobanks.Directory.Services.Directory.Contracts;
 
 public interface IAbstractCrudService
 {

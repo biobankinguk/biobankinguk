@@ -1,9 +1,11 @@
 
 @using System.Linq
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
 @using Microsoft.AspNetCore.Http
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@inject IConfigService _config
 @inject IOptions<AnnualStatisticsOptions> _annualStatisticsOptions
-@model Biobanks.Submissions.Api.Models.Profile.BiobankModel
+@model Biobanks.Directory.Models.Profile.BiobankModel
 
 @{
 	ViewBag.Title = Model.Name;

@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Dto
+﻿namespace Biobanks.Submissions.Dto
 {
     public class TreatmentDto : TreatmentIdDto
     {

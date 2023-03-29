@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Models.Account
+namespace Biobanks.Directory.Models.Account
 {
     public class AccountDetailsModel
     {

@@ -1,18 +1,18 @@
 #nullable enable
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Biobanks.Submissions.Api.Services.EmailSender
+namespace Biobanks.Directory.Services.EmailSender
 {
     public class SendGridEmailSender : IEmailSender
     {

@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Commands.Helpers;
-using Biobanks.Submissions.Api.Services.DataSeeding;
-using Microsoft.AspNetCore.Identity;
+using Biobanks.Data.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Commands.Helpers;
+using Biobanks.Directory.Services.DataSeeding;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Runners;
+namespace Biobanks.Directory.Commands.Runners;
 
 internal class SeedRefData
 {

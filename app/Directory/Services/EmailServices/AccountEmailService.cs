@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
 
-namespace Biobanks.Submissions.Api.Services.EmailServices
+namespace Biobanks.Directory.Services.EmailServices
 {
     public class AccountEmailService
     {

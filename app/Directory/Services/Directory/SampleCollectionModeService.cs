@@ -1,9 +1,9 @@
-﻿using Biobanks.Data;
-using System.Threading.Tasks;
-using Biobanks.Entities.Data.ReferenceData;
+﻿using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class SampleCollectionModeService : ReferenceDataCrudService<SampleCollectionMode>
     {

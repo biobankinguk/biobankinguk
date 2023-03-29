@@ -1,10 +1,10 @@
-using Biobanks.Submissions.Api.Models.Footer;
+using System.IO;
+using Biobanks.Directory.Models.Footer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.IO;
 
-namespace Biobanks.Submissions.Api.ViewComponents;
+namespace Biobanks.Directory.ViewComponents;
 
 public class FooterViewComponent : ViewComponent
 {

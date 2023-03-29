@@ -1,16 +1,16 @@
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Capabilities;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Filters;
-using Biobanks.Submissions.Api.Models.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Areas.Biobank.Models.Capabilities;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Filters;
+using Biobanks.Directory.Models.Directory;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Controllers;
+namespace Biobanks.Directory.Areas.Biobank.Controllers;
 
 [Area("Biobank")]
 [Authorize(nameof(AuthPolicies.IsBiobankAdmin))]

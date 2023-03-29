@@ -1,8 +1,7 @@
-using Biobanks.Analytics.Dto;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
 using System.Threading.Tasks;
+using Biobanks.Analytics.Dto;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts
+namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IAnalyticsReportGenerator
     {

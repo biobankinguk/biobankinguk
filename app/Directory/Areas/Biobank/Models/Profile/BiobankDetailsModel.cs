@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Models;
-using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Directory.Models;
+using Biobanks.Directory.Models.Shared;
 using Microsoft.AspNetCore.Http;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+namespace Biobanks.Directory.Areas.Biobank.Models.Profile;
 
 public class BiobankDetailsModel
 {

@@ -1,8 +1,8 @@
-﻿using Core.Submissions.Types;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Biobanks.Submissions.Types;
 
-namespace Core.Submissions.Models
+namespace Biobanks.Submissions.Models
 {
     public class DiagnosisIdModel : BaseIdModel
     {

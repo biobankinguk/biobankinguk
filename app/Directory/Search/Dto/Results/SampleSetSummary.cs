@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Search.Dto.Results
+namespace Biobanks.Directory.Search.Dto.Results
 {
     public class SampleSetSummary
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class TokenValidationRecord
     {

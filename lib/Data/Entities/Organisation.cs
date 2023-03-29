@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class Organisation
     {

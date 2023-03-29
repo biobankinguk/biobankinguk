@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Services.DataSeeding;
+namespace Biobanks.Directory.Services.DataSeeding;
 
 /// <summary>
 /// Static Helper methods for seeding

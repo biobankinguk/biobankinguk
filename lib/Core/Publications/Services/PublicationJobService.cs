@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Entities.Data;
 using Biobanks.Data;
 using System;
+using Biobanks.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Biobanks.Publications.Services.Contracts;
 using Biobanks.Publications.Dto;

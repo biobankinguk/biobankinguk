@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Areas.Biobank.Models.Profile;
+namespace Biobanks.Directory.Areas.Biobank.Models.Profile;
 
 public class BiobankAnnualStatsModel
 {

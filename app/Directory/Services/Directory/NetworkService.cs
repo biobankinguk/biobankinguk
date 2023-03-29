@@ -1,22 +1,20 @@
-
-using AutoMapper;
-using Biobanks.Data;
-using Biobanks.Data.Entities;
-using Biobanks.Entities.Data;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Search.Dto.PartialDocuments;
-using Biobanks.Search.Legacy;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
-using Hangfire;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Biobanks.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Search.Legacy;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Dto;
+using Hangfire;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class NetworkService : INetworkService
     {

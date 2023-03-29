@@ -1,8 +1,8 @@
-﻿using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Services.Directory.Contracts;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class LogoService: ILogoService
     {

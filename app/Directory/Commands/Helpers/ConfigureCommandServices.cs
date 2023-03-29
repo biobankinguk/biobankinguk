@@ -3,7 +3,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Biobanks.Submissions.Api.Commands.Helpers;
+namespace Biobanks.Directory.Commands.Helpers;
 
 public static class ConfigureCommandServices
 {

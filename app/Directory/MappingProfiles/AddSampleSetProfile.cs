@@ -1,7 +1,7 @@
 using AutoMapper;
-using Biobanks.Submissions.Api.Areas.Biobank.Models.Collections;
+using Biobanks.Directory.Areas.Biobank.Models.Collections;
 
-namespace Biobanks.Submissions.Api.MappingProfiles;
+namespace Biobanks.Directory.MappingProfiles;
 
 public class AddSampleSetProfile : Profile
 {

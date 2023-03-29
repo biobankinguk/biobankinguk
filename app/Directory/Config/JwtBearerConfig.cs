@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Config
+﻿namespace Biobanks.Directory.Config
 {
     /// <summary>
     /// Configuration Options class for JWT Bearer Token usage

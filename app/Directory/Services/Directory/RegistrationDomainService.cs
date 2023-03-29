@@ -1,12 +1,12 @@
-﻿using Biobanks.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class RegistrationDomainService : IRegistrationDomainService
     {

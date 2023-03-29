@@ -1,6 +1,6 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
+﻿using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Api.ReferenceData
+namespace Biobanks.Data.Entities.Api.ReferenceData
 {
     public class Status : BaseReferenceData { }
 }

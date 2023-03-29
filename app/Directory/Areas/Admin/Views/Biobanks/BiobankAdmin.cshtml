@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Http.Extensions
-@model Biobanks.Submissions.Api.Areas.Admin.Models.Biobanks.BiobankModel
+@model Biobanks.Directory.Areas.Admin.Models.Biobanks.BiobankModel
 @{
     ViewBag.Title = "Biobank Admin";
 }
@@ -30,11 +30,11 @@
                     @if (Model.IsSuspended)
                     {
                         <a href="@Url.Action(
-                                             "UnsuspendBiobank", "Biobanks",
-                                             new
-                                             {
-                                                 id = Model.BiobankId
-                                             })"
+                                   "UnsuspendBiobank", "Biobanks",
+                                   new
+                                   {
+                                     id = Model.BiobankId
+                                   })"
                            class="unsuspend-confirm"
                            data-biobank-name="@Model.Name">
                             <span class="fa fa-check-square-o labelled-icon"></span>Unsuspend
@@ -43,11 +43,11 @@
                     else
                     {
                         <a href="@Url.Action(
-                                             "SuspendBiobank", "Biobanks",
-                                             new
-                                             {
-                                                 id = Model.BiobankId
-                                             })"
+                                   "SuspendBiobank", "Biobanks",
+                                   new
+                                   {
+                                     id = Model.BiobankId
+                                   })"
                            class="suspend-confirm"
                            data-biobank-name="@Model.Name">
                             <span class="fa fa-ban labelled-icon"></span>Suspend
@@ -95,14 +95,14 @@
                                 @if (!admin.EmailConfirmed)
                                 {
                                     <a href="@Url.Action(
-                                        "ResendConfirmLink", "Account",
-                                        new
-                                        {
-                                            Area = "",
-                                            userEmail = admin.UserEmail,
-                                            onBehalf = true,
-                                            returnUrl = @Context.Request.GetEncodedUrl()
-                                        })"
+                                               "ResendConfirmLink", "Account",
+                                               new
+                                               {
+                                                 Area = "",
+                                                 userEmail = admin.UserEmail,
+                                                 onBehalf = true,
+                                                 returnUrl = @Context.Request.GetEncodedUrl()
+                                               })"
                                        class="confirm-resend"
                                        data-admin-name="@admin.UserFullName">
                                         <span class="fa fa-repeat labelled-icon"></span>Resend Invite

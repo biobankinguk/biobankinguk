@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Shared
+﻿namespace Biobanks.Directory.Models.Shared
 {
     public class ReadAssociatedDataTypeGroupModel : AssociatedDataTypeGroupModel
     {

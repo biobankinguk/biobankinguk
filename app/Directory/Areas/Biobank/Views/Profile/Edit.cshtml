@@ -1,7 +1,7 @@
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-
-@using Biobanks.Submissions.Api.Config
-@model Biobanks.Submissions.Api.Areas.Biobank.Models.Profile.BiobankDetailsModel;
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Biobank.Models.Profile.BiobankDetailsModel;
 
 @{
     ViewBag.Title = "Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details";

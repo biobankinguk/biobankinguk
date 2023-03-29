@@ -1,10 +1,10 @@
-using Biobanks.Entities.Shared.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Data.ReferenceData;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class Collection
     {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Models.Register;
+using Biobanks.Directory.Models.Register;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Contracts;
+namespace Biobanks.Directory.Services.Directory.Contracts;
 
 public interface IRecaptchaService
 {

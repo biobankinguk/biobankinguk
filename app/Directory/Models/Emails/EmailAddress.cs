@@ -1,5 +1,5 @@
 #nullable enable
-namespace Biobanks.Submissions.Api.Models.Emails
+namespace Biobanks.Directory.Models.Emails
 {
     public record EmailAddress(string Address)
     {

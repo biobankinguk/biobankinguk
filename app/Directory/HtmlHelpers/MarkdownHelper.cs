@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Biobanks.Submissions.Api.HtmlHelpers
+namespace Biobanks.Directory.HtmlHelpers
 {
     public static class MarkdownHelper
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models
+namespace Biobanks.Directory.Models.Submissions
 {
     /// <summary>
     /// Overall batch submission model containing all permitted entities and operations.

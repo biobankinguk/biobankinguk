@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Biobanks.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.Api.ReferenceData;
 
-namespace Biobanks.Entities.Api
+namespace Biobanks.Data.Entities.Api
 {
     public class Submission
     {

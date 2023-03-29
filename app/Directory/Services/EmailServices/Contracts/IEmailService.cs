@@ -1,7 +1,7 @@
-using Biobanks.Submissions.Api.Models.Emails;
 using System.Threading.Tasks;
+using Biobanks.Directory.Models.Emails;
 
-namespace Biobanks.Submissions.Api.Services.EmailServices.Contracts
+namespace Biobanks.Directory.Services.EmailServices.Contracts
 {
     public interface IEmailService
     {

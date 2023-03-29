@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Submissions.Models
+namespace Biobanks.Submissions.Models
 {
     public class SubmissionSummaryModel
     {

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Microsoft.EntityFrameworkCore;
-using Biobanks.Data;
-using LinqKit;
-using Core.Submissions.Services.Contracts;
-using Core.Submissions.Types;
 using System.Text.Json;
+using System.Threading.Tasks;
 using AutoMapper;
-using Core.Submissions.Models;
-using Core.Submissions.Dto;
-using Core.Submissions.Exceptions;
+using Biobanks.Data;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Dto;
+using Biobanks.Submissions.Exceptions;
+using Biobanks.Submissions.Models;
+using Biobanks.Submissions.Services.Contracts;
+using Biobanks.Submissions.Types;
+using LinqKit;
+using Microsoft.EntityFrameworkCore;
 
-namespace Core.Submissions.Services
+namespace Biobanks.Submissions.Services
 {
     /// <inheritdoc />
     public class SubmissionService : ISubmissionService

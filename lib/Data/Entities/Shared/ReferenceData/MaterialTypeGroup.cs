@@ -1,7 +1,7 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Shared.ReferenceData
+namespace Biobanks.Data.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// This is an internal entity for artificially grouping material types.

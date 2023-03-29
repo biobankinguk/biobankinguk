@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Biobanks.Submissions.Api.JsonConverters
+namespace Biobanks.Directory.JsonConverters
 {
     /// <summary>
     /// A System.Text.Json converter that will parse a number into a string

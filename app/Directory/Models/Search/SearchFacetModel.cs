@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Biobanks.Submissions.Api.Models.Search;
+namespace Biobanks.Directory.Models.Search;
 
 public class SearchFacetModel
 {

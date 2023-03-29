@@ -1,4 +1,4 @@
-﻿namespace Core.Submissions.Types
+﻿namespace Biobanks.Submissions.Types
 {
     /// <summary>
     /// Standard parameters for a paginated collection

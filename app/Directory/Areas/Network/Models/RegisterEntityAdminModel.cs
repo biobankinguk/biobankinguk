@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Network.Models;
+namespace Biobanks.Directory.Areas.Network.Models;
 
 public class RegisterEntityAdminModel
 {

@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Home
+﻿namespace Biobanks.Directory.Models.Home
 {
     public class HomepageContentModel
     {

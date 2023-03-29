@@ -1,14 +1,13 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Search;
-using Biobanks.Submissions.Api.Models.Shared;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Search;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Controllers.Directory;
+namespace Biobanks.Directory.Controllers.Directory;
 
 [AllowAnonymous]
 public class TermController : Controller

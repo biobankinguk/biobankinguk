@@ -1,8 +1,8 @@
-using Core.Submissions.Types;
 using System;
 using System.Threading.Tasks;
+using Biobanks.Submissions.Types;
 
-namespace Biobanks.Submissions.Api.Services.Submissions.Contracts
+namespace Biobanks.Directory.Services.Submissions.Contracts
 {
     /// <summary>
     /// Wrapper service for handling

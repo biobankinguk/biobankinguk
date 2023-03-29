@@ -1,6 +1,6 @@
 ﻿using Nest;
 
-namespace Biobanks.Search.Dto.Documents
+namespace Biobanks.Directory.Search.Dto.Documents
 {
     public class BaseDocument
     {

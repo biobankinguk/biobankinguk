@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Services.Directory.Constants
+﻿namespace Biobanks.Directory.Services.Directory.Constants
 {
     public static class SnomedTags
     {

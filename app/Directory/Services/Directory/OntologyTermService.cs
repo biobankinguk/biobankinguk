@@ -1,14 +1,13 @@
-using System;
-using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Data;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class OntologyTermService : IOntologyTermService
     {

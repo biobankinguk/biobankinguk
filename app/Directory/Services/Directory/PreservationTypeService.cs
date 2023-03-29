@@ -1,10 +1,10 @@
-﻿using Biobanks.Data;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 using Microsoft.EntityFrameworkCore;
-using Biobanks.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class PreservationTypeService : ReferenceDataCrudService<PreservationType>
     {

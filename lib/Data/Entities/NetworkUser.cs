@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Biobanks.Entities.Data
+namespace Biobanks.Data.Entities
 {
     public class NetworkUser
     {

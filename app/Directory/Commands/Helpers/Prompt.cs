@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 
-namespace Biobanks.Submissions.Api.Commands.Helpers;
+namespace Biobanks.Directory.Commands.Helpers;
 
 public class Prompt
 {

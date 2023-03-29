@@ -1,6 +1,7 @@
-@using Biobanks.Submissions.Api.Config
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
-@model Biobanks.Submissions.Api.Areas.Network.Models.Profile.NetworkBiobanksModel
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Network.Models.Profile.NetworkBiobanksModel
 
 @{
     ViewBag.Title = "Network biobanks";

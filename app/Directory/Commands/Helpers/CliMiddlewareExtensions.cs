@@ -1,14 +1,12 @@
 using System;
-using System.CommandLine;
 using System.CommandLine.Builder;
-using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands.Helpers;
+namespace Biobanks.Directory.Commands.Helpers;
 
 public static class CommandLineExtensions
 {

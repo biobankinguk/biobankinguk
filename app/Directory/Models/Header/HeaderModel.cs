@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Header
+namespace Biobanks.Directory.Models.Header
 {
     public class HeaderModel
     {

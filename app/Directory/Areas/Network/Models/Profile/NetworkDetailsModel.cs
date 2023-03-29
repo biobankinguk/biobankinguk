@@ -1,9 +1,9 @@
-using Biobanks.Submissions.Api.Models;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Biobanks.Directory.Models;
+using Microsoft.AspNetCore.Http;
 
-namespace Biobanks.Submissions.Api.Areas.Network.Models.Profile
+namespace Biobanks.Directory.Areas.Network.Models.Profile
 {
   public class NetworkDetailsModel
   {

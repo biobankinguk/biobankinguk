@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Biobanks.Entities.Api.Contracts;
-using Biobanks.Entities.Api.ReferenceData;
-using Biobanks.Entities.Shared.ReferenceData;
+using Biobanks.Data.Entities.Api.Contracts;
+using Biobanks.Data.Entities.Api.ReferenceData;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Entities.Api
+namespace Biobanks.Data.Entities.Api
 {
     /// <inheritdoc cref="BaseOrganisationDataEntity" />
     /// <summary>

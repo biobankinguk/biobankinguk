@@ -1,21 +1,3 @@
-using Biobanks.Data.Entities;
-using Biobanks.Data.Transforms.Url;
-using Biobanks.Entities.Data.ReferenceData;
-using Biobanks.Submissions.Api.Areas.Network.Models;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Extensions;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,13 +5,29 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Biobanks.Services;
-using Biobanks.Submissions.Api.Areas.Network.Models.Profile;
-using Biobanks.Submissions.Api.Auth;
-using Microsoft.AspNetCore.Http.Extensions;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.ReferenceData;
+using Biobanks.Data.Transforms.Url;
+using Biobanks.Directory.Areas.Network.Models;
+using Biobanks.Directory.Areas.Network.Models.Profile;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Extensions;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Dto;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Services.Submissions;
+using Biobanks.Directory.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Areas.Network.Controllers;
+namespace Biobanks.Directory.Areas.Network.Controllers;
 
 [Area("Network")]
 [Authorize(nameof(AuthPolicies.IsNetworkAdmin))]

@@ -1,24 +1,23 @@
-using AutoMapper;
-using Biobanks.Data;
-using Biobanks.Entities.Data;
-using Biobanks.Entities.Shared;
-using Biobanks.Search.Contracts;
-using Biobanks.Search.Dto.PartialDocuments;
-using Biobanks.Submissions.Api.Models.Directory;
-using Hangfire;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Search.Dto.Documents;
-using Biobanks.Submissions.Api.Services.Directory.Extensions;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using AutoMapper;
+using Biobanks.Data;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Utilities.IdentityModel;
+using Biobanks.Data.Entities.Shared;
+using Biobanks.Directory.Models.Directory;
+using Biobanks.Directory.Search.Contracts;
+using Biobanks.Directory.Search.Dto.Documents;
+using Biobanks.Directory.Search.Dto.PartialDocuments;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Extensions;
+using Biobanks.Directory.Utilities.IdentityModel;
+using Hangfire;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     public class OrganisationDirectoryService : IOrganisationDirectoryService
     {

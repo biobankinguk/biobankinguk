@@ -1,7 +1,7 @@
-﻿using Nest;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Nest;
 
-namespace Biobanks.Search.Dto.Documents
+namespace Biobanks.Directory.Search.Dto.Documents
 {
     //[ElasticsearchType(Name = "_doc")] // TODO: name is obsolete in 7. how to fix? just remove?
     public class CapabilityDocument : BaseDocument

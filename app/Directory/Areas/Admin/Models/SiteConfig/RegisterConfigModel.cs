@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.SiteConfig;
+namespace Biobanks.Directory.Areas.Admin.Models.SiteConfig;
 
 public class RegisterConfigModel
 {

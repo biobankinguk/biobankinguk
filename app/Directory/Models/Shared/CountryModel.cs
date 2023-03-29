@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Models.Shared
+namespace Biobanks.Directory.Models.Shared
 {
     public class CountryModel
     {

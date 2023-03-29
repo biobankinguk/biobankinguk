@@ -1,10 +1,10 @@
 using Biobanks.Data;
-using Biobanks.Entities.Data.ReferenceData;
 using Biobanks.Shared.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.ReferenceData;
 
 namespace Biobanks.Shared.Services
 {

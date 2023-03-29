@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Biobanks.Submissions.Api.Extensions;
+namespace Biobanks.Directory.Extensions;
 
 public static class CollectionExtensions
 {

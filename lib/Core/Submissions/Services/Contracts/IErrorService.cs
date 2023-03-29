@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Biobanks.Entities.Api;
-using Core.Submissions.Exceptions;
-using Core.Submissions.Types;
+using Biobanks.Data.Entities.Api;
+using Biobanks.Submissions.Exceptions;
+using Biobanks.Submissions.Types;
 
-namespace Core.Submissions.Services.Contracts
+namespace Biobanks.Submissions.Services.Contracts
 {
     /// <summary>
     /// Service for handling Submission Error information

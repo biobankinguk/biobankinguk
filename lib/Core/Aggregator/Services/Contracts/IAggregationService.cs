@@ -1,6 +1,6 @@
-﻿using Biobanks.Entities.Api;
-using Biobanks.Entities.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Biobanks.Data.Entities;
+using Biobanks.Data.Entities.Api;
 
 namespace Biobanks.Aggregator.Services.Contracts
 {

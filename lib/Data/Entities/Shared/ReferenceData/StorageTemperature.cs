@@ -1,6 +1,6 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
+﻿using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Shared.ReferenceData
+namespace Biobanks.Data.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Storage Temperature entity.

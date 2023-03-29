@@ -1,9 +1,9 @@
-﻿using Biobanks.Entities.Data.ReferenceData;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Biobanks.Data.Entities.ReferenceData;
 
-namespace Biobanks.Entities.Shared.ReferenceData
+namespace Biobanks.Data.Entities.Shared.ReferenceData
 {
     /// <summary>
     /// Represents a term from the SNOMED list.

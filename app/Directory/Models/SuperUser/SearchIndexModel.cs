@@ -1,4 +1,4 @@
-namespace Biobanks.Submissions.Api.Models.SuperUser;
+namespace Biobanks.Directory.Models.SuperUser;
 
 public class SearchIndexModel
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Extensions
+namespace Biobanks.Directory.Services.Directory.Extensions
 {
     public static class IEnumerableExtensions
     { 

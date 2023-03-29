@@ -1,21 +1,21 @@
 #nullable enable
+
 using System.Collections.Generic;
 using System.Linq;
-using Biobanks.Submissions.Api.Auth.Basic;
-using Biobanks.Submissions.Api.Constants;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
 using System.Security.Claims;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Config;
+using Biobanks.Directory.Auth.Basic;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Auth
+namespace Biobanks.Directory.Auth
 {
     /// <summary>
     /// ASP.NET Core Authorization Policy Definitions

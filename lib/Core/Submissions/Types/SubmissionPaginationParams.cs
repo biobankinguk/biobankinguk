@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Submissions.Types
+namespace Biobanks.Submissions.Types
 {
     /// <summary>
     /// Additional parameters for paginating a filtered list of submissions

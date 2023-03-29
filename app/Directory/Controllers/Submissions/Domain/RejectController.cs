@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Auth;
-using Biobanks.Submissions.Api.Services.Submissions.Contracts;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Services.Submissions.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions.Domain
+namespace Biobanks.Directory.Controllers.Submissions.Domain
 {
     /// <inheritdoc />
     /// <summary>

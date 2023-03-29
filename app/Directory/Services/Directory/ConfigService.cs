@@ -1,12 +1,14 @@
-using Biobanks.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Biobanks.Data;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace Biobanks.Submissions.Api.Services.Directory
+namespace Biobanks.Directory.Services.Directory
 {
     /// <inheritdoc cref="IConfigService" />
     public class ConfigService : IConfigService
@@ -21,15 +23,15 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         /// <inheritdoc />
-        public IEnumerable<Entities.Data.Config> ListSiteConfigs(string wildcard = "")
+        public IEnumerable<Data.Entities.Config> ListSiteConfigs(string wildcard = "")
             => _db.Configs.Where(x => x.Key.Contains(wildcard)).ToList();
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Entities.Data.Config>> ListSiteConfigsAsync(string wildcard = "")
+        public async Task<IEnumerable<Data.Entities.Config>> ListSiteConfigsAsync(string wildcard = "")
             => await _db.Configs.Where(x => x.Key.Contains(wildcard)).ToListAsync();
 
         /// <inheritdoc />
-        public async Task<Entities.Data.Config> GetSiteConfig(string key)
+        public async Task<Data.Entities.Config> GetSiteConfig(string key)
             => (await ListSiteConfigsAsync(key)).FirstOrDefault();
 
         /// <inheritdoc />
@@ -47,7 +49,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
         }
 
         /// <inheritdoc />
-        public async Task UpdateSiteConfigsAsync(IEnumerable<Entities.Data.Config> configs)
+        public async Task UpdateSiteConfigsAsync(IEnumerable<Data.Entities.Config> configs)
         {
             foreach (var config in configs)
             {
@@ -75,7 +77,7 @@ namespace Biobanks.Submissions.Api.Services.Directory
             => (ConvertStringToBool((await GetSiteConfig(key)).Value));
 
         /// <inheritdoc />
-        public async Task<List<Entities.Data.Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "")
+        public async Task<List<Data.Entities.Config>> ListBooleanFlags(BooleanConfigSelection selection, string wildcard = "")
         {
             var configs = await _db.Configs.Where(x => x.Key.Contains(wildcard)).Where(x => x.Name != null).ToListAsync();
             var boolConfigs = configs.Where(x => ConvertStringToBool(x.Value) != null).ToList();

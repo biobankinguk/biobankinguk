@@ -1,6 +1,7 @@
-@using Biobanks.Submissions.Api.Config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
 @model string
-@inject Biobanks.Submissions.Api.Services.Directory.IConfigService _config
+@inject IConfigService _config
 
 @{
   var BiobankId = ViewContext.RouteData.Values["biobankId"];

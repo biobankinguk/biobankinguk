@@ -1,4 +1,4 @@
-﻿namespace Biobanks.Submissions.Api.Models.Submissions
+﻿namespace Biobanks.Directory.Models.Shared
 {
     public class ReadAssociatedDataProcurementTimeFrameModel : Shared.AssociatedDataProcurementTimeFrameModel
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Biobanks.Submissions.Api.Areas.Network.Models.Profile;
+namespace Biobanks.Directory.Areas.Network.Models.Profile;
 
 public class AddBiobankToNetworkModel
 {

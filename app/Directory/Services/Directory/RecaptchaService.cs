@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Register;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Register;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.CSharp.RuntimeBinder;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Services.Directory;
+namespace Biobanks.Directory.Services.Directory;
 
 public class RecaptchaService : IRecaptchaService
 {

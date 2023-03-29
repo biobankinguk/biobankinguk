@@ -1,17 +1,16 @@
-﻿using Biobanks.Entities.Shared.ReferenceData;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Models.Shared;
+﻿using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
+using Biobanks.Data.Entities.Shared.ReferenceData;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Shared;
+using Biobanks.Directory.Services.Directory.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Collections;
-using System.Linq;
-using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Services.Directory;
-using Biobanks.Submissions.Api.Auth;
 
-namespace Biobanks.Submissions.Api.Controllers.ReferenceData
+namespace Biobanks.Directory.Controllers.ReferenceData
 {
     [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
     [Route("api/[controller]")]
@@ -71,7 +70,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Post(StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _storageTemperatureService.Exists(model.Value))
@@ -110,7 +109,7 @@ namespace Biobanks.Submissions.Api.Controllers.ReferenceData
         public async Task<ActionResult> Put(int id, StorageTemperatureModel model)
         {
             //Getting the name of the reference type as stored in the config
-            Entities.Data.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
+            Data.Entities.Config currentReferenceName = await _configService.GetSiteConfig(ConfigKey.StorageTemperatureName);
 
             // Validate model
             if (await _storageTemperatureService.Exists(model.Value))

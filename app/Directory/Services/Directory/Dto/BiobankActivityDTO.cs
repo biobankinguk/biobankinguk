@@ -1,6 +1,6 @@
 using System;
 
-namespace Biobanks.Submissions.Api.Services.Directory.Dto;
+namespace Biobanks.Directory.Services.Directory.Dto;
 
 public class BiobankActivityDTO
 {

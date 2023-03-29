@@ -1,20 +1,20 @@
-using AutoMapper;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Models.Home;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Models.Contact;
+using AutoMapper;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Models.Contact;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Models.Home;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Controllers
+namespace Biobanks.Directory.Controllers
 {
     [AllowAnonymous]
     [Route("api/[controller]")]

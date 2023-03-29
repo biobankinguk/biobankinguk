@@ -1,5 +1,4 @@
 using Biobanks.Data;
-using Biobanks.Entities.Data.Analytics;
 using Biobanks.Shared.Services.Contracts;
 
 using Google.Apis.AnalyticsReporting.v4;
@@ -15,6 +14,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Biobanks.Analytics.Services.Contracts;
+using Biobanks.Data.Entities.Analytics;
 
 namespace Biobanks.Analytics.Services
 {

@@ -1,7 +1,7 @@
-using Biobanks.Entities.Shared.ReferenceData;
 using System.Collections.Generic;
+using Biobanks.Data.Entities.Shared.ReferenceData;
 
-namespace Biobanks.Entities.Data.ReferenceData
+namespace Biobanks.Data.Entities.ReferenceData
 {
     public class AssociatedDataType : BaseReferenceData
     {

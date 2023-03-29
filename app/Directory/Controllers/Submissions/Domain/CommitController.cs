@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Auth;
-
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Services.Submissions.Contracts;
+using Biobanks.Submissions.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Core.Submissions.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Biobanks.Submissions.Api.Services.Submissions.Contracts;
 
-namespace Biobanks.Submissions.Api.Controllers.Submissions.Domain
+namespace Biobanks.Directory.Controllers.Submissions.Domain
 {
     /// <inheritdoc />
     /// <summary>

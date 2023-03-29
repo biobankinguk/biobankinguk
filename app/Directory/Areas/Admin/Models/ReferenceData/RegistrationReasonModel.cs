@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Biobanks.Submissions.Api.Models.Shared;
+using Biobanks.Directory.Models.Shared;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Models.ReferenceData;
+namespace Biobanks.Directory.Areas.Admin.Models.ReferenceData;
 
 public class RegistrationReasonModel
 {

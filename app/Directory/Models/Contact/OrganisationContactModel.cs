@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Contact;
+namespace Biobanks.Directory.Models.Contact;
 
 public class OrganisationContactModel
 {

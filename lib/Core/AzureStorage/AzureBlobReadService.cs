@@ -1,10 +1,10 @@
-﻿using Azure.Storage.Blobs;
-using Core.Submissions.Services.Contracts;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Biobanks.Submissions.Services.Contracts;
 
-namespace Core.AzureStorage
+namespace Biobanks.AzureStorage
 {
     /// <inheritdoc />
     public class AzureBlobReadService : IBlobReadService

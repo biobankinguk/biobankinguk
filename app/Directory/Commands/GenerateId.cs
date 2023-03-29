@@ -1,9 +1,9 @@
 using System.CommandLine;
-using Biobanks.Submissions.Api.Commands.Helpers;
+using Biobanks.Directory.Commands.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Biobanks.Submissions.Api.Commands;
+namespace Biobanks.Directory.Commands;
 
 public class GenerateId : Command
 {
@@ -18,7 +18,7 @@ public class GenerateId : Command
       (logger, console, hash) =>
       {
         this.ConfigureServices(s =>
-            s.AddSingleton(_ => logger).AddSingleton(_ => console).AddTransient<Runners.GenerateId>())
+            ServiceCollectionServiceExtensions.AddSingleton<IConsole>(s, _ => logger).AddSingleton<ILoggerFactory>(_ => console).AddTransient<Runners.GenerateId>())
           .GetRequiredService<Runners.GenerateId>().Run(hash);
       },
       Bind.FromServiceProvider<IConsole>(),

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Biobanks.Submissions.Api.Models
+namespace Biobanks.Directory.Models.Submissions
 {
     /// <summary>
     /// ViewModel representing an individual error message and the identifying properties of the record it relates to.

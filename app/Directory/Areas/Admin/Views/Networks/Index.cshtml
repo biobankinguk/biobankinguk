@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Http.Extensions
-@model Biobanks.Submissions.Api.Areas.Admin.Models.Networks.NetworksModel;
+@model Biobanks.Directory.Areas.Admin.Models.Networks.NetworksModel;
 
 @{
     ViewBag.Title = "ADAC Admin";
@@ -39,13 +39,13 @@
                                         @if (!admin.EmailConfirmed)
                                         {
                                             <a href="@Url.Action(
-                                                         "ResendConfirmLink", "Account",
-                                                         new
-                                                         {
-                                                             userEmail = admin.UserEmail,
-                                                             onBehalf = true,
-                                                             returnUrl = @Context.Request.GetEncodedUrl()
-                                                         })"
+                                                       "ResendConfirmLink", "Account",
+                                                       new
+                                                       {
+                                                         userEmail = admin.UserEmail,
+                                                         onBehalf = true,
+                                                         returnUrl = @Context.Request.GetEncodedUrl()
+                                                       })"
                                                class="resend-confirm pull-right"
                                                data-admin-name="@admin.UserFullName"
                                                data-admin-email="@admin.UserEmail">

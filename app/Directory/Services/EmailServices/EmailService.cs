@@ -1,15 +1,15 @@
 using System.Linq;
-using Biobanks.Submissions.Api.Config;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Constants;
+using Biobanks.Directory.Config;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.EmailServices.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
-namespace Biobanks.Submissions.Api.Services.EmailServices
+namespace Biobanks.Directory.Services.EmailServices
 {
     public class EmailService : IEmailService
     {

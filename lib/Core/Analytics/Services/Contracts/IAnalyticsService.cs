@@ -1,8 +1,7 @@
-﻿using Biobanks.Entities.Data.Analytics;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Biobanks.Data.Entities.Analytics;
 
 namespace Biobanks.Analytics.Services.Contracts
 {

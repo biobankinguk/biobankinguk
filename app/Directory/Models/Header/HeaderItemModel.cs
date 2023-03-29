@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Biobanks.Submissions.Api.Models.Header
+namespace Biobanks.Directory.Models.Header
 {
     public class HeaderItemModel
     {

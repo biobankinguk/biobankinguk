@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Biobanks.Submissions.Api.Models.Register;
+namespace Biobanks.Directory.Models.Register;
 
 public class RecaptchaResponse
 {

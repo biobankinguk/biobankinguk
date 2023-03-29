@@ -1,10 +1,10 @@
 using System;
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
-using Biobanks.Submissions.Api.Commands.Helpers;
-using Biobanks.Submissions.Api.Startup.Cli;
-using Biobanks.Submissions.Api.Startup.EfCoreMigrations;
-using Biobanks.Submissions.Api.Startup.Web;
+using Biobanks.Directory.Commands.Helpers;
+using Biobanks.Directory.Startup.Cli;
+using Biobanks.Directory.Startup.EfCoreMigrations;
+using Biobanks.Directory.Startup.Web;
 
 // Enable EF Core tooling to get a DbContext configuration
 EfCoreMigrations.BootstrapDbContext(args);

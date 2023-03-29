@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Biobanks.Submissions.Api.Models.Search;
+namespace Biobanks.Directory.Models.Search;
 
 public class FacetsModel
 {

@@ -1,22 +1,22 @@
-using AutoMapper;
-using Biobanks.Data.Entities;
-using Biobanks.Submissions.Api.Constants;
-using Biobanks.Submissions.Api.Models.Emails;
-using Biobanks.Submissions.Api.Services.Directory.Contracts;
-using Biobanks.Submissions.Api.Services.Directory.Dto;
-using Biobanks.Submissions.Api.Services.EmailServices.Contracts;
-using Biobanks.Submissions.Api.Utilities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Biobanks.Submissions.Api.Areas.Admin.Models.Requests;
-using Biobanks.Submissions.Api.Auth;
+using AutoMapper;
+using Biobanks.Data.Entities;
+using Biobanks.Directory.Areas.Admin.Models.Requests;
+using Biobanks.Directory.Auth;
+using Biobanks.Directory.Constants;
+using Biobanks.Directory.Models.Emails;
+using Biobanks.Directory.Services.Directory.Contracts;
+using Biobanks.Directory.Services.Directory.Dto;
+using Biobanks.Directory.Services.EmailServices.Contracts;
+using Biobanks.Directory.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Biobanks.Submissions.Api.Areas.Admin.Controllers;
+namespace Biobanks.Directory.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(nameof(AuthPolicies.IsDirectoryAdmin))]
