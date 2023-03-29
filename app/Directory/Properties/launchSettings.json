@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SubmissionApi": {
+    "Directory": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -16,7 +16,7 @@ Running from source requires the .NET `6.0.x` SDK or newer.
 
 Use the appropriate command from here and then add the command you want to run as documented below.
 
-- `dotnet run --` to run from source next to the `Api.csproj`
+- `dotnet run --` to run from source next to the `Directory.csproj`
 
 Get help with the `--help` option.
 

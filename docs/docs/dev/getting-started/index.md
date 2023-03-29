@@ -30,14 +30,14 @@ Here's how to get that going.
    - `dotnet tool restore` anywhere inside the repo
 1. Run database migrations
    - Change directory next to the `src` folder.
-   - You need to specify the DbContext, and target the `Data` project, using the `Submissions` project as the startup project.
-   - `dotnet ef database update -c ApplicationDbContext -p Data/Data.csproj -s Submissions/Api/Api.csproj`
+   - You need to specify the DbContext, and target the `Data` project, using the `Directory` project as the startup project.
+   - `dotnet ef database update -c ApplicationDbContext -p lib/Data/Data.csproj -s app/Directory/Directory.csproj`
 1. Seed Reference Data
    - optionally create modified seed data
        - Copy seed data files from `/sample-seed-data` to another location and modify them
-   - Change directory next to the `Submissions/Api/Api.csproj`
+   - Change directory next to the `app/Directory/Directory.csproj`
    - `dotnet run -- ref-data seed -d <path to seed data directory>`
-       - e.g. to use the sample data: `dotnet run -- ref-data seed -d ../../../sample-seed-data`
+       - e.g. to use the sample data: `dotnet run -- ref-data seed -d ../../sample-seed-data`
        - use `--help` for other options
    - See [seed documentation](cli/ref-data#seed) for further guidance.
 
