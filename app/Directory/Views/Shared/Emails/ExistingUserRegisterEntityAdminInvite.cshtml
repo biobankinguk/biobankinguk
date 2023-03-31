@@ -1,0 +1,20 @@
+@inject IOptions<SitePropertiesOptions> _config
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.ExistingUserRegisterEntityAdminInviteModel
+
+@{
+	var directoryName = @_config.Value.ServiceName;
+  var emailSignature = @_config.Value.EmailSignature;
+
+	// Format Email Subject
+  ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Administration";
+}
+
+Dear @Html.Raw(Model!.name)
+
+You've been invited to become an admin for @Html.Raw(Model.entity) at the @directoryName.
+
+<a href="@Html.Raw(Model.link)">Click this link complete to login </a> 
+
+Regards,
+@emailSignature

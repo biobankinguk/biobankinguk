@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Biobanks.Directory.Models.Header.NavItemModel>
+
+@{
+    var isToolbar = (bool?)ViewData["Toolbar"] ?? false;
+}
+
+
+@foreach (var item in Model.Where(x => x.Toolbar == isToolbar))
+{
+    if (item.Children?.Count() > 0)
+    {
+        <partial name="_NavDropdown.cshtml" model=item />
+    }
+    else
+    {
+        <partial name="_NavItem.cshtml" model=item />
+    }
+}

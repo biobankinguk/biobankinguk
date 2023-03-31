@@ -1,0 +1,29 @@
+﻿@using System.Text.Json
+@using Biobanks.Directory.Constants
+@model Biobanks.Directory.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+  var biobankRequestClaims = User.FindAll(CustomClaimType.BiobankRequest);
+  foreach (var biobank in biobankRequestClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
+
+    <li>
+      <a href="@Url.Action("Create", "Profile", new { Area = "Biobank", biobankId = data.Key, detailsIncomplete = true})">
+        <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
+      </a>
+		</li>
+  }
+ 
+  var biobankClaims = User.FindAll(CustomClaimType.Biobank);
+  foreach (var biobank in biobankClaims)
+  {
+      var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(biobank.Value);
+      <li>
+          <a href="@Url.Action("Index", "Collections", new { Area = "Biobank", biobankId = data.Key})">
+              <span class="fa fa-book labelled-icon"></span>@(data.Value)
+          </a>
+      </li>
+	}
+}

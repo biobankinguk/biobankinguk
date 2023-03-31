@@ -1,0 +1,71 @@
+@using System.Linq
+@using Biobanks.Directory.Extensions
+@using Biobanks.Directory.Models.Search
+@model Biobanks.Directory.Models.Search.BaseSearchModel
+@{
+    ViewBag.Title = "Search Results";
+}
+
+@section FooterScripts
+{
+    <script src="~/dist/js/search.min.js" asp-append-version="true"></script>
+}
+
+<h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
+
+<div class="row">
+    @await Html.PartialAsync("_Facets", new FacetsModel
+    {
+        Action = Context.Request.RouteValues["action"]?.ToString(),
+        OntologyTerm = Model.OntologyTerm,
+        Facets = Model.Facets,
+        SelectedFacets = Model.SelectedFacets,
+        Countries = Model.Countries,
+        StorageTemperatureName = Model.StorageTemperatureName,
+        MacroscopicAssessmentName = Model.MacroscopicAssessmentName,
+        DonorCount = Model.DonorCount
+    })
+    <div class="col-sm-8">
+        @if (!Model.Biobanks.IsNullOrEmpty())
+        {
+            foreach (var biobank in Model.Biobanks)
+            {
+                <a href="@Url.Action("CollectionsDetail", "Search",
+                           new
+                           {
+                             biobankExternalId = biobank.ExternalId,
+                             ontologyTerm = Model.OntologyTerm,
+                             selectedFacets = Context.Request.Query["selectedFacets"]
+                           })" class="detailed-search-link">
+                    <div class="well well-hover">
+
+                        <div class="row no-link-style">
+                            <div class="col-sm-8">
+                                <h4>@biobank.Name</h4>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                @await Html.PartialAsync("_ContactButton", biobank.ExternalId)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 no-link-style">
+                                <div class="search-collection-count text-center">@biobank.CollectionCount</div>
+                                <div class="text-center">Collection(s)</div>
+                            </div>
+                            <div class="col-sm-10 sample-set-summaries">
+                                @if (biobank.SampleSetSummaries != null && biobank.SampleSetSummaries.Any())
+                                {
+                                    foreach (var sss in biobank.SampleSetSummaries)
+                                    {
+                                        <p class="no-link-style">@sss</p>
+                                    }
+                                }
+                                <p>Click for more details...</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

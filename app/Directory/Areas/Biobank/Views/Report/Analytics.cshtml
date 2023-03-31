@@ -1,0 +1,290 @@
+
+
+@model Biobanks.Directory.Areas.Biobank.Models.Report.BiobankAnalyticReport
+
+
+@{
+    ViewBag.Title = "Analytics";
+}
+
+@await Html.PartialAsync("_BiobankTabs", "Analytics")
+
+@* Report Header *@
+<h1>TDCC Analytics Report</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-warning">
+                Problem encountered while retrieving analytics data:
+                @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? string.Empty)
+            </div>
+
+        }
+        else if (Model.IsNullOrEmpty())
+        {
+            <div class="alert alert-info">
+                There are no analytics data for the given period. Analytics data are updated quarterly. Please check again later.
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row">
+                    @if (!string.IsNullOrEmpty(Model.Logo))
+                    {
+                        <div class="col-sm-2 text-center">
+                            <br />
+                            <img src="@Url.Action("Index", "Logo", new { logoName = Model.Logo })" class="public-profile-logo" alt="@Model.Name" />
+                        </div>
+                    }
+                    <div class="@(!string.IsNullOrEmpty(Model.Logo) ? "col-sm-10" : "col-sm-12")">
+                        <h2>@Model.Name</h2>
+                        <p><i>This report summarises your profile's performance on the UKCRC Tissue Directory over the past <strong>@Model.ReportPeriod</strong> quarters</i></p>
+                    </div>
+                </div>
+            </div>
+
+
+            @* Biobank Profile Section *@
+            <h2>TDCC Profile Completion Checklist</h2>
+            <br />
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        @Html.CheckBox(Model.BiobankStatus.CollectionStatusMessage, Model.BiobankStatus.CollectionStatus > 0)
+                        <label>Collection Registration Status</label>
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.Label(Model.BiobankStatus.CollectionStatusMessage)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        @Html.CheckBox(Model.BiobankStatus.CapabilityStatusMessage, Model.BiobankStatus.CapabilityStatus > 0)
+                        <label>Capability Registration Status</label>
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.Label(Model.BiobankStatus.CapabilityStatusMessage)
+                    </div>
+                </div>
+            </div>
+
+            @* Page Views Section *@
+            <br />
+            <h2>Profile Page Views</h2>
+            <h3><strong>Profile Page Views Top @Model.NumOfTopBiobanks </strong></h3>
+            <p>This table compares your quarterly performances with the top <strong>@Model.NumOfTopBiobanks</strong> in the Tissue Directory</p>
+            <br />
+
+            <table id="views-top" class="table table-striped">
+                <thead>
+                    <tr>
+                        @foreach (var col in Model.ProfilePageViews.QuarterLabels)
+                        {
+                            <th> @col </th>
+                        }
+                        <th>Total</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.ProfilePageViews.ProfileQuarters)
+                    {
+                        <tr class="@(row.BiobankId == Model.ExternalId ? "info" : "")">
+                            @* quarterly views *@
+                            @foreach (var count in row.QuarterCount)
+                            {
+                                <td>@count</td>
+                            }
+
+                            @* total views *@
+                            <td>@row.Total</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div>
+                <div class="row">
+                    @* Views per quarter *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Profile Page Views Per Quarter</strong></h3>
+                        <p>This graph shows the number of times your profile page on the UKCRC Tissue Directory was viewed and compares your performance with the Tissue Directory average over the past <strong>@Model.ReportPeriod</strong> quarters</p>
+                        <br />
+                        <div id="plotly-ViewsPerQuarter" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Profile routes *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Profile Page Routes</strong></h3>
+                        <p>
+                            This graph shows how users have reached your profile page on the UKCRC Tissue Directory <br /><br />
+
+                            <strong>Search Existing Samples Query</strong>: Profile page views following a search of the Tissue Directory for existing samples <br /><br />
+
+                            <strong>Require Samples Collected Query</strong>: Profile page views following a search of the Tissue Directory for biobanks' capabilities to collect new samples <br /><br />
+
+                            <strong>UKCRC-TDCC Biobanks A-Z</strong>: Profile page views coming from the @Html.ActionLink("Biobank A-Z", "Biobanks", "Profile") directory <br />
+                        </p>
+                        <br />
+                        <div id="plotly-ViewRoutes" class="col-sm-10 barplot"></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            @* Search Activity Section *@
+            @* Maybe better to seperate sections into partial views? *@
+            <br />
+            <h2>Search Activity</h2>
+            <h3><strong>Searches Top @Model.NumOfTopBiobanks</strong></h3>
+            <p>This table compares your quarterly performances with the top <strong>@Model.NumOfTopBiobanks</strong> in the Tissue Directory</p>
+            <br />
+
+            <table id="search-top" class="table table-striped">
+                <thead>
+                    <tr>
+                        @foreach (var col in Model.SearchActivity.QuarterLabels)
+                        {
+                            <th> @col </th>
+                        }
+                        <th>Total</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.SearchActivity.SearchQuarters)
+                    {
+                        <tr class="@(row.BiobankId == Model.ExternalId ? "info" : "")">
+                            @* quarterly views *@
+                            @foreach (var count in row.QuarterCount)
+                            {
+                                <td>@count</td>
+                            }
+
+                            @* total views *@
+                            <td>@row.Total</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div>
+                <div class="row">
+                    @* Searches per quarter *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Searches Per Quarter</strong></h3>
+                        <p>This graph shows how many times per quarter your samples were viewed as the result of users searching the Tissue Directory and compares your profile's performance with the Tissue Directory average over the past <strong>@Model.ReportPeriod</strong> quarters</p>
+                        <br />
+                        <div id="plotly-SearchPerQuarter" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Breakdown of Search types *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Breakdown of Search Types</strong></h3>
+                        <p>
+                            This graph shows how the number of search hits is distrbuted over the type of search that was conducted. <br /><br />
+
+                            <strong>Diagnosis</strong>: Searches where a diagnosis search term was entered into the search. <br /><br />
+
+                            <strong>Filters</strong>: Searches where no diagnosis search term was entered, but the search was refined through the use of filters. <br /><br />
+
+                            <strong>No specific search</strong>: Searches where neither diagnosis or filter settings were applied <br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchTypes" class="col-sm-10 barplot"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    @* Breakdown of Search terms *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Breakdown of Diagnosis Search Terms</strong></h3>
+                        <p>
+                            This graph shows how the number of search hits based on diagnosis searches is distrbuted. <br /><br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchTerms" class="col-sm-10 barplot"></div>
+                    </div>
+                    @* Breakdown of Search Filters *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Breakdown of Search Filters</strong></h3>
+                        <p>
+                            This graph shows which search filters were most commonly applied when your collections were found as the result of a search where no diagnosis was specified. <br /><br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchFilters" class="col-sm-10 barplot"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            @* Contact Detail Request Section *@
+            <br />
+            <h2>Contact Detail Requests</h2>
+            <h3><strong>Contact Detail Requests Top @Model.NumOfTopBiobanks</strong></h3>
+            <p>This table compares your quarterly performances with the top <strong>@Model.NumOfTopBiobanks</strong> in the Tissue Directory</p>
+            <br />
+
+            <table id="contacts-top" class="table table-striped">
+                <thead>
+                    <tr>
+                        @foreach (var col in Model.ContactRequests.QuarterLabels)
+                        {
+                            <th> @col </th>
+                        }
+                        <th>Total</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.ContactRequests.ContactQuarters)
+                    {
+                        <tr class="@(row.BiobankId == Model.ExternalId ? "info" : "")">
+                            @* quarterly views *@
+                            @foreach (var count in row.QuarterCount)
+                            {
+                                <td>@count</td>
+                            }
+
+                            @* total views *@
+                            <td>@row.Total</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div>
+                <div class="row">
+                    @* Requests per quarter *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Contact Detail Requests Per Quarter</strong></h3>
+                        <p>This graph shows how many times per quarter your contact details were added to a user's shortlist to contact about samples and compares your performance with the Tissue Directory average over the past <strong>@Model.ReportPeriod</strong> quarters</p>
+                        <br />
+                        <div id="plotly-ContactsPerQuarter" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>
+
+@* Plotly Model *@
+<script>
+    var plotlyAnalytics = @(Html.Raw(Json.Serialize(Model)));
+</script>
+@* Test Plotly *@
+
+ @section FooterScripts 
+ { 
+   <script src="~/dist/js/Analytics/biobankreport.min.js" ></script>
+ }

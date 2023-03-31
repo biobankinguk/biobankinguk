@@ -1,0 +1,87 @@
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model IEnumerable<Biobanks.Data.Entities.Organisation>
+
+<div>
+	<p>
+		<script>
+			function myFunction() {
+				// Declare variables
+				var input, filter, table, tr, td, i;
+				input = document.getElementById("myInput");
+				filter = input.value.toUpperCase();
+				table = document.getElementById("azBiobanks");
+				tr = table.getElementsByTagName("tr");
+				// Loop through all table rows, and hide those who don't match the search query
+				for (i = 1; i < tr.length; i++) {
+					var is_visible = false;
+
+					td1 = tr[i].getElementsByTagName("td")[1];
+					td2 = tr[i].getElementsByTagName("td")[2];
+					td3 = tr[i].getElementsByTagName("td")[3];
+
+					if (td1) {
+						if (td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
+							is_visible = true;
+						}
+					}
+
+					if (td2) {
+						if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+							is_visible = true;
+						}
+					}
+
+					if (td3) {
+						if (td3.innerHTML.toUpperCase().indexOf(filter) > -1) {
+							is_visible = true;
+						}
+					}
+
+					if (is_visible) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+
+				}
+			}
+
+			/**/</script><br />
+
+		<h1>A&nbsp;-&nbsp;Z List of Registered Resources</h1>
+
+	<p>This is a list of all the registered resources in the Directory. Scroll through the list or use the filter box to restrict the resources displayed. If you would like to search for specific collections or capabilities based on additional criteria (such as disease), visit our <a class="alert-link" href="https://directory.biobankinguk.org/">Directory home page</a>.</p>
+
+	<br />
+
+	<p><input style="width:100%;" type="text" id="myInput" onkeyup="myFunction()" placeholder="Filter by keyword..."><br /></p>
+
+	<div class="row">
+		<table id='azBiobanks' class="table table-striped">
+			<tr>
+				<th width="50"></th>
+				<th width="350">Name</th>
+				@if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
+				{
+					<th width="250">County</th>}
+					<th>Description</th>
+
+					@foreach (var organisation in Model.Where(x => !x.IsSuspended).OrderBy(x => x.Name))
+					{
+						<tr>
+							<td></td>
+							<td><a href="@Url.Action("Biobank", "Profile", new { id = @organisation.OrganisationExternalId})">@organisation.Name</a></td>
+							
+							@if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
+							{
+								<td>@organisation.County?.Value</td>
+							}
+							
+							<td>@organisation.Description</td>
+						</tr>
+					}
+			</table>
+		</div>
+	</div>

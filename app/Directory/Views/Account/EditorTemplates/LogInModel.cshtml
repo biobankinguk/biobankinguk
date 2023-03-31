@@ -1,0 +1,18 @@
+@model Biobanks.Directory.Models.Account.LoginModel
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Email, new {@class = "col-sm-3 control-label required"})
+    <div class="col-sm-9">
+        @Html.TextBoxFor(x => x.Email, new {@class = "form-control", @type="email"})
+        @Html.ValidationMessageFor(x => x.Email)
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Password, new { @class = "col-sm-3 control-label required" })
+
+    <div class="col-sm-9">
+        @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Password)
+    </div>
+</div>

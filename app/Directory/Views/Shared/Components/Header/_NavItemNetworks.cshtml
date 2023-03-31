@@ -1,0 +1,29 @@
+﻿@using System.Text.Json
+@using Biobanks.Directory.Constants
+@model Biobanks.Directory.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+  var networkRequestClaims = User.FindAll(CustomClaimType.NetworkRequest);
+  foreach (var network in networkRequestClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
+
+    <li>
+      <a href="@Url.Action("Create", "Profile", new { Area = "Network", networkId = data.Key, detailsIncomplete = true})">
+        <span class="fa fa-exclamation-circle labelled-icon red"></span>@(data.Value)
+      </a>
+    </li>
+  }
+ 
+  var networkClaims = User.FindAll(CustomClaimType.Network);
+  foreach (var network in networkClaims)
+  {
+    var data = JsonSerializer.Deserialize<KeyValuePair<int, string>>(network.Value);
+    <li>
+      <a href="@Url.Action("Biobanks", "Profile", new { Area = "Network", networkId = data.Key})">
+        <span class="fa fa-book labelled-icon"></span>@(data.Value)
+      </a>
+    </li>
+  }
+}

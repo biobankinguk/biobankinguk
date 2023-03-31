@@ -1,0 +1,14 @@
+@using Biobanks.Directory.Constants
+@model Biobanks.Directory.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+	if (User.IsInRole(Role.SuperUser))
+	{
+		<li>
+			<a href="@Url.Action("Index", "SuperUser", new { Area = "" })">
+				<span class="fa fa-user labelled-icon"></span>Super User
+			</a>
+		</li>
+	}
+}

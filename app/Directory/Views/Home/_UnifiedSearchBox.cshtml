@@ -1,0 +1,74 @@
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Home.HomepageContentModel
+
+@{
+    var siteProperties = _sitePropertiesOptions.Value;
+}
+
+@using (Html.BeginForm("Unified", "Search", null, FormMethod.Get))
+{
+
+    <div class="row">
+        <div class="col-lg-2">
+        </div>
+        <div class="col-lg-10">
+            <h2>@Model.SearchTitle</h2>
+        </div>
+
+        <div class="col-lg-2">
+            <div class="circle circle-blue">1</div>
+        </div>
+        <div class="col-lg-10">
+            @Model.SearchSubTitle
+            <div class="search-info row-buffer">
+                <fieldset>
+                    <legend class="sr-only">Search for</legend>
+                    <label class="radio-inline">
+                        <input type="radio" name="searchRadio" id="Collections" value="Collections" checked="checked">@Model.AccessExistingSamples
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="searchRadio" id="Capabilities" value="Capabilities"> @Model.RequireSamplesCollected
+                    </label>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <hr class="full" />
+
+
+    <div class="row row-buffer ">
+
+        <div class="col-lg-2">
+            <div class="circle circle-orange">2</div>
+        </div>
+        <div class="col-lg-10">
+            (Optional) Enter a disease term  <br />
+            See our <a href="@Url.Action("Index", "Term")">list of terms</a> or <a href="@siteProperties.ContactUsUrl">contact us</a> for help.
+            <div class="row-buffer">
+                @Html.TextBox(
+                  "ontologyTerm",
+                  "",
+                  new {
+                    @class = "form-control diagnosis-search",
+                    autocomplete = "off",
+                    placeholder = "Enter a disease term",
+                    title = "Search"
+                  })
+            </div>
+        </div>
+
+    </div>
+
+
+    <hr class="full" />
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="circle circle-black">3</div>
+        </div>
+        <div class="col-lg-10">
+            <button type="submit" class="submit btn btn-search">Search</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,22 @@
+@model Biobanks.Directory.Models.Account.AccountDetailsModel
+
+@{
+    ViewBag.Title = "Account details";
+}
+
+<h2>Account details @Html.ActionLink("Edit your account details", "Edit", "Account", null, new { @class = "btn btn-primary pull-right" })</h2>
+
+<dl class="dl-horizontal">
+    <dt class="form-group">
+        @Html.DisplayNameFor(x => x.Name)
+    </dt>
+    <dd>
+        @Html.DisplayFor(x => x.Name)
+    </dd>
+    <dt class="form-group">
+        @Html.DisplayNameFor(x => x.Email)
+    </dt>
+    <dd>
+        @Html.DisplayFor(x => x.Email)
+    </dd>
+</dl>

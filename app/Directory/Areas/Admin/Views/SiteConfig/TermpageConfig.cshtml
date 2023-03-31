@@ -1,0 +1,41 @@
+@model Biobanks.Directory.Models.Shared.TermPageModel
+
+@{
+    ViewBag.Title = "Term Page Config";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Term Page Config")
+
+<h3>
+    Term Page Configuration
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+    <label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+</h3>
+<div class="row">
+    <div class="col-md-12">
+        <br />
+        <form id="termpage-config-form" class="form-horizontal" method="post">
+            <input type="submit" id="submit-form" class="hidden" formaction="./SaveTermpageConfig" />
+            <input type="submit" id="preview-form" class="hidden" formaction="./TermpageConfigPreview" />
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="icon-button"></a>
+
+                    <!-- Term Page Description  -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Term Page Description</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="PageInfo" name="PageInfo" class="form-control mdd_editor">@Model.TermpageContentModel.PageInfo</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+}
+

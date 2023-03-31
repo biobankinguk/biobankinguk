@@ -1,0 +1,77 @@
+@using System.Linq
+@model Biobanks.Directory.Models.Profile.NetworkModel
+
+@{
+    ViewBag.Title = Model.Name;
+    ViewBag.WhiteBackground = true;
+}
+
+@{
+  var path = Context.Request.Path;
+  var query = Context.Request.QueryString;
+  var pathAndQuery = path + query;
+}
+
+@if (!string.IsNullOrEmpty(Model.Logo))
+{
+    <div class="col-sm-2 text-center">
+        <br />
+        <img src="@Url.Action("Index", "Logo", new {logoName = Model.Logo})" class="public-profile-logo" alt="@Model.Name" />
+    </div>
+}
+
+<div class="@(!string.IsNullOrEmpty(Model.Logo) ? "col-sm-10" : "col-sm-12")" itemscope itemtype="http://schema.org/Organization">
+    <h2>
+        @* TODO: we are assuming legalName = name; consider separation? *@
+        <span itemprop="name legalName">@Model.Name</span>
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <br />
+            <span class="small" itemprop="url">@Html.DisplayFor(x => x.Url)</span>
+        }
+    </h2>
+
+    @* schema.org/Bioschemas metadata that isn't useful to display to humans *@
+    <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+    <link itemprop="url" href="@pathAndQuery" />
+    <link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' TODO: for networks this may be different? *@
+    <meta itemprop="sameAs" content="@pathAndQuery" />
+    <meta itemprop="identifier" content="@Model.Id" />
+    <meta itemprop="status" content="active" />
+    <meta itemprop="type" content="consortium" /> @* TODO: all networks are presumaly consirtiums but also maybe other things? *@
+    @if (!string.IsNullOrEmpty(Model.Logo))
+    {
+        <link itemprop="logo" href="@Model.Logo" />
+    }
+
+    <p class="description" itemprop="description">@Model.Description</p>
+
+    <dl class="dl-horizontal dt-left">
+        <dt>@Html.DisplayNameFor(x => x.ContactEmail)</dt>
+        <dd itemprop="email">@Html.DisplayFor(x => x.ContactEmail)</dd>
+
+        <dt>@Html.DisplayNameFor(x => x.SopStatus)</dt>
+        <dd>@Html.DisplayFor(x => x.SopStatus)</dd>
+    </dl>
+
+    @* TODO: is it hasMember or ??? *@
+    @if (Model.BiobankMembers.Any())
+    {
+        <h4>Biobanks in this network</h4>
+        <ul>
+            @foreach (var biobank in Model.BiobankMembers)
+            {
+            <li>
+                <a href="@Url.Action("Biobank", "Profile", new {id = biobank.ExternalId})">@biobank.Name</a>
+                <link itemprop="rdf:type" href="https://bioschemas.org/devSpecs/Organization" />
+                <link itemprop="url" href="@Url.Action("Biobank", "Profile", new {id = biobank.ExternalId})" />
+                <link itemprop="topic" href="http://edamontology.org/topic_2229"> @* 'Cell biology' *@
+                <meta itemprop="sameAs" content="@Url.Action("Biobank", "Profile", new {id = biobank.ExternalId})" />
+                <meta itemprop="identifier" content="@biobank.ExternalId" />
+                <meta itemprop="status" content="active" />
+            </li>
+            }
+        </ul>
+    }
+</div>
+

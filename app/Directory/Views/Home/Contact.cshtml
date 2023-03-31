@@ -1,0 +1,149 @@
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+@inject IConfigService _config
+
+
+@{
+    ViewBag.Title = "Contact Biobanks";
+    var siteProperties = _sitePropertiesOptions.Value;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@*@foreach (var biobank in Model.Contacts)
+    {
+        <p>@biobank.BiobankName (@biobank.ContactEmail)</p>
+    }*@
+
+<div class="row">
+    <div class="col-sm-12">
+        <h4>
+            <button id="btn-clear-list" class="btn btn-danger pull-right delete-confirm">
+                <span class="fa fa-trash-o labelled-icon"></span> Clear my list
+            </button>
+        </h4>
+    </div>
+</div>
+
+<div class="row list-div">
+    <div class="col-sm-7" style="padding-right:5px">
+        <div class="list-panel">
+            <div id="home-contactlist" style="padding-top:10px"></div>
+        </div>
+    </div>
+    <div class="col-sm-5" style="padding-left:5px">
+        <!-- Email me List -->
+        <form id="email-contactlist-form" class="form-horizontal">
+            <div class="contact-boxes">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Email Address -->
+                        <div class=" panel-default">
+                            <div class="panel-heading">
+                                Email me the list
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            @*panel body*@
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label required">Email</label>
+                                <div class="col-sm-8">
+                                    <input type="email" id="Email" name="Email" class="form-control" required="required"
+                                           maxlength="50">
+                                </div>
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-group">
+                                <div class="col-sm-offset-1 col-sm-11 checkbox">
+                                    <label>
+                                        <input type="checkbox" id="contactMe" name="contactMe">
+                                        I am happy to be contacted to find out if any biobanks are able to help
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Submit-->
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-8">
+                                    <button type="submit" class="col-sm-12 btn btn-primary">
+                                        <i class="fa fa-refresh fa-spin fa-fw hidden"></i>
+                                        <span data-active-text="Sending" data-inactive-text="Send">Send</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Contact Third Party (Initally Hidden) -->
+        <div class="contact-boxes">
+            <div id="contact-third-party" class="row hidden">
+                <div class="col-sm-12">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            Contact via third party
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        @*panel body*@
+                        <p>
+                            The following links represent third-parties that can assist you in making contact with the @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName).
+                            These are not services we operate but we have facilitated a smooth handover into these systems.
+                        </p>
+                    </div>
+                    <div id="third-parties" class="col-sm-12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- External Site Modal -->
+<div class="modal fade" id="external-site-modal" tabindex="-1" role="dialog" aria-labelledby="external-site-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">External Website Link</h4>
+            </div>
+
+            <!-- Modal Message -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>
+                            You are being directed to websites and transaction platforms whose content is outside of our control. The inclusion of links on these pages in no way constitutes an endorsement or recommendation by @siteProperties.LegalEntity of the content or services provided through them.
+                        </p>
+                        <p>
+                            <b>We strongly recommend you undertake your own research and due diligence before using the services on any website or platform.</b>
+                        </p>
+                        <p>
+                            @siteProperties.LegalEntity is (to the extent permitted by law) in no way responsible or liable for any loss or damage, direct or consequential, resulting from your use of services or information provided by the providers of these linked websites.
+                        </p>
+                        <p>
+                            You confirm that by proceeding, that you will hold the @siteProperties.LegalEntity harmless from any claim arising from your use of the third party websites, platforms or other services.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <form id="modal-external-site-form" class="form-horizontal">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Home/contact.min.js" asp-append-version="true"></script>
+}

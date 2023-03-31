@@ -1,0 +1,45 @@
+@model Biobanks.Directory.Areas.Admin.Models.Biobanks.BiobankModel;
+
+@{
+  ViewBag.Title = "ADAC Admin";
+}
+
+<h3>Delete Biobank - @Model.Name</h3>
+
+<div class="alert alert-warning feedback-message">
+  <p>Warning: Please read the following carefully before proceeding!</p>
+</div>
+
+<p>This action is permanent and cannot be reversed. If you continue, the following data will be permanently deleted for Biobank '@Model.Name': </p>
+<ul>
+  <li>The Biobank profile</li>
+  <li>Any associated collections</li>
+  <li>Any associated capabilities</li>
+  <li>The data associating the biobank with existing networks, users, service offerings, and funders</li>
+</ul>
+<p>
+  Please type the name of the Biobank to confirm:
+</p>
+@using (Html.BeginForm("DeleteBiobank", "Biobanks",
+  FormMethod.Post,
+  new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+
+  @Html.HiddenFor(x => x.BiobankId)
+  <div class="form-group">
+    <div class="col-sm-4">
+      <input class="delete-confirm-input form-control" data-confirmtext="@Model.Name" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-4">
+      <input type="submit" class="confirm-delete-button btn btn-primary btn-danger" disabled="disabled" />
+    </div>
+  </div>
+}
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/deletebiobank.min.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,20 @@
+@inject IOptions<SitePropertiesOptions> _config
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.NewBiobankNetworkRegistrationNotificationModel
+@{
+  var directoryName = @_config.Value.ServiceName;
+  
+  // Format Email Subject
+  ViewBag.Subject = "Network Registration Request";
+}
+
+Dear @Html.Raw(Model.biobankName),
+
+You've been invited to join @Html.Raw(Model.networkName) at the @directoryName.
+
+If you are happy to join this network, please use this link below to go to your biobank admin section to approve this.
+
+@Html.Raw(Model.link)
+
+Regards,
+@_config.Value.EmailSignature

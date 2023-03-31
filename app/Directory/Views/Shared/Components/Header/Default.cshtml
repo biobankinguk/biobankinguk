@@ -1,0 +1,75 @@
+@using Biobanks.Directory.Constants
+@model Biobanks.Directory.Models.Header.HeaderModel
+
+@{
+    bool organisationRequests = false;
+    if (User.Identity.IsAuthenticated)
+    {
+        // Check for active requests
+        var biobankRequests = User.FindAll(CustomClaimType.BiobankRequest);
+        var networkRequests = User.FindAll(CustomClaimType.NetworkRequest);
+        organisationRequests = biobankRequests.Any() || networkRequests.Any();
+    }
+}
+
+<!-- START Display Upgrade Message for IE 10 or Less -->
+<!-- [if lte IE 9]>
+<div style="background: #000; text-align: center; position: absolute; top: 0px; width: 100%; color: #FFF;">This website may not be compatible with your outdated Internet Explorer version. <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie" target="_blank" style="color: #fff; text-decoration: underline;">Please upgrade here.</a></div>
+<![endif]-->
+<script>
+    // IF THE BROWSER IS INTERNET EXPLORER 10
+    if (navigator.appVersion.indexOf("MSIE 10") !== -1) {
+        document.write(
+            '<div style = "background: #000; text-align: center; position: absolute; top: 0px; width: 100%; color: #FFF;">' +
+            'This website may not be compatible with your outdated Internet Explorer version. ' +
+            '<a href = "http://windows.microsoft.com/en-us/internet-explorer/download-ie" target = "_blank" style = "color: #fff; text-decoration: underline;">' +
+            'Please upgrade here.</a></div>');
+    }
+                // ]]></script>
+<!-- END Display Upgrade Message for IE 10 or Less -->
+
+<nav class="navbar navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header row">
+
+            <!-- Header Logo -->
+            <div class="navbar-logo col-md-2 col-lg-2">
+                <a href="/" class="logo">
+                    <img src="@Url.Content(Model.Logo.Src)" alt="@Model.Logo.Title" />
+                </a>
+
+                @if (!string.IsNullOrEmpty(Model.Link.Title))
+                {
+                    <a class="link" href="@Model.Link.Url">@Model.Link.Title</a>
+                }
+            </div>
+
+            <!-- Collapsed Menu Buttons -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- Navigation -->
+            <div class="navbar-collapse-container">
+              <div id="myNavbar" class="navbar-collapse collapse">
+
+                  <ul class="nav navbar-nav">
+                      @if (organisationRequests)
+                      {
+                        <span class="fa fa-exclamation-circle labelled-icon red" style="margin-right: -160px; z-index:100"></span>
+                      }
+                      <partial name="_NavMenu.cshtml" for="NavigationItems"/>
+                  </ul>
+  
+                  <ul class="nav navbar-nav">
+                      <partial name="_NavMenu.cshtml"
+                          for="NavigationItems"
+                          view-data="@(new ViewDataDictionary(ViewData) { { "Toolbar", true } })"/>
+                  </ul>
+              </div>
+            </div>
+        </div>
+    </div>
+</nav>

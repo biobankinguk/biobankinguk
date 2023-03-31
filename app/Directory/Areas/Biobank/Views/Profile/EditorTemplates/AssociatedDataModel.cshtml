@@ -1,0 +1,25 @@
+@model Biobanks.Directory.Models.Shared.AssociatedDataModel
+    
+<tr class="@(Model.isLinked == true ? "linked-data" : "")" data-groupid="@Model.DataGroupId">
+  <td>
+    <div class="checkbox">
+      <span data-message="@Model.Message" data-title="@Model.DataTypeDescription" class="fa fa-info-circle help-icon-button help-associateddata"></span>
+      <label>
+        @Html.CheckBoxFor(x => x.Active, new { @class = "ass-dat-chk" })
+        @Html.DisplayFor(x => x.DataTypeDescription)
+      </label>
+      @Html.HiddenFor(x => x.DataTypeId)
+    </div>
+  </td>
+  <td>
+    <div class="radio">
+      @foreach (var tf in Model.TimeFrames)
+      {
+        <label class="timeFrames">
+          @Html.RadioButtonFor(x => x.ProvisionTimeId, tf.ProvisionTimeId, new { @class = "ass-dat-rad" })
+          @Html.DisplayFor(x => tf.ProvisionTimeValue)
+        </label>
+      }
+    </div>
+  </td>
+</tr>

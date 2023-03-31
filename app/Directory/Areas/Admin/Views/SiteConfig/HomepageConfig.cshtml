@@ -1,0 +1,92 @@
+@model Biobanks.Directory.Models.Home.HomepageContentModel
+@{
+	ViewBag.Title = "Homepage Config";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Homepage Config")
+
+<h3>
+	Homepage Configuration
+
+	<label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+	<label id="preview-button" for="preview-form" class="btn btn-primary pull-right pull-right-space">Preview</label>
+</h3>
+
+<div class="row">
+	<div class="col-md-12">
+		<br />
+
+		<form id="homepage-config-form" class="form-horizontal" method="post">
+			<input type="submit" id="submit-form" class="hidden" formaction="./SaveHomepageConfig"/>
+			<input type="submit" id="preview-form" class="hidden" formaction="./HomepageConfigPreview" />
+
+			<div class="row">
+                <div class="col-md-12">
+
+                    <a class="icon-button"></a>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="Title" name="Title" class="form-control" value="@Model.Title">
+                        </div>
+                    </div>
+
+                    <!-- Search Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Search Title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="SearchTitle" name="SearchTitle" class="form-control" value="@Model.SearchTitle">
+                        </div>
+                    </div>
+
+                    <!-- Search Sub-title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Search Sub-title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="SearchSubTitle" name="SearchSubTitle" class="form-control" value="@Model.SearchSubTitle">
+                        </div>
+                    </div>
+
+                    <!-- Access existing samples Radio Button -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Access existing samples</label>
+                        <div class="col-md-10">
+                            <input type="text" id="AccessExistingSamples" name="AccessExistingSamples" class="form-control" value="@Model.AccessExistingSamples">
+                        </div>
+                    </div>
+
+                    <!-- Require Samples Collected Radio Button -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Require samples collected</label>
+                        <div class="col-md-10">
+                            <input type="text" id="RequireSamplesCollected" name="RequireSamplesCollected" class="form-control" value="@Model.RequireSamplesCollected">
+                        </div>
+                    </div>
+
+                    <!-- Resource Registration  -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Resource Registration</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="ResourceRegistration" name="ResourceRegistration" class="form-control mdd_editor">@Model.ResourceRegistration</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Network Registration  -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Network Registration</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="NetworkRegistration" name="NetworkRegistration" class="form-control mdd_editor">@Model.NetworkRegistration</textarea>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+}

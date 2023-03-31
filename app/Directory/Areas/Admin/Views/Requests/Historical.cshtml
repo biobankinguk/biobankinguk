@@ -1,0 +1,103 @@
+@using System.Linq
+@using Microsoft.AspNetCore.Http.Extensions
+
+@model Biobanks.Directory.Areas.Admin.Models.Requests.HistoricalModel;
+
+@{
+    ViewBag.Title = "ADAC Admin";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Historical")
+
+<h3>Request History</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (@Model.HistoricalRequests.Any())
+        {
+            <table id="adac-request-history" class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Requesting Org Name</th>
+                    <th>Action</th>
+                    <th>Date & Time</th>
+                    <th>Profile</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var request in Model.HistoricalRequests)
+                {
+					<tr class="@Html.Raw(request.Action == "Accepted" ? "success" : "danger")">
+						<td>
+							@request.UserName
+						</td>
+						<td>
+							@request.UserEmail
+						</td>
+						<td>
+							@request.EntityName
+						</td>
+						<td>
+							@request.Action
+						</td>
+						<td>
+							@request.Date
+						</td>
+
+
+						@if (!string.IsNullOrWhiteSpace(request.ResultingOrgExternalId))
+						{
+							<!-- Accepted Biobank -->
+							<td>
+								<a href="@Url.Action("Biobank", "Profile", new { id = request.ResultingOrgExternalId })">
+									<span class="fa fa-user labelled-icon"></span>Profile
+								</a>
+							</td>
+							<td></td>
+						}
+						else if (request.Action == "Accepted" && !request.UserEmailConfirmed)
+						{
+							<!-- Accepted Biobank - User Not Confirmed Email -->
+							<td>
+								<a class="manual-confirm"
+								   href="@Url.Action("ManualActivation", "Requests")"
+								   data-admin-name="@request.UserName"
+								   data-admin-email="@request.UserEmail">
+									<span class="fa fa-bolt labelled-icon"></span>Activate
+								</a>
+							</td>
+							<td>
+								<a class="resend-confirm"
+								   href="@Url.Action("ResendConfirmLink", "Account", new { Area = "", userEmail = request.UserEmail, onBehalf = true, returnUrl = @Context.Request.GetEncodedUrl() })"
+								   data-admin-name="@request.UserName"
+								   data-admin-email="@request.UserEmail">
+									<span class="fa fa-repeat labelled-icon"></span>Resend
+								</a>
+							</td>
+						}
+						else
+						{
+							<td></td>
+							<td></td>
+						}
+					</tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There is no historical request data available yet.
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Admin/historical.min.js" asp-append-version="true"></script>
+}

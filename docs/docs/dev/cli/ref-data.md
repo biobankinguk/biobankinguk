@@ -16,4 +16,4 @@ Seed Reference Data into empty tables from provided JSON files.
 
 Seed the base `sample-seed-data`.
 
-- `ref-data seed -d ../../../sample-seed-data`
+- `ref-data seed -d ../../sample-seed-data`

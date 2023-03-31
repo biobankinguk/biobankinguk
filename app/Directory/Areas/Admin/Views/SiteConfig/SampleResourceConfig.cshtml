@@ -1,0 +1,66 @@
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model IEnumerable<Biobanks.Directory.Models.Shared.SiteConfigModel>
+
+@{
+    ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Config";
+}
+
+@await Html.PartialAsync("_ADACTabs", await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " Config")
+
+<h3>
+    @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) Configuration
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+
+        <form id="sample-resource-config-form">
+            <table id="sample-resource-config" class="table table-striped table-fixed">
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Description</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var config in Model.Where(x => !x.ReadOnly))
+                    {
+                        <tr>
+                            <td>@config.Name</td>
+                            <td>@config.Description</td>
+                            <td>
+                                @switch (config.Key)
+                                {
+                                    // Checkbox boolean
+                                    case ConfigKey.EnableDataSharing:
+                                    case ConfigKey.EthicsFieldIsCheckbox:
+                                        <input type="checkbox" name="@config.Key" value="@config.Value" @Html.Raw(config.ReadOnly ? "disabled" : "") /> break;
+
+                                    // Default free text
+                                    case ConfigKey.SampleResourceName:
+                                    case ConfigKey.EthicsFieldName:
+
+                                    default:
+                                        <input type="text" name="@config.Key" value="@config.Value" class="form-control" @Html.Raw(config.ReadOnly ? "disabled" : "") style="width:100%" />break;
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <input type="submit" id="submit-form" class="hidden" />
+        </form>
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/sample-resource-config.min.js" asp-append-version="true"></script>
+}

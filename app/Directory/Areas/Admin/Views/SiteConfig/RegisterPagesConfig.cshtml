@@ -1,0 +1,104 @@
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Admin.Models.SiteConfig.RegisterConfigModel
+@{
+    ViewBag.Title = "Register Pages Config";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Register Pages Config")
+
+<style>
+    .networkTitle {
+        padding-top: 20px;
+        padding-bottom: 15px;
+    }
+</style>
+
+<h3>
+    Register @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) Configuration
+
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <br />
+
+        <form id="register-config-form" class="form-horizontal" method="post">
+            <input type="submit" id="submit-form" class="hidden" formaction="./SaveRegisterPagesConfig" />
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <a class="icon-button"></a>
+
+                    <!-- Biobank Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="BiobankTitle" name="BiobankTitle" class="form-control" value="@Model.BiobankTitle">
+                        </div>
+                    </div>
+                    <!-- Biobank Description -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) description</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="BiobankDescription" name="BiobankDescription" class="form-control mdd_editor">@Model.BiobankDescription</textarea>
+                        </div>
+                    </div>
+                    <h3 class="networkTitle">
+                        Register Network Configuration
+                    </h3>
+
+                    <!-- Network Title -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Register Network page title</label>
+                        <div class="col-md-10">
+                            <input type="text" id="NetworkTitle" name="NetworkTitle" class="form-control" value="@Model.NetworkTitle">
+                        </div>
+                    </div>
+                    <!-- Network Description -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Network description</label>
+                        <div class="col-md-10">
+                            <textarea cols=50 rows=8 id="NetworkDescription" name="NetworkDescription" class="form-control mdd_editor">@Model.NetworkDescription</textarea>
+                        </div>
+                    </div>
+
+                    <h3>
+                        Shared Configuration
+                    </h3>
+                    <br />
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Enable Registration Emails</label>
+                        <div class="col-md-3">
+                            <input type="checkbox" id="RegistrationEmails" name="RegistrationEmails" value="@Model.RegistrationEmails">
+                        </div>
+                    </div>
+                    <!-- Registration Help Url -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Enable Registration Help Url</label>
+                        <div class="col-md-3">
+                            <input type="checkbox" id="EnableRegistrationHelpUrl" name="EnableRegistrationHelpUrl" value="@Model.EnableRegistrationHelpUrl">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Registration Help Url</label>
+                        <div class="col-md-10">
+                            <input type="text" id="RegistrationHelpUrl" name="RegistrationHelpUrl" class="form-control" value="@Model.RegistrationHelpUrl">
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/markdown-editor.min.js" asp-append-version="true"></script>
+  <script src="~/dist/js/Admin/register-pages-config.min.js" asp-append-version="true"></script>
+}

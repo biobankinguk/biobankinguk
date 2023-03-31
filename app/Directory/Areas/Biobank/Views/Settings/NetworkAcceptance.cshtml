@@ -1,0 +1,74 @@
+@model Biobanks.Directory.Areas.Biobank.Models.Settings.AcceptanceModel
+
+@{
+    ViewBag.Title = "Network Acceptance";
+}
+
+@await Html.PartialAsync("_BiobankTabs", "Network Acceptance")
+
+<h3>Biobanks</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (Model.NetworkRequests.Any())
+        {
+            <table id="accept-network" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Network</th>
+                        <th>Description</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var bbRequest in Model.NetworkRequests)
+                    {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(bbRequest.NetworkName, "Network", "Profile", new { Area = "Network", id = bbRequest.NetworkId }, null)
+                        </td>
+                        <td>
+                            @bbRequest.NetworkDescription
+                        </td>
+                        <td>
+                            @bbRequest.NetworkEmail
+                        </td>
+
+                        <td class="text-right">
+                            &nbsp;&nbsp;&nbsp;
+                            @if (bbRequest.ApprovedDate == null)
+                            {
+                                <a href="@Url.Action("AcceptNetworkRequest", new { biobankId = bbRequest.BiobankId, networkId = bbRequest.NetworkId})"
+                                   class="confirm-accept"
+                                   data-network-name="@bbRequest.NetworkName"><span class="fa fa-check labelled-icon"></span>Accept</a>
+                            }
+                            else
+                            {
+                                <h>Approved</h>
+                            }
+
+                        </td>
+                      
+                    </tr>
+
+
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are no Biobank Network Requests requiring action at the moment.
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Biobank/networkaccept.min.js" asp-append-version="true"></script>
+}

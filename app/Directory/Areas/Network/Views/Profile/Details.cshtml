@@ -1,0 +1,40 @@
+@model Biobanks.Directory.Areas.Network.Models.Profile.NetworkDetailsModel
+
+@{
+    ViewBag.Title = "Network details";
+}
+
+@await Html.PartialAsync("_NetworkTabs", "Details")
+
+<h3>Network details @Html.ActionLink("Edit network details", "Edit", null, new { networkId = Model.NetworkId}, new { @class = "btn btn-primary pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br/>
+        <dl class="dl-horizontal">
+            <dt class="form-group">@Html.DisplayNameFor(x => x.NetworkName)</dt>
+            <dd>@Html.DisplayFor(x => x.NetworkName)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.Description)</dt>
+            <dd class="description">@Html.DisplayFor(x => x.Description)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.Url)</dt>
+            <dd>@Html.DisplayFor(x => x.Url)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.ContactEmail)</dt>
+            <dd>@Html.DisplayFor(x => x.ContactEmail)</dd>
+
+            @if (!string.IsNullOrEmpty(Model.LogoName))
+            {
+
+                <dt class="form-group">@Html.DisplayNameFor(x => x.Logo)</dt>
+                <dd class="padded-logo">
+                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new { Area = "", logoName = Model.LogoName })"/>
+                </dd>
+            }
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.SopStatus)</dt>
+            <dd>@Html.DisplayFor(x => x.SopStatusDescription)</dd>
+        </dl>
+    </div>
+</div>

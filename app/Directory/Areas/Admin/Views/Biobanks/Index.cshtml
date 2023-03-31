@@ -1,0 +1,64 @@
+@model Biobanks.Directory.Areas.Admin.Models.Biobanks.BiobanksModel;
+
+@{
+    ViewBag.Title = "Directory Admin";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Biobanks")
+
+<h3>Biobanks @Html.ActionLink("Invite a new biobank", "AdacBiobank", "Register", new { Area = "" }, new { @class = "btn btn-success pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br/>
+        @if (@Model.Biobanks.Any())
+        {
+            <table id="adac-biobanks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Biobank</th>
+                    <th>Contact Email</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach (var biobank in Model.Biobanks)
+                {
+                    <tr class="@(biobank.IsSuspended ? "danger" : "")">
+                        <td class="vtop">
+                            @Html.ActionLink(@biobank.Name, "Biobank", "Profile", new { Area = "", id=biobank.BiobankExternalId }, null)
+                        </td>
+                        <td class="vtop">
+                            <a href="mailto:@biobank.ContactEmail">@biobank.ContactEmail</a>
+                        </td>
+                        <td class="vtop">
+                          @(biobank.IsSuspended ? "Suspended" : "Active")
+                        </td>
+                        <td>
+                            <a href="@Url.Action("BiobankAdmin", "Biobanks", new { Area = "Admin", id = biobank.BiobankId })">
+                                <span class="fa fa-tools labelled-icon"></span>Admin
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are currently no Biobanks in the directory.
+                @Html.ActionLink("Invite a new Biobank now", "AdacBiobank", "Register", new { Area = "" })
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/biobank.min.js" asp-append-version="true"></script>
+  
+}

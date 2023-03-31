@@ -1,0 +1,46 @@
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Shared.AbstractCRUDWithAssociatedDataModel
+
+<div class="col-sm-offset-1 col-sm-10">
+    <h4>Associated data <span class="fa fa-info-circle help-icon-button help-icon-for-label help-label-associateddata"></span></h4>
+</div>
+<div class="row">
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            @if(await _config.GetSiteConfigValue(ConfigKey.CollectionsNotes) != "false")
+            {
+              <label for="notesText">Notes (NTD Only)  <a style="color: black; text-decoration: none;" class="fa fa-info-circle help-icon-button" target="_blank" href="@Url.Action("NTD", "Pages")"></a></label>
+                <textarea class="form-control" id="Notes" name="Notes" rows="3"></textarea>
+            }
+        <table id="Groups" class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Data type</th>
+                    <th colspan="4">Provision time (months)</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+            <tr id="busy-holder" style="display: none">
+              <td id="busy" colspan="5">
+                Loading Related data...
+              </td>
+            </tr>
+            @for (int i = 0; i < Model.Groups.Count(); i++)
+            {
+                <tr class="@Model.Groups[i].GroupId"><td colspan="5" class="info" >@Html.Raw(Model.Groups[i].Name)</td></tr>
+                for (int j = 0; j < Model.Groups[i].Types.Count(); j++)
+                {
+                    @Html.EditorFor(x => Model.Groups[i].Types[j])
+                }
+            }
+
+            </tbody>
+        </table>
+            @Html.ValidationMessageFor(x => x.Groups)
+        </div>
+    </div>
+</div>

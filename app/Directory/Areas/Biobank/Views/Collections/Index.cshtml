@@ -1,0 +1,74 @@
+@using System.Linq
+@model Biobanks.Directory.Areas.Biobank.Models.Collections.BiobankCollectionsModel
+@{
+	ViewBag.Title = "Collections";
+}
+@await Html.PartialAsync("_BiobankTabs", "Collections")
+
+<h3>
+	@ViewBag.Title
+	@Html.ActionLink("Add collection", "AddCollection", null, new { biobankId = ViewContext.RouteData.Values["biobankId"] }, new {@class = "btn btn-success pull-right"})
+</h3>
+
+
+<div class="row">
+	<div class="col-md-12">
+		<br />
+
+		@if (Model.BiobankCollectionModels.Any(x => x.NumberOfSampleSets == 0))
+		{
+			<div class="alert alert-info feedback-message" role="alert">
+				One or more of your collections are incomplete. These collections will not be visible to users when searching the directory!
+			</div>
+		}
+
+		@if (Model.BiobankCollectionModels.Any())
+		{
+			<table id="biobank-collections" class="table table-striped table-hover table-fixed">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Title</th>
+						<th>Disease status</th>
+						<th>Start Date</th>
+						<th>Material types</th>
+						<th>No. sample sets</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var collection in Model.BiobankCollectionModels)
+					{
+						<tr class="clickable-row" data-href="@Url.Action("Collection", new { Area = "Biobank", biobankId = ViewContext.RouteData.Values["biobankId"], @collection.Id})">
+
+							@* Flag Incomplete (Empty) Collections *@
+							<td>
+								@if (collection.NumberOfSampleSets == 0)
+								{
+									<i title="Collection is incomplete" class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size:1.2em"></i>
+								}
+							</td>
+
+							<td><div class="wrappable-td">@collection.Title</div></td>
+							<td>@collection.OntologyTerm</td>
+							<td>@collection.StartYear</td>
+							<td><div class="wrappable-td">@collection.MaterialTypes</div></td>
+							<td>@collection.NumberOfSampleSets</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		else
+		{
+			<div class="alert alert-info">
+				There are no collections here yet. A collection is the highest level of detail.
+				@Html.ActionLink("Add a collection now.", "AddCollection", new { biobankId = ViewContext.RouteData.Values["biobankId"]})
+			</div>
+		}
+	</div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Biobank/collections.min.js" asp-append-version="true"></script>
+}

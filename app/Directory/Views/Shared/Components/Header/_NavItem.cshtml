@@ -1,0 +1,38 @@
+﻿@model Biobanks.Directory.Models.Header.NavItemModel
+
+@switch (Model.Action ?? "")
+{
+    case "account":
+        <partial name="_NavItemAccount.cshtml" model="Model" /> break;
+
+    case "adac":
+        @* TODO: rename ADAC *@
+        <partial name="_NavItemAdac.cshtml" model="Model" /> break; 
+
+    case "superuser":
+        <partial name="_NavItemSuperUser.cshtml" model="Model" /> break;
+
+    case "biobanks":
+        <partial name="_NavItemBiobanks.cshtml" model="Model" /> break;
+
+    case "networks":
+        <partial name="_NavItemNetworks.cshtml" model="Model" /> break;
+
+    case "contact":
+        <partial name="_NavItemContact.cshtml" model="Model" /> break;
+
+    case "register_biobank":
+        <partial name="_NavItemRegisterBiobank.cshtml" model="Model" /> break;
+
+    case "register_network":
+        <partial name="_NavItemRegisterNetwork.cshtml" model="Model" /> break;
+
+    case "login":
+        <partial name="_NavItemLogin.cshtml" model="Model" /> break;
+
+    case "logout":
+        <partial name="_NavItemLogout.cshtml" model="Model" /> break;
+
+    default:
+        <partial name="_NavItemBasic.cshtml" model="Model" /> break;
+}

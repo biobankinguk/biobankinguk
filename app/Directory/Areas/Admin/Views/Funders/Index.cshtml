@@ -1,0 +1,124 @@
+@model IEnumerable<Biobanks.Directory.Areas.Admin.Models.Funders.FunderModel>
+
+@{
+    ViewBag.Title = "Funders";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Funders")
+
+<h3>
+    Manage Funders
+    <a href="#"
+       class="btn btn-success pull-right"
+       data-target="#funder-modal"
+       data-bind="click: openModalForAdd">Add funder</a>
+</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+        @if (@Model.Any())
+        {
+            <table id="adac-funders" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Funder Name</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var funder in Model)
+                    {
+                        <tr>
+                            <td class="vtop">@funder.Name</td>
+                            <td class="vtop">
+                                <a title="Edit"
+                                   class="action-icon"
+                                   href="#"
+                                   data-target="#funder-modal"
+                                   data-funder='@Json.Serialize(funder)'
+                                   data-bind="click: openModalForEdit">
+                                    <span class="fa fa-edit labelled-icon"></span>Edit
+                                </a>
+                            </td>
+                            <td>
+                              @Html.ActionLink("Delete", "DeleteFunder", "Funders", new {id = funder.FunderId}, new {@class = "btn btn-danger"})
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are currently no Funders in the directory.
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="funder-modal" tabindex="-1" role="dialog" aria-labelledby="funder-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="funder-modal-label"><span data-bind="text: modal.mode"></span> funder</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12" data-bind="visible: dialogErrors().length > 0">
+                    <div class="alert alert-danger"
+                         data-valmsg-summary="true"
+                         data-bind="foreach: dialogErrors">
+                        <p>
+                            <span class="fa fa-exclamation-triangle"></span>
+                            <span data-bind="text: $data"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="modal-funder-form"
+                  data-update-action="@Url.Action("EditFunderAjax")"
+                  data-update-success-redirect="@Url.Action("EditFunderSuccess")"
+                  data-add-action="@Url.Action("AddFunderAjax")"
+                  data-add-success-redirect="@Url.Action("AddFunderSuccess")"
+                  class="form-horizontal">
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="FunderId" name="FunderId" data-bind="value: modal.funder().funderId">
+
+                            <!-- Name field -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" id="Name" name="Name" class="form-control"
+                                           data-bind="value: modal.funder().name()">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/funders.min.js" asp-append-version="true"></script>
+}

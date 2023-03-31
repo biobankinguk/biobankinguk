@@ -1,0 +1,77 @@
+@using Microsoft.AspNetCore.Http.Extensions
+@model Biobanks.Directory.Areas.Admin.Models.Networks.NetworksModel;
+
+@{
+    ViewBag.Title = "ADAC Admin";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Networks")
+
+<h3>Networks @Html.ActionLink("Invite a new network", "AdacNetwork", "Register", new { Area = "" }, new { @class = "btn btn-success pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br/>
+        @if (Model.Networks.Any())
+        {
+            <table id="adac-networks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Network</th>
+                    <th>Admins</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach (var network in Model.Networks)
+                {
+                    <tr>
+                        <td class="vtop">
+                            @Html.ActionLink(@network.Name,"Network","Profile", new {Area = "", Id = @network.NetworkId})
+                        </td>
+                        <td>
+                            <ul class="list-unstyled">
+                                @foreach (var admin in network.Admins)
+                                {
+                                    <li>
+                                        <span class="fa fa-user labelled-icon"></span>@admin.UserEmail
+                                        @if (!admin.EmailConfirmed)
+                                        {
+                                            <a href="@Url.Action(
+                                                       "ResendConfirmLink", "Account",
+                                                       new
+                                                       {
+                                                         userEmail = admin.UserEmail,
+                                                         onBehalf = true,
+                                                         returnUrl = @Context.Request.GetEncodedUrl()
+                                                       })"
+                                               class="resend-confirm pull-right"
+                                               data-admin-name="@admin.UserFullName"
+                                               data-admin-email="@admin.UserEmail">
+                                                <span class="fa fa-repeat labelled-icon"></span>Resend Invite
+                                            </a>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are currently no Networks in the directory.
+                @Html.ActionLink("Invite a new Network now", "AdacNetwork", "Register", new { Area = "" })
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/networks.min.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,341 @@
+@inject IConfigService _config
+
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Admin.Models.Analytics.DirectoryAnalyticReport
+
+@{
+    ViewBag.Title = "Analytics";
+    var sampleResourceName = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName);
+}
+
+@await Html.PartialAsync("_ADACTabs", "Analytics")
+
+@* Report Header *@
+<h1>TDCC Analytics Report</h1>
+
+@using (Html.BeginForm("Index", "Analytics", FormMethod.Post, new { @class = "form-horizontal col-sm-10" }))
+{
+    <div class="form-group">
+        <label for="Year" class="col-sm-4 control-label required">
+            Year
+        </label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.Year, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Year the reporting period should end"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="EndQuarter" class="col-sm-4 control-label required">
+            End Quarter
+        </label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.EndQuarter, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Quarter in which the reporting period should end"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ReportPeriod" class="col-sm-4 control-label required">
+            Report Period
+        </label>
+        <div class="col-sm-7">
+            @Html.TextBoxFor(x => x.ReportPeriod, new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <div class="col-sm-1">
+            <span class="fa fa-info-circle labelled-icon" data-toggle="tooltip" data-placement="right" title="Number of quarters the reports should cover"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-center">
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </div>
+    </div>
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-warning">
+                Problem encountered while retrieving analytics data:
+                @(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.Exception?.Message ?? "Unknown error")
+            </div>
+        }
+        else if (Model.IsNullOrEmpty())
+        {
+            <div class="alert alert-info">
+                There are no analytics data for the given period. Analytics data are updated quarterly. Please check again later.
+            </div>
+        }
+        else
+        {
+            @* Header *@
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p><i>This report summarises the UKCRC Tissue Directory's performance</i></p>
+                    </div>
+                </div>
+            </div>
+
+            @* Overall Stats *@
+            @* Maybe better to seperate sections into partial views? *@
+            <h2>Tissue Directory Overall Stats</h2>
+            <p><i>This section summarises key statistics for the Tissue Directory over all user sessions observed in the report period.</i></p>
+
+            <div>
+                <div class="row">
+                    @* Total Number of Sessions *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Total Number of Sessions</strong></h3>
+                        <p>This graph shows the total number of user sessions accessing the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-SessionNumber" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Average Bouncerate *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Bouncerate</strong></h3>
+                        <p>This graph shows the average bounce rate of users accessing the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgBounceRate" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @* Average Ratio of New Sessions *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Ratio of New Sessions</strong></h3>
+                        <p>This graph shows the average percentage of new sessions of users accessing the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgNewSession" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Average Session Duration *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Session Duration</strong></h3>
+                        <p>This graph shows the average session duration across all sessions on the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgSessionDuration" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            @* Tissue Directory Stats Related to Searches *@
+            @* Maybe better to seperate sections into partial views? *@
+            <h2>Tissue Directory Stats Related to Searches</h2>
+            <p><i>This section summarises key statistics for the Tissue Directory for user sessions where at least one Tissue Directory search was carried out.</i></p>
+
+            <div>
+                <div class="row">
+                    @* Number of Sessions with Search Activity*@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Number of Sessions with Search Activity</strong></h3>
+                        <p>This graph shows the total number of user sessions accessing and performing searches on the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-SessionNumberSearch" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Average Bouncerate (Search)*@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Bouncerate (Search)</strong></h3>
+                        <p>This graph shows the average bounce rate of users accessing and searching the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgBounceRateSearch" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @* Average Ratio of New Sessions (Search) *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Ratio of New Sessions (Search)</strong></h3>
+                        <p>This graph shows the average percentage of new sessions out of all the sessions where users have seaerched the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgNewSessionSearch" class="col-sm-10 boxplot"></div>
+                    </div>
+                    @* Average Session Duration (Search) *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Average Session Duration (Search)</strong></h3>
+                        <p>This graph shows the average session duration for sessions where users performed searches on the Tissue Directory Website.</p>
+                        <br />
+                        <div id="plotly-AvgSessionDurationSearch" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            @* Tissue Directory Search Characteristics *@
+            @* Maybe better to seperate sections into partial views? *@
+            <h2>Tissue Directory Search Characteristics</h2>
+            <p><i>This section gives information on how users searched the Directory in the past two years.</i></p>
+
+            <div>
+                <div class="row">
+                    @* Search types *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Search Types</strong></h3>
+                        <p>
+                            This graph gives a breakdown of what type of search users performed on the directory that led to viewing a biobanks collection. <br /><br />
+
+                            <strong>Diagnosis</strong>: Searches where a diagnosis search term was entered. Includes any combination of search filters that were set. <br /><br />
+
+                            <strong>Filters</strong>: Searches where no diagnosis search term was entered, but the list of results was refined using at least one of the search filters. <br /><br />
+
+                            <strong>No specific search</strong>: Searches where no diagnosis search term was specified and no filters were applied. <br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchTypes" class="col-sm-10 barplot"></div>
+                    </div>
+
+                    @* Search Filters *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Search Filters</strong></h3>
+                        <p>
+                            This graph gives a breakdown of most commonly used search filters. <br /><br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchFilters" class="col-sm-10 barplot"></div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    @* Diagnosis Search Terms *@
+                    <div class="col-sm-12">
+                        <br />
+                        <h3><strong>Diagnosis Search Terms</strong></h3>
+                        <p>
+                            This graph gives a breakdown of diagnosis terms that users have searched for. <br /><br />
+                        </p>
+                        <br />
+                        <div id="plotly-SearchTerms" class=" col-sm-offset-1 col-sm-10 pieplot"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            @* Tissue Directory Stats Related to Events *@
+            @* Maybe better to seperate sections into partial views? *@
+            <h2>Tissue Directory Stats Related to Events</h2>
+            <p><i>This section summarises the Directory performance regarding specific user actions or 'events'.</i></p>
+
+            <div>
+                <div class="row">
+                    @* Number of Sample Resource Contact Detail Requests (All Sessions) *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Number of @sampleResourceName Contact Detail Requests (All Sessions)</strong></h3>
+                        <p>
+                            This graph shows the number of times users have requested contact details of at least one registered @sampleResourceName in the Directory using the built-in contact list functionality.
+                        </p>
+                        <br />
+                        <div id="plotly-ContactCount" class="col-sm-10 boxplot"></div>
+                    </div>
+
+                    @* Number of Sample Resource Contact Detail Requests (Filtered by date and location) *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Number of @sampleResourceName Contact Detail Requests (Filtered by date and location)</strong></h3>
+                        <p>
+                            This graph shows the number of times users have requested contact details of at least one registered @sampleResourceName in the Directory using the built-in contact list functionality. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
+                        </p>
+                        <br />
+                        <div id="plotly-FilteredContactCount" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @* Number of Mailto User Actions (Filtered by date and location) *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>Number of Mailto User Actions (Filtered by date and location)</strong></h3>
+                        <p>
+                            This graph shows the number of times users have used the built-in mailing functionality of the Directory to contact @sampleResourceName by clicking on the mailto link. Abnormally large event groups that originated from the same location on a particular day have been excluded from this graph (current threshold: @Model.EventsPerCityThreshold).
+                        </p>
+                        <br />
+                        <div id="plotly-FilteredMailToCount" class="col-sm-10 boxplot"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            @* Profile Page Statistics *@
+            @* Maybe better to seperate sections into partial views? *@
+            <h2>Profile Page Statistics</h2>
+            <p><i>This section summarises information around the @sampleResourceName profile pages on the Directory.</i></p>
+            <div>
+                <div class="row">
+                    @* Sample Resource Profile Pages *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>@sampleResourceName Profile Pages</strong></h3>
+                        <p>This table shows the most common sources that led to users viewing resource profile pages on the Directory.</p>
+                        <br />
+                        <table id="profile-sources" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Count</th>
+                                    <th>% of Total</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @foreach (var row in Model.ProfilePageStats.ProfileSources)
+                                {
+                                    <tr>
+                                        <td>@row.Source</td>
+                                        <td>@row.Count</td>
+                                        <td>@Math.Round(row.Percentage, 2)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @* Sample Resource Profile Pages *@
+                    <div class="col-sm-6">
+                        <br />
+                        <h3><strong>@sampleResourceName Profile Pages</strong></h3>
+                        <p>
+                            This graph gives a breakdown of how users reach @sampleResourceName profile pages from within the Directory Webpages.
+                        </p>
+                        <br />
+                        <div id="plotly-ProfileRoute" class="col-sm-10 barplot"></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        }
+
+    </div>
+</div>
+
+
+@* Plotly Model *@
+<script>
+    var plotlyAnalytics = @(Html.Raw(Json.Serialize(Model)));
+</script>
+@* Test Plotly *@
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Analytics/directoryreport.min.js"></script>
+}

@@ -1,0 +1,42 @@
+@model Biobanks.Directory.Models.Shared.TermPageModel
+
+<style>
+    .navbar-fixed-top {
+        top: 50px;
+    }
+
+    .top-padding {
+        margin-top: 50px;
+    }
+
+    .container {
+        padding-top: 25px;
+    }
+        
+</style>
+
+<div class="preview-message">
+    <h4>
+        Termpage Preview
+    </h4>
+
+    <label id="submit-button" for="submit-form" class="btn btn-success pull-right">Save Changes</label>
+    <label id="preview-button" for="edit-form" class="btn btn-primary pull-right pull-right-space">Edit</label>
+
+
+    @using (Html.BeginForm("SaveTermpageConfig", "SiteConfig", Model.TermpageContentModel, FormMethod.Post))
+    {
+        <input id="submit-form" type="submit" class="hidden" />
+    }
+    @using (Html.BeginForm("TermpageConfig", "SiteConfig", Model.TermpageContentModel, FormMethod.Post))
+    {
+        <input id="edit-form" type="submit" class="hidden" />
+    }
+
+</div>
+
+
+@* Wraps around rendered page content to stop contents spilling over *@
+<div class="container">
+  @await Html.PartialAsync("~/Views/Term/Index.cshtml", Model)
+</div>

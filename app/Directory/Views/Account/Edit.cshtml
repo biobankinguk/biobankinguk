@@ -1,0 +1,26 @@
+
+@model Biobanks.Directory.Models.Account.AccountDetailsModel
+
+@{
+    ViewBag.Title = "Edit account details";
+}
+
+<h2>Edit account details</h2>
+
+@Html.DisplayFor(m => ViewData.ModelState, "ModelStateDictionaryAll")
+
+@using (Html.BeginForm("Edit", "Account",
+                                            FormMethod.Post,
+                                            new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.EditorForModel()
+
+    <div class="form-group">
+        <div class="col-sm-12 text-center">
+            @Html.ActionLink("Cancel", "Index", null, null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">Update details</button>
+        </div>
+    </div>
+}

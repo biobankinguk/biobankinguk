@@ -1,0 +1,180 @@
+@using Biobanks.Data.Entities
+@using Biobanks.Directory.Constants
+@using Microsoft.AspNetCore.Identity
+@model Biobanks.Directory.Areas.Network.Models.Profile.NetworkDetailsModel
+@inject UserManager<ApplicationUser> userManager
+
+@{
+    ViewBag.Title = "Edit network details";
+}
+
+<h2>Edit network details</h2>
+
+@using (Html.BeginForm("Edit", "Profile",
+    FormMethod.Post,
+    new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(x => x.NetworkId)
+    @Html.HiddenFor(x => x.LogoName)
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.NetworkName, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(x => x.NetworkName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.NetworkName)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Description, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextAreaFor(x => x.Description, new { @class = "form-control", rows = 5 })
+            @Html.ValidationMessageFor(x => x.Description)
+        </div>
+
+        <p class="help-block">
+            <span class="fa fa-info-circle"></span>
+            Use this for information that is not captured elsewhere
+        </p>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Url, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.ContactEmail, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(x => x.ContactEmail, new { @class = "form-control", type = "email" })
+            @Html.ValidationMessageFor(x => x.ContactEmail)
+        </div>
+
+        <p class="help-block">
+            <span class="fa fa-info-circle"></span>
+            The email address that researchers will use to contact you
+        </p>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Logo, new { @class = "col-sm-2 control-label" })
+
+        <div class="col-sm-4">
+            <div class="padded-logo">
+                @if (string.IsNullOrEmpty(Model.LogoName))
+                {
+                    <img class="logo-img bordered-logo" id="TempNetworkLogo" src="@Url.Content("~/images/NoLogo.png")" alt="Network Logo" />
+                }
+                else
+                {
+                    <img class="logo-img bordered-logo" id="TempNetworkLogo" src="@Url.Action("Index", "Logo", new {Area = "", logoName = Model.LogoName})" alt="Network Logo" />
+                }
+            </div>
+
+            <div id="NetworkLogoUploadError" class="alert alert-danger" role="alert" style="margin-bottom: 20px; display: none;">Error Message Will Go Here!</div>
+
+          @Html.EditorFor(x => x.Logo, new { htmlAttributes = 
+            new
+            {
+              @class = "form-control",
+              data_resource_url = Url.Action("AddTempLogo", "Profile", 
+                new { Area = "Network", networkId = Model.NetworkId })
+              } })
+          <button type="button" id="NetworkLogoFileDialogueTrigger" class="btn btn-success">Select New Logo</button>
+          <button type="button" id="RemoveNetworkLogoTrigger" class="btn btn-default" 
+                  data-resource-url="@Url.Action("RemoveTempLogo", "Profile", new { Area = "Network", networkId = Model.NetworkId })" >
+            Remove Logo
+          </button>
+            @Html.HiddenFor(x => x.RemoveLogo)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.SopStatus, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-6">
+            @foreach (var sopStatus in Model.SopStatuses)
+            {
+                <div class="col-sm-12 radio">
+                    <label>
+                        @Html.RadioButtonFor(x => x.SopStatus, sopStatus.Key)
+                        @Html.Raw(sopStatus.Value)
+                    </label>
+                </div>
+            }
+            @Html.ValidationMessageFor(x => x.SopStatus)
+        </div>
+    </div>
+
+    @* Make these visible if superuser, otherwise include as hidden fields *@
+    if  (await userManager.IsInRoleAsync(await userManager.GetUserAsync(User),Role.SuperUser))
+    {
+        <div class="form-group">
+            @Html.LabelFor(x => x.ContactHandoverEnabled, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.CheckBoxFor(x => x.ContactHandoverEnabled, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.HandoverBaseUrl, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(x => x.HandoverBaseUrl, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.HandoverOrgIdsUrlParamName, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(x => x.HandoverOrgIdsUrlParamName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.MultipleHandoverOrdIdsParams, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.CheckBoxFor(x => x.MultipleHandoverOrdIdsParams, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.HandoverNonMembers, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.CheckBoxFor(x => x.HandoverNonMembers, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.HandoverNonMembersUrlParamName, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(x => x.HandoverNonMembersUrlParamName, new { @class = "form-control" })
+            </div>
+        </div>
+    }
+    else
+    {
+        @Html.HiddenFor(x => x.ContactHandoverEnabled)
+        @Html.HiddenFor(x => x.HandoverBaseUrl)
+        @Html.HiddenFor(x => x.HandoverOrgIdsUrlParamName)
+        @Html.HiddenFor(x => x.MultipleHandoverOrdIdsParams)
+        @Html.HiddenFor(x => x.HandoverNonMembers)
+        @Html.HiddenFor(x => x.HandoverNonMembersUrlParamName)
+    }
+
+    <div class="form-group">
+        <div class="col-sm-12 text-center">
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">Update details</button>
+        </div>
+    </div>
+}
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Network/edit-details.min.js" asp-append-version="true"></script>
+
+}
+

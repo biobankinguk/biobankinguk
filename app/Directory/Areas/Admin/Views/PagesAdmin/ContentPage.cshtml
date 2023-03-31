@@ -1,0 +1,14 @@
+﻿@using Biobanks.Directory.HtmlHelpers
+@model Biobanks.Directory.Areas.Admin.Models.PagesAdmin.ContentPageModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<h5>Last Updated: @Model.LastUpdated.ToShortDateString()</h5>
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Markdown(Model.Body)
+    </div>
+</div>

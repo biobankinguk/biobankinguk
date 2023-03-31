@@ -1,0 +1,137 @@
+@model Biobanks.Directory.Models.Shared.SopStatusesModel
+
+@{
+	ViewBag.Title = "Sop Status";
+}
+
+@await Html.PartialAsync("_ADACTabs", (string)ViewBag.Title)
+
+<h3>
+	Sop Statuses
+	<a href="#"
+	   class="btn btn-success pull-right"
+	   data-target="#sop-status-modal"
+	   data-bind="click: openModalForAdd">Add Sop Status</a>
+</h3>
+
+<div class="row">
+	<div class="col-sm-12">
+		<br />
+		<table id="sop-status" class="table table-striped table-fixed">
+
+			<thead>
+				<tr>
+				<tr>
+					<th>Sort Order</th>
+					<th>Sop Status</th>
+					<th>Sample Set Count</th>
+					<th>@* Actions *@</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				@foreach (var type in Model.SopStatuses)
+				{
+					<tr class="@(type.SampleSetsCount > 0 ? "info" : "")"
+						data-resource-url="/api/SopStatus"
+						data-sop-status-id="@type.Id"
+						data-sop-status-desc="@type.Description">
+
+						<td>@type.SortOrder</td>
+						<td>@type.Description</td>
+						<td>@type.SampleSetsCount</td>
+
+						<td class="text-right">
+							@if (type.SampleSetsCount > 0)
+							{
+								<span class="fa fa-info-circle labelled-icon"></span>@Html.Raw("Age range in use")
+							}
+							else
+							{
+								<a title="Edit"
+									class="action-icon"
+									href="#"
+									data-target="#sop-status-modal"
+									data-sop-status='@Json.Serialize(type)'
+									data-bind="click: openModalForEdit">
+									<span class="fa fa-edit labelled-icon"></span>Edit
+								</a>
+
+                                <a title="Delete"
+                                   class="action-icon delete-confirm"
+                                   data-refdata-model='@Json.Serialize(type)'
+                                   data-resource-url="/api/SopStatus"
+                                   data-success-redirect="@Url.Action("SopStatus")"
+                                   data-refdata-type="Sop Status"
+                                   href="#">
+                                    <span class="fa fa-trash labelled-icon"></span>Delete
+                                </a>
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="sop-status-modal" tabindex="-1" role="dialog" aria-labelledby="sop-status-label">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="sop-status-modal-label"><span data-bind="text: modal.mode"></span> Sop Status</h4>
+			</div>
+
+			<!-- Error List -->
+			<div class="row">
+				<div class="col-sm-12" data-bind="visible: dialogErrors().length > 0">
+					<div class="alert alert-danger"
+							data-valmsg-summary="true"
+							data-bind="foreach: dialogErrors">
+						<p>
+							<span class="fa fa-exclamation-triangle"></span>
+							<span data-bind="text: $data"></span>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Form -->
+			<form id="modal-sop-status-form"
+				  data-resource-url="/api/SopStatus"
+				  data-success-redirect="@Url.Action("SopStatus")"
+                  data-refdata-type="Sop Status"
+				  class="form-horizontal" >
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<input type="hidden" id="Id" name="Id" data-bind="value: modal.sopStatus().id">
+							<input type="hidden" id="SortOrder" name="SortOrder" data-bind="value: modal.sopStatus().sortOrder">
+
+							<!-- Sop Status -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Description</label>
+								<div class="col-sm-9">
+									<input type="text" id="Description" name="Description" class="form-control" data-bind="value: modal.sopStatus().description()">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary" data-bind="text: modal.mode"></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/sop-status.min.js" asp-append-version="true"></script>
+}

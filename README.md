@@ -16,7 +16,8 @@ User and Developer Guidance can be found in the [documentation](https://docs.bio
 - `sample-seed-data/` - Sample Reference data for the directory database
 - `scripts/` - Various scripts for Directory management
 - `sql/` - Various SQL scripts used to add/repair database records
-- `src/` - Projects Source Code, detailed below
+- `app/` - Application Projects Source Code, detailed in the [documentation](https://docs.biobankinguk.org/docs/dev/getting-started/structure)
+- `lib/` - Library Projects Source Code, detailed in the [documentation](https://docs.biobankinguk.org/docs/dev/getting-started/structure)
 
 ## 🧾 License and Contribution
 

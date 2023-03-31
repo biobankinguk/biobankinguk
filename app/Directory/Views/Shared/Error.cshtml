@@ -1,0 +1,53 @@
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
+@using Biobanks.Directory.Config
+@model dynamic
+
+@{
+    ViewBag.Title = "An Error Occurred!";
+    var siteProperties = _sitePropertiesOptions.Value;
+}
+
+<h2>
+    We're sorry<br />
+    <small>Something seems to have gone wrong.</small>
+</h2>
+
+<div class="row">
+    <div class="col-sm-6">
+        <h3>How could this have happened?</h3>
+        <p>Something technical went wrong.</p>
+
+        <p>
+            This may have been the result of one of the following:
+
+            <ul>
+                <li>We might have moved the page you were trying to reach.</li>
+                <li>You may have accidentally typed the wrong URL in the address bar.</li>
+                <li>A previously undiscovered bug might have occurred when trying to process your request.</li>
+            </ul>
+        </p>
+
+        <h3>What can I do now?</h3>
+
+        <ul>
+            <li>You could try retyping the URL.</li>
+            <li>You could go back and try what you were doing again.</li>
+            <li>You could head back to the <a href="/">@siteProperties.ServiceName homepage</a>.</li>
+        </ul>
+
+        <br />
+
+        <h4>
+            Before you go:
+        </h4>
+
+        <p>
+            If you want to help us resolve this issue, feel free to <a href="mailto:@siteProperties.SupportAddress">contact us and let us know what went wrong.</a>
+            Please provide as much information as possible, such as what you were trying to do, and your web browser and operating system.
+        </p>
+    </div>
+    <div class="col-sm-6 text-center">
+        <span class="fa fa-exclamation-triangle" style="font-size: 250pt; color: #DDD;"></span>
+    </div>
+</div>

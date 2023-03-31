@@ -1,0 +1,94 @@
+@inject UserManager<ApplicationUser> userManager
+
+@using Biobanks.Data.Entities
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.Identity
+@model Biobanks.Directory.Areas.Network.Models.Settings.NetworkAdminsModel
+
+@{
+    ViewBag.Title = "Network admins";
+}
+
+@await Html.PartialAsync("_NetworkTabs", "Admins")
+
+<h3>Network admins <a href="#" class="btn btn-success pull-right" data-toggle="modal" data-target="#modalInviteNetworkAdmin" data-bind="click: openInviteDialog">Add new admin</a></h3>
+
+<span id="NetworkId" data-network-id="@Model.NetworkId"></span>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+        <table id="network-admins" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <tr class="datatables-fixed-row">
+                <td>
+                    <span class="fa fa-user labelled-icon"></span>
+                    <strong>@userManager.GetUserName(User)</strong>
+                </td>
+                <td>
+                    <strong>@User.Identity.Name</strong>
+                </td>
+                <td></td>
+            </tr>
+
+            @foreach (var admin in Model.Admins)
+            {
+                <tr>
+                    <td>
+                        <span class="fa fa-user labelled-icon"></span>
+                        @admin.UserFullName
+                    </td>
+                    <td>
+                        @admin.UserEmail
+                    </td>
+                    <td>
+                        <div class="pull-right">
+
+                            @if (!admin.EmailConfirmed)
+                            {
+                                <a href="@Url.Action(
+                                           "ResendConfirmLink", "Account",
+                                           new
+                                           {
+                                             Area = "",
+                                             userEmail = admin.UserEmail,
+                                             onBehalf = true,
+                                             returnUrl = @Context.Request.GetEncodedUrl()
+                                           })"
+                                   class="confirm-resend"
+                                   data-admin-name="@admin.UserFullName">
+                                    <span class="fa fa-repeat labelled-icon"></span>Resend Invite</a>
+                            }
+                            &nbsp;
+                            <a href="@Url.Action("DeleteAdmin", new {networkId = Model.NetworkId, networkUserId = admin.UserId, userFullName = admin.UserFullName})"
+                               class="confirm-delete"
+                               data-admin-name="@admin.UserFullName">
+                                <span class="fa fa-trash labelled-icon"></span>Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modalInviteNetworkAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInviteNetworkAdmin_Label"
+     data-resource-url="@Url.Action("InviteAdminAjax", "Settings", new { networkId = Model.NetworkId })">
+</div>
+
+@section FooterScripts
+{
+    <script src="~/dist/js/Network/admins.min.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Biobank/registerentity-admin.min.js" asp-append-version="true"></script>
+}

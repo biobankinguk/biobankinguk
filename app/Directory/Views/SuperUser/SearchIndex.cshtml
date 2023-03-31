@@ -1,0 +1,122 @@
+@model Biobanks.Directory.Models.SuperUser.SearchIndexModel
+
+@{
+    ViewBag.Title = "Search index";
+}
+
+<br />
+
+@await Html.PartialAsync("_SuperUserTabs", "Search index")
+
+<h3>Search Index Maintenance</h3>
+
+<!-- Cluster Data Stats -->
+<table class="table">
+    <thead>
+        <tr>
+            <td>Count Comparison</td>
+            <td>Database</td>
+            <td>Search Index</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Count of indexable sample sets</td>
+            <td>@Model.IndexableSampleSetCount</td>
+            <td>@Model.CollectionSearchDocumentCount</td>
+        </tr>
+        <tr>
+            <td>Count of indexable capabilities</td>
+            <td>@Model.IndexableCapabilityCount</td>
+            <td>@Model.CapabilitySearchDocumentCount</td>
+        </tr>
+        <tr>
+            <td>Count of suspended sample sets</td>
+            <td>@Model.SuspendedSampleSetCount</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Count of suspended capabilities</td>
+            <td>@Model.SuspendedCapabilityCount</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Total count of sample sets</td>
+            <td>@Model.TotalSampleSetCount</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Total count of capabilities</td>
+            <td>@Model.TotalCapabilityCount</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Search Index Health -->
+@if (string.IsNullOrEmpty(ViewBag.Status))
+{
+	<div class="alert alert-danger">
+		<h4>Search Index Health: Red</h4>
+		<p>
+			Unable to connect to the search index. Please notify site administrators.
+		</p>
+	</div>
+}
+else if (ViewBag.Status == "green")
+{
+    <div class="alert alert-success">
+        <h4>Search Index Health: Green</h4>
+        <p>
+            The search index is currently at green health, and is operating as expected.
+        </p>
+    </div>
+}
+else if (ViewBag.Status == "yellow")
+{
+    <div class="alert alert-warning">
+        <h4>Search Index Health: Yellow</h4>
+        <p>
+            The search index is currently at yellow health. The search instance will continue to operate, but some data maybe unavailable.
+        </p>
+    </div>
+}
+else if (ViewBag.Status == "red")
+{
+    <div class="alert alert-danger">
+        <h4>Search Index Health: Red</h4>
+        <p>
+            The search index is currently at red health. It is not operating as expected and some data will be unavailable.
+        </p>
+    </div>
+}
+
+<br />
+
+<!-- Reindex Search -->
+@using (Html.BeginForm("ReindexAllData", "SuperUser", FormMethod.Post, new { id = "FullReindex" }))
+{
+    <div class="alert alert-danger">
+        <h4>Full Reindex</h4>
+        <p>
+            Pressing this button causes a full refresh of the Elasticsearch index.
+            This is a potentially expensive operation, both in terms of computational power and the time it may take.
+        </p>
+        <p>
+            <button type="submit" class="btn btn-danger bootbox-confirm" data-form-id="FullReindex" data-confirm-message="Are you absolutely sure you wish to reindex all of the data in the directory?">Reindex All Data</button>
+        </p>
+    </div>
+}
+
+@using (Html.BeginForm("BuildIndex", "SuperUser", FormMethod.Post, new { id = "BuildIndex" }))
+{
+    <div class="alert alert-danger">
+        <h4>Build Index</h4>
+        <p>
+            Pressing this button creates the Elasticsearch index from supplied JSON files.
+        </p>
+        <p>
+            <button type="submit" class="btn btn-danger bootbox-confirm" data-form-id="BuildIndex" data-confirm-message="Are you absolutely sure you wish to create the index for the directory?">Build Search Index</button>
+        </p>
+    </div>
+}

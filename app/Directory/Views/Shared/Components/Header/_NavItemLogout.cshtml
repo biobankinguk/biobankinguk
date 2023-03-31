@@ -1,0 +1,10 @@
+﻿@model Biobanks.Directory.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+	<li>
+		<a href="@Url.Action("Logout", "Account", new { Area = "" })">
+			<span class="fa fa-sign-in labelled-icon red"></span>Logout
+		</a>
+	</li>
+}

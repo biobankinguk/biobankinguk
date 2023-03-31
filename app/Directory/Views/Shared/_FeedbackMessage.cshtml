@@ -1,0 +1,46 @@
+@using System.Text.Json
+@using Biobanks.Directory.Utilities
+@using static Biobanks.Directory.Utilities.TemporaryFeedbackMessageExtensions
+@{
+    var tempData = (string)TempData[FeedbackMessageKey.FeedbackMessage];
+    var model = tempData is null? null :  JsonSerializer.Deserialize<FeedbackMessage>(tempData);
+}
+
+@if (!string.IsNullOrEmpty(model?.Message))
+{
+    string alertTypeClass;
+
+    switch (model.Type)
+    {
+        case FeedbackMessageType.Success:
+            alertTypeClass = "alert-success";
+            break;
+        case FeedbackMessageType.Warning:
+            alertTypeClass = "alert-warning";
+            break;
+        case FeedbackMessageType.Danger:
+            alertTypeClass = "alert-danger";
+            break;
+        case FeedbackMessageType.Info:
+        default:
+            alertTypeClass = "alert-info";
+            break;
+    }
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert @alertTypeClass feedback-message @Html.Raw(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "feedback-message-home" : "")" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    @if (model.ContainsHtml)
+                    {
+                        WriteLiteral(model.Message);
+                    }
+                    else
+                    {
+                        Write(model.Message);
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

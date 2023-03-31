@@ -1,0 +1,10 @@
+﻿@model Biobanks.Directory.Models.Header.NavItemModel
+
+@if (User.Identity.IsAuthenticated)
+{
+	<li>
+		<a href="@Url.Action("Index", "Account", new { Area = "" })">
+			<span class="fa fa-user labelled-icon"></span>My Account
+		</a>
+	</li>
+}

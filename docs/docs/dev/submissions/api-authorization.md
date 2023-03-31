@@ -19,11 +19,8 @@ Internally used endpoints (e.g. for the Directory web app to hit) usually just a
 Valid Client Credentials means a matching record in the `ApiClients` table for a Client ID and a hashed Client Secret.
 
 Ideally, API Clients are added to Organisations through the Directory Frontend.
-If that is not an option, it is recommended to use the **IdentityTool** in this repo to add clients, or at least to generate credentials:
-
-1. `cd /src/IdentityModel/IdentityTool`
-1. `dotnet run -- api-clients add --generate --connection-string "<connection-string>" <biobankId>`
+If that is not an option, it is recommended to use the [Directory cli](/dev/cli/api) to add clients, or at least to generate credentials.
 
 ApiClients are usually associated with Biobanks and the API verifies that the access token in use is authorised to act on a given Biobank's data.
 
-The **IdentityTool** is the only way to add credentials that aren't Biobank affiliated, for use at a system level (e.g. by the Directory web app).
+The [Directory cli](/dev/cli/api) is the only way to add credentials that aren't Biobank affiliated, for use at a system level (e.g. by the Directory web app).

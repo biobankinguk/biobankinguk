@@ -1,0 +1,21 @@
+@inject IOptions<SitePropertiesOptions> _config
+@using Biobanks.Directory.Config
+@model Biobanks.Directory.Models.Emails.ContactListEmailModel 
+
+@{
+	var directoryName = @_config.Value.ServiceName;
+	var emailSignature = @_config.Value.EmailSignature;
+
+	// Format Email Subject
+	ViewBag.Subject = $"{directoryName} Contact List";
+}
+
+Kindly find below the contact information for the Organisations in your list
+
+@Model.Contactlist
+
+If you didn't request this, please ignore this email.
+
+Regards,
+
+@emailSignature

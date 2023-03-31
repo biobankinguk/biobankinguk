@@ -1,0 +1,54 @@
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
+@using Biobanks.Directory.Config
+@model dynamic
+
+@{
+    ViewBag.Title = "An Error Occurred!";
+    var siteProperties = _sitePropertiesOptions.Value;
+}
+
+<h2>
+    We're sorry<br />
+    <small>Something seems to have gone wrong.</small>
+</h2>
+
+<div class="row">
+    <div class="col-sm-6">
+        <h3>How could this have happened?</h3>
+        <p>There was a problem with the form you submitted.</p>
+
+        <p>
+            This may have been the result of one of the following:
+
+            <ul>
+                <li>You tried to submit the same form more than once.</li>
+                <li>The logged in user changed since the form was loaded.</li>
+                <li>The form isn't allowed to submit data to the server.</li>
+            </ul>
+        </p>
+
+        <h3>What can I do now?</h3>
+
+        <ul>
+            <li>You could verify the logged in user is you (at the top right of this page).</li>
+            <li>You could try logging out and logging back in again</li>
+            <li>You could use the navigation above to get back to where you were, and try again.</li>
+            <li>You could head back to the <a href="/">@siteProperties.ServiceName homepage</a>.</li>
+        </ul>
+
+        <br />
+
+        <h4>
+            Before you go:
+        </h4>
+
+        <p>
+            If you want to help us resolve this issue, feel free to <a href="mailto:@siteProperties.SupportAddress">contact us and let us know what went wrong.</a>
+            Please provide as much information as possible, such as what you were trying to do, and your web browser and operating system.
+        </p>
+    </div>
+    <div class="col-sm-6 text-center">
+        <span class="fa fa-exclamation-triangle" style="font-size: 250pt; color: #DDD;"></span>
+    </div>
+</div>

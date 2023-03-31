@@ -1,39 +1,34 @@
 # label affected logical areas of the repo
 "Area: CI":
-  - .azure/pipelines/**/*
   - .github/**/*
 "Area: Core":
-  - src/Core/**/*
+  - lib/Core/**/*
 "Area: Elastic Search":
   - elastic-search/**/*
 "Area: Analytics":
-  - src/Core/Analytics/**/*
-  - src/Core/Jobs/AnalyticsJob.cs
-"Area: Submissions":
-  - src/Submissions/**/*
-  - src/Core/Jobs/RejectJob.cs
-  - src/Core/Jobs/ExpiryJob.cs
-  - src/Core/Jobs/CommitJob.cs
-  - src/Core/Jobs/StagingJob.cs
-"Area: Data":
-  - src/Data/**/*
+  - lib/Core/Analytics/**/*
+  - lib/Core/Jobs/AnalyticsJob.cs
 "Area: Directory":
-  - src/Directory/**/*
-"Area: Directory Data":
-  - src/Directory/Data/**/*
+  - app/Directory/**/*
+"Area: Submissions":
+  - lib/Core/Submissions/**/*
+  - lib/Core/Jobs/RejectJob.cs
+  - lib/Core/Jobs/ExpiryJob.cs
+  - lib/Core/Jobs/CommitJob.cs
+  - lib/Core/Jobs/StagingJob.cs
+"Area: Data":
+  - lib/Data/**/*
 "Area: Publications":
-  - src/Core/Publications/**/*
-  - src/Core/Jobs/PublicationsJob.cs
-"Area: Entities":
-  - src/Entities/**/*
+  - lib/Core/Publications/**/*
+  - lib/Core/Jobs/PublicationsJob.cs
 "Area: Aggregator":
-  - src/Core/Aggregator/**/*
-  - src/Core/Jobs/AggregatorJob.cs
+  - lib/Core/Aggregator/**/*
+  - lib/Core/Jobs/AggregatorJob.cs
 "Area: Docs":
   - docs/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
-  - src/**/Migrations/*.cs
+  - lib/**/Migrations/*.cs
 "Contains: Search Index":
   - "elastic-search/directory index setup/*"

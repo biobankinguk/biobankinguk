@@ -1,0 +1,68 @@
+@inject IConfigService _config
+
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.HtmlHelpers
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Models.Home.HomepageContentModel
+@{
+	ViewBag.Title = "Index";
+	ViewBag.WideLayout = true;
+	ViewBag.SuppressDefaultFeedbackMessage = true;
+	ViewBag.SuppressFormErrorAlert = true;
+	ViewBag.NoFooterMargin = true;
+}
+
+<section class="splash splash-img">
+	<div class="container-fluid">
+		<div class="row">
+			@* Homepage overrides the default positioning, so we can have this inside the splash area *@
+			<section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
+        <partial name="~/Views/Shared/_FeedbackMessage.cshtml" />
+      </section>
+		</div>
+		<div class="row">
+			<div class="big_splash">
+				<h1 class="big_title">@Model.Title</h1>
+        <div>
+          <a class="btn btn-search" href="#focus" role="button">Search</a>
+          <a class="btn btn-register" href="#register" role="button">Register</a>
+        </div>
+			</div>
+		</div>
+		<div class="row">
+			<section class="info-white-full">
+				<div id="focus" class="container text-center">
+					<div class="jumbotron">
+            <partial name="~/Views/Home/_UnifiedSearchBox.cshtml" model="Model" />
+					</div>
+				</div>
+			</section>
+		</div>
+		<div class="row">
+			<section class="info-grey">
+				<div class="container">
+					<div id="register" class="row info">
+						<div class="col-sm-6">
+							@Html.Markdown(Model.ResourceRegistration)
+						</div>
+						<div class="col-sm-6">
+							@Html.Markdown(Model.NetworkRegistration)
+						</div>
+					</div>
+					<div class="col-sm-6 text-center">
+                        <a class="btn btn-search" href="@Url.Action("Biobank", "Register")" role="button">Register a new @await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)</a>
+					</div>
+					<div class="col-sm-6 text-center">
+						<a class="btn btn-search" href="@Url.Action("Network", "Register")" role="button">Register a new network of resources</a>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/search.min.js" asp-append-version="true"></script>
+  <script src="~/dist/js/Home/home.min.js" asp-append-version="true"></script>
+}

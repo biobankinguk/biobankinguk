@@ -1,0 +1,58 @@
+@using Biobanks.Directory.Search.Constants
+@model Biobanks.Directory.Models.Search.NoResultsModel
+
+@{
+    string baseSearchUrl;
+
+    switch (Model.SearchType)
+    {
+        case SearchDocumentType.Collection:
+            baseSearchUrl = Url.Action("Collections");
+            break;
+        case SearchDocumentType.Capability:
+            baseSearchUrl = Url.Action("Capabilities");
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+
+    ViewBag.Title = "Search results";
+}
+
+@section FooterScripts
+{
+    <script src="~/dist/js/search.min.js" asp-append-version="true"></script>
+}
+
+<h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
+
+@if (!string.IsNullOrEmpty(Model.OntologyTerm))
+{
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="alert alert-info">Unfortunately your search did not return any results. Please try entering a different disease status.</div>
+            <br/>
+            @if (Model.Suggestions.Any())
+            {
+                <h3>Suggested terms related to your search:</h3>
+                <ul>
+                    @foreach (var suggestion in Model.Suggestions)
+                    {
+                        <li>
+                            <a href="@baseSearchUrl?ontologyTerm=@suggestion.Description">@suggestion.Description</a>
+                        </li>
+                    }
+                </ul>
+                <div>
+                    <strong>Not looking for one of our suggestions?</strong> <a href="@Url.Action("Index", "Term")">Check out our full list</a>.
+                </div>
+            }
+            else
+            {
+                <div class="help-block">
+                    <strong>Tip:</strong> It may be that you have simply used the wrong term. <a href="@Url.Action("Index", "Term")">Check out our list</a>.
+                </div>
+            }
+        </div>
+    </div>
+}

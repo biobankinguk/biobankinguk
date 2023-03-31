@@ -1,0 +1,15 @@
+@model Biobanks.Directory.Models.Shared.AbstractCRUDWithAssociatedDataModel
+
+<table id="Groups" class="table table-striped">    
+  <tbody>
+  @for (int i = 0; i < Model.Groups.Count(); i++)
+  {
+    for (int j = 0; j < Model.Groups[i].Types.Count(); j++)
+    {
+      @Html.EditorFor(x => Model.Groups[i].Types[j])
+    }
+
+  }
+
+  </tbody>
+</table>

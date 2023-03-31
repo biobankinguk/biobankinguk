@@ -1,0 +1,62 @@
+@using System.Text.Json
+@using Biobanks.Directory.Constants
+@using cloudscribe.Web.Navigation
+@model NavigationViewModel
+@if (Model.CurrentNode != null && Model.ParentChain.Count > 1) // Current node exist and the parent chain has more than one node
+{
+    <ol class="breadcrumb">
+    @foreach (var node in Model.ParentChain) // Looping through each node in the parent chain
+    {
+        var networks = User.FindAll(CustomClaimType.Network).ToDictionary(x => JsonSerializer 
+          .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+          .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+        var biobanks = User.FindAll(CustomClaimType.Biobank).ToDictionary(x => JsonSerializer
+        .Deserialize<KeyValuePair<int, string>>(x.Value).Key, x => JsonSerializer
+        .Deserialize<KeyValuePair<int, string>>(x.Value).Value);
+
+
+           var biobankId = ViewContext.RouteData.Values["biobankId"];
+           var networkId = ViewContext.RouteData.Values["networkId"];
+
+            if (!(await Model.ShouldAllowView(node))) { continue; } // Continue if node is allowed to be viewed
+            if (node.Value.Key == "ActiveOrganisationName") // Replace ActiveOrganisationName in breadcrumbs with current biobank or network name
+            {
+                if((node.Value.Area) == "Biobank")
+                {
+                    int intBiobankId = Int32.Parse(biobankId.ToString());
+
+                    var biobankName = biobanks[intBiobankId];
+
+                    <li><a href='@Url.Action("Index","Profile",new {area = "Biobank" ,biobankId = intBiobankId})' >@biobankName</a><span class="divider"></span></li> // Name and Url of Biobank
+                }
+            }
+            else if (node.Value.Key == "ActiveNetworkName")
+            {
+                if((node.Value.Area) == "Network")
+                {
+                    int intNetworkId = Int32.Parse(networkId.ToString());
+
+                    var networkName = networks[intNetworkId];
+
+                    <li><a href=@Url.Action("Biobanks","Profile", new { area = "Network",networkId = intNetworkId} ) >@networkName</a><span class="divider"></span></li> // Name and Url of Network
+                }
+            }
+            else if (node.EqualsNode(Model.CurrentNode)) // current node is equal to the models current node
+            {
+              if (Model.TailCrumbs != null)
+              {
+              <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li> // active url link and display name
+              }
+              else // Tail Breadcrumb
+              {
+              <li class="active">@Model.AdjustText(node)</li> // Display only name
+              }
+            }
+            else // Current node is not the models current node 
+            { 
+                <li><a href="@Url.Content(Model.AdjustUrl(node))">@Model.AdjustText(node)</a><span class="divider"></span></li> // active url link and display name
+            }
+    }
+    </ol>
+}

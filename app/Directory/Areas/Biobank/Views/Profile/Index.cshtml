@@ -1,0 +1,131 @@
+
+@inject IConfigService _config
+@using Biobanks.Directory.Config
+@using Biobanks.Directory.Services.Directory.Contracts
+@model Biobanks.Directory.Areas.Biobank.Models.Profile.BiobankDetailsModel;
+
+@{
+    ViewBag.Title = await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details";
+}
+
+@await Html.PartialAsync("_BiobankTabs", (await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details"))
+
+<h3>@await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) details @Html.ActionLink("Edit " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " details", "Edit", null, new { biobankId = Model.BiobankId}, new{ @class = "btn btn-primary pull-right" })</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <br />
+
+        <dl class="dl-horizontal">
+            <dt class="form-group">@Html.DisplayNameFor(x => x.OrganisationName)</dt>
+            <dd>@Html.DisplayFor(x => x.OrganisationName)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.Description)</dt>
+            <dd class="description">@Html.DisplayFor(x => x.Description)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.Url)</dt>
+            <dd>@Html.DisplayFor(x => x.Url)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.ContactEmail)</dt>
+            <dd>@Html.DisplayFor(x => x.ContactEmail)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.ContactNumber)</dt>
+            <dd>@Html.DisplayFor(x => x.ContactNumber)</dd>
+
+            @if (!string.IsNullOrEmpty(Model.LogoName))
+            {
+                <dt class="form-group">@Html.DisplayNameFor(x => x.Logo)</dt>
+                <dd class="padded-logo">
+                    <img class="logo-img bordered-logo" src="@Url.Action("Index", "Logo", new {Area = "", logoName = Model.LogoName})" />
+                </dd>
+            }
+
+            <dt>@Html.DisplayNameFor(x => x.AddressLine1)</dt>
+            <dd>@Html.DisplayFor(x => x.AddressLine1)</dd>
+            <dd>@Html.DisplayFor(x => x.AddressLine2)</dd>
+            <dd>@Html.DisplayFor(x => x.AddressLine3)</dd>
+            <dd class="form-group">@Html.DisplayFor(x => x.AddressLine4)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.City)</dt>
+            <dd>@Html.DisplayFor(x => x.City)</dd>
+
+            @if (await _config.GetSiteConfigValue(ConfigKey.ShowCounties) == "true")
+            {
+                <dt class="form-group">@Html.DisplayNameFor(x => x.CountyName)</dt>
+                <dd>@Html.DisplayFor(x => x.CountyName)</dd>
+            }
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.CountryName)</dt>
+            <dd>@Html.DisplayFor(x => x.CountryName)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.Postcode)</dt>
+            <dd>@Html.DisplayFor(x => x.Postcode)</dd>
+        </dl>
+
+        <h4>Governance Compliance</h4>
+        <dl class="dl-horizontal">
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.GoverningInstitution)</dt>
+            <dd>@Html.DisplayFor(x => x.GoverningInstitution)</dd>
+
+            <dt class="form-group">@Html.DisplayNameFor(x => x.GoverningDepartment)</dt>
+            <dd>@Html.DisplayFor(x => x.GoverningDepartment)</dd>
+
+            @if (String.IsNullOrWhiteSpace(Model.EthicsRegistration)) 
+            {    
+                <dt class="form-group">@Html.DisplayNameFor(x => x.EthicsRegistration)</dt>
+                <dd>@Html.DisplayFor(x => x.EthicsRegistration)</dd>
+            }
+        </dl>
+
+        @if (Model.ServiceModels.Any(x => x.Active))
+        {
+            <h4>Services</h4>
+
+            <div class="row">
+                <ul class="col-sm-offset-1 col-sm-11 list-inside">
+                    @foreach (var serviceModel in Model.ServiceModels.Where(x => x.Active))
+                    {
+                        <li>
+                            @Html.DisplayFor(x => serviceModel.ServiceOfferingName)
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (Model.NetworkModels.Any())
+        {
+            <h4>Networks</h4>
+
+            <div class="row">
+                <ul class="col-sm-offset-1 col-sm-11 list-inside">
+                    @foreach (var networkModel in Model.NetworkModels)
+                    {
+                        <li>
+                            @Html.DisplayFor(x => networkModel.Name)
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @if (await _config.GetSiteConfigValue(ConfigKey.EnableDataSharing) == "true")
+        {
+            <h4>Data sharing settings</h4>
+            <div class="row">
+                <ul class="col-sm-offset-1 col-sm-11 list-inside">
+
+                    @if (Model.SharingOptOut)
+                    {
+                        <li>Data will not be shared with other directories.</li>
+                    }
+                    else
+                    {
+                        <li>Data may be shared with other directories.</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>

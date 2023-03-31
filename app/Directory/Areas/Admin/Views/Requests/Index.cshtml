@@ -1,0 +1,119 @@
+
+@model Biobanks.Directory.Areas.Admin.Models.Requests.RequestsModel
+@{
+    ViewBag.Title = "ADAC Admin";
+}
+
+@await Html.PartialAsync("_ADACTabs", "Requests")
+
+<h3>Biobanks</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (Model.BiobankRequests.Any())
+        {
+            <table id="adac-biobanks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Biobank</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach (var bbRequest in Model.BiobankRequests)
+                {
+                    <tr>
+                        <td>
+                            @bbRequest.UserName
+                        </td>
+                        <td>
+                            @bbRequest.UserEmail
+                        </td>
+                        <td>
+                            @bbRequest.BiobankName
+                        </td>
+                        <td class="text-right">
+                            <a href="@Url.Action("DeclineBiobankRequest", new {requestId = bbRequest.RequestId})"
+                               class="confirm-decline"
+                               data-entity-name="@bbRequest.BiobankName"><span class="fa fa-times labelled-icon"></span>Decline</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a href="@Url.Action("AcceptBiobankRequest", new {requestId = bbRequest.RequestId})"
+                               class="confirm-accept"
+                               data-entity-name="@bbRequest.BiobankName"><span class="fa fa-check labelled-icon"></span>Accept</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are no Biobank Requests requiring action at the moment.
+            </div>
+        }
+    </div>
+</div>
+
+<h3>Networks</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (Model.NetworkRequests.Any())
+        {
+            <table id="adac-networks" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Network</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach (var nwRequest in Model.NetworkRequests)
+                {
+                    <tr>
+                        <td>
+                            @nwRequest.UserName
+                        </td>
+                        <td>
+                            @nwRequest.UserEmail
+                        </td>
+                        <td>
+                            @nwRequest.NetworkName
+                        </td>
+                        <td class="text-right">
+                            <a href="@Url.Action("DeclineNetworkRequest", new {requestId = nwRequest.RequestId})"
+                               class="confirm-decline"
+                               data-entity-name="@nwRequest.NetworkName"><span class="fa fa-times labelled-icon"></span>Decline</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a href="@Url.Action("AcceptNetworkRequest", new {requestId = nwRequest.RequestId})"
+                               class="confirm-accept"
+                               data-entity-name="@nwRequest.NetworkName"><span class="fa fa-check labelled-icon"></span>Accept</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                There are no Network Requests requiring action at the moment.
+            </div>
+        }
+    </div>
+</div>
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/requests.min.js" asp-append-version="true"></script>
+}
+

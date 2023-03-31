@@ -1,0 +1,44 @@
+@model Biobanks.Directory.Areas.Admin.Models.Funders.FunderModel
+
+@{
+  ViewBag.Title = "Delete Funder";
+}
+
+<h3>Delete Funder - @Model.Name</h3>
+
+<div class="alert alert-warning feedback-message">
+  <p>Warning: Please read the following carefully before proceeding!</p>
+</div>
+
+<p>This action is permanent and cannot be reversed. If you continue, the following data will be permanently deleted for Funder '@Model.Name': </p>
+<ul>
+  <li>The Funder from the Funders list profile</li>
+  <li>The data associating the funder with existing funders/networks</li>
+</ul>
+<p>
+  Please type the name of the Funder to confirm:
+</p>
+@using (Html.BeginForm("DeleteFunder", "Funders",
+  FormMethod.Post,
+  new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+
+  @Html.HiddenFor(x => x.FunderId)
+  @Html.HiddenFor(x => x.Name)
+  <div class="form-group">
+    <div class="col-sm-4">
+      <input class="delete-confirm-input form-control" data-confirmtext="@Model.Name" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-4">
+      <input type="submit" class="confirm-delete-button btn btn-primary btn-danger" disabled="disabled" />
+    </div>
+  </div>
+}
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Admin/deletefunder.min.js" asp-append-version="true"></script>
+}

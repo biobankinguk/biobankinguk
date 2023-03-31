@@ -1,8 +1,8 @@
 # Worker Jobs
 
-A series of background tasks are processed via the Submissions API as worker jobs. These jobs are defined in the `src/Core/Jobs` project folder. Each worker job is queued via the API's Hangfire instance, which uses the `apiHangfire` schema.
+A series of background tasks are processed via the Submissions API as worker jobs. These jobs are defined in the `lib/Core/Jobs` project folder. Each worker job is queued via the Directory's Hangfire instance.
 
-You can opt in to which scheduled/recurring jobs will be run by your instance of the API using the following configuration:
+You can opt in to which scheduled/recurring jobs will be run by your instance of the Directory using the following configuration:
 
 ```json
 "Workers": {
@@ -19,7 +19,7 @@ If you're using environment variables (or e.g. the Azure Portal), guidance on se
 
 By default, no recurring jobs are enabled - only those you include in the above config array will run.
 
-A series of background tasks are processed via the Submissions API as worker jobs. These jobs are defined in the `src/Core/Jobs` project folder.
+A series of background tasks are processed via the Submissions API as worker jobs. These jobs are defined in the `lib/Core/Jobs` project folder.
 
 ## Aggregator Job
 
@@ -27,10 +27,10 @@ The `Aggregator Job` ingests committed Samples from the Submission API and gener
 
 The Aggregator must be configured, such that it can aggregate samples into collections correctly. A standard configuration consists of
 
-| Key                                        | Value  | Description                                                                |
-|--------------------------------------------|--------|----------------------------------------------------------------------------|
-| `Aggregator:NonExtractedOntologyTerm`      |`string`| The default `OntologyTermId` to aggregate non-extracted samples under.     |
-| `Aggregator:MacroscopicAssessmentMappings` |`array` | An array of mappings between `ContentMethod`, `ContentId` => `MacroscopicAssessment`|
+| Key | Value | Description |
+| - | - | - |
+| `Aggregator:NonExtractedOntologyTerm` |`string`| The default `OntologyTermId` to aggregate non-extracted samples under. |
+| `Aggregator:MacroscopicAssessmentMappings` |`array` | An array of mappings between `ContentMethod`, `ContentId` => `MacroscopicAssessment` |
 
 Both `NonExtractedOntologyTerm` and `MacroscopicAssessmentMappings` are required configuration options; with `MacroscopicAssessmentMappings` requiring at least one default mapping.
 
@@ -79,11 +79,11 @@ More details on that here: https://developers.google.com/analytics/devguides/rep
 
 ### Configuration
 
-| Key                | Value                              | Description                                                                |
-|--------------------|------------------------------------|----------------------------------------------------------------------------|
-| `Analytics:GoogleAnalyticsReportingKey` | `JSON` | Json object in Google Analytics Reporting key file, see above  |
+| Key | Value | Description |
+| - | - | - |
+| `Analytics:GoogleAnalyticsReportingKey` | `JSON` | Json object in Google Analytics Reporting key file, see above |
 | `Analytics:GoogleAnalyticsViewId` | `int` | ID of the Google Analytics view |
-| `Analytics:StartDate` | `"yyyy-MM-dd"` |  Start date of the timeframe to download Google Analytics data (default: `2016-01-01`) |
+| `Analytics:StartDate` | `"yyyy-MM-dd"` | Start date of the timeframe to download Google Analytics data (default: `2016-01-01`) |
 
 ## Publications Job
 
@@ -95,6 +95,6 @@ The `Publication Job` is a scheduled job that runs daily (00:00 UTC). Individual
 
 ### Configuration
 
-| Key                       | Value                              | Description                                                              |
-|---------------------------|------------------------------------|---------------------------------------------------------------------------|
-| `Publications:EpmcApiUrl` | `https://www.ebi.ac.uk/europepmc/` | The base URL of the EMPC API, this should only change when the API updates|
+| Key | Value | Description |
+| - | - | - |
+| `Publications:EpmcApiUrl` | `https://www.ebi.ac.uk/europepmc/` | The base URL of the EMPC API, this should only change when the API updates |

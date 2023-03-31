@@ -18,7 +18,7 @@ It consists of an .NET Core MVC web application, backed by a PostgreSQL database
    - Run `pnpm i` from the project root.
 
 1. Add a new user
-   - Change directory next to the `Api.csproj` file.
+   - Change directory next to the `Directory.csproj` file.
    - Run `dotnet run -- users add <EMAIL> <FULL-NAME> -r <ROLES> -p <PASSWORD>`
    - For example: `dotnet run -- users add admin@example.com Admin -r SuperUser DirectoryAdmin -p Password1!`
    - For local dev use you probably want the roles: `SuperUser`, and `DirectoryAdmin`

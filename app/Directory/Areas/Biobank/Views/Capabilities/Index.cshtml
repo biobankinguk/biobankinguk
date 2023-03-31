@@ -1,0 +1,52 @@
+@using System.Linq
+@model Biobanks.Directory.Areas.Biobank.Models.Capabilities.BiobankCapabilitiesModel
+
+@{
+  ViewBag.Title = "Capabilities";
+}
+
+@section FooterScripts
+{
+  <script src="~/dist/js/Biobank/capabilities.min.js" asp-append-version="true"></script>
+}
+
+@await Html.PartialAsync("_BiobankTabs", "Capabilities")
+
+<h3>
+  @ViewBag.Title
+  @Html.ActionLink("Add capability", "AddCapability", "Capabilities", new { biobankId = ViewContext.RouteData.Values["biobankId"]}, new { @class = "btn btn-success pull-right"})
+</h3>
+
+<div class="row">
+  <div class="col-md-12">
+    <br/>
+    @if (Model.BiobankCapabilityModels.Any())
+    {
+      <table id="biobank-capabilities" class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th>Disease status</th>
+          <th>Protocol</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var capability in Model.BiobankCapabilityModels)
+        {
+          <tr class="capability-link clickable-row"
+              data-href="@Url.Action("Capability", new { biobankId = ViewContext.RouteData.Values["biobankId"], @capability.Id})">
+            <td>@capability.OntologyTerm</td>
+            <td>@capability.Protocol</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+    else
+    {
+      <div class="alert alert-info">
+        There are no capabilities here yet.
+        @Html.ActionLink("Add a capability now", "AddCapability", new { biobankId = ViewContext.RouteData.Values["biobankId"] })
+      </div>
+    }
+  </div>
+</div>
