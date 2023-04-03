@@ -71,11 +71,11 @@ jobs:
           ${{ env.app-project }}
           -c ${{ env.build-config }}
           -o ${{ env.publish-dir }}
-          -p:GitHash=${{ jobs.init.outputs.short-sha }}
+          -p:GitHash=${{ needs.init.outputs.short-sha }}
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ format('directory-{0}_dotnet-{1}', jobs.init.outputs.version, env.dotnet-version) }}
+          name: ${{ format('directory-{0}_dotnet-{1}', needs.init.outputs.version, env.dotnet-version) }}
           path: ${{ env.publish-dir }}
 
   # Publish platform native EF Core migrations bundles
@@ -107,5 +107,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ format('migrations-{0}_{1}', jobs.init.outputs.version, matrix.artifact) }}
+          name: ${{ format('migrations-{0}_{1}', needs.init.outputs.version, matrix.artifact) }}
           path: ${{ matrix.output }}
