@@ -101,7 +101,7 @@ jobs:
           dotnet ef migrations bundle
           -p ${{ env.migrations-project }}
           -s ${{ env.app-project }}
-          -o ${{ format('{0}{1}', env.output-filename, matrix.file-extension || '' }}
+          -o ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
           ${{ matrix.args }}
 
       - uses: actions/upload-artifact@v3
