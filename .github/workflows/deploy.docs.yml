@@ -1,4 +1,4 @@
-name: GitHub Pages Docs
+name: Deploy Docs to GitHub Pages
 
 on:
   workflow_dispatch: # manual trigger
