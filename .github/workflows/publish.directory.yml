@@ -91,18 +91,17 @@ jobs:
       matrix:
         include:
           - artifact: win-x64
-            output: ${{ format('{0}.exe', env.output-filename) }}
+            file-extension: ".exe"
             args: >-
               -r win-x64
           - artifact: linux-x64
-            output: ${{ env.output-filename }}
 
     steps:
       - run: >-
           dotnet ef migrations bundle
           -p ${{ env.migrations-project }}
           -s ${{ env.app-project }}
-          -o ${{ matrix.output }}
+          -o ${{ format('{0}{1}', env.output-filename, matrix.file-extension }}
           ${{ matrix.args }}
 
       - uses: actions/upload-artifact@v3
