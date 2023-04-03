@@ -119,10 +119,8 @@ jobs:
           -o ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
           ${{ matrix.args }}
           --self-contained
-          --verbose
-        # TODO: remove verbose once working
 
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ format('migrations-{0}_{1}', needs.init.outputs.version, matrix.artifact) }}
-          path: ${{ matrix.output }}
+          path: ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
