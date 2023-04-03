@@ -21,6 +21,8 @@ on:
 
 env:
   app-project: ./app/Directory/Directory.csproj
+  migrations-project: ./lib/Data/Data.csproj
+  frontend-package: frontend
   dotnet-version: 6.0.x
 
   publish-dir: publish
@@ -61,6 +63,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      # pnpm install so we have frontend dependencies for bundling
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          filter: ${{ env.frontend-package }}
+
+      # dotnet publish now we have dependencies
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.dotnet-version }}
@@ -73,6 +82,7 @@ jobs:
           -o ${{ env.publish-dir }}
           -p:GitHash=${{ needs.init.outputs.short-sha }}
 
+      # upload the published artifact
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ format('directory-{0}_dotnet-{1}', needs.init.outputs.version, env.dotnet-version) }}
@@ -84,7 +94,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      migrations-project: ./lib/Data/Data.csproj
       output-filename: migrate-directory-db
 
     strategy:

@@ -1,0 +1,28 @@
+name: pnpm install
+description: Setup node and pnpm, then install dependencies for a single package or the whole repo
+
+inputs:
+  node-version:
+    default: "19"
+    type: string
+  filter:
+    type: string
+
+runs:
+  using: composite
+  steps:
+    # we have to enable corepack before we install the desired version of node,
+    # so pnpm is available for cache configuration >.<
+    # GH runners have minimum latest node 16 so corepack is always available <3
+    - shell: bash
+      run: corepack enable
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - shell: bash
+      run: >-
+        pnpm i
+        --frozen-lockfile
+        ${{ inputs.filter != '' && '--filter' || '' }} ${{ inputs.filter }}
