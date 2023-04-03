@@ -72,7 +72,7 @@ public class SettingsController : Controller
             //but we may want the full list in other circumstances
             
             var admins =
-                (await _biobankService.ListBiobankAdminsAsync(biobankId))
+                (await _biobankService.ListBiobankAdmins(biobankId))
                     .Select(bbAdmin => new RegisterEntityAdminModel
                     {
                         UserId = bbAdmin.Id,

@@ -131,7 +131,7 @@ namespace Biobanks.Directory.Controllers.Directory
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                Services = (await _biobankService.ListBiobankServiceOfferingsAsync(bb.OrganisationId))
+                Services = (await _biobankService.ListBiobankServiceOfferings(bb.OrganisationId))
                     .OrderBy(x => x.ServiceOffering.SortOrder)
                     .Select(x => x.ServiceOffering.Value)
                     .ToList(),

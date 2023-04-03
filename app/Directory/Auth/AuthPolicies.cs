@@ -242,11 +242,11 @@ namespace Biobanks.Directory.Auth
                     out var sampleSetId))
                 return false;
               
-              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
-              if (biobankReadService is null) 
+              var biobankAuthService = httpContext?.RequestServices.GetService<IBiobankAuthorizationService>();
+              if (biobankAuthService is null) 
                 return false;
               
-              if (!biobankReadService.CanThisBiobankAdministerThisSampleSet(biobankId, sampleSetId))
+              if (!biobankAuthService.CanThisBiobankAdministerThisSampleSet(biobankId, sampleSetId))
                 return false;
               
               return true;
@@ -276,11 +276,11 @@ namespace Biobanks.Directory.Auth
                     out var capabilityId))
                 return false;
               
-              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
-              if (biobankReadService is null)
+              var biobankAuthService = httpContext?.RequestServices.GetService<IBiobankAuthorizationService>();
+              if (biobankAuthService is null)
                 return false;
               
-              if (!biobankReadService.CanThisBiobankAdministerThisCapability(biobankId, capabilityId))
+              if (!biobankAuthService.CanThisBiobankAdministerThisCapability(biobankId, capabilityId))
                 return false;
               
               return true;
@@ -310,11 +310,11 @@ namespace Biobanks.Directory.Auth
                     out var collectionId))
                 return false;
               
-              var biobankReadService = httpContext?.RequestServices.GetService<IBiobankReadService>();
-              if (biobankReadService is null)
+              var biobankAuthService = httpContext?.RequestServices.GetService<IBiobankAuthorizationService>();
+              if (biobankAuthService is null)
                 return false;
               
-              if (!biobankReadService.CanThisBiobankAdministerThisCollection(biobankId, collectionId))
+              if (!biobankAuthService.CanThisBiobankAdministerThisCollection(biobankId, collectionId))
                 return false;
               
               return true;

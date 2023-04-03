@@ -39,7 +39,6 @@ public class ProfileController : Controller
 {
     private readonly IReferenceDataCrudService<AnnualStatisticGroup> _annualStatisticGroupService;
     private readonly IBiobankService _biobankService;
-    private readonly IBiobankWriteService _biobankWriteService;
     private readonly IConfigService _configService;
     private readonly IReferenceDataCrudService<County> _countyService;
     private readonly IReferenceDataCrudService<Country> _countryService;
@@ -54,11 +53,11 @@ public class ProfileController : Controller
     private readonly PublicationsOptions _publicationsConfig;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ILogoService _logoService;
 
     public ProfileController(
         IReferenceDataCrudService<AnnualStatisticGroup> annualStatisticGroupService,
         IBiobankService biobankService,
-        IBiobankWriteService biobankWriteService,
         IConfigService configService,
         IReferenceDataCrudService<County> countyService,
         IReferenceDataCrudService<Country> countryService,
@@ -72,11 +71,11 @@ public class ProfileController : Controller
         IOptions<AnnualStatisticsOptions> annualStatisticsOptions,
         IOptions<PublicationsOptions> publicationsOptions,
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        ILogoService logoService)
     {
         _annualStatisticGroupService = annualStatisticGroupService;
         _biobankService = biobankService;
-        _biobankWriteService = biobankWriteService;
         _configService = configService;
         _countyService = countyService;
         _countryService = countryService;
@@ -91,6 +90,7 @@ public class ProfileController : Controller
         _publicationsConfig = publicationsOptions.Value;
         _userManager = userManager;
         _signInManager = signInManager;
+        _logoService = logoService;
     }
     
     #region Details
@@ -125,7 +125,7 @@ public class ProfileController : Controller
         if (model.RemoveLogo)
         {
             logoName = null;
-            await _biobankWriteService.RemoveLogoAsync(model.BiobankId.Value);
+            await _logoService.RemoveLogo(model.BiobankId.Value);
         }
         else if (model.Logo != null)
         {
@@ -135,7 +135,7 @@ public class ProfileController : Controller
 
                 logoName =
                     await
-                        _biobankWriteService.StoreLogoAsync(
+                        _logoService.StoreLogo(
                             logoStream,
                             model.Logo.FileName,
                             model.Logo.ContentType,
@@ -203,7 +203,7 @@ public class ProfileController : Controller
 
                 //use the DTO again to update
                 biobank.Logo = await
-                            _biobankWriteService.StoreLogoAsync(logoStream,
+                            _logoService.StoreLogo(logoStream,
                                 model.Logo.FileName,
                                 model.Logo.ContentType,
                                 biobank.OrganisationExternalId);
@@ -352,12 +352,12 @@ public class ProfileController : Controller
                 OrganisationId = biobank.OrganisationId
             }).ToList();
 
-        await _biobankWriteService.AddBiobankServicesAsync(activeServices);
+        await _biobankService.AddBiobankServiceOfferings(activeServices);
 
         foreach (var inactiveService in model.ServiceModels.Where(x => !x.Active))
         {
             await
-                _biobankWriteService.DeleteBiobankServiceAsync(biobank.OrganisationId,
+                _biobankService.DeleteBiobankServiceOffering(biobank.OrganisationId,
                     inactiveService.ServiceOfferingId);
         }
 
@@ -369,12 +369,12 @@ public class ProfileController : Controller
                 OrganisationId = biobank.OrganisationId
             }).ToList();
 
-        await _biobankWriteService.AddBiobankRegistrationReasons(activeRegistrationReasons);
+        await _biobankService.AddBiobankRegistrationReasons(activeRegistrationReasons);
 
         foreach (var inactiveRegistrationReason in model.RegistrationReasons.Where(x => !x.Active))
         {
             await
-                _biobankWriteService.DeleteBiobankRegistrationReasonAsync(biobank.OrganisationId,
+                _biobankService.DeleteBiobankRegistrationReason(biobank.OrganisationId,
                     inactiveRegistrationReason.RegistrationReasonId);
         }
         var sampleResource = await _configService.GetSiteConfigValue(ConfigKey.SampleResourceName);
@@ -441,7 +441,7 @@ public class ProfileController : Controller
 
         //Try and get any service offerings for this biobank
         var bbServices =
-                await _biobankService.ListBiobankServiceOfferingsAsync(bb.OrganisationId);
+                await _biobankService.ListBiobankServiceOfferings(bb.OrganisationId);
 
         //mark services as active in the full list
         var services = (await GetAllServicesAsync()).Select(service =>
@@ -575,7 +575,7 @@ public class ProfileController : Controller
     }
     
     private async Task<List<FunderModel>> GetFundersAsync(int biobankId)
-        => (await _biobankService.ListBiobankFundersAsync(biobankId))
+        => (await _biobankService.ListBiobankFunders(biobankId))
             .Select(bbFunder => new FunderModel
             {
                 FunderId = bbFunder.Id,
@@ -877,7 +877,7 @@ public class ProfileController : Controller
             });
 
         // no validation errors at this point, so proceed
-        await _biobankWriteService.UpdateOrganisationAnnualStatisticAsync(
+        await _biobankService.UpdateOrganisationAnnualStatistic(
             biobankId,
             model.AnnualStatisticId,
             model.Value,

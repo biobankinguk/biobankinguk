@@ -16,7 +16,7 @@ namespace Biobanks.Directory.Controllers.Directory
         //Get: Blob
         public async Task<ActionResult> Index(string logoName)
         {
-          var blob = await _logoService.GetLogoBlobAsync(logoName);
+          var blob = await _logoService.GetLogoBlob(logoName);
           
           //filename should have extension, so we don't have to extract it from the content disposition header
           return File(blob.Content, blob.ContentType);

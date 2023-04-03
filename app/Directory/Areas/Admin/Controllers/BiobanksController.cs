@@ -54,7 +54,7 @@ public class BiobanksController : Controller
 
           //get the admins
           model.Admins =
-              (await _biobankService.ListBiobankAdminsAsync(model.BiobankId)).Select(x => new RegisterEntityAdminModel
+              (await _biobankService.ListBiobankAdmins(model.BiobankId)).Select(x => new RegisterEntityAdminModel
               {
                   UserId = x.Id,
                   UserFullName = x.Name,
@@ -74,7 +74,7 @@ public class BiobanksController : Controller
           return RedirectToAction("Index", "Home");
 
       var userFullName =
-          (await _biobankService.ListBiobankAdminsAsync(biobankId)).Select(x => new RegisterEntityAdminModel
+          (await _biobankService.ListBiobankAdmins(biobankId)).Select(x => new RegisterEntityAdminModel
           {
               UserId = x.Id,
               UserFullName = x.Name,
@@ -113,7 +113,7 @@ public class BiobanksController : Controller
       {
           //get the admins
           biobank.Admins =
-              (await _biobankService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => new RegisterEntityAdminModel
+              (await _biobankService.ListBiobankAdmins(biobank.BiobankId)).Select(x => new RegisterEntityAdminModel
               {
                   UserId = x.Id,
                   UserFullName = x.Name,
@@ -251,7 +251,7 @@ public class BiobanksController : Controller
       {
           // remove the biobank itself
           var biobank = await _organisationService.Get(model.BiobankId);
-          var usersInBiobank = await _biobankService.ListSoleBiobankAdminIdsAsync(model.BiobankId);
+          var usersInBiobank = await _biobankService.ListSoleBiobankAdminIds(model.BiobankId);
           await _organisationService.Delete(model.BiobankId);
 
           // remove admin role from users who had admin role only for this biobank

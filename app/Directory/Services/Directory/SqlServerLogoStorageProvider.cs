@@ -19,7 +19,7 @@ namespace Biobanks.Directory.Services.Directory
           _db = db;
         }
 
-        public async Task<Blob> GetLogoBlobAsync(string resourceName)
+        public async Task<Blob> GetLogoBlob(string resourceName)
         {
         
             var blob = await _db.Blobs
@@ -32,7 +32,7 @@ namespace Biobanks.Directory.Services.Directory
             return blob;
         }
 
-        public async Task<string> StoreLogoAsync(MemoryStream logo, string fileName, string contentType, string reference)
+        public async Task<string> StoreLogo(MemoryStream logo, string fileName, string contentType, string reference)
         {
             if (logo == null || logo.Length <= 0)
                 throw new ArgumentNullException(nameof(logo));
@@ -49,7 +49,7 @@ namespace Biobanks.Directory.Services.Directory
             //is there an existing logo blob for this biobank?
             //we want to replace, not keep adding and storing new files
      
-            var existing = await GetLogoBlobAsync(logoBlob.FileName);
+            var existing = await GetLogoBlob(logoBlob.FileName);
               _db.Remove(existing.Id);
 
             //write to db
@@ -59,7 +59,7 @@ namespace Biobanks.Directory.Services.Directory
             return logoBlob.FileName;
         }
 
-        public async Task RemoveLogoAsync(int organisationId)
+        public async Task RemoveLogo(int organisationId)
         {
             var organisation = await _db.FindAsync<Organisation>(organisationId);
             var entity = _db.Blobs.Where(x => x.FileName == organisation.Logo);

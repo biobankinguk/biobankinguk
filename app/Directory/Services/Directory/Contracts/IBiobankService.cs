@@ -7,11 +7,15 @@ namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IBiobankService
     {
-        Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferingsAsync(int biobankId);
-        Task<IEnumerable<ApplicationUser>> ListBiobankAdminsAsync(int biobankId);
-        Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIdsAsync(int modelBiobankId);
+        Task<IEnumerable<OrganisationServiceOffering>> ListBiobankServiceOfferings(int biobankId);
+        Task<IEnumerable<ApplicationUser>> ListBiobankAdmins(int biobankId);
+        Task<IEnumerable<ApplicationUser>> ListSoleBiobankAdminIds(int modelBiobankId);
         Task<string> GetUnusedTokenByUser(string biobankUserId);
-        Task<IEnumerable<Funder>> ListBiobankFundersAsync(int biobankId);
-
+        Task<IEnumerable<Funder>> ListBiobankFunders(int biobankId);
+        Task AddBiobankServiceOfferings(IEnumerable<OrganisationServiceOffering> services);
+        Task DeleteBiobankServiceOffering(int biobankId, int serviceId);
+        Task UpdateOrganisationAnnualStatistic(int organisationId, int statisticId, int? value, int year);
+        Task AddBiobankRegistrationReasons(List<OrganisationRegistrationReason> activeRegistrationReasons);
+        Task DeleteBiobankRegistrationReason(int organisationId, int registrationReasonId);
     }
 }
