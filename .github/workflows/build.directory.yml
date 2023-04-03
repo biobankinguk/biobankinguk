@@ -14,6 +14,7 @@ env:
   build-config: release
   dotnet-version: 6.0.x
   project: ./app/Directory/Directory.csproj
+  frontend-package: frontend
 
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
@@ -23,8 +24,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/checkout@v3
+
+      # pnpm install so we have frontend dependencies for bundling
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          filter: ${{ env.frontend-package }}
+
+      - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.dotnet-version }}
       - name: dotnet build

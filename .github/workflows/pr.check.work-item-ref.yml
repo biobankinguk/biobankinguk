@@ -1,4 +1,5 @@
-name: "Azure Boards Reference"
+name: Azure Boards Reference
+
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
@@ -10,7 +11,7 @@ jobs:
     steps:
       - uses: deepakputhraya/action-pr-title@master
         with:
-          regex: '^AB#\d+: ' # Match pull request titles in the form AB#<id>: Title.
+          regex: '^AB#\d+' # Match pull request titles in the form AB#<id> Title.
           github_token: ${{ github.token }} # Default: ${{ github.token }}
   # if found, comment to ensure it gets linked
   # only one comment will be made per PR, but will be updated
@@ -25,7 +26,7 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
+          comment-author: "github-actions[bot]"
           body-includes: "ℹ Linked Title:"
       - name: Create or update Work Item Link
         uses: peter-evans/create-or-update-comment@v1
@@ -38,4 +39,3 @@ jobs:
 
             *This bot comment serves to ensure the title work item gets hyperlinked.*
           edit-mode: replace
-
