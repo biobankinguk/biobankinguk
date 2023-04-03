@@ -16,8 +16,8 @@ on:
         description: Build Configuration
         required: true
         default: release
-  push:
-    branches: [main, support/*]
+#   push:
+#     branches: [main, support/*]
 
 env:
   CI_build-config: ${{ github.event.inputs.buildConfig || 'release' }}

@@ -1,14 +1,16 @@
-## Pull Request Guidance
-
-**⚠ DELETE THIS SECTION!**
-
-ℹ If there are multiple relevant Azure Boards work items, please reference them in a list below, in the form `AB#<id>`.
-
-⚠ The Pull Request also cannot be merged unless its title starts with such a reference to the primary work item.
+<!--
+⚠ Ensure the PR title starts with a reference to the primary work item it completes, in the form `AB#<id> My PR Title`.
+-->
 
 ## Overview
 
 Summarise what this Pull Request is for.
+
+<!--
+ℹ If there are multiple relevant Azure Boards work items, please reference them in a list below, in the form `AB#<id>`.
+
+Otherwise delete the section.
+-->
 
 ## Azure Boards
 
