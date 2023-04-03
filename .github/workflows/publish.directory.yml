@@ -35,9 +35,6 @@ jobs:
   init:
     runs-on: ubuntu-latest
 
-    env:
-      version-source: ${{ env.app-project }}
-
     outputs:
       version: ${{ steps.version.outputs.version }}
       short-sha: ${{ steps.sha.outputs.sha }}
@@ -55,15 +52,12 @@ jobs:
         id: version
         uses: bbonkr/get-version-action@v1
         with:
-          project: ${{ env.version-source }}
+          project: ${{ env.app-project }}
 
   # publish the dotnet app
   publish-directory:
     needs: [init]
     runs-on: ubuntu-latest
-
-    env:
-      project: ${{ env.app-project }}
 
     steps:
       - uses: actions/checkout@v3
@@ -74,7 +68,7 @@ jobs:
       - name: dotnet publish
         run: >-
           dotnet publish
-          ${{ env.project }}
+          ${{ env.app-project }}
           -c ${{ env.build-config }}
           -o ${{ env.publish-dir }}
           -p:GitHash=${{ init.outputs.short-sha }}
