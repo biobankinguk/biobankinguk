@@ -7,7 +7,7 @@
 name: Publish Directory
 
 on:
-  workflow_dispatch: # manual trigger
+  workflow_dispatch:
     inputs:
       build-config:
         description: Build Configuration
@@ -15,9 +15,6 @@ on:
         default: release
   push:
     branches: [main, support/*]
-
-  pull_request: # TODO: testing
-    branches: [main]
 
 env:
   app-project: ./app/Directory/Directory.csproj
