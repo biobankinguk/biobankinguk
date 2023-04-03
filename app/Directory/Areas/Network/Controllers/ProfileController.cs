@@ -203,7 +203,7 @@ public class ProfileController : Controller
     if (!create && model.RemoveLogo)
     {
       logoName = "";
-      await _logoStorageProvider.RemoveLogoAsync(model.NetworkId.Value);
+      await _logoStorageProvider.RemoveLogo(model.NetworkId.Value);
     }
     else if (!create && model.Logo != null)
     {
@@ -292,7 +292,7 @@ public class ProfileController : Controller
 
     var logoName =
         await
-            _logoStorageProvider.StoreLogoAsync(
+            _logoStorageProvider.StoreLogo(
                 (System.IO.MemoryStream)memoryStream,
                 logo.FileName,
                 logo.ContentType,
@@ -430,7 +430,7 @@ public class ProfileController : Controller
     {
       //get the admins
       biobank.Admins =
-          (await _biobankService.ListBiobankAdminsAsync(biobank.BiobankId)).Select(x => x.Email).ToList();
+          (await _biobankService.ListBiobankAdmins(biobank.BiobankId)).Select(x => x.Email).ToList();
 
       var organisationNetwork = await _networkService.GetOrganisationNetwork(biobank.BiobankId, networkId);
       biobank.ApprovedDate = organisationNetwork.ApprovedDate;
@@ -500,7 +500,7 @@ public class ProfileController : Controller
     //Add network contact email
     networkEmails.Add(network.Email);
     var biobankAdmins =
-        (await _biobankService.ListBiobankAdminsAsync(biobank.OrganisationId))
+        (await _biobankService.ListBiobankAdmins(biobank.OrganisationId))
             .Select(bbAdmin => new RegisterEntityAdminModel
             {
               UserId = bbAdmin.Id,

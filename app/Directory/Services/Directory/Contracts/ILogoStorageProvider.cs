@@ -6,10 +6,10 @@ namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface ILogoStorageProvider
     {
-        Task<Blob> GetLogoBlobAsync(string resourceName);
+        Task<Blob> GetLogoBlob(string resourceName);
 
-        Task<string> StoreLogoAsync(MemoryStream logo, string fileName, string contentType, string reference);
+        Task<string> StoreLogo(MemoryStream logo, string fileName, string contentType, string reference);
 
-        Task RemoveLogoAsync(int organisationId);
+        Task RemoveLogo(int organisationId);
     }
 }

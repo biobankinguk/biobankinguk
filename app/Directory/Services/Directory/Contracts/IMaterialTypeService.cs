@@ -12,6 +12,9 @@ namespace Biobanks.Directory.Services.Directory.Contracts
         Task<IEnumerable<OntologyTerm>> GetMaterialTypeExtractionProcedures(int id, bool onlyDisplayable = false);
         IEnumerable<string> ExtractDistinctMaterialTypes(Collection collection);
 
+        Task<bool> IsMaterialTypeAssigned(int id);
+
+        Task<int> GetMaterialTypeMaterialDetailCount(int id);
   }
 }
 
