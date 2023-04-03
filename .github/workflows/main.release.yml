@@ -9,15 +9,15 @@
 
 name: GitHub Release
 
-on:
-  workflow_dispatch: # manual trigger
-    inputs:
-      buildConfig:
-        description: Build Configuration
-        required: true
-        default: release
-  push:
-    branches: [main, support/*]
+# on:
+#   workflow_dispatch: # manual trigger
+#     inputs:
+#       buildConfig:
+#         description: Build Configuration
+#         required: true
+#         default: release
+#   push:
+#     branches: [main, support/*]
 
 env:
   CI_build-config: ${{ github.event.inputs.buildConfig || 'release' }}
