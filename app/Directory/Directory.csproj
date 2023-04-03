@@ -17,11 +17,6 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>swagger.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="swagger.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="Settings\footer.json" />
