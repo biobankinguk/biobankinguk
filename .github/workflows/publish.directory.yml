@@ -47,7 +47,7 @@ jobs:
       # short git sha for use in versions
       - name: Get short SHA
         id: sha
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       # get app version from csproj
       - name: Read version
@@ -118,6 +118,9 @@ jobs:
           -s ${{ env.app-project }}
           -o ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
           ${{ matrix.args }}
+          --self-contained
+          --verbose
+        # TODO: remove verbose once working
 
       - uses: actions/upload-artifact@v3
         with:

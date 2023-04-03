@@ -13,14 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      # Enable corepack before node for pnpm cache config
-      - run: corepack enable
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/template.pnpm-install
         with:
           node-version: "16"
-          cache: pnpm
-      - run: pnpm i --frozen-lockfile --filter docs
+          filter: docs
       - run: pnpm --filter docs build
 
       # Popular action to deploy to GitHub Pages:

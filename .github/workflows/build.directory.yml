@@ -31,7 +31,7 @@ jobs:
         with:
           filter: ${{ env.frontend-package }}
 
-      - uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.dotnet-version }}
       - name: dotnet build

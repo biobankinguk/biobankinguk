@@ -17,6 +17,7 @@ jobs:
 
       - uses: ./.github/actions/template.pnpm-install
         with:
+          node-version: "16"
           filter: docs
 
       - name: docs - pnpm build
