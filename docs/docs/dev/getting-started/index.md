@@ -7,7 +7,8 @@ sidebar_position: 1
 ## Prerequisites
 
 - .NET 6.0 SDK
-- Node.js `>=16.9` and `<17`
+- Node.js `>=16.10` (with `corepack` enabled)
+  - just run `corepack enable` once to enable it globally for your node installation
 - PostgreSQL 14 in some form
 
 Optionally:
