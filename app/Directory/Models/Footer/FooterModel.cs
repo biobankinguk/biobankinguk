@@ -7,7 +7,8 @@ namespace Biobanks.Directory.Models.Footer
     {
         public FooterItemModel Links { get; set; }
         public FooterItemModel Logos { get; set; }
-        public string FooterTitle { get; set; }
+        public string Title { get; set; }
+        public string CopyrightText { get; set; }
     }
 
     public class FooterItemModel
