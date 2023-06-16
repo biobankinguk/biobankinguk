@@ -9,6 +9,7 @@ using Biobanks.Directory.Models.Header;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Biobanks.Directory.ViewComponents;
@@ -17,11 +18,13 @@ public class HeaderViewComponent : ViewComponent
 {
     private readonly IMemoryCache _cache;
     private readonly IWebHostEnvironment _env;
+    private readonly IConfiguration _config;
 
-    public HeaderViewComponent(IMemoryCache cache, IWebHostEnvironment env)
+    public HeaderViewComponent(IMemoryCache cache, IWebHostEnvironment env, IConfiguration config)
     {
         _cache = cache;
         _env = env;
+        _config = config;
     }
 
     public IViewComponentResult Invoke()
@@ -52,7 +55,7 @@ public class HeaderViewComponent : ViewComponent
 
     private IEnumerable<NavItemModel> WordPress()
     {
-        var _wordPressUrl = ConfigurationManager.AppSettings["WordPressMenuUrl"];
+        var _wordPressUrl = _config["WordPressMenuUrl"];
 
         // Attempt to use cached data
         var wordPressMenuItems = _cache.Get<IEnumerable<NavItemModel>>(CacheKey.WordpressNavItems);
