@@ -8,7 +8,7 @@
         /// <summary>
         /// The token issuer
         /// </summary>
-        public const string TokenIssuer = "biobankinguk-submissions-api";
+        public const string TokenIssuer = "biobankinguk-api";
 
         /// <summary>
         /// The intended token audience

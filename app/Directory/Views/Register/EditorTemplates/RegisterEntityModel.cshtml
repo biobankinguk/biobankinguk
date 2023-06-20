@@ -4,7 +4,11 @@
 @inject IConfigService _config
 
 
-@Html.HiddenFor(x => x.AdacInvited)
+@if (Model.AdacInvited)
+{
+  @Html.HiddenFor(x => x.AdacInvited)
+}
+
 <input name="AcceptTerms" type="checkbox" style="display:none !important" autocomplete="off" value="false"/>
 
 <div class="form-group">

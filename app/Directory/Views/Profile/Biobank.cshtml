@@ -222,7 +222,7 @@
     </thead>
 
     <tbody>
-    @for (var year = int.Parse(annualStatisticsOptions.AnnualStatsStartYear); year <= DateTime.Now.Year; year++)
+    @for (var year = int.Parse(annualStatisticsOptions.StartYear); year <= DateTime.Now.Year; year++)
     {
       <tr>
         <td>@year</td>

@@ -858,7 +858,7 @@ public class ProfileController : Controller
         if (model.Year > DateTime.Now.Year)
             ModelState.AddModelError("", $"Year value for annual stat cannot be in the future.");
 
-        var annualStatsStartYear = int.Parse(_annualStatisticsConfig.AnnualStatsStartYear);
+        var annualStatsStartYear = int.Parse(_annualStatisticsConfig.StartYear);
         if (model.Year < annualStatsStartYear)
             ModelState.AddModelError("", $"Year value for annual stat cannot be earlier than {annualStatsStartYear}");
 

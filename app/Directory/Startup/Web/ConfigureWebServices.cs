@@ -75,7 +75,7 @@ public static class ConfigureWebServices
       .Configure<HangfireOptions>(b.Configuration.GetSection("Hangfire"))
       .Configure<MaterialTypesLegacyModel>(b.Configuration.GetSection("MaterialTypesLegacyModel"))
       .Configure<StorageTemperatureLegacyModel>(b.Configuration.GetSection("StorageTemperatureLegacyModel"))
-      .Configure<ElasticsearchConfig>(b.Configuration.GetSection("Elasticsearch"));
+      .Configure<ElasticSearchConfig>(b.Configuration.GetSection("ElasticSearch"));
 
     // Databases
     b.Services
@@ -271,11 +271,11 @@ public static class ConfigureWebServices
 
   private static IServiceCollection AddElasticSearch(this IServiceCollection s, IConfiguration c)
   {
-    var elasticConfig = c.GetSection("ElasticSearch").Get<ElasticsearchConfig>() ?? new();
+    var elasticConfig = c.GetSection("ElasticSearch").Get<ElasticSearchConfig>() ?? new();
 
     return s.AddTransient<ICollectionSearchProvider>(
         sp => new ElasticCollectionSearchProvider(
-          elasticConfig.ElasticsearchUrl,
+          elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
           elasticConfig.Username,
           elasticConfig.Password
@@ -283,7 +283,7 @@ public static class ConfigureWebServices
       )
       .AddTransient<ICollectionIndexProvider>(
         sp => new ElasticCollectionIndexProvider(
-          elasticConfig.ElasticsearchUrl,
+          elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
           elasticConfig.Username,
           elasticConfig.Password
@@ -291,7 +291,7 @@ public static class ConfigureWebServices
       )
       .AddTransient<ICapabilitySearchProvider>(
         sp => new ElasticCapabilitySearchProvider(
-          elasticConfig.ElasticsearchUrl,
+          elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
           elasticConfig.Username,
           elasticConfig.Password
@@ -299,7 +299,7 @@ public static class ConfigureWebServices
       )
       .AddTransient<ICapabilityIndexProvider>(
         sp => new ElasticCapabilityIndexProvider(
-          elasticConfig.ElasticsearchUrl,
+          elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
           elasticConfig.Username,
           elasticConfig.Password

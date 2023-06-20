@@ -4,7 +4,7 @@
 
 	@* Logos *@
 	<div class ="row col-sm-12">
-		<p class="footer-title">@Model.FooterTitle</p>
+		<p class="footer-title">@Model.Title</p>
 	</div>
 	<div class="row footer-logo-section">
 		<div class="col-sm-12 footer-logos">
@@ -37,11 +37,11 @@
 		</div>
 	</section>
 
-	@* Copyright and Versioning *@
+	@* Copyright *@
 	<section>
 		<div class="row footer-copyright-section">
 			<div class="col-sm-12">
-				&copy; @DateTime.Now.Year @Model.Links.Title
+				&copy; @DateTime.Now.Year @Model.CopyrightText
 			</div>
 		</div>
 	</section>

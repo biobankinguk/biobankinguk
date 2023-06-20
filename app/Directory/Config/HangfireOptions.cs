@@ -8,6 +8,6 @@
         /// <summary>
         /// The name of the schema to use for this app's Hangfire tables
         /// </summary>
-        public string SchemaName { get; set; } = "apiHangfire";
+        public string SchemaName { get; set; } = "Hangfire";
     }
 }
