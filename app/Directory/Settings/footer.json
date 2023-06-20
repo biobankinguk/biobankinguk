@@ -1,24 +1,23 @@
 {
-	"links": {
-		"title": "",
-		"child_items": [
-			{
-				"title": "Privacy Policy",
-				"url": "/Pages/Privacy"
-			},
-			{
-				"title": "Cookies Policy",
-				"url": "/Home/Cookies"
-			}
-		]
-	},
-	"logos": {
-		"child_items": [
-			{
-				"title": "",
-				"src": "",
-				"url": ""
-			}
-		]
-	}
+  "links": {
+    "child_items": [
+      {
+        "title": "Privacy Policy",
+        "url": "/Pages/Privacy"
+      },
+      {
+        "title": "Cookies Policy",
+        "url": "/Home/Cookies"
+      }
+    ]
+  },
+  "logos": {
+    "child_items": [
+      {
+        "title": "",
+        "src": "",
+        "url": ""
+      }
+    ]
+  }
 }
