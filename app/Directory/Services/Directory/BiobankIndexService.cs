@@ -35,7 +35,7 @@ namespace Biobanks.Directory.Services.Directory
 
     private readonly TelemetryClient _telemetryClient;
     private readonly ApplicationDbContext _context;
-    private readonly ElasticsearchConfig _elasticsearchConfig;
+    private readonly ElasticSearchConfig _elasticsearchConfig;
 
     public BiobankIndexService(
             IReferenceDataCrudService<DonorCount> donorCountService,
@@ -44,7 +44,7 @@ namespace Biobanks.Directory.Services.Directory
             IHostEnvironment hostEnvironment,
             TelemetryClient telemetryClient,
             ApplicationDbContext context,
-            IOptions<ElasticsearchConfig> elasticsearchConfig
+            IOptions<ElasticSearchConfig> elasticsearchConfig
             )
     {
       _donorCountService = donorCountService;
@@ -161,7 +161,7 @@ namespace Biobanks.Directory.Services.Directory
     {
       //Building the Search Index
 
-      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
+      var searchBase = _elasticsearchConfig.ApiBaseUrl;
       var indexNames = new Dictionary<string, string>
       {
         ["collections"] = _elasticsearchConfig.DefaultCollectionsSearchIndex,
@@ -208,7 +208,7 @@ namespace Biobanks.Directory.Services.Directory
 
     public async Task<string> GetClusterHealth()
     {
-      var searchBase = _elasticsearchConfig.ElasticsearchUrl;
+      var searchBase = _elasticsearchConfig.ApiBaseUrl;
 
       try
       {
