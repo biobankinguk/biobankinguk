@@ -122,6 +122,162 @@ importers:
       pwstrength-bootstrap: 1.2.10
       typeahead.js: 0.11.1
 
+  app/Directory/bin/Debug/net6.0/osx.13-arm64/Frontend:
+    specifiers:
+      '@avica/knockout-mapping': ^2.7.0
+      bootbox: ^4.4.0
+      bootstrap: ^3.4.1
+      bootstrap-slider: ^5.3.6
+      datatables.net: ^1.10.23
+      datatables.net-bs: ^1.10.23
+      datatables.net-buttons: ^1.1.2
+      datatables.net-buttons-bs: ^1.6.5
+      datatables.net-rowreorder: ^1.2.7
+      datatables.net-rowreorder-bs: ^1.2.7
+      datetime-moment: ^1.0.0
+      font-awesome: ^4.7.0
+      jquery: ^2.2.4
+      jquery-ajax-unobtrusive: ^3.2.6
+      jquery-validation: ^1.14.0
+      jquery-validation-unobtrusive: ^3.2.11
+      jquery.cookie: ^1.4.1
+      knockout: ^3.4.2
+      knockout.validation: ^2.0.4
+      markdowndeep: ^1.6.12
+      moment: ^2.12.0
+      plotly.js: ^1.58.4
+      pwstrength-bootstrap: ^1.2.10
+      typeahead.js: ^0.11.1
+    dependencies:
+      '@avica/knockout-mapping': 2.7.0_knockout@3.5.1
+      bootbox: 4.4.0
+      bootstrap: 3.4.1
+      bootstrap-slider: 5.3.6
+      datatables.net: 1.12.1
+      datatables.net-bs: 1.12.1
+      datatables.net-buttons: 1.7.1
+      datatables.net-buttons-bs: 1.7.1
+      datatables.net-rowreorder: 1.2.8
+      datatables.net-rowreorder-bs: 1.2.8
+      datetime-moment: 1.0.0
+      font-awesome: 4.7.0
+      jquery: 2.2.4
+      jquery-ajax-unobtrusive: 3.2.6
+      jquery-validation: 1.19.5_jquery@2.2.4
+      jquery-validation-unobtrusive: 3.2.12
+      jquery.cookie: 1.4.1
+      knockout: 3.5.1
+      knockout.validation: 2.0.4_knockout@3.5.1
+      markdowndeep: 1.6.12
+      moment: 2.29.4
+      plotly.js: 1.58.5
+      pwstrength-bootstrap: 1.2.10
+      typeahead.js: 0.11.1
+
+  app/Directory/bin/Debug/net6.0/win-x64/Frontend:
+    specifiers:
+      '@avica/knockout-mapping': ^2.7.0
+      bootbox: ^4.4.0
+      bootstrap: ^3.4.1
+      bootstrap-slider: ^5.3.6
+      datatables.net: ^1.10.23
+      datatables.net-bs: ^1.10.23
+      datatables.net-buttons: ^1.1.2
+      datatables.net-buttons-bs: ^1.6.5
+      datatables.net-rowreorder: ^1.2.7
+      datatables.net-rowreorder-bs: ^1.2.7
+      datetime-moment: ^1.0.0
+      font-awesome: ^4.7.0
+      jquery: ^2.2.4
+      jquery-ajax-unobtrusive: ^3.2.6
+      jquery-validation: ^1.14.0
+      jquery-validation-unobtrusive: ^3.2.11
+      jquery.cookie: ^1.4.1
+      knockout: ^3.4.2
+      knockout.validation: ^2.0.4
+      markdowndeep: ^1.6.12
+      moment: ^2.12.0
+      plotly.js: ^1.58.4
+      pwstrength-bootstrap: ^1.2.10
+      typeahead.js: ^0.11.1
+    dependencies:
+      '@avica/knockout-mapping': 2.7.0_knockout@3.5.1
+      bootbox: 4.4.0
+      bootstrap: 3.4.1
+      bootstrap-slider: 5.3.6
+      datatables.net: 1.12.1
+      datatables.net-bs: 1.12.1
+      datatables.net-buttons: 1.7.1
+      datatables.net-buttons-bs: 1.7.1
+      datatables.net-rowreorder: 1.2.8
+      datatables.net-rowreorder-bs: 1.2.8
+      datetime-moment: 1.0.0
+      font-awesome: 4.7.0
+      jquery: 2.2.4
+      jquery-ajax-unobtrusive: 3.2.6
+      jquery-validation: 1.19.5_jquery@2.2.4
+      jquery-validation-unobtrusive: 3.2.12
+      jquery.cookie: 1.4.1
+      knockout: 3.5.1
+      knockout.validation: 2.0.4_knockout@3.5.1
+      markdowndeep: 1.6.12
+      moment: 2.29.4
+      plotly.js: 1.58.5
+      pwstrength-bootstrap: 1.2.10
+      typeahead.js: 0.11.1
+
+  app/Directory/bin/release/net6.0/Frontend:
+    specifiers:
+      '@avica/knockout-mapping': ^2.7.0
+      bootbox: ^4.4.0
+      bootstrap: ^3.4.1
+      bootstrap-slider: ^5.3.6
+      datatables.net: ^1.10.23
+      datatables.net-bs: ^1.10.23
+      datatables.net-buttons: ^1.1.2
+      datatables.net-buttons-bs: ^1.6.5
+      datatables.net-rowreorder: ^1.2.7
+      datatables.net-rowreorder-bs: ^1.2.7
+      datetime-moment: ^1.0.0
+      font-awesome: ^4.7.0
+      jquery: ^2.2.4
+      jquery-ajax-unobtrusive: ^3.2.6
+      jquery-validation: ^1.14.0
+      jquery-validation-unobtrusive: ^3.2.11
+      jquery.cookie: ^1.4.1
+      knockout: ^3.4.2
+      knockout.validation: ^2.0.4
+      markdowndeep: ^1.6.12
+      moment: ^2.12.0
+      plotly.js: ^1.58.4
+      pwstrength-bootstrap: ^1.2.10
+      typeahead.js: ^0.11.1
+    dependencies:
+      '@avica/knockout-mapping': 2.7.0_knockout@3.5.1
+      bootbox: 4.4.0
+      bootstrap: 3.4.1
+      bootstrap-slider: 5.3.6
+      datatables.net: 1.12.1
+      datatables.net-bs: 1.12.1
+      datatables.net-buttons: 1.7.1
+      datatables.net-buttons-bs: 1.7.1
+      datatables.net-rowreorder: 1.2.8
+      datatables.net-rowreorder-bs: 1.2.8
+      datetime-moment: 1.0.0
+      font-awesome: 4.7.0
+      jquery: 2.2.4
+      jquery-ajax-unobtrusive: 3.2.6
+      jquery-validation: 1.19.5_jquery@2.2.4
+      jquery-validation-unobtrusive: 3.2.12
+      jquery.cookie: 1.4.1
+      knockout: 3.5.1
+      knockout.validation: 2.0.4_knockout@3.5.1
+      markdowndeep: 1.6.12
+      moment: 2.29.4
+      plotly.js: 1.58.5
+      pwstrength-bootstrap: 1.2.10
+      typeahead.js: 0.11.1
+
   docs:
     specifiers:
       '@algolia/client-search': ^4.15.0
@@ -176,6 +332,58 @@ importers:
       '@types/react-helmet': 6.1.6
       '@types/react-router-dom': 5.3.3
       typescript: 4.9.5
+
+  publish/Frontend:
+    specifiers:
+      '@avica/knockout-mapping': ^2.7.0
+      bootbox: ^4.4.0
+      bootstrap: ^3.4.1
+      bootstrap-slider: ^5.3.6
+      datatables.net: ^1.10.23
+      datatables.net-bs: ^1.10.23
+      datatables.net-buttons: ^1.1.2
+      datatables.net-buttons-bs: ^1.6.5
+      datatables.net-rowreorder: ^1.2.7
+      datatables.net-rowreorder-bs: ^1.2.7
+      datetime-moment: ^1.0.0
+      font-awesome: ^4.7.0
+      jquery: ^2.2.4
+      jquery-ajax-unobtrusive: ^3.2.6
+      jquery-validation: ^1.14.0
+      jquery-validation-unobtrusive: ^3.2.11
+      jquery.cookie: ^1.4.1
+      knockout: ^3.4.2
+      knockout.validation: ^2.0.4
+      markdowndeep: ^1.6.12
+      moment: ^2.12.0
+      plotly.js: ^1.58.4
+      pwstrength-bootstrap: ^1.2.10
+      typeahead.js: ^0.11.1
+    dependencies:
+      '@avica/knockout-mapping': 2.7.0_knockout@3.5.1
+      bootbox: 4.4.0
+      bootstrap: 3.4.1
+      bootstrap-slider: 5.3.6
+      datatables.net: 1.12.1
+      datatables.net-bs: 1.12.1
+      datatables.net-buttons: 1.7.1
+      datatables.net-buttons-bs: 1.7.1
+      datatables.net-rowreorder: 1.2.8
+      datatables.net-rowreorder-bs: 1.2.8
+      datetime-moment: 1.0.0
+      font-awesome: 4.7.0
+      jquery: 2.2.4
+      jquery-ajax-unobtrusive: 3.2.6
+      jquery-validation: 1.19.5_jquery@2.2.4
+      jquery-validation-unobtrusive: 3.2.12
+      jquery.cookie: 1.4.1
+      knockout: 3.5.1
+      knockout.validation: 2.0.4_knockout@3.5.1
+      markdowndeep: 1.6.12
+      moment: 2.29.4
+      plotly.js: 1.58.5
+      pwstrength-bootstrap: 1.2.10
+      typeahead.js: 0.11.1
 
 packages:
 
