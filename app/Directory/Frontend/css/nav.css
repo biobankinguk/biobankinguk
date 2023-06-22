@@ -1,63 +1,62 @@
 /* Navigation Header */
 .navbar {
-    border: none;
+  border: none;
 }
 .navbar .container {
-    padding: 0;
+  padding: 0;
 }
 .navbar-header {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 .navbar-nav {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-end;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
 }
 
 /* Logo */
 .navbar-logo {
-    height: 100px;
+  height: 100px;
 }
-.navbar-logo .logo, .navbar-logo .logo img {
-    width: 165px;
-    height: 80px;
+.navbar-logo .logo,
+.navbar-logo .logo img {
+  height: 80px;
 }
 .navbar-logo .logo {
-    display: inline-block;
-    padding-top: 10px;
+  display: inline-block;
+  padding-top: 10px;
 }
 .navbar-collapse-container {
-    width: 100%;
+  width: 100%;
 }
 .navbar-collapse {
-    flex-grow: 1;
-    flex-flow: column;
+  flex-grow: 1;
+  flex-flow: column;
 }
-
 
 /* Modifications for Mobile Menu */
-@media(min-width: 768px) {
-
-    /* Shifts Navigation To Right */
-    .navbar-collapse.collapse {
-        display: flex !important;
-        justify-content: flex-end;
-    }
+@media (min-width: 768px) {
+  /* Shifts Navigation To Right */
+  .navbar-collapse.collapse {
+    display: flex !important;
+    justify-content: flex-end;
+  }
 }
-@media(max-width: 768px) {
-    .collapse.in li, .collapsing li {
-        width: 100%;
-    }
-    .navbar-header {
-        flex-wrap: wrap;
-    }
-    .navbar-logo {
-        margin-left: 15px;
-        flex: 1 0 auto;
-    }
-    .navbar-nav {
-        margin: 0;
-        padding-top: 0 !important;
-    }
+@media (max-width: 768px) {
+  .collapse.in li,
+  .collapsing li {
+    width: 100%;
+  }
+  .navbar-header {
+    flex-wrap: wrap;
+  }
+  .navbar-logo {
+    margin-left: 15px;
+    flex: 1 0 auto;
+  }
+  .navbar-nav {
+    margin: 0;
+    padding-top: 0 !important;
+  }
 }
