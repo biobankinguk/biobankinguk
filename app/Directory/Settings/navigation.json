@@ -16,21 +16,21 @@
 			},
 			{
 				"action": "networks"
-			},
-			{
-				"action": "login"
-			},
-			{
-				"title": "Register",
-				"action": "register_biobank"
-			},
-			{
-				"action": "logout"
 			}
 		]
 	},
 	{
 		"action": "contact",
 		"toolbar":  true
+	},
+	{
+		"action": "login"
+	},
+	{
+		"title": "Register",
+		"action": "register_biobank"
+	},
+	{
+		"action": "logout"
 	}
 ]
