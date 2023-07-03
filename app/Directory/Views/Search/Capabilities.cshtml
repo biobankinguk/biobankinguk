@@ -12,48 +12,41 @@
 
 <h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
 
-<div class="row row-buffer">
-  <div class="alert alert-info">
-    Can't find what your looking for? <a href="https://technology-finddx.formtitan.com/ftproject/ftc7cbfe6ea56a4dc4ba129a0bdb08c834" target="_blank">Click here</a> to send us a request.
-  </div>
-</div>
-
 <div class="row">
-    @await Html.PartialAsync("_Facets", new FacetsModel
-    {
-        Action = Context.Request.RouteValues["action"]?.ToString(),
-        OntologyTerm = Model.OntologyTerm,
-        Facets = Model.Facets,
-        SelectedFacets = Model.SelectedFacets,
-        StorageTemperatureName = Model.StorageTemperatureName,
-        MacroscopicAssessmentName = Model.MacroscopicAssessmentName,
-        DonorCount = Model.DonorCount,
-    })
-    <div class="col-sm-8">
-        @if (!Model.Biobanks.IsNullOrEmpty())
-        {
-            foreach (var biobank in Model.Biobanks)
-            {
-                <a href="@Url.Action("CapabilitiesDetail", "Search",
-                           new
-                           {
-                             biobankExternalId = biobank.ExternalId,
-                             diagnosis = Model.OntologyTerm,
-                             selectedFacets = Context.Request.Query["selectedFacets"]
-                           })" class="detailed-search-link">
-                    <div class="well well-hover">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <h4 class="no-link-style">@biobank.Name</h4>
-                                <p>Click for more details...</p>
-                            </div>
-                            <div class="col-sm-4 text-right">
-                                @await Html.PartialAsync("_ContactButton", biobank.ExternalId)
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            }
-        }
+  <div class="col-lg-12 row-buffer">
+    <div class="alert alert-info">
+      Can't find what your looking for? <a href="https://technology-finddx.formtitan.com/ftproject/ftc7cbfe6ea56a4dc4ba129a0bdb08c834" target="_blank">Click here</a> to send us a request.
     </div>
+  </div>
+  @await Html.PartialAsync("_Facets", new FacetsModel
+         {
+           Action = Context.Request.RouteValues["action"]?.ToString(),
+           OntologyTerm = Model.OntologyTerm,
+           Facets = Model.Facets,
+           SelectedFacets = Model.SelectedFacets,
+           StorageTemperatureName = Model.StorageTemperatureName,
+           MacroscopicAssessmentName = Model.MacroscopicAssessmentName,
+           DonorCount = Model.DonorCount,
+         })
+  <div class="col-sm-8">
+    @if (!Model.Biobanks.IsNullOrEmpty())
+    {
+      foreach (var biobank in Model.Biobanks)
+      {
+        <a href="@Url.Action("CapabilitiesDetail", "Search", new { biobankExternalId = biobank.ExternalId, diagnosis = Model.OntologyTerm, selectedFacets = Context.Request.Query["selectedFacets"] })" class="detailed-search-link">
+          <div class="well well-hover">
+            <div class="row">
+              <div class="col-sm-8">
+                <h4 class="no-link-style">@biobank.Name</h4>
+                <p>Click for more details...</p>
+              </div>
+              <div class="col-sm-4 text-right">
+                @await Html.PartialAsync("_ContactButton", biobank.ExternalId)
+              </div>
+            </div>
+          </div>
+        </a>
+      }
+    }
+  </div>
 </div>
