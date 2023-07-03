@@ -8,12 +8,6 @@
     ViewBag.NoFooterMargin = true;
 }
 
-@* Sets the splash image from configuration *@
-<style>
-    .splash-img {
-        background-image: url( @Url.Content("~/Content/images/splash_background_tinted.jpg") );
-    }
-</style>
 @* Homepage overrides the default positioning, so we can have this inside the splash area *@
 <section id="feedback-message" data-ajax-source="@Url.Action("FeedbackMessageAjax", "Home")">
   <partial name="_FeedbackMessage"/>
@@ -29,7 +23,7 @@
 </div>
 <div class="container-fluid search-section">
     <div id="focus" class="container text-center">
-      <partial name="~/Views/Home/_AltUnifiedSearchBox.cshtml" model="Model" )/>
+      <partial name="~/Views/Home/_AltUnifiedSearchBox.cshtml" model="Model" />
     </div>
 </div>
 <div id="register" class="row container-fluid registration-section">
