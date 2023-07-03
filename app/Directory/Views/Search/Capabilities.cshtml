@@ -12,6 +12,12 @@
 
 <h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
 
+<div class="row row-buffer">
+  <div class="alert alert-info">
+    Can't find what your looking for? <a href="https://technology-finddx.formtitan.com/ftproject/ftc7cbfe6ea56a4dc4ba129a0bdb08c834" target="_blank">Click here</a> to send us a request.
+  </div>
+</div>
+
 <div class="row">
     @await Html.PartialAsync("_Facets", new FacetsModel
     {
