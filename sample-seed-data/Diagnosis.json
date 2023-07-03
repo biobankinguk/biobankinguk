@@ -1,0 +1,116 @@
+[
+    {
+      "Id": 1,
+      "Value": "Human African trypanosomiasis",
+      "SnomedIdentifier": 27031003,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 2,
+      "Value": "Cutaneous leishmaniasis",
+      "SnomedIdentifier": 240637006,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 3,
+      "Value": "Visceral leishmaniasis ",
+      "SnomedIdentifier": 186803007,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 4,
+      "Value": "Schistosomiasis",
+      "SnomedIdentifier": 187115002,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 5,
+      "Value": "Buruli ulcer",
+      "SnomedIdentifier": 15845006,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 6,
+      "Value": "Chagas disease",
+      "SnomedIdentifier": 77506005,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 7,
+      "Value": "Hepatitis C",
+      "SnomedIdentifier": 50711007,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 8,
+      "Value": "HIV",
+      "SnomedIdentifier": 165816005,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 9,
+      "Value": "Malaria",
+      "SnomedIdentifier": 61462000,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 10,
+      "Value": "Dengue",
+      "SnomedIdentifier": 38362002,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 11,
+      "Value": "Yellow fever",
+      "SnomedIdentifier": 16541001,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 12,
+      "Value": "Lassa fever",
+      "SnomedIdentifier": 19065005,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 13,
+      "Value": "Typhoid fever",
+      "SnomedIdentifier": 4834000,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 14,
+      "Value": "West Nile fever",
+      "SnomedIdentifier": 417093003,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 15,
+      "Value": "Zika",
+      "SnomedIdentifier": 3928002,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 16,
+      "Value": "Ebola Hemorrhagic Fever",
+      "SnomedIdentifier": 37109004,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 17,
+      "Value": "Chikungunya fever",
+      "SnomedIdentifier": 111864006,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 18,
+      "Value": "COVID-19",
+      "SnomedIdentifier": 840539006,
+      "OtherTerms": ""
+    },
+    {
+      "Id": 19,
+      "Value": "Tuberculosis",
+      "SnomedIdentifier": 56717001,
+      "OtherTerms": ""
+    }
+   ]
