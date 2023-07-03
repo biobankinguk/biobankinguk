@@ -20,6 +20,12 @@ namespace Biobanks.Directory.Config
 
     public bool HotjarEnabled { get; set; }
 
+    /// <summary>
+    /// Search Results Pages (including "No Results") can offer
+    /// a Contact option by linking to this URL, if one is present
+    /// </summary>
+    public string SearchContactFormUrl { get; set; } = string.Empty;
+
     // Google Analytics / Recaptcha
     public bool GoogleAnalyticsEnabled { get; set; }
 

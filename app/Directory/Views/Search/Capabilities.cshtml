@@ -1,8 +1,12 @@
 @using Biobanks.Directory.Extensions
 @using Biobanks.Directory.Models.Search
 @model Biobanks.Directory.Models.Search.BaseSearchModel
+@using Biobanks.Directory.Config
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
+
 @{
     ViewBag.Title = "Search Results";
+    var siteProperties = _sitePropertiesOptions.Value;
 }
 
 @section FooterScripts
@@ -13,11 +17,16 @@
 <h2 class="search">@ViewBag.Title: <small>@Model.OntologyTerm</small></h2>
 
 <div class="row">
-  <div class="col-lg-12 row-buffer">
-    <div class="alert alert-info">
-      Can't find what your looking for? <a href="https://technology-finddx.formtitan.com/ftproject/ftc7cbfe6ea56a4dc4ba129a0bdb08c834" target="_blank">Click here</a> to send us a request.
+  
+  @if (!string.IsNullOrWhiteSpace(siteProperties.SearchContactFormUrl))
+  {
+    <div class="col-lg-12 row-buffer">
+      <div class="alert alert-info">
+        Can't find what your looking for? <a href="@(siteProperties.SearchContactFormUrl)" target="_blank">Click here</a> to send us a request.
+      </div>
     </div>
-  </div>
+  }
+
   @await Html.PartialAsync("_Facets", new FacetsModel
          {
            Action = Context.Request.RouteValues["action"]?.ToString(),
