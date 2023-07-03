@@ -19,14 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Settings\footer.json" />
-    <None Include="Settings\header.json" />
-    <None Include="Settings\navigation.json" />
-    <None Include="Settings\LegacyMaterialTypes.json" />
-    <None Include="Settings\LegacyStorageTemperatures.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="BuildBundlerMinifierPlus" Version="5.3.0" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
@@ -73,7 +65,7 @@
     </Content>
   </ItemGroup>
 
-  <Target Name="CopyStaticAssets" BeforeTargets="Build">
+  <Target Name="CopyStaticAssets" BeforeTargets="BeforeBuild">
     <!--
     Copy static assets from source locations (e.g. node_modules) to wwwroot.
   
@@ -91,6 +83,17 @@
 
     <Copy SourceFiles="@(Assets_Fonts)" DestinationFiles="wwwroot/dist/fonts/%(RecursiveDir)%(Filename)%(Extension)" />
     <Copy SourceFiles="@(Assets_Markdown)" DestinationFiles="wwwroot/dist/css/%(RecursiveDir)%(Filename)%(Extension)" />
+
+    <!-- Elastic Search Index Descriptions -->
+    <Copy SourceFiles="..\..\elastic-search\directory index setup\capabilities.json" DestinationFolder="Settings" />
+    <Copy SourceFiles="..\..\elastic-search\directory index setup\collections.json" DestinationFolder="Settings" />
+  </Target>
+
+  <!-- Newly Generated Items outside wwwroot don't get picked up by publish by default -->
+  <Target Name="AddGeneratedContentItems" BeforeTargets="AssignTargetPaths" DependsOnTargets="PrepareForPublish">
+    <ItemGroup>
+      <Content Include="Settings/**" CopyToPublishDirectory="PreserveNewest" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content)" />
+    </ItemGroup>
   </Target>
  
 </Project>

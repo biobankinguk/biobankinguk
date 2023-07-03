@@ -170,8 +170,8 @@ namespace Biobanks.Directory.Services.Directory
 
       var _navPaths = new List<string>()
             {
-                Path.Combine(_hostEnvironment.ContentRootPath,@"~/App_Config/capabilities.json"),
-                Path.Combine(_hostEnvironment.ContentRootPath,@"~/App_Config/collections.json")
+                Path.Combine(_hostEnvironment.ContentRootPath,@"Settings/capabilities.json"),
+                Path.Combine(_hostEnvironment.ContentRootPath,@"Settings/collections.json")
             };
       using (var client = new HttpClient())
       {
