@@ -84,13 +84,13 @@ jobs:
 
       # Conditionally prep some variables for the Release
       - name: set Release Tag to Version
-        if: ${{ github.events.inputs.override-tag == '' }}
+        if: ${{ github.event.inputs.override-tag == '' }}
         run: |
-          echo "RELEASE_TAG=v${{ steps.version.outputs.version }}"
+          echo "RELEASE_TAG=v${{ steps.version.outputs.version }}" >> $GITHUB_ENV
       - name: set Release Tag to Override Value
-        if: ${{ github.events.inputs.override-tag != '' }}
+        if: ${{ github.event.inputs.override-tag != '' }}
         run: |
-          echo "RELEASE_TAG=${{ github.events.inputs.override-tag }}"
+          echo "RELEASE_TAG=${{ github.event.inputs.override-tag }}" >> $GITHUB_ENV
 
       # make the release
       - uses: ncipollo/release-action@v1
