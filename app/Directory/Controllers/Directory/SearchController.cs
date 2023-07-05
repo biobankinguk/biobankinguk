@@ -238,6 +238,7 @@ public class SearchController : Controller
             return View(model);
         }
 
+
         #region Diagnosis Type Ahead
 
         [AllowAnonymous]

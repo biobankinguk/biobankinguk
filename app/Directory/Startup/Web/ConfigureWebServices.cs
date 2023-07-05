@@ -277,32 +277,32 @@ public static class ConfigureWebServices
         sp => new ElasticCollectionSearchProvider(
           elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-          elasticConfig.ApiKeyId,
-          elasticConfig.ApiKey
+          elasticConfig.Username,
+          elasticConfig.Password
         )
       )
       .AddTransient<ICollectionIndexProvider>(
         sp => new ElasticCollectionIndexProvider(
           elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-          elasticConfig.ApiKeyId,
-          elasticConfig.ApiKey
+          elasticConfig.Username,
+          elasticConfig.Password
         )
       )
       .AddTransient<ICapabilitySearchProvider>(
         sp => new ElasticCapabilitySearchProvider(
           elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-          elasticConfig.ApiKeyId,
-          elasticConfig.ApiKey
+          elasticConfig.Username,
+          elasticConfig.Password
         )
       )
       .AddTransient<ICapabilityIndexProvider>(
         sp => new ElasticCapabilityIndexProvider(
           elasticConfig.ApiBaseUrl,
           (elasticConfig.DefaultCollectionsSearchIndex, elasticConfig.DefaultCapabilitiesSearchIndex),
-          elasticConfig.ApiKeyId,
-          elasticConfig.ApiKey
+          elasticConfig.Username,
+          elasticConfig.Password
         )
       )
       .AddTransient<ISearchProvider, LegacySearchProvider>()
