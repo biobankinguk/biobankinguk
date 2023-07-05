@@ -8,6 +8,6 @@ public class ElasticSearchConfig
     public string ApiBaseUrl { get; init; } = "http://localhost:9200";
     public string DefaultCollectionsSearchIndex { get; init; } = "collections";
     public string DefaultCapabilitiesSearchIndex { get; init; } = "capabilities";
-    public string Username { get; init; } = "";
-    public string Password { get; init; } = "";
+    public string ApiKeyId { get; init; } = "";
+    public string ApiKey { get; init; } = "";
 }
