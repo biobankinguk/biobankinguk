@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Biobanks.Data;
 using Biobanks.Data.Entities;
@@ -37,15 +39,17 @@ namespace Biobanks.Directory.Services.Directory
     private readonly ApplicationDbContext _context;
     private readonly ElasticSearchConfig _elasticsearchConfig;
 
+    private readonly string _elasticBasicAuthCredentials = "";
+
     public BiobankIndexService(
-            IReferenceDataCrudService<DonorCount> donorCountService,
-            IIndexProvider indexProvider,
-            ISearchProvider searchProvider,
-            IHostEnvironment hostEnvironment,
-            TelemetryClient telemetryClient,
-            ApplicationDbContext context,
-            IOptions<ElasticSearchConfig> elasticsearchConfig
-            )
+      IReferenceDataCrudService<DonorCount> donorCountService,
+      IIndexProvider indexProvider,
+      ISearchProvider searchProvider,
+      IHostEnvironment hostEnvironment,
+      TelemetryClient telemetryClient,
+      ApplicationDbContext context,
+      IOptions<ElasticSearchConfig> elasticsearchConfig
+    )
     {
       _donorCountService = donorCountService;
       _indexProvider = indexProvider;
@@ -54,109 +58,126 @@ namespace Biobanks.Directory.Services.Directory
       _telemetryClient = telemetryClient;
       _context = context;
       _elasticsearchConfig = elasticsearchConfig.Value;
+
+      // Currently this service sometimes uses HttpClient
+      // to hit Elastic Search REST API directly
+      // instead of using the .NET Client
+      //
+      // Unfortunately, this means it doesn't respect the auth configuration
+      // applied to the ElasticClient by our Search Services
+      // So we have to manually apply credentials ourselves, where appropriate
+      // TODO: move to Elastic Client calls when we upgrade to the new Elastic Client <3
+      if (!string.IsNullOrWhiteSpace(_elasticsearchConfig.Username) &&
+          !string.IsNullOrWhiteSpace(_elasticsearchConfig.Password))
+      {
+        _elasticBasicAuthCredentials = Convert.ToBase64String(
+          Encoding.UTF8.GetBytes(
+            $"{_elasticsearchConfig.Username}:{_elasticsearchConfig.Password}")
+        );
+      }
     }
-    
+
     private async Task<IEnumerable<SampleSet>> GetSampleSetsByIdsForIndexingAsync(
-       IEnumerable<int> sampleSetIds) =>
+      IEnumerable<int> sampleSetIds) =>
     (
       await _context.SampleSets
-      .AsNoTracking()
-      .Where(x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended)
-      .Include(x => x.Collection)
-      .Include(x => x.Collection.OntologyTerm)
-      .Include(x => x.Collection.Organisation)
-      .Include(x => x.Collection.Organisation.OrganisationNetworks)
-          .ThenInclude(on => @on.Network)
-      .Include(x => x.Collection.CollectionStatus)
-      .Include(x => x.Collection.ConsentRestrictions)
-      .Include(x => x.Collection.AccessCondition)
-      .Include(x => x.Collection.CollectionType)
-      .Include(x => x.Collection.AssociatedData)
-          .ThenInclude(ad => ad.AssociatedDataType)
-      .Include(x => x.Collection.AssociatedData)
-          .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
-      .Include(x => x.AgeRange)
-      .Include(x => x.DonorCount)
-      .Include(x => x.Sex)
-      .Include(x => x.MaterialDetails)
-      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
-          .ThenInclude(s => s.ServiceOffering)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.CollectionPercentage)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.MacroscopicAssessment)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.MaterialType)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.StorageTemperature)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.ExtractionProcedure)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(y => y.PreservationType)
-      .Include(x => x.Collection.Organisation.Country)
-      .Include(x => x.Collection.Organisation.County)
-      .ToListAsync()
-     );
+        .AsNoTracking()
+        .Where(x => sampleSetIds.Contains(x.Id) && !x.Collection.Organisation.IsSuspended)
+        .Include(x => x.Collection)
+        .Include(x => x.Collection.OntologyTerm)
+        .Include(x => x.Collection.Organisation)
+        .Include(x => x.Collection.Organisation.OrganisationNetworks)
+        .ThenInclude(on => @on.Network)
+        .Include(x => x.Collection.CollectionStatus)
+        .Include(x => x.Collection.ConsentRestrictions)
+        .Include(x => x.Collection.AccessCondition)
+        .Include(x => x.Collection.CollectionType)
+        .Include(x => x.Collection.AssociatedData)
+        .ThenInclude(ad => ad.AssociatedDataType)
+        .Include(x => x.Collection.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
+        .Include(x => x.AgeRange)
+        .Include(x => x.DonorCount)
+        .Include(x => x.Sex)
+        .Include(x => x.MaterialDetails)
+        .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
+        .ThenInclude(s => s.ServiceOffering)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.CollectionPercentage)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.MacroscopicAssessment)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.MaterialType)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.StorageTemperature)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.ExtractionProcedure)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(y => y.PreservationType)
+        .Include(x => x.Collection.Organisation.Country)
+        .Include(x => x.Collection.Organisation.County)
+        .ToListAsync()
+    );
 
     private async Task<SampleSet> GetSampleSetByIdForIndexingAsync(int id) => (
       await _context.SampleSets
-      .AsNoTracking()
-      .Where(x => x.Id == id)
-      .Include(x => x.Collection)
-      .Include(x => x.Collection.OntologyTerm)
-      .Include(x => x.Collection.Organisation)
-      .Include(x => x.Collection.Organisation.OrganisationNetworks)
-          .ThenInclude(on => on.Network)
-      .Include(x => x.Collection.CollectionStatus)
-      .Include(x => x.Collection.ConsentRestrictions)
-      .Include(x => x.Collection.AccessCondition)
-      .Include(x => x.Collection.CollectionType)
-      .Include(x => x.Collection.AssociatedData)
-          .ThenInclude(x => x.AssociatedDataType)
-      .Include(x => x.Collection.AssociatedData)
-          .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
-      .Include(x => x.AgeRange)
-      .Include(x => x.DonorCount)
-      .Include(x => x.Sex)
-      .Include(x => x.MaterialDetails)
-      .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
-          .ThenInclude(x => x.ServiceOffering)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.CollectionPercentage)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.MacroscopicAssessment)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.MaterialType)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.StorageTemperature)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.ExtractionProcedure)
-      .Include(x => x.MaterialDetails)
-          .ThenInclude(x => x.PreservationType)
-      .Include(x => x.Collection.Organisation.Country)
-      .Include(x => x.Collection.Organisation.County)
-      .FirstOrDefaultAsync()
-      );
+        .AsNoTracking()
+        .Where(x => x.Id == id)
+        .Include(x => x.Collection)
+        .Include(x => x.Collection.OntologyTerm)
+        .Include(x => x.Collection.Organisation)
+        .Include(x => x.Collection.Organisation.OrganisationNetworks)
+        .ThenInclude(on => on.Network)
+        .Include(x => x.Collection.CollectionStatus)
+        .Include(x => x.Collection.ConsentRestrictions)
+        .Include(x => x.Collection.AccessCondition)
+        .Include(x => x.Collection.CollectionType)
+        .Include(x => x.Collection.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataType)
+        .Include(x => x.Collection.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
+        .Include(x => x.AgeRange)
+        .Include(x => x.DonorCount)
+        .Include(x => x.Sex)
+        .Include(x => x.MaterialDetails)
+        .Include(x => x.Collection.Organisation.OrganisationServiceOfferings)
+        .ThenInclude(x => x.ServiceOffering)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.CollectionPercentage)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.MacroscopicAssessment)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.MaterialType)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.StorageTemperature)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.ExtractionProcedure)
+        .Include(x => x.MaterialDetails)
+        .ThenInclude(x => x.PreservationType)
+        .Include(x => x.Collection.Organisation.Country)
+        .Include(x => x.Collection.Organisation.County)
+        .FirstOrDefaultAsync()
+    );
 
     /// <inheritdoc/>
     public async Task<IEnumerable<DiagnosisCapability>> GetCapabilitiesByIdsForIndexingAsync(
-    IEnumerable<int> capabilityIds) => (
-    await _context.DiagnosisCapabilities.Where(x =>
-              capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
-              .Include(x => x.Organisation)
-              .Include(x => x.Organisation.OrganisationNetworks)
-                  .ThenInclude(on => on.Network)
-              .Include(x => x.Organisation.OrganisationServiceOfferings)
-                  .ThenInclude(s => s.ServiceOffering)
-              .Include(x => x.OntologyTerm)
-              .Include(x => x.AssociatedData)
-                  .ThenInclude(x => x.AssociatedDataType)
-              .Include(x => x.AssociatedData)
-                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
-              .Include(x => x.SampleCollectionMode)
-              .ToListAsync()
+      IEnumerable<int> capabilityIds) => (
+      await _context.DiagnosisCapabilities.Where(x =>
+          capabilityIds.Contains(x.DiagnosisCapabilityId) && !x.Organisation.IsSuspended)
+        .Include(x => x.Organisation)
+        .Include(x => x.Organisation.OrganisationNetworks)
+        .ThenInclude(on => on.Network)
+        .Include(x => x.Organisation.OrganisationServiceOfferings)
+        .ThenInclude(s => s.ServiceOffering)
+        .Include(x => x.OntologyTerm)
+        .Include(x => x.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataType)
+        .Include(x => x.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
+        .Include(x => x.SampleCollectionMode)
+        .ToListAsync()
     );
-    
+
     public async Task BuildIndex()
     {
       //Building the Search Index
@@ -169,26 +190,31 @@ namespace Biobanks.Directory.Services.Directory
       };
 
       var _navPaths = new List<string>()
-            {
-                Path.Combine(_hostEnvironment.ContentRootPath,@"Settings/capabilities.json"),
-                Path.Combine(_hostEnvironment.ContentRootPath,@"Settings/collections.json")
-            };
+      {
+        Path.Combine(_hostEnvironment.ContentRootPath, @"Settings/capabilities.json"),
+        Path.Combine(_hostEnvironment.ContentRootPath, @"Settings/collections.json")
+      };
       using (var client = new HttpClient())
       {
+        if (!string.IsNullOrWhiteSpace(_elasticBasicAuthCredentials))
+          client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Basic", _elasticBasicAuthCredentials);
+        
         try
         {
           foreach (var path in _navPaths)
           {
             var fileName = Path.GetFileNameWithoutExtension(path);
             var indexName = indexNames.ContainsKey(fileName)
-                ? indexNames[fileName]
-                : fileName;
+              ? indexNames[fileName]
+              : fileName;
 
             //Deleting the Index
             var deleteResponse = await client.DeleteAsync($"{searchBase}/{indexName}");
 
             //Creating the Index                      
-            HttpContent pathContent = new StringContent(File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
+            HttpContent pathContent =
+              new StringContent(File.ReadAllText(path), System.Text.Encoding.UTF8, "application/json");
             var createResponse = await client.PutAsync($"{searchBase}/{indexName}", pathContent);
 
             //Preventing Index Replication              
@@ -214,6 +240,10 @@ namespace Biobanks.Directory.Services.Directory
       {
         using (var client = new HttpClient())
         {
+          if (!string.IsNullOrWhiteSpace(_elasticBasicAuthCredentials))
+            client.DefaultRequestHeaders.Authorization =
+              new AuthenticationHeaderValue("Basic", _elasticBasicAuthCredentials);
+          
           var response = await client.GetStringAsync($"{searchBase}/_cluster/health");
           var clusterHealth = JsonConvert.DeserializeAnonymousType(response, new
           {
@@ -240,29 +270,29 @@ namespace Biobanks.Directory.Services.Directory
 
       // Queue up a job to add the sample set to the search index.
       BackgroundJob.Enqueue(() => _indexProvider.IndexCollectionSearchDocument(
-          createdSampleSet.Id,
-          createdSampleSet.ToCollectionSearchDocument()));
+        createdSampleSet.Id,
+        createdSampleSet.ToCollectionSearchDocument()));
     }
 
     public async Task IndexCapability(int capabilityId)
     {
       // Get the entire capability object from the database.
       var createdCapability = await _context.DiagnosisCapabilities
-                .AsNoTracking()
-                .Where(x => x.DiagnosisCapabilityId == capabilityId)
-                .Include(x => x.Organisation)
-                .Include(x => x.Organisation.OrganisationNetworks)
-                  .ThenInclude(on => on.Network)
-                .Include(x => x.Organisation.OrganisationServiceOfferings)
-                  .ThenInclude(x => x.ServiceOffering)
-                .Include(x => x.OntologyTerm)
-                .Include(x => x.AssociatedData)
-                  .ThenInclude(x => x.AssociatedDataType)
-                .Include(x => x.AssociatedData)
-                  .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
-                .Include(x => x.SampleCollectionMode)
-                .FirstOrDefaultAsync();
-            
+        .AsNoTracking()
+        .Where(x => x.DiagnosisCapabilityId == capabilityId)
+        .Include(x => x.Organisation)
+        .Include(x => x.Organisation.OrganisationNetworks)
+        .ThenInclude(on => on.Network)
+        .Include(x => x.Organisation.OrganisationServiceOfferings)
+        .ThenInclude(x => x.ServiceOffering)
+        .Include(x => x.OntologyTerm)
+        .Include(x => x.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataType)
+        .Include(x => x.AssociatedData)
+        .ThenInclude(x => x.AssociatedDataProcurementTimeframe)
+        .Include(x => x.SampleCollectionMode)
+        .FirstOrDefaultAsync();
+
 
       // Get the donor counts.
       var donorCounts = await _donorCountService.List();
@@ -272,8 +302,8 @@ namespace Biobanks.Directory.Services.Directory
 
       // Queue up a job to add the sample set to the search index.
       BackgroundJob.Enqueue(() => _indexProvider.IndexCapabilitySearchDocument(
-          createdCapability.DiagnosisCapabilityId,
-          capabilitySearchDocument));
+        createdCapability.DiagnosisCapabilityId,
+        capabilitySearchDocument));
     }
 
     public async Task UpdateSampleSetDetails(int sampleSetId)
@@ -298,33 +328,33 @@ namespace Biobanks.Directory.Services.Directory
           sampleSet.DonorCount.SortOrder
         }),
         MaterialPreservationDetails =
-                    sampleSet
-                        .MaterialDetails
-                        .Select(x => new MaterialPreservationDetailDocument
-                        {
-                          MaterialType = x.MaterialType.Value,
-                          StorageTemperature = x.StorageTemperature.Value,
-                          StorageTemperatureMetadata = JsonConvert.SerializeObject(new
-                          {
-                            Name = x.StorageTemperature.Value,
-                            x.StorageTemperature.SortOrder
-                          }),
-                          MacroscopicAssessment = x.MacroscopicAssessment.Value,
-                          PercentageOfSampleSet = x.CollectionPercentage?.Value,
-                          PreservationType = x.PreservationType?.Value,
-                          ExtractionProcedure = x.ExtractionProcedure?.Value
-                        })
-                        .ToList(),
+          sampleSet
+            .MaterialDetails
+            .Select(x => new MaterialPreservationDetailDocument
+            {
+              MaterialType = x.MaterialType.Value,
+              StorageTemperature = x.StorageTemperature.Value,
+              StorageTemperatureMetadata = JsonConvert.SerializeObject(new
+              {
+                Name = x.StorageTemperature.Value,
+                x.StorageTemperature.SortOrder
+              }),
+              MacroscopicAssessment = x.MacroscopicAssessment.Value,
+              PercentageOfSampleSet = x.CollectionPercentage?.Value,
+              PreservationType = x.PreservationType?.Value,
+              ExtractionProcedure = x.ExtractionProcedure?.Value
+            })
+            .ToList(),
         SampleSetSummary = SampleSetExtensions.BuildSampleSetSummary(
-                        sampleSet.DonorCount.Value,
-                        sampleSet.AgeRange.Value,
-                        sampleSet.Sex.Value,
-                        sampleSet.MaterialDetails)
+          sampleSet.DonorCount.Value,
+          sampleSet.AgeRange.Value,
+          sampleSet.Sex.Value,
+          sampleSet.MaterialDetails)
       };
 
       // Queue up a job to update the sample set in the search index.
       BackgroundJob.Enqueue(() =>
-          _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
+        _indexProvider.UpdateCollectionSearchDocument(sampleSet.Id, partialSampleSet));
     }
 
     public void DeleteSampleSet(int sampleSetId)
@@ -346,29 +376,30 @@ namespace Biobanks.Directory.Services.Directory
       {
         // Queue up a job to update the search document.
         BackgroundJob.Enqueue(() =>
-            _indexProvider.UpdateCollectionSearchDocument(
-                sampleSet.Id,
-                new PartialCollection
+          _indexProvider.UpdateCollectionSearchDocument(
+            sampleSet.Id,
+            new PartialCollection
+            {
+              OntologyTerm = collection.OntologyTerm.Value,
+              CollectionTitle = collection.Title,
+              StartYear = collection.StartDate.Year.ToString(),
+              CollectionStatus = collection.CollectionStatus.Value,
+              ConsentRestrictions =
+                SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
+              AccessCondition = collection.AccessCondition.Value,
+              CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
+              AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
+              {
+                Text = ad.AssociatedDataType.Value,
+                Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
+                TimeframeMetadata = JsonConvert.SerializeObject(new
                 {
-                  OntologyTerm = collection.OntologyTerm.Value,
-                  CollectionTitle = collection.Title,
-                  StartYear = collection.StartDate.Year.ToString(),
-                  CollectionStatus = collection.CollectionStatus.Value,
-                  ConsentRestrictions = SampleSetExtensions.BuildConsentRestrictions(collection.ConsentRestrictions.ToList()),
-                  AccessCondition = collection.AccessCondition.Value,
-                  CollectionType = collection.CollectionType != null ? collection.CollectionType.Value : string.Empty,
-                  AssociatedData = collection.AssociatedData.Select(ad => new AssociatedDataDocument
-                  {
-                    Text = ad.AssociatedDataType.Value,
-                    Timeframe = ad.AssociatedDataProcurementTimeframe.Value,
-                    TimeframeMetadata = JsonConvert.SerializeObject(new
-                    {
-                      Name = ad.AssociatedDataProcurementTimeframe.Value,
-                      ad.AssociatedDataProcurementTimeframe.SortOrder
-                    })
-                  }),
-                  OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
-                }));
+                  Name = ad.AssociatedDataProcurementTimeframe.Value,
+                  ad.AssociatedDataProcurementTimeframe.SortOrder
+                })
+              }),
+              OntologyOtherTerms = SampleSetExtensions.ParseOtherTerms(collection.OntologyTerm.OtherTerms)
+            }));
       }
     }
 
@@ -388,9 +419,9 @@ namespace Biobanks.Directory.Services.Directory
       {
         // Queue up a job to update the search document.
         BackgroundJob.Enqueue(() =>
-            _indexProvider.UpdateCollectionSearchDocument(
-                sampleSet.Id,
-                partialBiobank));
+          _indexProvider.UpdateCollectionSearchDocument(
+            sampleSet.Id,
+            partialBiobank));
       }
 
       // Update all capability search documents that are relevant to this biobank.
@@ -398,9 +429,9 @@ namespace Biobanks.Directory.Services.Directory
       {
         // Queue up a job to update the search document.
         BackgroundJob.Enqueue(() =>
-            _indexProvider.UpdateCapabilitySearchDocument(
-                capability.DiagnosisCapabilityId,
-                partialBiobank));
+          _indexProvider.UpdateCapabilitySearchDocument(
+            capability.DiagnosisCapabilityId,
+            partialBiobank));
       }
     }
 
@@ -411,23 +442,23 @@ namespace Biobanks.Directory.Services.Directory
       {
         // Build the list of network documents.
         var networkDocuments = biobank.OrganisationNetworks
-            .Select(on => on.Network)
-            .Select(n => new NetworkDocument
-            {
-              Name = n.Name
-            });
+          .Select(on => on.Network)
+          .Select(n => new NetworkDocument
+          {
+            Name = n.Name
+          });
 
         // Update all search documents that are relevant to this biobank.
         foreach (var sampleSet in biobank.Collections.SelectMany(c => c.SampleSets))
         {
           // Queue up a job to update the search document.
           BackgroundJob.Enqueue(() =>
-              _indexProvider.UpdateCollectionSearchDocument(
-                  sampleSet.Id,
-                  new PartialNetworks
-                  {
-                    Networks = networkDocuments
-                  }));
+            _indexProvider.UpdateCollectionSearchDocument(
+              sampleSet.Id,
+              new PartialNetworks
+              {
+                Networks = networkDocuments
+              }));
         }
 
         // Update all search documents that are relevant to this biobank.
@@ -435,12 +466,12 @@ namespace Biobanks.Directory.Services.Directory
         {
           // Queue up a job to update the search document.
           BackgroundJob.Enqueue(() =>
-              _indexProvider.UpdateCapabilitySearchDocument(
-                  capability.DiagnosisCapabilityId,
-                  new PartialNetworks
-                  {
-                    Networks = networkDocuments
-                  }));
+            _indexProvider.UpdateCapabilitySearchDocument(
+              capability.DiagnosisCapabilityId,
+              new PartialNetworks
+              {
+                Networks = networkDocuments
+              }));
         }
       }
     }
@@ -453,20 +484,20 @@ namespace Biobanks.Directory.Services.Directory
       {
         // Build the list of network documents.
         var networkDocuments = organisation.OrganisationNetworks
-            .Select(on => on.Network)
-            .Select(n => new NetworkDocument
-            {
-              Name = n.Name
-            });
+          .Select(on => on.Network)
+          .Select(n => new NetworkDocument
+          {
+            Name = n.Name
+          });
 
         // Queue up a job to update the search document.
         BackgroundJob.Enqueue(() =>
-            _indexProvider.UpdateCollectionSearchDocument(
-                sampleSet.Id,
-                new PartialNetworks
-                {
-                  Networks = networkDocuments
-                }));
+          _indexProvider.UpdateCollectionSearchDocument(
+            sampleSet.Id,
+            new PartialNetworks
+            {
+              Networks = networkDocuments
+            }));
       }
     }
 
@@ -474,18 +505,18 @@ namespace Biobanks.Directory.Services.Directory
     {
       //Index samplesets
       await
-          BulkIndexSampleSets(
-              organisation.Collections
-                  .SelectMany(x => x.SampleSets)
-                  .Select(x => x.Id)
-                  .ToList());
+        BulkIndexSampleSets(
+          organisation.Collections
+            .SelectMany(x => x.SampleSets)
+            .Select(x => x.Id)
+            .ToList());
 
       //Index capabilities
       await
-          BulkIndexCapabilities(
-              organisation.DiagnosisCapabilities
-                  .Select(x => x.DiagnosisCapabilityId)
-                  .ToList());
+        BulkIndexCapabilities(
+          organisation.DiagnosisCapabilities
+            .Select(x => x.DiagnosisCapabilityId)
+            .ToList());
     }
 
     public async Task BulkIndexSampleSets(IList<int> sampleSetIds)
@@ -497,23 +528,22 @@ namespace Biobanks.Directory.Services.Directory
 
       for (var i = 0; i < chunkCount; i++)
       {
-
         var chunkSampleSets = await GetSampleSetsByIdsForIndexingAsync(sampleSetIds
-                .Skip(i * BulkIndexChunkSize)
-                .Take(BulkIndexChunkSize));
+          .Skip(i * BulkIndexChunkSize)
+          .Take(BulkIndexChunkSize));
 
         BackgroundJob.Enqueue(
-            () => _indexProvider.BulkIndexCollectionSearchDocuments(chunkSampleSets
-                .Select(x => x.ToCollectionSearchDocument())));
+          () => _indexProvider.BulkIndexCollectionSearchDocuments(chunkSampleSets
+            .Select(x => x.ToCollectionSearchDocument())));
       }
 
       var remainingSampleSets = await GetSampleSetsByIdsForIndexingAsync(sampleSetIds
-              .Skip(chunkCount * BulkIndexChunkSize)
-              .Take(remainingIdCount));
+        .Skip(chunkCount * BulkIndexChunkSize)
+        .Take(remainingIdCount));
 
       BackgroundJob.Enqueue(
-          () => _indexProvider.BulkIndexCollectionSearchDocuments(remainingSampleSets
-              .Select(x => x.ToCollectionSearchDocument())));
+        () => _indexProvider.BulkIndexCollectionSearchDocuments(remainingSampleSets
+          .Select(x => x.ToCollectionSearchDocument())));
     }
 
     public async Task BulkIndexCapabilities(IList<int> capabilityIds)
@@ -531,39 +561,39 @@ namespace Biobanks.Directory.Services.Directory
       for (var i = 0; i < chunkCount; i++)
       {
         var chunkSampleSets = await GetCapabilitiesByIdsForIndexingAsync
-            (capabilityIds
-                .Skip(i * BulkIndexChunkSize)
-                .Take(BulkIndexChunkSize));
-      
-        BackgroundJob.Enqueue(
-            () => _indexProvider.BulkIndexCapabilitySearchDocuments(chunkSampleSets
-                .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
-      }
-      
-      var remainingSampleSets = await GetCapabilitiesByIdsForIndexingAsync
         (capabilityIds
-              .Skip(chunkCount * BulkIndexChunkSize)
-              .Take(remainingIdCount));
-      
+          .Skip(i * BulkIndexChunkSize)
+          .Take(BulkIndexChunkSize));
+
+        BackgroundJob.Enqueue(
+          () => _indexProvider.BulkIndexCapabilitySearchDocuments(chunkSampleSets
+            .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
+      }
+
+      var remainingSampleSets = await GetCapabilitiesByIdsForIndexingAsync
+      (capabilityIds
+        .Skip(chunkCount * BulkIndexChunkSize)
+        .Take(remainingIdCount));
+
       BackgroundJob.Enqueue(
-          () => _indexProvider.BulkIndexCapabilitySearchDocuments(remainingSampleSets
-              .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
+        () => _indexProvider.BulkIndexCapabilitySearchDocuments(remainingSampleSets
+          .Select(x => x.ToCapabilitySearchDocument(donorCounts))));
     }
 
     public void BulkDeleteBiobank(Organisation organisation)
     {
       //Remove samplesets from the index
       BulkDeleteSampleSets(
-              organisation.Collections
-                  .SelectMany(x => x.SampleSets)
-                  .Select(x => x.Id)
-                  .ToList());
+        organisation.Collections
+          .SelectMany(x => x.SampleSets)
+          .Select(x => x.Id)
+          .ToList());
 
       //Remove capabilities from the index
       BulkDeleteCapabilities(
-              organisation.DiagnosisCapabilities
-                  .Select(x => x.DiagnosisCapabilityId)
-                  .ToList());
+        organisation.DiagnosisCapabilities
+          .Select(x => x.DiagnosisCapabilityId)
+          .ToList());
     }
 
     public void BulkDeleteSampleSets(IList<int> sampleSetIds)
@@ -576,19 +606,19 @@ namespace Biobanks.Directory.Services.Directory
       for (var i = 0; i < chunkCount; i++)
       {
         var chunkSampleSets = sampleSetIds
-                .Skip(i * BulkIndexChunkSize)
-                .Take(BulkIndexChunkSize);
+          .Skip(i * BulkIndexChunkSize)
+          .Take(BulkIndexChunkSize);
 
         BackgroundJob.Enqueue(
-            () => _indexProvider.BulkDeleteCollectionSearchDocuments(chunkSampleSets));
+          () => _indexProvider.BulkDeleteCollectionSearchDocuments(chunkSampleSets));
       }
 
       var remainingSampleSets = sampleSetIds
-              .Skip(chunkCount * BulkIndexChunkSize)
-              .Take(remainingIdCount);
+        .Skip(chunkCount * BulkIndexChunkSize)
+        .Take(remainingIdCount);
 
       BackgroundJob.Enqueue(
-          () => _indexProvider.BulkDeleteCollectionSearchDocuments(remainingSampleSets));
+        () => _indexProvider.BulkDeleteCollectionSearchDocuments(remainingSampleSets));
     }
 
     public void BulkDeleteCapabilities(IList<int> capabilityIds)
@@ -603,19 +633,19 @@ namespace Biobanks.Directory.Services.Directory
       for (var i = 0; i < chunkCount; i++)
       {
         var chunkSampleSets = capabilityIds
-                .Skip(i * BulkIndexChunkSize)
-                .Take(BulkIndexChunkSize);
+          .Skip(i * BulkIndexChunkSize)
+          .Take(BulkIndexChunkSize);
 
         BackgroundJob.Enqueue(
-            () => _indexProvider.BulkDeleteCapabilitySearchDocuments(chunkSampleSets));
+          () => _indexProvider.BulkDeleteCapabilitySearchDocuments(chunkSampleSets));
       }
 
       var remainingSampleSets = capabilityIds
-              .Skip(chunkCount * BulkIndexChunkSize)
-              .Take(remainingIdCount);
+        .Skip(chunkCount * BulkIndexChunkSize)
+        .Take(remainingIdCount);
 
       BackgroundJob.Enqueue(
-          () => _indexProvider.BulkDeleteCapabilitySearchDocuments(remainingSampleSets));
+        () => _indexProvider.BulkDeleteCapabilitySearchDocuments(remainingSampleSets));
     }
 
     public async Task ClearIndex()
@@ -626,7 +656,6 @@ namespace Biobanks.Directory.Services.Directory
     }
 
     private static int GetChunkCount(IEnumerable<int> intList, int chunkSize)
-        => (int)Math.Floor((double)(intList.Count() / chunkSize));
-
+      => (int)Math.Floor((double)(intList.Count() / chunkSize));
   }
 }

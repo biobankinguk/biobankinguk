@@ -1,7 +1,10 @@
 @using Biobanks.Directory.Search.Constants
 @model Biobanks.Directory.Models.Search.NoResultsModel
+@using Biobanks.Directory.Config
+@inject IOptions<SitePropertiesOptions> _sitePropertiesOptions
 
 @{
+    var siteProperties = _sitePropertiesOptions.Value;
     string baseSearchUrl;
 
     switch (Model.SearchType)
@@ -30,8 +33,16 @@
 {
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <div class="alert alert-info">Unfortunately your search did not return any results. Please try entering a different disease status.</div>
-            <br/>
+          <div class="alert alert-info">Unfortunately your search did not return any results. Please try entering a different disease status.</div>
+          
+          @if (!string.IsNullOrWhiteSpace(siteProperties.SearchContactFormUrl))
+          {
+            <div class="alert alert-info row-buffer">
+              Can't find what your looking for? <a href="@(siteProperties.SearchContactFormUrl)" target="_blank">Click here</a> to send us a request.
+            </div>
+          }
+          
+          <br/>
             @if (Model.Suggestions.Any())
             {
                 <h3>Suggested terms related to your search:</h3>

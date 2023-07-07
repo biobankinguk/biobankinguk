@@ -15,6 +15,11 @@ on:
         description: The Workflow Run ID for a successful Publish of the Directory
         required: true
         type: string
+      override-tag:
+        description: The tag to release against (optional; defaults to a version tag)
+        required: false
+        type: string
+        default: ""
       is-latest:
         description: Should this release be marked as "latest"?
         required: false
@@ -77,15 +82,25 @@ jobs:
           run_id: ${{ env.run-id }}
           skip_unpack: true # leave them zipped
 
+      # Conditionally prep some variables for the Release
+      - name: set Release Tag to Version
+        if: ${{ github.event.inputs.override-tag == '' }}
+        run: |
+          echo "RELEASE_TAG=v${{ steps.version.outputs.version }}" >> $GITHUB_ENV
+      - name: set Release Tag to Override Value
+        if: ${{ github.event.inputs.override-tag != '' }}
+        run: |
+          echo "RELEASE_TAG=${{ github.event.inputs.override-tag }}" >> $GITHUB_ENV
+
       # make the release
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.version.outputs.version }}
+          tag: ${{ env.RELEASE_TAG }}
           commit: ${{ needs.fetch-run.outputs.publish-commit }}
-          name: v${{ steps.version.outputs.version }}
+          name: ${{ env.RELEASE_TAG }}
           body: |
-            # BiobankingUK Directory v${{ steps.version.outputs.version }}
+            # BiobankingUK Directory ${{ env.RELEASE_TAG }}
 
             ## Assets available for download:
 
@@ -95,7 +110,10 @@ jobs:
               - for Windows (x64)
               - for Linux (x64)
           generateReleaseNotes: true
-          prerelease: ${{ steps.version.outputs.pre-release != '' }}
+          prerelease: ${{ steps.version.outputs.pre-release != '' || github.events.inputs.override-tag != '' }}
           makeLatest: ${{ env.is-latest }}
+          updateOnlyUnreleased: true
+          allowUpdates: true
+          removeArtifacts: true # remove existing artifacts when updating
           artifacts: directory*.zip,migrations*.zip
           artifactContentType: application/zip
