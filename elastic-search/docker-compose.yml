@@ -5,7 +5,7 @@
 
 services:
   elastic-search:
-    image: elasticsearch:8.6.2
+    image: elasticsearch:8.12.2
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
