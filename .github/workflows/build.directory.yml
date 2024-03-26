@@ -12,7 +12,7 @@ on:
 env:
   # Configure these
   build-config: release
-  dotnet-version: 6.0.x
+  dotnet-version: 8.0.x
   project: ./app/Directory/Directory.csproj
   frontend-package: frontend
 
