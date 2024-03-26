@@ -66,10 +66,15 @@ namespace Biobanks.Directory.Search.Elastic
         {
             //Matches based on ontologyTerms and onTologyOtherTerms
             var collections = _client.Search<CollectionDocument>(s => s
-                .Query(q => q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*") || q.Nested(n => n
-                .Path(p => p.OntologyOtherTerms).InnerHits(i => i.Explain()
-                .Highlight(h => h.Fields(f => f.Field(o => o.OntologyOtherTerms.Select(on => on.Name)).PreTags("").PostTags(""))))
-                .Query(nq => nq.Wildcard("ontologyOtherTerms.name", $"*{wildcard}*"))))
+                .Query(q =>
+                  q.Wildcard(p => p.OntologyTerm, $"*{wildcard}*") ||
+                  q.Nested(n => n.Path(p => p.OntologyOtherTerms)
+                    .InnerHits(i => i.Explain()
+                      .Highlight(h => h.Fields(
+                        f => f.Field(o => o.OntologyOtherTerms.Select(on => on.Name))
+                          .PreTags("")
+                          .PostTags(""))))
+                    .Query(nq => nq.Wildcard("ontologyOtherTerms.name", $"*{wildcard}*"))))
                 .Size(SizeLimits.SizeMax)
                 .Aggregations(a => a
                     .Terms("diagnoses", t => t
