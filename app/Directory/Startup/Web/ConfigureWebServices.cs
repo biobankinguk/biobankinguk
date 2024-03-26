@@ -113,7 +113,7 @@ public static class ConfigureWebServices
           Duration = 100
         });
     });
-    b.Services.AddRazorPages();
+    b.Services.AddRazorPages().AddRazorRuntimeCompilation();
     b.Services.AddControllersWithViews(opts =>
       {
         opts.SuppressOutputFormatterBuffering = true;
