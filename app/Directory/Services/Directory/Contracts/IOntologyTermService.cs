@@ -7,14 +7,15 @@ namespace Biobanks.Directory.Services.Directory.Contracts
 {
     public interface IOntologyTermService
     {
-        /// <summary>
-        /// Get all untracked OntologyTerms which match the given parameter filters
-        /// </summary>
-        /// <param name="value">The descriptive value of the OntologyTerm</param>
-        /// <param name="tags"></param>
-        /// <param name="onlyDisplayable">Whether to return only OntologyTerms that are displayable in the Directory</param>
-        /// <returns>An Enumerable of all applicable untracked OntologyTerms</returns>
-        Task<IEnumerable<OntologyTerm>> List(string value = null, List<string> tags = null, bool onlyDisplayable = false);
+      /// <summary>
+      /// Get all untracked OntologyTerms which match the given parameter filters
+      /// </summary>
+      /// <param name="value">The descriptive value of the OntologyTerm</param>
+      /// <param name="tags"></param>
+      /// <param name="onlyDisplayable">Whether to return only OntologyTerms that are displayable in the Directory</param>
+      /// <param name="doLowerCaseMatch">If true, value matching lower cases values in advance to approximate case-insensitive matching</param>
+      /// <returns>An Enumerable of all applicable untracked OntologyTerms</returns>
+      Task<IEnumerable<OntologyTerm>> List(string value = null, List<string> tags = null, bool onlyDisplayable = false,  bool doLowerCaseMatch = false);
 
         /// <summary>
         /// Get all untracked OntologyTerms which match the given parameter filters
