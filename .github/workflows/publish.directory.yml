@@ -20,7 +20,7 @@ env:
   app-project: ./app/Directory/Directory.csproj
   migrations-project: ./lib/Data/Data.csproj
   frontend-package: frontend
-  dotnet-version: 6.0.x
+  dotnet-version: 8.0.x
 
   publish-dir: publish
   build-config: ${{ github.event.inputs.build-config || 'release' }}
