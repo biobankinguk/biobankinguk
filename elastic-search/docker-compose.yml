@@ -4,11 +4,30 @@
 # use Postman to hit the server on 9200, or stand up a kibana container if you really need to.
 
 services:
-  elastic-search:
-    image: elasticsearch:8.6.2
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - node.name=es01
+      - cluster.name=elastic_dev
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    mem_limit: 1073741824
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  default:
+    name: elastic
+    external: false
