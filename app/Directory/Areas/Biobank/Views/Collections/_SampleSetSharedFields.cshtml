@@ -89,7 +89,10 @@
             <thead>
                 <tr>
                     <th>Material type</th>
-                    <th>Extraction Procedure</th>
+                    @if (Model.ExtractionProcedures.Any())
+                    {
+                        <th>Extraction Procedure</th>
+                    }
                     <th>@await _config.GetSiteConfigValue(ConfigKey.StorageTemperatureName)</th>
                     <th>Preservation type</th>
 
@@ -114,7 +117,10 @@
                   }">
                 <tr>
                     <td data-bind="text: materialTypeDescription"></td>
-                    <td data-bind="text: extractionProcedureDescription"></td>
+                    @if (Model.ExtractionProcedures.Any())
+                    {
+                        <td data-bind="text: extractionProcedureDescription"></td>
+                    }
                     <td data-bind="text: storageTemperatureDescription"></td>
                     <td data-bind="text: preservationTypeDescription"></td>
                     @if (Model.ShowMacroscopicAssessment)
@@ -185,6 +191,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
+
                         <!-- Material Type -->
                         <div class="col-sm-12 form-group">
                             <label class="control-label required">Material type</label>
@@ -204,20 +211,25 @@
                         </div>
 
                         <!-- Extraction Procedure -->
-                        <div class="col-sm-12">
-                            <label class="control-label">Extraction Procedure</label>
-                            <p class="help-block col-sm-12">
-                                <span class="fa fa-info-circle"></span>
-                                Please select the extraction procedure for the material type;
-                                if is not there please get in touch.
-                            </p>
-                            <div class="col-sm-12">
-                                <label data-bind="validationOptions: {insertMessages: false}">
-                                    <select name="ddExtraction" class="form-control" style="width:300px"
-                                            data-bind="options: lookup.materialExtractionProcedures, optionsText: 'label', optionsValue: 'value', optionsCaption: 'Choose...', valueAllowUnset: true, value:$root.modal.materialPreservationDetail().extractionProcedure"></select>
-                                </label>
+                        @if (Model.ExtractionProcedures.Any())
+                        {
+                            <div class="col-sm-12 form-group">
+                                <label class="control-label">Extraction Procedure</label>
+                                <p class="help-block col-sm-12">
+                                    <span class="fa fa-info-circle"></span>
+                                    Please select the extraction procedure for the material type;
+                                    if is not there please get in touch.
+                                </p>
+                                <div class="col-sm-12" data-bind="foreach: lookup.extractionProcedures">
+                                    <div class="col-sm-6 radio">
+                                        <label data-bind="validationOptions: {insertMessages: false}">
+                                            <input type="radio" name="radExtractionProcedure" data-bind="checkedValue: $data.value, checked: $root.modal.materialPreservationDetail().extractionProcedure">
+                                            <span data-bind="text: $data.label"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        }
 
                         <!-- Storage Temperature -->
                         <div class="col-sm-12 form-group">
