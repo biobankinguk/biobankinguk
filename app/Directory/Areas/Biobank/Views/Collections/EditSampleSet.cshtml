@@ -28,7 +28,7 @@
             var extractionProcedures = @Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures));
             if (extractionProcedures.length > 0) {
                 lookup.extractionProcedures(ko.utils.arrayMap(extractionProcedures, function (x) {
-                    return new DropDownBinding(x.OntologyTermId, x.Description);
+                    return new RadioBinding(x.OntologyTermId, x.Description);
                 }));
                 lookup.materialExtractionProcedures(lookup.extractionProcedures());
             }
