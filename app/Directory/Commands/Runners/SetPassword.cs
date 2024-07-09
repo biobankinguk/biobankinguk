@@ -13,9 +13,9 @@ public class SetPassword
   private readonly IConsole _console;
   private readonly UserManager<ApplicationUser> _users;
 
-  public SetPassword(ILogger<SetPassword> logger, IConsole console, UserManager<ApplicationUser> users)
+  public SetPassword(ILoggerFactory logger, IConsole console, UserManager<ApplicationUser> users)
   {
-  //   _logger = logger.CreateLogger<SetPassword>();
+     _logger = logger.CreateLogger<SetPassword>();
     _console = console;
     _users = users;
   }
