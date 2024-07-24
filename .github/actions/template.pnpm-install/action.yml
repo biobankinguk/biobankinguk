@@ -3,7 +3,7 @@ description: Setup node and pnpm, then install dependencies for a single package
 
 inputs:
   node-version:
-    default: "19"
+    default: "20"
     type: string
   filter:
     type: string
@@ -16,7 +16,7 @@ runs:
     # GH runners have minimum latest node 16 so corepack is always available <3
     - shell: bash
       run: corepack enable
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm

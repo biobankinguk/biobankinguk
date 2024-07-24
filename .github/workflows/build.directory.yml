@@ -24,14 +24,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # pnpm install so we have frontend dependencies for bundling
       - uses: ./.github/actions/template.pnpm-install
         with:
           filter: ${{ env.frontend-package }}
 
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.dotnet-version }}
       - name: dotnet build
