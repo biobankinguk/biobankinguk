@@ -118,9 +118,9 @@ public class ProfileController : Controller
       
     var model = await NewNetworkDetailsModelAsync(networkId);
           
-    // Reset the biobankId in the model state so the form does not populate it.
+    // Reset the networkId in the model state so the form does not populate it.
     // Ensures a new biobank is created.
-    ModelState.SetModelValue("biobankId", new ValueProviderResult());
+    ModelState.SetModelValue("networkId", new ValueProviderResult());
     return View("Edit", model);
   }
 

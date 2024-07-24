@@ -318,7 +318,7 @@ public class RequestsController : Controller
                   new
                   {
                     Area = "Network",
-                    id = request.NetworkRegisterRequestId,
+                    networkId = request.NetworkRegisterRequestId,
                     newNetwork = true
                   },
                   Request.Scheme)
