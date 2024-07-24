@@ -39,7 +39,7 @@ jobs:
       short-sha: ${{ steps.sha.outputs.sha }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # short git sha for use in versions
       - name: Get short SHA
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # pnpm install so we have frontend dependencies for bundling
       - uses: ./.github/actions/template.pnpm-install
@@ -67,7 +67,7 @@ jobs:
           filter: ${{ env.frontend-package }}
 
       # dotnet publish now we have dependencies
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.dotnet-version }}
 
@@ -103,8 +103,8 @@ jobs:
           - artifact: linux-x64
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.dotnet-version }}
       - run: dotnet tool restore
@@ -117,7 +117,7 @@ jobs:
           ${{ matrix.args }}
           --self-contained
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ format('migrations-{0}_{1}', needs.init.outputs.version, matrix.artifact) }}
           path: ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
