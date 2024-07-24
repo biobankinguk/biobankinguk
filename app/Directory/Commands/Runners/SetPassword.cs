@@ -27,13 +27,24 @@ public class SetPassword
     if (user == null)
     {
       _logger.LogInformation("User not found with the email {email}", email);
+      _console.Out.WriteLine($"User not found with the email {email}");
       return;
     }
 
     await _users.RemovePasswordAsync(user);
-    await _users.AddPasswordAsync(user, password);
 
-    _console.Out.WriteLine("Succesfully set new password for user {email}");
-
+   var addResult = await _users.AddPasswordAsync(user, password);
+    if(!addResult.Succeeded)
+    {
+      foreach (var e in addResult.Errors)
+      {
+        _console.Out.WriteLine($"Error: {e.Description}");
+        _logger.LogInformation("Password set error: {e}", e.Description);
+      }
+    }
+    else
+    {
+      _console.Out.WriteLine("Succesfully set new password for user {email}");
+    }
   }
 }
