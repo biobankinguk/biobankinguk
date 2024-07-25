@@ -155,7 +155,7 @@ public class RequestsController : Controller
               new
               {
                 Area = "Biobank",
-                id = request.OrganisationRegisterRequestId,
+                biobankId = request.OrganisationRegisterRequestId,
                 newBiobank = true
               },
               Request.Scheme)
@@ -318,7 +318,7 @@ public class RequestsController : Controller
                   new
                   {
                     Area = "Network",
-                    id = request.NetworkRegisterRequestId,
+                    networkId = request.NetworkRegisterRequestId,
                     newNetwork = true
                   },
                   Request.Scheme)
