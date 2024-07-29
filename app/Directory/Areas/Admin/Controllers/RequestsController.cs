@@ -161,10 +161,10 @@ public class RequestsController : Controller
               Request.Scheme)
       );
     }
-
-
-    //add user to BiobankAdmin role
+    
+    //add user to BiobankAdmin role and sign them out.
     await _userManager.AddToRolesAsync(user,  new List<string> { Role.BiobankAdmin });
+    await _userManager.UpdateSecurityStampAsync(user);
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
@@ -325,8 +325,9 @@ public class RequestsController : Controller
           );
     }
 
-    //add user to NetworkAdmin role
+    //add user to NetworkAdmin role and sign them out.
     await _userManager.AddToRolesAsync(user, new List<string> { Role.NetworkAdmin });
+    await _userManager.UpdateSecurityStampAsync(user);
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
