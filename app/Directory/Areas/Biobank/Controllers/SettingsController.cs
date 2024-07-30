@@ -192,8 +192,9 @@ public class SettingsController : Controller
             //Add the user/biobank relationship
             await _organisationDirectoryService.AddUserToOrganisation(user.Id, biobankId);
             
-            //add user to BiobankAdmin role
+            //add user to BiobankAdmin role and sign them out.
             await _userManager.AddToRolesAsync(user, new List<string> { Role.BiobankAdmin }); //what happens if they're already in the role?
+            await _userManager.UpdateSecurityStampAsync(user);
 
             //return success, and enough user details for adding to the viewmodel's list
             return Ok(new
@@ -218,8 +219,9 @@ public class SettingsController : Controller
             var userBiobanks = await _organisationDirectoryService.ListByUserId(biobankUserId);
             
             if (!userBiobanks.Any())
-              // and remove them from the admin role if they are not.
+              // and remove them from the admin role if they are not and sign them out.
               await _userManager.RemoveFromRolesAsync(biobankUser, new List<string> { Role.BiobankAdmin });
+              await _userManager.UpdateSecurityStampAsync(biobankUser);
 
             this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your admins!", FeedbackMessageType.Success);
 

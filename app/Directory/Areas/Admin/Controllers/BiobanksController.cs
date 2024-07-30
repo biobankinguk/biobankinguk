@@ -219,8 +219,9 @@ public class BiobanksController : Controller
       //Add the user/biobank relationship
       await _organisationService.AddUserToOrganisation(user.Id, biobankId);
 
-      //add user to BiobankAdmin role
+      //add user to BiobankAdmin role and sign them out.
       await _userManager.AddToRolesAsync(user, new[] { Role.BiobankAdmin }); //what happens if they're already in the role?
+      await _userManager.UpdateSecurityStampAsync(user);
 
       //return success, and enough user details for adding to the viewmodel's list
       return Ok(new
