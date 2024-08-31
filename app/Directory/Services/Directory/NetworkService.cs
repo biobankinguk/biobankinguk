@@ -178,7 +178,7 @@ namespace Biobanks.Directory.Services.Directory
 
             return await _db.NetworkRegisterRequests
                 .AsNoTracking()
-                .Where(x => x.UserEmail == userEmail)
+                .Where(x => EF.Functions.ILike(x.UserEmail, userEmail))
                 .Where(x => x.AcceptedDate != null && x.DeclinedDate == null && x.NetworkCreatedDate == null)
                 .ToListAsync();
         }

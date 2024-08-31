@@ -58,7 +58,6 @@ public class CustomClaimsPrincipalFactory : UserClaimsPrincipalFactory<Applicati
         .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));
       
       var biobankRequestClaims = organisationsRequests
-        .Where(x => x.UserEmail == user.Email)
         .Select(x => new KeyValuePair<int, string>(x.OrganisationRegisterRequestId, x.OrganisationName))
         .Select(x => new Claim(CustomClaimType.BiobankRequest, JsonSerializer.Serialize(x)))
         .Where(x => !identity.HasClaim(c => c.Type == x.Type && c.Value == x.Value));
