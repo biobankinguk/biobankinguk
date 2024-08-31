@@ -169,8 +169,9 @@ public class SettingsController : Controller
         //Add the user/network relationship
         await _networkService.AddNetworkUser(user.Id, networkId);
 
-        //add user to NetworkAdmin role
+        //add user to NetworkAdmin role and sign them out.
         await _userManager.AddToRolesAsync(user, new List<string> {Role.NetworkAdmin});
+        await _userManager.UpdateSecurityStampAsync(user);
 
         //return success, and enough user details for adding to the viewmodel's list
         return Ok(new
@@ -195,8 +196,9 @@ public class SettingsController : Controller
         var userNetworks = await _networkService.ListByUserId(networkUserId);
         
         if (!userNetworks.Any())
-          // and remove them from the admin role if they are not
+          // and remove them from the admin role if they are not and sign them out.
           await _userManager.RemoveFromRolesAsync(networkUser, new List<string> {Role.NetworkAdmin});
+        await _userManager.UpdateSecurityStampAsync(networkUser);
 
         this.SetTemporaryFeedbackMessage($"{userFullName} has been removed from your network admins!", FeedbackMessageType.Success);
 
