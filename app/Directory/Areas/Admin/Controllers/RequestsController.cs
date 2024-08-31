@@ -463,7 +463,7 @@ public class RequestsController : Controller
 
       var model = new HistoricalModel
       {
-          HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
+          HistoricalRequests = bbRequests.Concat(nwRequests).OrderByDescending(x => x.Date).ToList()
       };
 
       return View(model);
