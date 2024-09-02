@@ -23,7 +23,7 @@ namespace Biobanks.Directory.Services.Directory
 
     protected IQueryable<OntologyTerm> ReadOnlyQuery(
       string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false,
-      bool filterById = true, bool doLowerCaseMatch = false)
+      bool filterById = true, bool doLowerCaseMatch = false, bool doExactMatch = false)
     {
       var query = _db.OntologyTerms
         .AsNoTracking()
@@ -46,7 +46,10 @@ namespace Biobanks.Directory.Services.Directory
             : query.Where(x =>
               x.Value.Contains(value) ||
               x.OtherTerms.Contains(value));
-
+      
+      if (!string.IsNullOrEmpty(value) && doExactMatch)
+        query = query.Where(x => x.Value == value);
+      
       // Filter By SnomedTag
       if (tags != null)
         query = query.Where(x =>
@@ -76,8 +79,8 @@ namespace Biobanks.Directory.Services.Directory
 
     /// <inheritdoc/>
     public async Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null,
-      bool onlyDisplayable = false)
-      => await ReadOnlyQuery(id, value, tags, onlyDisplayable).FirstOrDefaultAsync();
+      bool onlyDisplayable = false, bool doExactMatch = false)
+      => await ReadOnlyQuery(id, value, tags, onlyDisplayable, doExactMatch: doExactMatch).FirstOrDefaultAsync();
 
     /// <inheritdoc/>
     public async Task<int> Count(string value = null, List<string> tags = null)

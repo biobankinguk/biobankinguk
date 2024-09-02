@@ -191,7 +191,7 @@ public class CollectionsController : Controller
           })
           .ToList();
 
-      var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis);
+      var ontologyTerm = await _ontologyTermService.Get(value: model.Diagnosis, doExactMatch: true);
 
       // Create and Add New Collection
       var collection = await _collectionService.Add(new Collection

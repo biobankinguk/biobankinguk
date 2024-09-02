@@ -49,8 +49,9 @@ namespace Biobanks.Directory.Services.Directory.Contracts
         /// untagged OntologyTerms. By default the value is null, hence tags as a filter will be ignored.
         /// </param>
         /// <param name="onlyDisplayable">Whether to return only OntologyTerms that are displayable in the Directory</param>
+        /// <param name="doExactMatch">Whether to exactly match the descriptive Value of the OntologyTerm</param>
         /// <returns>The first OntologyTerm that matches all given parameter filters</returns>
-        Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false);
+        Task<OntologyTerm> Get(string id = null, string value = null, List<string> tags = null, bool onlyDisplayable = false, bool doExactMatch = false);
 
         /// <summary>
         /// Update an exisiting OntologyTerm with the provided updated entity. The method call should update both database and elastic
