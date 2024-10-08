@@ -214,7 +214,7 @@ namespace Biobanks.Directory.Services.Directory
         public async Task<NetworkRegisterRequest> GetRegistrationRequestByEmail(string email)
             => await _db.NetworkRegisterRequests
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UserEmail == email && x.DeclinedDate == null && x.NetworkCreatedDate == null);
+                .FirstOrDefaultAsync(x => EF.Functions.ILike(x.UserEmail, email) && x.DeclinedDate == null && x.NetworkCreatedDate == null);
 
         /// <inheritdoc/>
         public async Task<NetworkRegisterRequest> AddRegistrationRequest(NetworkRegisterRequest request)
