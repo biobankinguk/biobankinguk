@@ -20,7 +20,7 @@ namespace Biobanks.Directory.Startup.ConfigureServicesExtensions
     {
       Local,
       SendGrid,
-      // SMTP
+      SMTP
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ namespace Biobanks.Directory.Startup.ConfigureServicesExtensions
         provider switch
         {
           EmailProviders.SendGrid => s.Configure<SendGridOptions>,
-          //EmailProviders.SMTP => s.Configure<
+          EmailProviders.SMTP => s.Configure<SmtpOptions>,
           _ => s.Configure<LocalDiskEmailOptions>
         };
 
