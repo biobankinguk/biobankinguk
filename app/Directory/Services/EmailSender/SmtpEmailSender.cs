@@ -1,17 +1,17 @@
 using Biobanks.Directory.Services.EmailServices;
-using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using System;
 using Biobanks.Directory.Config;
 using Biobanks.Directory.Services.Directory.Contracts;
 using Biobanks.Directory.Models.Emails;
 using MailKit.Security;
+using MailKit.Net.Smtp;
+using MimeKit.Text;
 
 namespace Biobanks.Directory.Services.EmailSender;
 
@@ -20,7 +20,7 @@ public class SmtpEmailSender : IEmailSender
   private readonly SmtpOptions _config;
   private readonly RazorViewService _emailViews;
   private readonly ILogger<SmtpEmailSender> _logger;
-  private readonly MailKit.Net.Smtp.SmtpClient _smtpClient;
+  private readonly SmtpClient _smtpClient;
 
   public SmtpEmailSender(
     IOptions<SmtpOptions> options,
@@ -30,7 +30,8 @@ public class SmtpEmailSender : IEmailSender
     _config = options.Value;
     _emailViews = emailViews;
     _logger = logger;
-    _smtpClient = new MailKit.Net.Smtp.SmtpClient();
+
+    if (!IsSmtpOptionsAvailable()) LogError("SMTP values missing or incomplete");
   }
 
   public async Task SendEmail<TModel>(List<EmailAddress> toAddresses, string viewName, TModel model, List<EmailAddress>? ccAddresses = null)
@@ -53,16 +54,13 @@ public class SmtpEmailSender : IEmailSender
     message.ReplyTo.Add(MailboxAddress.Parse(_config.ReplyToAddress));
     message.Subject = (string)viewContext.ViewBag.Subject ?? string.Empty;
 
-    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+    message.Body = new TextPart(TextFormat.Html)
     {
       Text = body
     };
 
-    var smtpOptions = IsSmtpOptionsAvailable(); // check if relevant SMTP options are available
-    if (!smtpOptions) LogError("SMTP values missing or incomplete"); // if not, log custom error message
-
-    ConnectAndAuthenticate(); // connect and authenticate 
-    SendEmailMessage(message); // send email
+    using var smtpClient = await ConnectAndAuthenticate(); // connect and authenticate 
+    await SendEmailMessage(message, smtpClient); // send email
   }
 
   public async Task SendEmail<TModel>(EmailAddress toAddress, string viewName, TModel model, EmailAddress? ccAddress = null)
@@ -79,8 +77,10 @@ public class SmtpEmailSender : IEmailSender
     return !smtpStringOptions.Any(string.IsNullOrEmpty);
   }
 
-  private void ConnectAndAuthenticate()
+  private async Task<SmtpClient> ConnectAndAuthenticate()
   {
+    var smtpClient = new SmtpClient();
+
     // Anything above 4 or less than 1, use 1(Auto)
     var secureSocketKey = _config.SmtpSecureSocketEnum is > 4 or < 1 ? 1 : _config.SmtpSecureSocketEnum;
 
@@ -94,8 +94,8 @@ public class SmtpEmailSender : IEmailSender
 
     try
     {
-      _smtpClient.Connect(_config.SmtpHost, _config.SmtpPort, secureSocketOption[secureSocketKey]);
-      _smtpClient.Authenticate(_config.SmtpUsername, _config.SmtpPassword);
+      await smtpClient.ConnectAsync(_config.SmtpHost, _config.SmtpPort, secureSocketOption[secureSocketKey]);
+      await smtpClient.AuthenticateAsync(_config.SmtpUsername, _config.SmtpPassword);
     }
     catch (Exception ex)
     {
@@ -103,10 +103,12 @@ public class SmtpEmailSender : IEmailSender
       LogError("Couldn't connect or authenticate"); // log custom error message
     }
 
+    return smtpClient;
   }
-  private void SendEmailMessage(MimeMessage message)
+
+  private async Task SendEmailMessage(MimeMessage message, SmtpClient smtpClient)
   {
-    try { _smtpClient.Send(message); }
+    try { await smtpClient.SendAsync(message); }
     catch (Exception ex)
     {
       _logger.LogError(ex.Message); // log exception message
@@ -114,8 +116,8 @@ public class SmtpEmailSender : IEmailSender
     }
     finally
     {
-      _smtpClient.Disconnect(true);
-      _smtpClient.Dispose();
+      await smtpClient.DisconnectAsync(true);
+      smtpClient.Dispose();
     }
   }
 
@@ -124,8 +126,4 @@ public class SmtpEmailSender : IEmailSender
     _logger.LogError(customErrorMsg);
     throw new InvalidOperationException(customErrorMsg); // then throw exception
   }
-
-
-
 }
-
