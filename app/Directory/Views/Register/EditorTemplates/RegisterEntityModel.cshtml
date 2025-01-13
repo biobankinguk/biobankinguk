@@ -13,25 +13,25 @@
 
 <div class="form-group">
 
-        @if (Model.EntityName == "Biobank")
+        @if (Model.EntityTypeName == "Biobank")
         {
 
             @Html.Label("Entity", await _config.GetSiteConfigValue(ConfigKey.SampleResourceName) + " name", new { @class = "col-sm-3 control-label required"})
             <div class="col-sm-9">
 
-                @Html.TextBoxFor(x => x.Entity, new { @class = "form-control", placeholder = $"My " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)})
-                @Html.ValidationMessageFor(x => x.Entity)
+                @Html.TextBoxFor(x => x.EntityGivenName, new { @class = "form-control", placeholder = $"My " + await _config.GetSiteConfigValue(ConfigKey.SampleResourceName)})
+                @Html.ValidationMessageFor(x => x.EntityGivenName)
 
             </div>
 
         }
         else
         {
-                @Html.Label("Entity",  $"{@Model.EntityName} name", new { @class = "col-sm-3 control-label required"})
+                @Html.Label("Entity",  $"{@Model.EntityTypeName} name", new { @class = "col-sm-3 control-label required"})
                 <div class="col-sm-9">
 
-                    @Html.TextBoxFor(x => x.Entity, new { @class = "form-control", placeholder = $"My {@Model.EntityName}" })
-                    @Html.ValidationMessageFor(x => x.Entity)
+                    @Html.TextBoxFor(x => x.EntityGivenName, new { @class = "form-control", placeholder = $"My {@Model.EntityTypeName}" })
+                    @Html.ValidationMessageFor(x => x.EntityGivenName)
 
                 </div>
 

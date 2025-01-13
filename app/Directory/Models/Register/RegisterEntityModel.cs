@@ -15,10 +15,12 @@ public class RegisterEntityModel
     [DisplayName("Admin email")]
     public string Email { get; set; }
     
-    public string EntityName { get; set; } //for label
+    // note that EntityName refers to the Entity type, i.e. Biobank or Network
+    public string EntityTypeName { get; set; } //for label
     
     [Required(ErrorMessage = "Please enter a name for the organisation.")]
-    public string Entity { get; set; }
+    // note Entity refers to the name of the biobank or network
+    public string EntityGivenName { get; set; }
     
     public bool AdacInvited { get; set; } //did ADAC make this registration as an invite? it should be auto-accepted
     
