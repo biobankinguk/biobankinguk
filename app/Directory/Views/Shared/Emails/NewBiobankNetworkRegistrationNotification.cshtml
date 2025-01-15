@@ -9,12 +9,12 @@
 }
 
 Dear @Html.Raw(Model.biobankName),
-
+<br/><br/>
 You've been invited to join @Html.Raw(Model.networkName) at the @directoryName.
-
+<br/><br/>
 If you are happy to join this network, please use this link below to go to your biobank admin section to approve this.
-
+<br/><br/>
 @Html.Raw(Model.link)
-
-Regards,
+<br/><br/>
+Regards,<br/>
 @_config.Value.EmailSignature

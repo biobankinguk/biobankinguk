@@ -11,11 +11,11 @@
     ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Registration";
 }
 
-Dear @Html.Raw(Model!.name)
-
+Dear @Html.Raw(Model!.name),
+<br/><br/>
 Thanks for your interest in the @directoryName.
-
+<br/><br/>
 We have received your registration for @Html.Raw(Model.entity) but are unfortunately unable to accept it at this time.
-
-Regards,
+<br/><br/>
+Regards,<br/>
 @emailSignature
