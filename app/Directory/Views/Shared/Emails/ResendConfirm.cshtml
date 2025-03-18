@@ -9,13 +9,13 @@
   ViewBag.Subject = $"{directoryName} Account Confirmation";
 }
 
-Dear @Html.Raw(ViewBag.Name)
-
+Dear @Html.Raw(ViewBag.Name),
+<br/><br/>
 We received a request to resend your account confirmation link.
-
+<br/><br/>
 Please use this link below to complete registration and set your password:
-
+<br/><br/>
 <a href="@Model.resetLink">Set Password</a>
-
-Regards,
+<br/><br/>
+Regards,<br/>
 @_config.Value.EmailSignature

@@ -10,13 +10,15 @@
     ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Registration";
 }
 
-FAO Directory Administrators,
-
+Dear Directory Administrators, <br/>
+<br/>
 A @directoryName Registration Request has been received!
+<br/><br/>
+The Request is for a @Model.EntityType called @Model.EntityName requested by @Model.RequesterName (@Model.RequesterEmail).
+<br/><br/>
+Regards,<br/>
 
-The Request is for a @Html.Raw(Model.EntityType) called @Html.Raw(Model.EntityName).
-
-It was requested by @Html.Raw(Model.RequesterName) (@Html.Raw(Model.RequesterEmail)).
-
-Regards,
 @emailSignature
+<br/><br/>
+
+If you would like to unsubscribe from receiving these notifications, please contact the admins on this email to request removal. 

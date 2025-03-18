@@ -10,11 +10,11 @@
   ViewBag.Subject = $"{directoryName} {ViewBag.Entity} Administration";
 }
 
-Dear @Html.Raw(Model!.name)
-
+Dear @Html.Raw(Model!.name),
+<br/><br/>
 You've been invited to become an admin for @Html.Raw(Model.entity) at the @directoryName.
-
-<a href="@Html.Raw(Model.link)">Click this link complete to login </a> 
-
-Regards,
+<br/><br/>
+<a href="@Html.Raw(Model.link)">Click this link complete to login </a>
+<br/><br/>
+Regards,<br/>
 @emailSignature

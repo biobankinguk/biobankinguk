@@ -54,7 +54,7 @@ public class RegisterController : Controller
   {
       return View(new RegisterEntityModel
       {
-          EntityName = "Biobank"
+          EntityTypeName = "Biobank"
       });
   }
 
@@ -65,7 +65,7 @@ public class RegisterController : Controller
   {
       return View("Biobank", new RegisterEntityModel
       {
-          EntityName = "Biobank",
+          EntityTypeName = "Biobank",
           AdacInvited = true
       });
   }
@@ -109,7 +109,7 @@ public class RegisterController : Controller
   [AllowAnonymous]
   public async Task<ActionResult> Biobank(RegisterEntityModel model)
   {
-      model.EntityName = "Biobank";
+      model.EntityTypeName = "Biobank";
 
       //Verify for Google Recaptcha
       var recaptchaToken = HttpContext.Request.Form["g-recaptcha-response"];
@@ -135,27 +135,27 @@ public class RegisterController : Controller
           return View("RegisterConfirmation");
 
       //check for duplicate Biobank name
-      var existingOrg = await _organisationService.GetByName(model.Entity);
+      var existingOrg = await _organisationService.GetByName(model.EntityGivenName);
 
       if (existingOrg != null)
       {
-          this.SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingOrg.ContactEmail} and ask them to add you as an admin.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage($"{model.EntityGivenName} already exists. Please contact {existingOrg.ContactEmail} and ask them to add you as an admin.", FeedbackMessageType.Danger);
 
           return View(model);
       }
 
-      if (Uri.IsWellFormedUriString(model.Name, UriKind.Absolute) || Uri.IsWellFormedUriString(model.Entity, UriKind.Absolute))
+      if (Uri.IsWellFormedUriString(model.Name, UriKind.Absolute) || Uri.IsWellFormedUriString(model.EntityGivenName, UriKind.Absolute))
       {
           this.SetTemporaryFeedbackMessage("The admin name or organisation name fields cannot be URIs. Please enter a non URI value.", FeedbackMessageType.Danger);
           return View(model);
       }
 
       //check for duplicate name against non-declined requests too
-      if (await _organisationService.RegistrationRequestExists(model.Entity))
+      if (await _organisationService.RegistrationRequestExists(model.EntityGivenName))
       {
           var supportEmail = _siteConfig.SupportAddress;
           this.SetTemporaryFeedbackMessage(
-              $"Registration is already in progress for {model.Entity}. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
+              $"Registration is already in progress for {model.EntityGivenName}. If you think this is in error please contact <a href=\"mailto:{supportEmail}\">{supportEmail}</a>.",
               FeedbackMessageType.Danger, true);
 
           return View(model);
@@ -178,7 +178,7 @@ public class RegisterController : Controller
           {
               UserName = model.Name,
               UserEmail = model.Email,
-              OrganisationName = model.Entity,
+              OrganisationName = model.EntityGivenName,
               RequestDate = DateTime.Now
           });
 
@@ -195,8 +195,8 @@ public class RegisterController : Controller
               await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
                   model.Name,
                   model.Email,
-                  model.EntityName,
-                  model.Entity);
+                  model.EntityTypeName,
+                  model.EntityGivenName);
           }
       }
 
@@ -209,7 +209,7 @@ public class RegisterController : Controller
   {
       return View(new RegisterEntityModel
       {
-          EntityName = "Network"
+          EntityTypeName = "Network"
       });
   }
 
@@ -219,7 +219,7 @@ public class RegisterController : Controller
   {
       return View("Network", new RegisterEntityModel
       {
-          EntityName = "Network",
+          EntityTypeName = "Network",
           AdacInvited = true
       });
   }
@@ -255,19 +255,19 @@ public class RegisterController : Controller
           return View("RegisterConfirmation");
 
       //check for duplicate Network name
-      var existingNetwork = await _networkService.GetByName(model.Entity);
+      var existingNetwork = await _networkService.GetByName(model.EntityGivenName);
 
       if (existingNetwork != null)
       {
-          this.SetTemporaryFeedbackMessage($"{model.Entity} already exists. Please contact {existingNetwork.Email} and ask them to add you as an admin.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage($"{model.EntityGivenName} already exists. Please contact {existingNetwork.Email} and ask them to add you as an admin.", FeedbackMessageType.Danger);
           return View(model);
       }
 
       //check for duplicate name against non-declined requests too
-      if (await _networkService.HasActiveRegistrationRequest(model.Entity))
+      if (await _networkService.HasActiveRegistrationRequest(model.EntityGivenName))
       {
           var supportEmail = _siteConfig.SupportAddress;
-          this.SetTemporaryFeedbackMessage($"Registration is already in progress for {model.Entity}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
+          this.SetTemporaryFeedbackMessage($"Registration is already in progress for {model.EntityGivenName}. If you think this is in error please contact {supportEmail}.", FeedbackMessageType.Danger);
           
           return View(model);
       }
@@ -289,7 +289,7 @@ public class RegisterController : Controller
           {
               UserName = model.Name,
               UserEmail = model.Email,
-              NetworkName = model.Entity,
+              NetworkName = model.EntityGivenName,
               RequestDate = DateTime.Now
           });
 
@@ -306,8 +306,8 @@ public class RegisterController : Controller
               await _emailService.SendDirectoryAdminNewRegisterRequestNotification(
               model.Name,
               model.Email,
-              model.EntityName,
-              model.Entity);
+              model.EntityTypeName,
+              model.EntityGivenName);
           }
       }
 
