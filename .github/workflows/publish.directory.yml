@@ -39,7 +39,7 @@ jobs:
       short-sha: ${{ steps.sha.outputs.sha }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       # short git sha for use in versions
       - name: Get short SHA
@@ -49,7 +49,7 @@ jobs:
       # get app version from csproj
       - name: Read version
         id: version
-        uses: bbonkr/get-version-action@v1
+        uses: bbonkr/get-version-action@050c4c0c91ed925d5736322939ab5c4a1078cca5 # v1.3.1
         with:
           project: ${{ env.app-project }}
 
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       # pnpm install so we have frontend dependencies for bundling
       - uses: ./.github/actions/template.pnpm-install
@@ -67,7 +67,7 @@ jobs:
           filter: ${{ env.frontend-package }}
 
       # dotnet publish now we have dependencies
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
         with:
           dotnet-version: ${{ env.dotnet-version }}
 
@@ -80,7 +80,7 @@ jobs:
           -p:GitHash=${{ needs.init.outputs.short-sha }}
 
       # upload the published artifact
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: ${{ format('directory-{0}_dotnet-{1}', needs.init.outputs.version, env.dotnet-version) }}
           path: ${{ env.publish-dir }}
@@ -103,8 +103,8 @@ jobs:
           - artifact: linux-x64
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
         with:
           dotnet-version: ${{ env.dotnet-version }}
       - run: dotnet tool restore
@@ -117,7 +117,7 @@ jobs:
           ${{ matrix.args }}
           --self-contained
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: ${{ format('migrations-{0}_{1}', needs.init.outputs.version, matrix.artifact) }}
           path: ${{ format('{0}{1}', env.output-filename, matrix.file-extension) }}
