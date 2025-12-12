@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ./.github/actions/template.pnpm-install
         with:
-          node-version: "16"
+          node-version: "20"
           filter: docs
 
       - name: docs - pnpm build

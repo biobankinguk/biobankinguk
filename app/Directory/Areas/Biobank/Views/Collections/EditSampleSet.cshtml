@@ -25,10 +25,13 @@
             }));
 
             // Extraction Procedures
-            lookup.extractionProcedures(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures)), function (x) {
-                return new DropDownBinding(x.OntologyTermId, x.Description);
-            }));
-            lookup.materialExtractionProcedures(lookup.extractionProcedures());
+            var extractionProcedures = @Html.Raw(JsonConvert.SerializeObject(Model.ExtractionProcedures));
+            if (extractionProcedures.length > 0) {
+                lookup.extractionProcedures(ko.utils.arrayMap(extractionProcedures, function (x) {
+                    return new RadioBinding(x.OntologyTermId, x.Description);
+                }));
+                lookup.materialExtractionProcedures(lookup.extractionProcedures());
+            }
 
             // Preservation Types
             lookup.preservationTypes(ko.utils.arrayMap(@Html.Raw(JsonConvert.SerializeObject(Model.PreservationTypes)), function (x) {

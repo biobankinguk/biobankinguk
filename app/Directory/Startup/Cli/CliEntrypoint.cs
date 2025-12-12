@@ -30,6 +30,7 @@ public class CliEntrypoint : RootCommand
     AddCommand(new Command("users", "Actions for managing BiobankingUK Users")
     {
       new AddUser("add"),
+      new SetPassword("password"),
       new ManageUserRoles("roles"),
       new ListRoles("list-roles")
     });

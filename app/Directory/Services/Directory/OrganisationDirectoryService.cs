@@ -407,10 +407,10 @@ namespace Biobanks.Directory.Services.Directory
         public async Task<IEnumerable<OrganisationRegisterRequest>> ListAcceptedRegistrationRequestsByUserId(string userId)
         {
           var userEmail = _userManager.Users.First(u => u.Id == userId).Email;
-
+          
           return await QueryRegistrationRequests()
             .AsNoTracking()
-            .Where(x => x.UserEmail == userEmail)
+            .Where(x => EF.Functions.ILike(x.UserEmail, userEmail))
             .Where(x => 
               x.AcceptedDate != null && 
               x.DeclinedDate == null && 
@@ -442,7 +442,7 @@ namespace Biobanks.Directory.Services.Directory
         public async Task<OrganisationRegisterRequest> GetRegistrationRequestByEmail(string email)
             => await QueryRegistrationRequests()
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UserEmail == email && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
+                .FirstOrDefaultAsync(x => EF.Functions.ILike(x.UserEmail, email) && x.DeclinedDate == null && x.OrganisationCreatedDate == null);
 
         /// <inheritdoc/>
         public async Task<OrganisationRegisterRequest> AddRegistrationRequest(OrganisationRegisterRequest request)

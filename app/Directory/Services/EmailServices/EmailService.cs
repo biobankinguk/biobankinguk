@@ -134,11 +134,14 @@ namespace Biobanks.Directory.Services.EmailServices
             );
         }
         
-        public async Task SendDirectoryAdminNewRegisterRequestNotification(string requesterName, string requesterEmail, string entityName, string entityType)
+        public async Task SendDirectoryAdminNewRegisterRequestNotification(string requesterName, string requesterEmail,  string entityType, string entityName)
         {
             // Get list of Admin users email addresses
-            var userEmails = _userManager.GetUsersInRoleAsync(Role.BiobankAdmin).Result
-                .Select(x => new EmailAddress(x.Email)).ToList();
+            var userEmails = _userManager.GetUsersInRoleAsync(Role.DirectoryAdmin).Result
+                .Select(user => user.Email?.Trim() )
+                .Where(email => !string.IsNullOrEmpty(email))
+                .Select(x => new EmailAddress(x))
+                .ToList();
 
             // Fallback on Admin Support if no Admin users
             if (!userEmails.Any())

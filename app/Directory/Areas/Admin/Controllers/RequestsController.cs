@@ -116,7 +116,7 @@ public class RequestsController : Controller
       var result = await _userManager.CreateAsync(user);
 
       if (!result.Succeeded)
-      {
+      { 
         foreach (var error in result.Errors)
         {
           ModelState.AddModelError("", $"{error.Code}: {error.Description}");
@@ -155,16 +155,16 @@ public class RequestsController : Controller
               new
               {
                 Area = "Biobank",
-                id = request.OrganisationRegisterRequestId,
+                biobankId = request.OrganisationRegisterRequestId,
                 newBiobank = true
               },
               Request.Scheme)
       );
     }
-
-
-    //add user to BiobankAdmin role
+    
+    //add user to BiobankAdmin role and sign them out.
     await _userManager.AddToRolesAsync(user,  new List<string> { Role.BiobankAdmin });
+    await _userManager.UpdateSecurityStampAsync(user);
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
@@ -318,15 +318,16 @@ public class RequestsController : Controller
                   new
                   {
                     Area = "Network",
-                    id = request.NetworkRegisterRequestId,
+                    networkId = request.NetworkRegisterRequestId,
                     newNetwork = true
                   },
                   Request.Scheme)
           );
     }
 
-    //add user to NetworkAdmin role
+    //add user to NetworkAdmin role and sign them out.
     await _userManager.AddToRolesAsync(user, new List<string> { Role.NetworkAdmin });
+    await _userManager.UpdateSecurityStampAsync(user);
 
     //finally, update the request
     request.AcceptedDate = DateTime.Now;
@@ -463,7 +464,7 @@ public class RequestsController : Controller
 
       var model = new HistoricalModel
       {
-          HistoricalRequests = bbRequests.Concat(nwRequests).ToList()
+          HistoricalRequests = bbRequests.Concat(nwRequests).OrderByDescending(x => x.Date).ToList()
       };
 
       return View(model);

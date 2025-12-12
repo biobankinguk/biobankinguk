@@ -10,13 +10,18 @@
     ViewBag.Subject = $"{directoryName} - Registration Accepted";
 }
 
-Dear @Html.Raw(Model!.name)
-
+Dear @Html.Raw(Model!.name),
+<br/><br/>
 Thanks for your interest in the @directoryName.
-
-We have received your registration for @Html.Raw(Model.entity).
-
-<a href="@Html.Raw(Model.link)">Please click this link to login and create a profile. </a> 
-
-Regards,
+<br/><br/>
+We have received your registration for @Html.Raw(Model.entity). As you already have an account, it has been
+added to your account associated with this email address.
+<br/><br/>
+There is some advice and guidance available on our main website: <a href="https://www.biobankinguk.org/share/">Registration advice</a>
+<br/><br/>
+Thanks for your interest in the @directoryName.
+<br/><br/>
+<a href="@Html.Raw(Model.link)">Please click this link to login and create a profile. </a>
+<br/><br/>
+Regards,<br/>
 @emailSignature

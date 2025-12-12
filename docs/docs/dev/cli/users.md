@@ -21,6 +21,23 @@ Add an Admin user with the roles `SuperUser` and `DirectoryAdmin`:
 
 ---
 
+## `password`
+
+Set the password for a user.
+
+### Command
+
+- `password <EMAIL> <PASSWORD>` : set a users password
+
+### Usage Scenarios
+
+Set the password for a user to be "Moomins!123":
+
+- `users password admin@example.com Moomins!123`
+
+---
+
+
 ## `roles`
 
 Manage roles for a User; listing, adding and/or removing

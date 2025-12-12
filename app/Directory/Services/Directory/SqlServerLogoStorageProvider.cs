@@ -26,7 +26,6 @@ namespace Biobanks.Directory.Services.Directory
                 .AsNoTracking()
                 .Where(x => x.FileName == resourceName)
                 .FirstOrDefaultAsync();
-
             if (blob == null) throw new ApplicationException();
 
             return blob;
@@ -45,12 +44,14 @@ namespace Biobanks.Directory.Services.Directory
                 ContentDisposition = "attachment; filename=" + reference + Path.GetExtension(fileName),
                 Content = logo.ToArray()
             };
-
+            
             //is there an existing logo blob for this biobank?
             //we want to replace, not keep adding and storing new files
-     
-            var existing = await GetLogoBlob(logoBlob.FileName);
+            try
+            {
+              var existing = await GetLogoBlob(logoBlob.FileName);
               _db.Remove(existing.Id);
+            } catch (ApplicationException) { } //no worries if nothing found
 
             //write to db
             _db.Add(logoBlob);

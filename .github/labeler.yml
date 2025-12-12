@@ -1,34 +1,47 @@
-# label affected logical areas of the repo
-"Area: CI":
-  - .github/**/*
-"Area: Core":
-  - lib/Core/**/*
-"Area: Elastic Search":
-  - elastic-search/**/*
-"Area: Analytics":
-  - lib/Core/Analytics/**/*
-  - lib/Core/Jobs/AnalyticsJob.cs
-"Area: Directory":
-  - app/Directory/**/*
-"Area: Submissions":
-  - lib/Core/Submissions/**/*
-  - lib/Core/Jobs/RejectJob.cs
-  - lib/Core/Jobs/ExpiryJob.cs
-  - lib/Core/Jobs/CommitJob.cs
-  - lib/Core/Jobs/StagingJob.cs
-"Area: Data":
-  - lib/Data/**/*
-"Area: Publications":
-  - lib/Core/Publications/**/*
-  - lib/Core/Jobs/PublicationsJob.cs
-"Area: Aggregator":
-  - lib/Core/Aggregator/**/*
-  - lib/Core/Jobs/AggregatorJob.cs
-"Area: Docs":
-  - docs/**/*
+labels:
+  # label affected logical areas of the repo
+  - label: "Area: CI"
+    paths:
+      - .github/**/*
+  - label: "Area: Core"
+    paths:
+      - lib/Core/**/*
+  - label: "Area: Elastic Search"
+    paths:
+      - elastic-search/**/*
+  - label: "Area: Analytics"
+    paths:
+      - lib/Core/Analytics/**/*
+      - lib/Core/Jobs/AnalyticsJob.cs
+  - label: "Area: Directory"
+    paths:
+      - app/Directory/**/*
+  - label: "Area: Submissions"
+    paths:
+      - lib/Core/Submissions/**/*
+      - lib/Core/Jobs/RejectJob.cs
+      - lib/Core/Jobs/ExpiryJob.cs
+      - lib/Core/Jobs/CommitJob.cs
+      - lib/Core/Jobs/StagingJob.cs
+  - label: "Area: Data"
+    paths:
+      - lib/Data/**/*
+  - label: "Area: Publications"
+    paths:
+      - lib/Core/Publications/**/*
+      - lib/Core/Jobs/PublicationsJob.cs
+  - label: "Area: Aggregator"
+    paths:
+      - lib/Core/Aggregator/**/*
+      - lib/Core/Jobs/AggregatorJob.cs
+  - label: "Area: Docs"
+    paths:
+      - docs/**/*
 
-# label types of changes contained in a PR
-"Contains: Migrations":
-  - lib/**/Migrations/*.cs
-"Contains: Search Index":
-  - "elastic-search/directory index setup/*"
+  # label types of changes contained in a PR
+  - label: "Contains: Migrations"
+    paths:
+      - lib/**/Migrations/*.cs
+  - label: "Contains: Search Index"
+    paths:
+      - "elastic-search/directory index setup/*"

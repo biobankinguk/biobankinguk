@@ -11,12 +11,12 @@
 }
 
 Dear @Html.Raw(Model!.name)
-
+<br/><br/>
 You've been invited to become an admin for @Html.Raw(Model.entity) at the @directoryName.
-
+<br/><br/>
 Please use this link below to complete registration and set your password:
-
+<br/><br/>
 <a href="@Html.Raw(Model.confirmLink)">Click here to complete registeration</a>
-
-Regards,
+<br/><br/>
+Regards,<br/>
 @emailSignature
