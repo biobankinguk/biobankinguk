@@ -1,21 +1,23 @@
-<!--
-⚠ Ensure the PR title starts with a reference to the primary work item it completes, in the form `AB#<id> My PR Title`.
--->
+| <!-- # Delete content types that don't apply to your pull request -->|
+|-|
+♻️ Refactor
+✨ Feature
+🦋 Bug Fix
+⚡️ Optimization
+📝 Documentation
+🛠️ Repo maintenance
 
-## Overview
+## PR Description
 
-Summarise what this Pull Request is for.
 
-<!--
-ℹ If there are multiple relevant Azure Boards work items, please reference them in a list below, in the form `AB#<id>`.
+## Related Issues or other material
+Related #
+Closes #
 
-Otherwise delete the section.
--->
+## Screenshots, example outputs/behaviour etc.
 
-## Azure Boards
+## ✅ Added/updated tests?
+- [] This PR contains relevant tests / Or doesn't need to per the below explanation
 
-- `<Work Item 1>`
-
-## Notes
-
-Any further notes on changes not covered above. Delete if not required.
+## [optional] What gif best describes this PR or how it makes you feel?
+![alt_text](gif_link)
